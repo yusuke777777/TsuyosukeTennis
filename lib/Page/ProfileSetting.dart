@@ -17,10 +17,10 @@ class _ProfileSettingState extends State<ProfileSetting> {
   late String torokuRank = 'ランクを入力を選択してください';
 
   //都道府県
-  late String todofuken = '都道府県を入力してください';
+  late String todofuken = '東京都';
 
   //市町村
-  late String shichoson;
+  late TextEditingController shichoson = TextEditingController();
 
   //募集種別(シングルス)
   late String shubetsuS = '0';
@@ -37,14 +37,25 @@ class _ProfileSettingState extends State<ProfileSetting> {
   //コメント
   var coment = TextEditingController();
 
+  List<Widget> contentWidgets = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _makeWidgets();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
+          body: Scrollbar(
+            isAlwaysShown: false,
+            child: SingleChildScrollView(
+              child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
               Center(
                 child: Column(children: [
                   ClipOval(
@@ -59,8 +70,10 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     height: 10,
                   ),
                   Container(
-                    child: Text(nickName,
-                        style: TextStyle(fontSize: 25, color: Colors.black),),
+                    child: Text(
+                      nickName,
+                      style: TextStyle(fontSize: 25, color: Colors.black),
+                    ),
                   ),
                 ]),
               ),
@@ -74,8 +87,10 @@ class _ProfileSettingState extends State<ProfileSetting> {
                       width: 30,
                     ),
                     Container(
-                      child: Text('●登録ランク',
-                        style: TextStyle(fontSize: 25, color: Colors.black),),
+                      child: Text(
+                        '●登録ランク',
+                        style: TextStyle(fontSize: 25, color: Colors.black),
+                      ),
                     ),
                   ],
                 ),
@@ -85,18 +100,20 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     SizedBox(
                       width: 50,
                     ),
-                      Container(
-                        padding: const EdgeInsets.all(5.0),
-                        width: 250,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                        ),
-                        child: Text(
-                          torokuRank,
-                          style: TextStyle(fontSize: 20, color: Colors.black),
-                        ),
+                    Container(
+                      padding: const EdgeInsets.all(5.0),
+                      width: 250,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
                       ),
-                    IconButton(icon:Icon(Icons.arrow_drop_down_circle_rounded),
+                      child: Text(
+                        torokuRank,
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.arrow_drop_down_circle_rounded),
                       onPressed: () {
                         _showModalRankPicker(context);
                       },
@@ -104,8 +121,47 @@ class _ProfileSettingState extends State<ProfileSetting> {
                   ],
                 ),
               ]),
-            ]),
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                SizedBox(
+                  height: 30,
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 30,
+                    ),
+                    Container(
+                      child: Text(
+                        '●主な活動場所',
+                        style: TextStyle(fontSize: 25, color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: contentWidgets),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.add),
+                      onPressed: () {
+                        _makeWidgets();
+                        setState(() {
+                        });
+                      },
+                    ),
+                    SizedBox(
+                      width: 40,
+                    ),
+                  ],
+                ),
+              ]),
+        ],
       ),
+            ),
+          )),
     );
   }
 
@@ -129,6 +185,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
       },
     );
   }
+
   void _showModalLocationPicker(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
@@ -141,8 +198,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
             },
             child: CupertinoPicker(
               itemExtent: 40,
-              children: _Rank.map(_pickerItem).toList(),
-              onSelectedItemChanged: _onSelectedRankChanged,
+              children: _Location.map(_pickerItem).toList(),
+              onSelectedItemChanged: _onSelectedLocationChanged,
             ),
           ),
         );
@@ -222,5 +279,86 @@ class _ProfileSettingState extends State<ProfileSetting> {
     setState(() {
       torokuRank = _Rank[index];
     });
+  }
+
+  List<Widget> _makeWidgets() {
+    contentWidgets.add(
+      Column(
+        children: [
+          Row(
+            children: [
+              SizedBox(
+                width: 50,
+              ),
+              Container(
+                child: Text(
+                  '都道府県',
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 50,
+              ),
+              Container(
+                padding: const EdgeInsets.all(5.0),
+                width: 250,
+                height: 40,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                ),
+                child: Text(
+                  todofuken,
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+              IconButton(
+                icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                onPressed: () {
+                  _showModalLocationPicker(context);
+                },
+              ),
+            ],
+          ),
+          Row(
+            children: [
+              SizedBox(
+                width: 50,
+              ),
+              Container(
+                child: Text(
+                  '市町村',
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 50,
+              ),
+              Container(
+                  padding: const EdgeInsets.all(5.0),
+                  width: 250,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                  ),
+                  child: TextField(
+                    controller: shichoson,
+                    style: TextStyle(fontSize: 20, color: Colors.black),
+                  ))
+            ],
+          ),
+        ],
+      ),
+    );
+    return contentWidgets;
   }
 }
