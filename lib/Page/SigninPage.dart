@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 import '../FireBase/SigninModel.dart';
 import '../FireBase/TextDaialog.dart';
 import '../FireBase/WillPopScope.dart';
+import '../UnderMenuMove.dart';
 import 'SignupPage.dart';
-import 'HomePage.dart';
 import 'PasswordForgetPage.dart';
 
 
@@ -99,7 +99,7 @@ class SignInPage extends StatelessWidget {
                                     await Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-                                        builder: (context) => HomePage(),
+                                        builder: (context) => UnderMenuMove(),
                                       ),
                                     );
                                   } catch (e) {
