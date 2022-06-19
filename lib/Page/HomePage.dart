@@ -73,22 +73,24 @@ class _HomePageState extends State<HomePage> {
                 Text('Sランキング:XX位', style: TextStyle(fontSize: 30)), // This trailing comma makes auto-formatting nicer for build methods.
               ]
               ),
+
+              //TODO バージョンアップで対応
               //ダブルスランキング表示
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: const <Widget>[
-                SizedBox(
-                  height: 50,
-                ),
-                Text('Dランキング:XX位', style: TextStyle(fontSize: 30)), // This trailing comma makes auto-formatting nicer for build methods.
-              ]
-              ),
-              //ミックスランキング表示
-              Row(mainAxisAlignment: MainAxisAlignment.center, children: const <Widget>[
-                SizedBox(
-                  height: 50,
-                ),
-                Text('Mランキング:XX位', style: TextStyle(fontSize: 30)), // This trailing comma makes auto-formatting nicer for build methods.
-              ]
-              ),
+              // Row(mainAxisAlignment: MainAxisAlignment.center, children: const <Widget>[
+              //   SizedBox(
+              //     height: 50,
+              //   ),
+              //   Text('Dランキング:XX位', style: TextStyle(fontSize: 30)), // This trailing comma makes auto-formatting nicer for build methods.
+              // ]
+              // ),
+              // //ミックスランキング表示
+              // Row(mainAxisAlignment: MainAxisAlignment.center, children: const <Widget>[
+              //   SizedBox(
+              //     height: 50,
+              //   ),
+              //   Text('Mランキング:XX位', style: TextStyle(fontSize: 30)), // This trailing comma makes auto-formatting nicer for build methods.
+              // ]
+              // ),
               Row(mainAxisAlignment: MainAxisAlignment.start, children: const <Widget>[
                 SizedBox(
                   height: 50,
