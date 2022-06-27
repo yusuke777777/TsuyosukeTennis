@@ -6,12 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 import '../Common/CprofileSetting.dart';
+import '../Common/CactivityList.dart';
 
 class FirestoreMethod {
 
   String Uid = '';
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
-  static final pedmeterRef = _firestoreInstance.collection('myProfile');
+  static final profileRef = _firestoreInstance.collection('myProfile');
 
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
@@ -23,19 +24,31 @@ class FirestoreMethod {
     String today = outputFormat.format(now);
 
     try {
-      await pedmeterRef.doc(auth.currentUser!.uid).set({
+      await profileRef.doc(auth.currentUser!.uid).set({
         'USER_ID': auth.currentUser!.uid,
         'PROFILE_IMAGE': profile.PROFILE_IMAGE,
         'NICK_NAME': profile.NICK_NAME,
         'TOROKU_RANK': profile.TOROKU_RANK,
-        'TODOFUKEN':"profile.activityList",
+        // 'TODOFUKEN': profile.activityList,
         'AGE': profile.AGE,
         'COMENT': profile.COMENT,
         'koushinYmd': today,
       });
     } catch (e) {
-      print('ユーザー登録に失敗しました --- $e');
+      print('ユーザー登録に失敗しましたあ --- $e');
     }
+
+    profile.activityList.forEach((a) async {
+      try {
+        await profileRef
+            .doc(auth.currentUser!.uid)
+            .collection("activityList")
+            .doc("ActivityNo" + a.No)
+            .set({'TODOFUKEN': a.TODOFUKEN, 'SHICHOSON': a.SHICHOSON.text});
+      } catch (e) {
+        print('ユーザー登録に失敗しました --- $e');
+      }
+    });
   }
 
   /**
@@ -51,6 +64,7 @@ class FirestoreMethod {
    * uid ドキュメント
    * collection 取得したいFireBaseのコレクション
    * field 取得したいコレクション内のuidがもつフィールド
+   * return
    */
   static Future<String> getMyProfileRecord(uid,collection,field) async{
     final snapShot =
@@ -61,6 +75,11 @@ class FirestoreMethod {
     return name;
   }
 
+  /**
+   *ドキュメントをキーに指定コレクションから指定フィールドをリスト型で取得するメソッド
+   * uid ドキュメント
+   * return　フィールドプロパティのリスト
+   */
   static Future<List<String>> getNickNameAndTorokuRank(uid) async{
     final snapShot =
     await FirebaseFirestore

@@ -144,13 +144,4 @@ class _HomePageState extends State<HomePage> {
         ),
       );
   }
-
-  /**
-   * Field名を返すメソッド(仮実装)
-   */
-  Future<String> returnField(fieldName) {
-    //名前
-    Future<String> field = FirestoreMethod.getMyProfileRecord(uid,'myProfile',fieldName);
-    return field;
-  }
 }
