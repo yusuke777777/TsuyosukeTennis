@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
@@ -7,6 +8,8 @@ import 'package:intl/intl.dart';
 import '../Common/CprofileSetting.dart';
 
 class FirestoreMethod {
+
+  String Uid = '';
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
   static final pedmeterRef = _firestoreInstance.collection('myProfile');
 
@@ -25,7 +28,7 @@ class FirestoreMethod {
         'PROFILE_IMAGE': profile.PROFILE_IMAGE,
         'NICK_NAME': profile.NICK_NAME,
         'TOROKU_RANK': profile.TOROKU_RANK,
-        'TODOFUKEN':profile.activityList,
+        'TODOFUKEN':"profile.activityList",
         'AGE': profile.AGE,
         'COMENT': profile.COMENT,
         'koushinYmd': today,
@@ -33,9 +36,41 @@ class FirestoreMethod {
     } catch (e) {
       print('ユーザー登録に失敗しました --- $e');
     }
-    
   }
 
+  /**
+   * ログインしているユーザのドキュメントを取得するメソッド
+   */
+  static String? getUid(){
+    final snapshot = FirebaseAuth.instance.currentUser;
+    return snapshot?.uid;
+  }
+
+  /**
+   *ドキュメントをキーに指定コレクションから指定フィールドを取得するメソッド
+   * uid ドキュメント
+   * collection 取得したいFireBaseのコレクション
+   * field 取得したいコレクション内のuidがもつフィールド
+   */
+  static Future<String> getMyProfileRecord(uid,collection,field) async{
+    final snapShot =
+    await FirebaseFirestore
+        .instance
+        .collection(collection).doc(uid).get();
+    String name = snapShot.data()![field];
+    return name;
+  }
+
+  static Future<List<String>> getNickNameAndTorokuRank(uid) async{
+    final snapShot =
+    await FirebaseFirestore
+        .instance
+        .collection('myProfile').doc(uid).get();
+    String name = snapShot.data()!['NICK_NAME'];
+    String rank = snapShot.data()!['TOROKU_RANK'];
+    List<String> list = [name,rank];
+    return list;
+  }
 //   //各ユーザー歩数情報の取得
 //   static Future<Pedmeter> getPedmeter() async {
 //     DocumentSnapshot _PedmeterDoc =
