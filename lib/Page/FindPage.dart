@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import 'FindResultPage.dart';
 class FindPage extends StatefulWidget {
   const FindPage({Key? key}) : super(key: key);
 
@@ -14,6 +16,9 @@ class _FindPageState extends State<FindPage> {
   late String torokuRank = 'ランクを入力を選択してください';
   //年齢
   late String torokuAge = '年齢を選択してください';
+
+  //アカウントIDで検索BOXに入力された値
+  final inputId = TextEditingController();
 
   MaterialColor colorstate = Colors.green;
   @override
@@ -40,7 +45,7 @@ class _FindPageState extends State<FindPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('アカウントIDで検索',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
             ),
             SizedBox(
               height: 5,
@@ -57,6 +62,7 @@ class _FindPageState extends State<FindPage> {
                   width: 200,
                   height: 40,
                   child:TextFormField(
+                    controller: inputId,
                     decoration: InputDecoration(
                       border: OutlineInputBorder(
                           borderRadius: BorderRadius.vertical()
@@ -77,8 +83,14 @@ class _FindPageState extends State<FindPage> {
                   primary: Colors.orange,
                   onPrimary: Colors.white,
                 ),
-                //TODO 検索ボタン押下時の処理
-                onPressed: () {},
+                //検索ボタン押下時の処理
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => FindResultPage(inputId.text),
+                      )
+                  );
+                },
                 child: Text('検索'),
               ),
             ),
@@ -300,8 +312,14 @@ class _FindPageState extends State<FindPage> {
                   primary: Colors.orange,
                   onPrimary: Colors.white,
                 ),
-                //TODO 検索ボタン押下時の処理
-                onPressed: () {},
+                //検索ボタン押下時の処理
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => FindResultPage(inputId.text),
+                      )
+                  );
+                },
                 child: Text('検索'),
               ),
             ),
@@ -532,4 +550,8 @@ class _FindPageState extends State<FindPage> {
       style: const TextStyle(fontSize: 20),
     );
   }
+
+  // static String getRecord(){
+  //   return null;
+  // }
 }

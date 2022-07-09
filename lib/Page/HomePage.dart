@@ -27,8 +27,9 @@ class _HomePageState extends State<HomePage> {
             fontSize: 30,
           ),
         ),
-            leading: const Icon(Icons.menu,
-                color:Colors.black),
+            leading:
+            const Icon(Icons.menu,
+                color:Colors.black,),
             elevation: 0.0,
             backgroundColor: Colors.white,
             shadowColor:Colors.white
