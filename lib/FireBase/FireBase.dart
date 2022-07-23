@@ -1,3 +1,5 @@
+
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:firebase_auth/firebase_auth.dart';
@@ -7,6 +9,7 @@ import 'package:intl/intl.dart';
 
 import '../Common/CprofileSetting.dart';
 import '../Common/CactivityList.dart';
+import 'ImagePicker.dart';
 
 class FirestoreMethod {
 
@@ -29,7 +32,6 @@ class FirestoreMethod {
         'PROFILE_IMAGE': profile.PROFILE_IMAGE,
         'NICK_NAME': profile.NICK_NAME,
         'TOROKU_RANK': profile.TOROKU_RANK,
-        // 'TODOFUKEN': profile.activityList,
         'AGE': profile.AGE,
         'COMENT': profile.COMENT,
         'koushinYmd': today,
@@ -50,7 +52,7 @@ class FirestoreMethod {
       }
     });
   }
-
+  
   /**
    * ログインしているユーザのドキュメントを取得するメソッド
    */
@@ -90,6 +92,41 @@ class FirestoreMethod {
     List<String> list = [name,rank];
     return list;
   }
+
+  // static void upload(String profileImage) async {
+  //   // imagePickerで画像を選択する
+  //   // upload
+  //   // PickedFile pickerFile =
+  //   // await ImagePicker().getImage(source: ImageSource.gallery);
+  //   // File file = File(pickerFile.path);
+  //   Image image64 = Base64Helper.imageFromBase64String(profileImage);
+  //
+  //   FirebaseStorage storage = FirebaseStorage.instance;
+  //   try {
+  //     await storage.ref("UL/upload-pic.png").putFile();
+  //   } catch (e) {
+  //     print(e);
+  //   }
+  // }
+
+  // static Future<void> downloadImage(String PresentValueWk) async {
+  //   FirebaseStorage storage = FirebaseStorage.instance;
+  //   // Reference imageRef = storage.ref().child("picture").child(PresentValueWk).child("que_004.jpg");
+  //   // imageUrl = await imageRef.getDownloadURL();
+  //
+  //   final result = await storage.ref().child("picture")
+  //       .child(PresentValueWk)
+  //       .listAll();
+  //   result.items.forEach((Reference ref) async {
+  //     await ref.getDownloadURL().then((value) {
+  //       String val = value.toString();
+  //       print(val);
+  //       // imageUrls.add(val);
+  //     });
+  //   });
+  // }
+
+
 //   //各ユーザー歩数情報の取得
 //   static Future<Pedmeter> getPedmeter() async {
 //     DocumentSnapshot _PedmeterDoc =

@@ -6,6 +6,8 @@ import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
+import '../FireBase/ImagePicker.dart';
+import '../FireBase/ProfileImage.dart';
 
 class ProfileSetting extends StatefulWidget {
   @override
@@ -17,7 +19,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
       Firebase_Auth.FirebaseAuth.instance;
 
   //プロフィール画像  画像を登録できるようにする
-  late String profileImage = 'images/ans_032.jpg';
+  late String profileImage = '';
 
   //ニックネーム
   late TextEditingController nickName = TextEditingController();
@@ -68,14 +70,32 @@ class _ProfileSettingState extends State<ProfileSetting> {
               children: [
                 Center(
                   child: Column(children: [
-                    ClipOval(
-                      child: Image.asset(
-                        profileImage,
-                        height: 200,
-                        width: 200,
-                        fit: BoxFit.fill,
-                      ),
+                    SizedBox(
+                      height: 50,
                     ),
+                      InkWell(
+                          child: Container(
+                            clipBehavior:Clip.antiAlias,
+                            height: 200,
+                            width: 200,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                            ),
+                            child: profileImage == ""
+                                ? Image.asset('images/upper_body-2.png',
+                                    fit: BoxFit.cover)
+                                : Base64Helper.imageFromBase64String(
+                                    profileImage),
+                          ),
+                          onTap: () async {
+                            Future result = Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        ProfileImage.image(profileImage, "1")));
+                            profileImage = await result as String;
+                            setState(() {});
+                          }),
                     SizedBox(
                       height: 10,
                     ),
@@ -339,8 +359,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     ),
                     Container(
                       padding: const EdgeInsets.all(5.0),
-                      width: 250,
-                      height: 40,
+                      width: 270,
+                      height: 100,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                       ),
@@ -353,21 +373,36 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     ),
                   ],
                 ),
-                FloatingActionButton(
-                  child: Text("登録"),
-                  onPressed: () async{
-                    CprofileSetting cprofileSet =
-                    CprofileSetting(
-                      USER_ID: auth.currentUser!.uid,
-                      PROFILE_IMAGE: 'images/ans_032.jpg',
-                      NICK_NAME: nickName.text,
-                      TOROKU_RANK: torokuRank,
-                      activityList: activityList,
-                      AGE: age,
-                      COMENT: coment.text,
-                    );
-                    await FirestoreMethod.makeProfile(cprofileSet);
-                  },
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 260,
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                        backgroundColor: Colors.lightGreenAccent,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(100)),
+                        ),
+                      ),
+                      child: Text("登録",style: TextStyle(color: Colors.black),),
+                      onPressed: () async {
+                        CprofileSetting cprofileSet = CprofileSetting(
+                          USER_ID: auth.currentUser!.uid,
+                          PROFILE_IMAGE: profileImage,
+                          NICK_NAME: nickName.text,
+                          TOROKU_RANK: torokuRank,
+                          activityList: activityList,
+                          AGE: age,
+                          COMENT: coment.text,
+                        );
+                        await FirestoreMethod.makeProfile(cprofileSet);
+                      },
+                    ),
+                  ],
                 )
               ]),
         ),
@@ -629,3 +664,4 @@ class _ProfileSettingState extends State<ProfileSetting> {
 //   return contentWidgets;
 // }
 }
+
