@@ -4,6 +4,7 @@ import '../FireBase/SigninModel.dart';
 import '../FireBase/TextDaialog.dart';
 import '../FireBase/WillPopScope.dart';
 
+import '../UnderMenuMove.dart';
 import 'ProfileSetting.dart';
 import 'SignupPage.dart';
 import 'PasswordForgetPage.dart';
@@ -101,7 +102,7 @@ class SignInPage extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
 
-                                        builder: (context) => ProfileSetting(),
+                                        builder: (context) => UnderMenuMove(),
                                       ),
                                     );
                                   } catch (e) {

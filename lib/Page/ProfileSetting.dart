@@ -8,6 +8,7 @@ import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/ImagePicker.dart';
 import '../FireBase/ProfileImage.dart';
+import '../UnderMenuMove.dart';
 
 class ProfileSetting extends StatefulWidget {
   @override
@@ -61,110 +62,315 @@ class _ProfileSettingState extends State<ProfileSetting> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+          appBar: AppBar(
+            leading:
+            IconButton(
+              icon: const Icon(Icons.reply,color: Colors.black,size: 40.0,),
+              onPressed: () => {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UnderMenuMove(),
+                  ),
+                )
+              },
+            ),
+            elevation: 0.0,
+            backgroundColor: Colors.white,
+            shadowColor: Colors.white,
+          ),
           body: Scrollbar(
-        isAlwaysShown: false,
-        child: SingleChildScrollView(
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Center(
-                  child: Column(children: [
-                    SizedBox(
-                      height: 50,
-                    ),
-                      InkWell(
-                          child: Container(
-                            clipBehavior:Clip.antiAlias,
-                            height: 200,
-                            width: 200,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
+            isAlwaysShown: false,
+            child: SingleChildScrollView(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Column(children: [
+                        SizedBox(
+                          height: 50,
+                        ),
+                        InkWell(
+                            child: Container(
+                              clipBehavior: Clip.antiAlias,
+                              height: 200,
+                              width: 200,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                              ),
+                              child: profileImage == ""
+                                  ? Image.asset('images/upper_body-2.png',
+                                      fit: BoxFit.cover)
+                                  : Base64Helper.imageFromBase64String(
+                                      profileImage),
                             ),
-                            child: profileImage == ""
-                                ? Image.asset('images/upper_body-2.png',
-                                    fit: BoxFit.cover)
-                                : Base64Helper.imageFromBase64String(
-                                    profileImage),
+                            onTap: () async {
+                              Future result = Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => ProfileImage.image(
+                                          profileImage, "1")));
+                              profileImage = await result as String;
+                              setState(() {});
+                            }),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(5.0),
+                          width: 300,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
                           ),
-                          onTap: () async {
-                            Future result = Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ProfileImage.image(profileImage, "1")));
-                            profileImage = await result as String;
-                            setState(() {});
-                          }),
+                          child: TextField(
+                            controller: nickName,
+                            decoration: InputDecoration.collapsed(
+                                border: InputBorder.none,
+                                hintText: '名前を入力してください'),
+                            style: TextStyle(fontSize: 20, color: Colors.black),
+                          ),
+                        ),
+                      ]),
+                    ),
+                    Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          SizedBox(
+                            height: 30,
+                          ),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 30,
+                              ),
+                              Container(
+                                child: Text(
+                                  '●登録ランク',
+                                  style: TextStyle(
+                                      fontSize: 25, color: Colors.black),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              SizedBox(
+                                width: 60,
+                              ),
+                              Container(
+                                padding: const EdgeInsets.all(5.0),
+                                width: 250,
+                                height: 40,
+                                decoration: BoxDecoration(
+                                  border: Border.all(color: Colors.grey),
+                                ),
+                                child: Text(
+                                  torokuRank,
+                                  style: TextStyle(
+                                      fontSize: 20, color: Colors.black),
+                                ),
+                              ),
+                              IconButton(
+                                icon:
+                                    Icon(Icons.arrow_drop_down_circle_rounded),
+                                onPressed: () {
+                                  _showModalRankPicker(context);
+                                },
+                              ),
+                            ],
+                          ),
+                        ]),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          height: 30,
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 30,
+                            ),
+                            Container(
+                              child: Text(
+                                '●主な活動場所',
+                                style: TextStyle(
+                                    fontSize: 25, color: Colors.black),
+                              ),
+                            ),
+                          ],
+                        ),
+                        ListView.builder(
+                            shrinkWrap: true,
+                            physics: NeverScrollableScrollPhysics(),
+                            padding: const EdgeInsets.all(8),
+                            // ②配列のデータ数分カード表示を行う
+                            itemCount: activityList.length,
+                            itemBuilder: (BuildContext context, int index) {
+                              return Column(
+                                children: [
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 50,
+                                      ),
+                                      Container(
+                                        child: Text(
+                                          '都道府県',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.black),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: 50,
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.all(5.0),
+                                        width: 250,
+                                        height: 40,
+                                        decoration: BoxDecoration(
+                                          border:
+                                              Border.all(color: Colors.grey),
+                                        ),
+                                        child: Text(
+                                          '${activityList[index].TODOFUKEN}',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.black),
+                                        ),
+                                      ),
+                                      IconButton(
+                                        icon: Icon(Icons
+                                            .arrow_drop_down_circle_rounded),
+                                        onPressed: () {
+                                          _showModalLocationPicker(
+                                              context,
+                                              int.parse(activityList[index].No),
+                                              activityList[index].SHICHOSON);
+                                          setState(() {});
+                                        },
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    children: [
+                                      SizedBox(
+                                        width: 50,
+                                      ),
+                                      Container(
+                                        child: Text(
+                                          '市町村',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.black),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: 50,
+                                      ),
+                                      Container(
+                                          padding: const EdgeInsets.all(5.0),
+                                          width: 250,
+                                          height: 40,
+                                          decoration: BoxDecoration(
+                                            border:
+                                                Border.all(color: Colors.grey),
+                                          ),
+                                          child: TextField(
+                                            decoration:
+                                                InputDecoration.collapsed(
+                                                    border: InputBorder.none,
+                                                    hintText: ''),
+                                            controller:
+                                                activityList[index].SHICHOSON,
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black),
+                                          ))
+                                    ],
+                                  ),
+                                ],
+                              );
+                            }),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            IconButton(
+                              icon: Icon(Icons.add),
+                              onPressed: () {
+                                //登録Noを更新
+                                todofukenTourokuNo = todofukenTourokuNo + 1;
+                                print(todofukenTourokuNo);
+                                //都道府県ウィジェット追加
+                                // _makeWidgets(todofukenTourokuNo);
+                                activityListAdd(todofukenTourokuNo.toString());
+                                setState(() {});
+                              },
+                            ),
+                            SizedBox(
+                              width: 40,
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            SizedBox(
+                              width: 30,
+                            ),
+                            Container(
+                              child: Text(
+                                '●年齢',
+                                style: TextStyle(
+                                    fontSize: 25, color: Colors.black),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 50,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(5.0),
+                          width: 250,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                          ),
+                          child: Text(
+                            age,
+                            style: TextStyle(fontSize: 20, color: Colors.black),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                          onPressed: () {
+                            _showModalAgePicker(context);
+                          },
+                        ),
+                      ],
+                    ),
                     SizedBox(
                       height: 10,
                     ),
-                    Container(
-                      padding: const EdgeInsets.all(5.0),
-                      width: 300,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      child: TextField(
-                        controller: nickName,
-                        decoration: InputDecoration.collapsed(
-                            border: InputBorder.none, hintText: '名前を入力してください'),
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ),
-                    ),
-                  ]),
-                ),
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  SizedBox(
-                    height: 30,
-                  ),
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 30,
-                      ),
-                      Container(
-                        child: Text(
-                          '●登録ランク',
-                          style: TextStyle(fontSize: 25, color: Colors.black),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        width: 60,
-                      ),
-                      Container(
-                        padding: const EdgeInsets.all(5.0),
-                        width: 250,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey),
-                        ),
-                        child: Text(
-                          torokuRank,
-                          style: TextStyle(fontSize: 20, color: Colors.black),
-                        ),
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.arrow_drop_down_circle_rounded),
-                        onPressed: () {
-                          _showModalRankPicker(context);
-                        },
-                      ),
-                    ],
-                  ),
-                ]),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 30,
-                    ),
                     Row(
                       children: [
                         SizedBox(
@@ -172,241 +378,72 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         ),
                         Container(
                           child: Text(
-                            '●主な活動場所',
+                            '●コメント',
                             style: TextStyle(fontSize: 25, color: Colors.black),
                           ),
                         ),
                       ],
                     ),
-                    ListView.builder(
-                        shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
-                        padding: const EdgeInsets.all(8),
-                        // ②配列のデータ数分カード表示を行う
-                        itemCount: activityList.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Column(
-                            children: [
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: 50,
-                                  ),
-                                  Container(
-                                    child: Text(
-                                      '都道府県',
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.black),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 50,
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.all(5.0),
-                                    width: 250,
-                                    height: 40,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey),
-                                    ),
-                                    child: Text(
-                                      '${activityList[index].TODOFUKEN}',
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.black),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: Icon(
-                                        Icons.arrow_drop_down_circle_rounded),
-                                    onPressed: () {
-                                      _showModalLocationPicker(
-                                          context,
-                                          int.parse(activityList[index].No),
-                                          activityList[index].SHICHOSON);
-                                      setState(() {});
-                                    },
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: 50,
-                                  ),
-                                  Container(
-                                    child: Text(
-                                      '市町村',
-                                      style: TextStyle(
-                                          fontSize: 20, color: Colors.black),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 50,
-                                  ),
-                                  Container(
-                                      padding: const EdgeInsets.all(5.0),
-                                      width: 250,
-                                      height: 40,
-                                      decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.grey),
-                                      ),
-                                      child: TextField(
-                                        decoration: InputDecoration.collapsed(
-                                            border: InputBorder.none,
-                                            hintText: ''),
-                                        controller:
-                                            activityList[index].SHICHOSON,
-                                        style: TextStyle(
-                                            fontSize: 20, color: Colors.black),
-                                      ))
-                                ],
-                              ),
-                            ],
-                          );
-                        }),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        IconButton(
-                          icon: Icon(Icons.add),
-                          onPressed: () {
-                            //登録Noを更新
-                            todofukenTourokuNo = todofukenTourokuNo + 1;
-                            print(todofukenTourokuNo);
-                            //都道府県ウィジェット追加
-                            // _makeWidgets(todofukenTourokuNo);
-                            activityListAdd(todofukenTourokuNo.toString());
-                            setState(() {});
+                        SizedBox(
+                          width: 50,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(5.0),
+                          width: 270,
+                          height: 100,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                          ),
+                          child: TextField(
+                            decoration: InputDecoration.collapsed(
+                                border: InputBorder.none, hintText: ''),
+                            controller: coment,
+                            style: TextStyle(fontSize: 20, color: Colors.black),
+                          ),
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 260,
+                        ),
+                        TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.lightGreenAccent,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(100)),
+                            ),
+                          ),
+                          child: Text(
+                            "登録",
+                            style: TextStyle(color: Colors.black),
+                          ),
+                          onPressed: () async {
+                            CprofileSetting cprofileSet = CprofileSetting(
+                              USER_ID: auth.currentUser!.uid,
+                              PROFILE_IMAGE: profileImage,
+                              NICK_NAME: nickName.text,
+                              TOROKU_RANK: torokuRank,
+                              activityList: activityList,
+                              AGE: age,
+                              COMENT: coment.text,
+                            );
+                            await FirestoreMethod.makeProfile(cprofileSet);
                           },
                         ),
-                        SizedBox(
-                          width: 40,
-                        ),
                       ],
-                    ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 30,
-                        ),
-                        Container(
-                          child: Text(
-                            '●年齢',
-                            style: TextStyle(fontSize: 25, color: Colors.black),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 50,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(5.0),
-                      width: 250,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      child: Text(
-                        age,
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.arrow_drop_down_circle_rounded),
-                      onPressed: () {
-                        _showModalAgePicker(context);
-                      },
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 30,
-                    ),
-                    Container(
-                      child: Text(
-                        '●コメント',
-                        style: TextStyle(fontSize: 25, color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 50,
-                    ),
-                    Container(
-                      padding: const EdgeInsets.all(5.0),
-                      width: 270,
-                      height: 100,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                      ),
-                      child: TextField(
-                        decoration: InputDecoration.collapsed(
-                            border: InputBorder.none, hintText: ''),
-                        controller: coment,
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 260,
-                    ),
-                    TextButton(
-                      style: TextButton.styleFrom(
-                        backgroundColor: Colors.lightGreenAccent,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(Radius.circular(100)),
-                        ),
-                      ),
-                      child: Text("登録",style: TextStyle(color: Colors.black),),
-                      onPressed: () async {
-                        CprofileSetting cprofileSet = CprofileSetting(
-                          USER_ID: auth.currentUser!.uid,
-                          PROFILE_IMAGE: profileImage,
-                          NICK_NAME: nickName.text,
-                          TOROKU_RANK: torokuRank,
-                          activityList: activityList,
-                          AGE: age,
-                          COMENT: coment.text,
-                        );
-                        await FirestoreMethod.makeProfile(cprofileSet);
-                      },
-                    ),
-                  ],
-                )
-              ]),
-        ),
-      )),
+                    )
+                  ]),
+            ),
+          )),
     );
   }
 
@@ -664,4 +701,3 @@ class _ProfileSettingState extends State<ProfileSetting> {
 //   return contentWidgets;
 // }
 }
-

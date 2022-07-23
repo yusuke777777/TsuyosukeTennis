@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:tsuyosuke_tennis_ap/Page/bk_ProfileSetting.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 
@@ -222,7 +223,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                                       MaterialPageRoute(
                                                         builder:
                                                             (context) =>
-                                                                HomePage(),
+                                                                ProfileSetting(),
                                                       ),
                                                     );
                                                     model.endLoading();

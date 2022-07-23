@@ -7,12 +7,16 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
+import '../Common/CHomePageSetting.dart';
+import '../Common/CHomePageSetting.dart';
+import '../Common/CHomePageSetting.dart';
+import '../Common/CHomePageSetting.dart';
+import '../Common/CHomePageSetting.dart';
 import '../Common/CprofileSetting.dart';
 import '../Common/CactivityList.dart';
 import 'ImagePicker.dart';
 
 class FirestoreMethod {
-
   String Uid = '';
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
   static final profileRef = _firestoreInstance.collection('myProfile');
@@ -56,7 +60,7 @@ class FirestoreMethod {
   /**
    * ログインしているユーザのドキュメントを取得するメソッド
    */
-  static String? getUid(){
+  static String? getUid() {
     final snapshot = FirebaseAuth.instance.currentUser;
     return snapshot?.uid;
   }
@@ -68,13 +72,18 @@ class FirestoreMethod {
    * field 取得したいコレクション内のuidがもつフィールド
    * return
    */
-  static Future<String> getMyProfileRecord(uid,collection,field) async{
-    final snapShot =
-    await FirebaseFirestore
-        .instance
-        .collection(collection).doc(uid).get();
-    String name = snapShot.data()![field];
-    return name;
+  static Future<String> getMyProfileRecord(uid, collection, field) async {
+    String fieldValue = '';
+    try {
+      final snapShot = await FirebaseFirestore.instance
+          .collection(collection)
+          .doc(uid)
+          .get();
+      fieldValue = snapShot.data()![field];
+    } catch (e) {
+      return fieldValue;
+    }
+    return fieldValue;
   }
 
   /**
@@ -82,15 +91,33 @@ class FirestoreMethod {
    * uid ドキュメント
    * return　フィールドプロパティのリスト
    */
-  static Future<List<String>> getNickNameAndTorokuRank(uid) async{
+  static Future<List<String>> getNickNameAndTorokuRank(uid) async {
+    List<String> stringList = [];
     final snapShot =
-    await FirebaseFirestore
-        .instance
-        .collection('myProfile').doc(uid).get();
+    await FirebaseFirestore.instance.collection('myProfile').doc(uid).get();
     String name = snapShot.data()!['NICK_NAME'];
     String rank = snapShot.data()!['TOROKU_RANK'];
-    List<String> list = [name,rank];
-    return list;
+    if(snapShot == null){
+      return stringList;
+    }
+
+    stringList.add(name);
+    stringList.add(rank);
+
+    return stringList;
+  }
+
+  /**
+   *ドキュメントをキーに指定コレクションから指定フィールドをリスト型で取得するメソッド
+   * uid ドキュメント
+   * return　フィールドプロパティのリスト
+   */
+  static Future<CHomePageSetting> getHomePageStatus(uid,todofuken,sicyouson,rank) async {
+    final snapShot =
+        await FirebaseFirestore.instance.collection('myProfile').doc(uid).get();
+    String name = snapShot.data()!['NICK_NAME'];
+    String rank = snapShot.data()!['TOROKU_RANK'];
+    return CHomePageSetting(NICK_NAME: name, TOROKU_RANK: rank);
   }
 
   // static void upload(String profileImage) async {
