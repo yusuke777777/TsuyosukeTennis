@@ -7,6 +7,7 @@ import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'FireBase.dart';
 import 'ImagePicker.dart';
 
 class ProfileImage extends StatefulWidget {
@@ -131,7 +132,7 @@ class _ProfileImageState extends State<ProfileImage> {
             ]),
         body: Center(
           child: myImagePath != ""
-              ? Base64Helper.imageFromBase64String(myImagePath)
+              ? Image.network(myImagePath)
               : Image.asset('images/upper_body-2.png',
                   fit: BoxFit.cover),
         ),
@@ -144,23 +145,23 @@ class _ProfileImageState extends State<ProfileImage> {
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
     imageFile = pickedImage != null ? File(pickedImage.path) : null;
-    final time = DateTime.now().millisecondsSinceEpoch;
 
-    final directory = await getApplicationDocumentsDirectory();
-    final path = directory.path;
-    final copiedImageFile = await imageFile!.copy('$path/$time.png');
+    setState(() {
+      // state = AppState.picked;
+    });
+
+    // final time = DateTime.now().millisecondsSinceEpoch;
+    // final directory = await getApplicationDocumentsDirectory();
+    // final path = directory.path;
+    // final copiedImageFile = await imageFile!.copy('$path/$time.png');
     // notifyListeners();
 
     // DBへ保存する為、base64文字列へ変換
-    _base64ImageString =
-        Base64Helper.base64String(copiedImageFile.readAsBytesSync());
+    // _base64ImageString =
+    //     Base64Helper.base64String(copiedImageFile.readAsBytesSync());
 
     // 端末の一時ファイルを削除
     // _deleteFile(imageFile!);
-    setState(() {
-      this.myImagePath = _base64ImageString;
-      // state = AppState.picked;
-    });
   }
 
   /// 該当パスのファイルが存在しているときに、返却します
@@ -210,21 +211,22 @@ class _ProfileImageState extends State<ProfileImage> {
 
     if (croppedFile != null) {
       imageFile = File(croppedFile.path);
-      final time = DateTime.now().millisecondsSinceEpoch;
-      final directory = await getApplicationDocumentsDirectory();
-      final path = directory.path;
-      final copiedImageFile = await imageFile!.copy('$path/$time.png');
-      // notifyListeners();
-
-      // DBへ保存する為、base64文字列へ変換
-      _base64ImageString =
-          Base64Helper.base64String(copiedImageFile.readAsBytesSync());
-
+      String imageURL = await FirestoreMethod.upload(imageFile);
       // 端末の一時ファイルを削除
       _deleteFile(imageFile!);
 
+      // final time = DateTime.now().millisecondsSinceEpoch;
+      // final directory = await getApplicationDocumentsDirectory();
+      // final path = directory.path;
+      // final copiedImageFile = await imageFile!.copy('$path/$time.png');
+      // notifyListeners();
+
+      // DBへ保存する為、base64文字列へ変換
+      // _base64ImageString =
+      //     Base64Helper.base64String(copiedImageFile.readAsBytesSync());
+
       setState(() {
-        this.myImagePath = _base64ImageString;
+        this.myImagePath = imageURL;
       });
     }
   }

@@ -11,6 +11,27 @@ import '../FireBase/ProfileImage.dart';
 import '../UnderMenuMove.dart';
 
 class ProfileSetting extends StatefulWidget {
+  late CprofileSetting myProfile;
+  String koushinFlg = '0';
+
+  ProfileSetting.Edit(CprofileSetting myProfileWork) {
+    myProfile = myProfileWork;
+    koushinFlg = '1';
+  }
+
+  ProfileSetting.Make() {
+    List<CativityList> activityList = [];
+    myProfile = CprofileSetting(
+      USER_ID: '',
+      PROFILE_IMAGE: '',
+      NICK_NAME: '',
+      TOROKU_RANK: '',
+      activityList: activityList,
+      AGE: '',
+      COMENT: '',
+    );
+  }
+
   @override
   _ProfileSettingState createState() => _ProfileSettingState();
 }
@@ -19,15 +40,19 @@ class _ProfileSettingState extends State<ProfileSetting> {
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
 
-  //プロフィール画像  画像を登録できるようにする
-  late String profileImage = '';
-
   //ニックネーム
   late TextEditingController nickName = TextEditingController();
+
+  //プロフィール画像  画像を登録できるようにする
+  String profileImage = '';
 
   //登録ランク
   String torokuRank = "中級";
 
+  //市町村
+  TextEditingController curShichoson = TextEditingController();
+
+  //アクティビィリスト
   List<CativityList> activityList = [
     CativityList(
       No: "0",
@@ -42,9 +67,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
   //現在登録中の登録No
   int curTourokuNo = 0;
 
-  //現在登録中の市町村
-  TextEditingController curShichoson = TextEditingController();
-
   //年齢
   String age = "20代";
 
@@ -56,6 +78,35 @@ class _ProfileSettingState extends State<ProfileSetting> {
   @override
   void initState() {
     super.initState();
+    String koushinFlg = widget.koushinFlg;
+
+    //ニックネーム
+    if (koushinFlg == "1") {
+      nickName = TextEditingController(text: widget.myProfile.NICK_NAME);
+    }
+
+    //プロフィール画像  画像を登録できるようにする
+    if (koushinFlg == "1") {
+      profileImage = widget.myProfile.PROFILE_IMAGE;
+    }
+
+    //登録ランク
+    if (koushinFlg == "1") {
+      torokuRank = widget.myProfile.TOROKU_RANK;
+    }
+    //年齢
+    if (koushinFlg == "1") {
+      age = widget.myProfile.AGE;
+    }
+    //コメント
+    if (koushinFlg == "1") {
+      coment = TextEditingController(text: widget.myProfile.COMENT);
+    }
+
+    //アクティビティリスト
+    if (koushinFlg == "1") {
+      activityList = widget.myProfile.activityList;
+    }
   }
 
   @override
@@ -63,9 +114,12 @@ class _ProfileSettingState extends State<ProfileSetting> {
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
-            leading:
-            IconButton(
-              icon: const Icon(Icons.reply,color: Colors.black,size: 40.0,),
+            leading: widget.koushinFlg == '1' ? IconButton(
+              icon: const Icon(
+                Icons.reply,
+                color: Colors.black,
+                size: 40.0,
+              ),
               onPressed: () => {
                 Navigator.pushReplacement(
                   context,
@@ -74,7 +128,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                   ),
                 )
               },
-            ),
+            ): null,
             elevation: 0.0,
             backgroundColor: Colors.white,
             shadowColor: Colors.white,
@@ -102,8 +156,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               child: profileImage == ""
                                   ? Image.asset('images/upper_body-2.png',
                                       fit: BoxFit.cover)
-                                  : Base64Helper.imageFromBase64String(
-                                      profileImage),
+                                  : Image.network(profileImage)
                             ),
                             onTap: () async {
                               Future result = Navigator.push(
@@ -111,7 +164,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                   MaterialPageRoute(
                                       builder: (context) => ProfileImage.image(
                                           profileImage, "1")));
-                              profileImage = await result as String;
+                              profileImage = await result;
                               setState(() {});
                             }),
                         SizedBox(
@@ -437,6 +490,12 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               COMENT: coment.text,
                             );
                             await FirestoreMethod.makeProfile(cprofileSet);
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => UnderMenuMove(),
+                              ),
+                            );
                           },
                         ),
                       ],

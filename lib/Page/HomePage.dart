@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import 'FindPage.dart';
 import 'ProfileSetting.dart';
@@ -44,13 +45,14 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: const Icon(Icons.account_circle_sharp,color: Colors.black,size: 40.0,),
-            onPressed: () => {
-              Navigator.pushReplacement(
+            onPressed: () async {
+              CprofileSetting myProfile = await FirestoreMethod.getProfile();
+               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => ProfileSetting(),
+                  builder: (context) => ProfileSetting.Edit(myProfile),
                 ),
-              )
+              );
             },
           )
         ],

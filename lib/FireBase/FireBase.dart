@@ -1,4 +1,6 @@
-
+import 'dart:convert';
+import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
@@ -8,13 +10,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 import '../Common/CHomePageSetting.dart';
-import '../Common/CHomePageSetting.dart';
-import '../Common/CHomePageSetting.dart';
-import '../Common/CHomePageSetting.dart';
-import '../Common/CHomePageSetting.dart';
 import '../Common/CprofileSetting.dart';
 import '../Common/CactivityList.dart';
-import 'ImagePicker.dart';
 
 class FirestoreMethod {
   String Uid = '';
@@ -41,7 +38,7 @@ class FirestoreMethod {
         'koushinYmd': today,
       });
     } catch (e) {
-      print('ユーザー登録に失敗しましたあ --- $e');
+      print('ユーザー登録に失敗しました --- $e');
     }
 
     profile.activityList.forEach((a) async {
@@ -50,13 +47,17 @@ class FirestoreMethod {
             .doc(auth.currentUser!.uid)
             .collection("activityList")
             .doc("ActivityNo" + a.No)
-            .set({'TODOFUKEN': a.TODOFUKEN, 'SHICHOSON': a.SHICHOSON.text});
+            .set({
+          'No': a.No,
+          'TODOFUKEN': a.TODOFUKEN,
+          'SHICHOSON': a.SHICHOSON.text
+        });
       } catch (e) {
         print('ユーザー登録に失敗しました --- $e');
       }
     });
   }
-  
+
   /**
    * ログインしているユーザのドキュメントを取得するメソッド
    */
@@ -94,10 +95,10 @@ class FirestoreMethod {
   static Future<List<String>> getNickNameAndTorokuRank(uid) async {
     List<String> stringList = [];
     final snapShot =
-    await FirebaseFirestore.instance.collection('myProfile').doc(uid).get();
+        await FirebaseFirestore.instance.collection('myProfile').doc(uid).get();
     String name = snapShot.data()!['NICK_NAME'];
     String rank = snapShot.data()!['TOROKU_RANK'];
-    if(snapShot == null){
+    if (snapShot == null) {
       return stringList;
     }
 
@@ -112,7 +113,8 @@ class FirestoreMethod {
    * uid ドキュメント
    * return　フィールドプロパティのリスト
    */
-  static Future<CHomePageSetting> getHomePageStatus(uid,todofuken,sicyouson,rank) async {
+  static Future<CHomePageSetting> getHomePageStatus(
+      uid, todofuken, sicyouson, rank) async {
     final snapShot =
         await FirebaseFirestore.instance.collection('myProfile').doc(uid).get();
     String name = snapShot.data()!['NICK_NAME'];
@@ -120,39 +122,79 @@ class FirestoreMethod {
     return CHomePageSetting(NICK_NAME: name, TOROKU_RANK: rank);
   }
 
-  // static void upload(String profileImage) async {
-  //   // imagePickerで画像を選択する
-  //   // upload
-  //   // PickedFile pickerFile =
-  //   // await ImagePicker().getImage(source: ImageSource.gallery);
-  //   // File file = File(pickerFile.path);
-  //   Image image64 = Base64Helper.imageFromBase64String(profileImage);
-  //
-  //   FirebaseStorage storage = FirebaseStorage.instance;
-  //   try {
-  //     await storage.ref("UL/upload-pic.png").putFile();
-  //   } catch (e) {
-  //     print(e);
-  //   }
-  // }
+  static Future<CprofileSetting> getProfile() async {
+    final snapShot = await FirebaseFirestore.instance
+        .collection('myProfile')
+        .doc(auth.currentUser!.uid)
+        .get();
 
-  // static Future<void> downloadImage(String PresentValueWk) async {
-  //   FirebaseStorage storage = FirebaseStorage.instance;
-  //   // Reference imageRef = storage.ref().child("picture").child(PresentValueWk).child("que_004.jpg");
-  //   // imageUrl = await imageRef.getDownloadURL();
-  //
-  //   final result = await storage.ref().child("picture")
-  //       .child(PresentValueWk)
-  //       .listAll();
-  //   result.items.forEach((Reference ref) async {
-  //     await ref.getDownloadURL().then((value) {
-  //       String val = value.toString();
-  //       print(val);
-  //       // imageUrls.add(val);
-  //     });
-  //   });
-  // }
+    String USER_ID = auth.currentUser!.uid;
+    String PROFILE_IMAGE = snapShot.data()!['PROFILE_IMAGE'];
+    String NICK_NAME = snapShot.data()!['NICK_NAME'];
+    String TOROKU_RANK = snapShot.data()!['TOROKU_RANK'];
+    String AGE = snapShot.data()!['AGE'];
+    String COMENT = snapShot.data()!['COMENT'];
 
+    final snapShotActivity = await FirebaseFirestore.instance
+        .collection('myProfile')
+        .doc(auth.currentUser!.uid)
+        .collection("activityList")
+        .get();
+
+    List<CativityList> activityList = [];
+
+    await Future.forEach<dynamic>(snapShotActivity.docs, (doc) async {
+      activityList.add(CativityList(
+        No: doc.data()['No'],
+        TODOFUKEN: doc.data()['TODOFUKEN'],
+        SHICHOSON: TextEditingController(text:doc.data()['SHICHOSON']),
+      ));
+    });
+
+
+    CprofileSetting cprofileSet =  await CprofileSetting(
+        USER_ID: USER_ID,
+        PROFILE_IMAGE: PROFILE_IMAGE,
+        NICK_NAME: NICK_NAME,
+        TOROKU_RANK: TOROKU_RANK,
+        activityList: activityList,
+        AGE: AGE,
+        COMENT: COMENT);
+
+    return cprofileSet;
+  }
+
+static Future<String> upload(File? profileImage) async {
+  FirebaseStorage storage = FirebaseStorage.instance;
+  String imageURL = '';
+  try {
+    if(profileImage != null) {
+      await storage.ref().child('myProfileImage/${auth.currentUser!.uid}/photos').child("myProfile.jpg").putFile(
+          profileImage);
+    }
+    imageURL =  await storage.ref().child('myProfileImage/${auth.currentUser!.uid}/photos').child("myProfile.jpg").getDownloadURL();
+  } catch (e) {
+    print(e);
+  }
+  return imageURL;
+}
+
+// static Future<void> downloadImage(String PresentValueWk) async {
+//   FirebaseStorage storage = FirebaseStorage.instance;
+//   // Reference imageRef = storage.ref().child("picture").child(PresentValueWk).child("que_004.jpg");
+//   // imageUrl = await imageRef.getDownloadURL();
+//
+//   final result = await storage.ref().child("picture")
+//       .child(PresentValueWk)
+//       .listAll();
+//   result.items.forEach((Reference ref) async {
+//     await ref.getDownloadURL().then((value) {
+//       String val = value.toString();
+//       print(val);
+//       // imageUrls.add(val);
+//     });
+//   });
+// }
 
 //   //各ユーザー歩数情報の取得
 //   static Future<Pedmeter> getPedmeter() async {
