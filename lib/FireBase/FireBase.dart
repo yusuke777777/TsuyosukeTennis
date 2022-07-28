@@ -97,12 +97,14 @@ class FirestoreMethod {
     await FirebaseFirestore.instance.collection('myProfile').doc(uid).get();
     String name = snapShot.data()!['NICK_NAME'];
     String rank = snapShot.data()!['TOROKU_RANK'];
+    String id = snapShot.data()!['USER_ID'];
     if(snapShot == null){
       return stringList;
     }
 
     stringList.add(name);
     stringList.add(rank);
+    stringList.add(id);
 
     return stringList;
   }
