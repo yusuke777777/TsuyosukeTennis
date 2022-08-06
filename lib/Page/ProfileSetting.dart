@@ -1,12 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../Common/CactivityList.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
-
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
-import '../FireBase/ImagePicker.dart';
 import '../FireBase/ProfileImage.dart';
 import '../UnderMenuMove.dart';
 
@@ -28,6 +25,7 @@ class ProfileSetting extends StatefulWidget {
       TOROKU_RANK: '',
       activityList: activityList,
       AGE: '',
+      GENDER: '',
       COMENT: '',
     );
   }
@@ -48,6 +46,9 @@ class _ProfileSettingState extends State<ProfileSetting> {
 
   //登録ランク
   String torokuRank = "中級";
+
+  //性別
+  String gender = "男";
 
   //市町村
   TextEditingController curShichoson = TextEditingController();
@@ -98,6 +99,10 @@ class _ProfileSettingState extends State<ProfileSetting> {
     if (koushinFlg == "1") {
       age = widget.myProfile.AGE;
     }
+    //性別
+    if (koushinFlg == "1") {
+      gender = widget.myProfile.GENDER;
+    }
     //コメント
     if (koushinFlg == "1") {
       coment = TextEditingController(text: widget.myProfile.COMENT);
@@ -114,21 +119,23 @@ class _ProfileSettingState extends State<ProfileSetting> {
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
-            leading: widget.koushinFlg == '1' ? IconButton(
-              icon: const Icon(
-                Icons.reply,
-                color: Colors.black,
-                size: 40.0,
-              ),
-              onPressed: () => {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => UnderMenuMove(),
-                  ),
-                )
-              },
-            ): null,
+            leading: widget.koushinFlg == '1'
+                ? IconButton(
+                    icon: const Icon(
+                      Icons.reply,
+                      color: Colors.black,
+                      size: 40.0,
+                    ),
+                    onPressed: () => {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UnderMenuMove(),
+                        ),
+                      )
+                    },
+                  )
+                : null,
             elevation: 0.0,
             backgroundColor: Colors.white,
             shadowColor: Colors.white,
@@ -147,17 +154,16 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         ),
                         InkWell(
                             child: Container(
-                              clipBehavior: Clip.antiAlias,
-                              height: 200,
-                              width: 200,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                              ),
-                              child: profileImage == ""
-                                  ? Image.asset('images/upper_body-2.png',
-                                      fit: BoxFit.cover)
-                                  : Image.network(profileImage)
-                            ),
+                                clipBehavior: Clip.antiAlias,
+                                height: 200,
+                                width: 200,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                ),
+                                child: profileImage == ""
+                                    ? Image.asset('images/upper_body-2.png',
+                                        fit: BoxFit.cover)
+                                    : Image.network(profileImage)),
                             onTap: () async {
                               Future result = Navigator.push(
                                   context,
@@ -236,9 +242,9 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             ],
                           ),
                         ]),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                    // Column(
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
                         SizedBox(
                           height: 30,
                         ),
@@ -393,8 +399,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             ),
                           ],
                         ),
-                      ],
-                    ),
+                    //   ],
+                    // ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
@@ -424,6 +430,50 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     SizedBox(
                       height: 10,
                     ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 30,
+                        ),
+                        Container(
+                          child: Text(
+                            '●性別',
+                            style: TextStyle(
+                                fontSize: 25, color: Colors.black),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 50,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(5.0),
+                          width: 250,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            border: Border.all(color: Colors.grey),
+                          ),
+                          child: Text(
+                            gender,
+                            style: TextStyle(fontSize: 20, color: Colors.black),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                          onPressed: () {
+                            _showModalGenderPicker(context);
+                          },
+                        ),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+
                     Row(
                       children: [
                         SizedBox(
@@ -480,22 +530,46 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             style: TextStyle(color: Colors.black),
                           ),
                           onPressed: () async {
-                            CprofileSetting cprofileSet = CprofileSetting(
-                              USER_ID: auth.currentUser!.uid,
-                              PROFILE_IMAGE: profileImage,
-                              NICK_NAME: nickName.text,
-                              TOROKU_RANK: torokuRank,
-                              activityList: activityList,
-                              AGE: age,
-                              COMENT: coment.text,
-                            );
-                            await FirestoreMethod.makeProfile(cprofileSet);
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => UnderMenuMove(),
-                              ),
-                            );
+                            print(nickName.text);
+                            //必須入力項目のチェック
+                            if (nickName.text.isNotEmpty) {
+                              CprofileSetting cprofileSet = CprofileSetting(
+                                USER_ID: auth.currentUser!.uid,
+                                PROFILE_IMAGE: profileImage,
+                                NICK_NAME: nickName.text,
+                                TOROKU_RANK: torokuRank,
+                                activityList: activityList,
+                                AGE: age,
+                                GENDER: gender,
+                                COMENT: coment.text,
+                              );
+                              await FirestoreMethod.makeProfile(cprofileSet);
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => UnderMenuMove(),
+                                ),
+                              );
+                            } else {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('必須項目を入力してください'),
+                                      actions: <Widget>[
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: Colors.lightGreenAccent,
+                                              onPrimary: Colors.black),
+                                          child: Text('OK'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            }
                           },
                         ),
                       ],
@@ -618,6 +692,11 @@ class _ProfileSettingState extends State<ProfileSetting> {
     "90代"
   ];
 
+  final List<String> _Gender = [
+    "男",
+    "女",
+  ];
+
   void _showModalAgePicker(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
@@ -632,6 +711,27 @@ class _ProfileSettingState extends State<ProfileSetting> {
               itemExtent: 40,
               children: _Age.map(_pickerItem).toList(),
               onSelectedItemChanged: _onSelectedAgeChanged,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showModalGenderPicker(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 200,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: CupertinoPicker(
+              itemExtent: 40,
+              children: _Gender.map(_pickerItem).toList(),
+              onSelectedItemChanged: _onSelectedGenderChanged,
             ),
           ),
         );
@@ -666,6 +766,13 @@ class _ProfileSettingState extends State<ProfileSetting> {
       age = _Age[index];
     });
   }
+
+  void _onSelectedGenderChanged(int index) {
+    setState(() {
+      gender = _Gender[index];
+    });
+  }
+
 
   activityListAdd(String No) {
     print("No" + No);

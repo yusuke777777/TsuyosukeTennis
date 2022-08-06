@@ -34,6 +34,7 @@ class FirestoreMethod {
         'NICK_NAME': profile.NICK_NAME,
         'TOROKU_RANK': profile.TOROKU_RANK,
         'AGE': profile.AGE,
+        'GENDER':profile.GENDER,
         'COMENT': profile.COMENT,
         'koushinYmd': today,
       });
@@ -133,6 +134,7 @@ class FirestoreMethod {
     String NICK_NAME = snapShot.data()!['NICK_NAME'];
     String TOROKU_RANK = snapShot.data()!['TOROKU_RANK'];
     String AGE = snapShot.data()!['AGE'];
+    String GENDER = snapShot.data()!['GENDER'];
     String COMENT = snapShot.data()!['COMENT'];
 
     final snapShotActivity = await FirebaseFirestore.instance
@@ -151,7 +153,6 @@ class FirestoreMethod {
       ));
     });
 
-
     CprofileSetting cprofileSet =  await CprofileSetting(
         USER_ID: USER_ID,
         PROFILE_IMAGE: PROFILE_IMAGE,
@@ -159,6 +160,7 @@ class FirestoreMethod {
         TOROKU_RANK: TOROKU_RANK,
         activityList: activityList,
         AGE: AGE,
+        GENDER: GENDER,
         COMENT: COMENT);
 
     return cprofileSet;
