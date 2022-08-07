@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import 'FindPage.dart';
+import 'FriendManagerPage.dart';
 import 'ProfileSetting.dart';
 
 class HomePage extends StatefulWidget {
@@ -24,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     uid = FirestoreMethod.getUid();
     Future<List<String>>? futureList =
-        FirestoreMethod.getNickNameAndTorokuRank(uid);
+    FirestoreMethod.getNickNameAndTorokuRank(uid);
 
     return Scaffold(
       appBar: AppBar(
@@ -34,10 +35,6 @@ class _HomePageState extends State<HomePage> {
             color: Colors.black,
             fontSize: 30,
           ),
-        ),
-        leading: const Icon(
-          Icons.menu,
-          color: Colors.black,
         ),
         elevation: 0.0,
         backgroundColor: Colors.white,
@@ -56,6 +53,24 @@ class _HomePageState extends State<HomePage> {
             },
           )
         ],
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
+      //ドロアー画面の処理
+      drawer: Drawer(
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FriendManagerPage(),
+              ),
+            );
+          },
+          child: Container(
+            child: Text('友人管理'),
+            alignment: Alignment.center,
+          ),
+        ),
       ),
       body: FutureBuilder(
         future: futureList,
@@ -64,8 +79,8 @@ class _HomePageState extends State<HomePage> {
             if (snapshot.connectionState != ConnectionState.done) {
               return new Align(
                   child: Center(
-                child: new CircularProgressIndicator(),
-              ));
+                    child: new CircularProgressIndicator(),
+                  ));
             } else if (snapshot.hasError) {
               return new Text('Error: ${snapshot.error!}');
             } else if (snapshot.hasData) {
@@ -181,3 +196,4 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
