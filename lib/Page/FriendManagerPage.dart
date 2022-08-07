@@ -49,29 +49,24 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                       ListTile(title: Text("対象ユーザーは存在しません")),
                     ]);
               } else {
-                return Slidable(
-                  endActionPane: ActionPane(
-                    motion: DrawerMotion(),
-                    children: [
-                      SlidableAction(
-                        onPressed: (value) {},
-                        backgroundColor: Colors.blue,
-                        icon: Icons.share,
-                        label: 'シェア',
+                return ListView.builder(
+                  itemCount: 1,
+                  // padding: const EdgeInsets.all(8),
+                  itemBuilder: (BuildContext context, int index) {
+                    //ListをスライドさせるためにSlidableでラップ
+                    return Slidable(
+                      endActionPane: ActionPane(
+                        motion: DrawerMotion(),
+                        children: [
+                          SlidableAction(
+                            onPressed: (value) {},
+                            backgroundColor: Colors.red,
+                            icon: Icons.delete,
+                            label: '削除',
+                          ),
+                        ],
                       ),
-                      SlidableAction(
-                        onPressed: (value) {},
-                        backgroundColor: Colors.red,
-                        icon: Icons.delete,
-                        label: '削除',
-                      ),
-                    ],
-                  ),
-                  child: ListView.builder(
-                    itemCount: 1,
-                    // padding: const EdgeInsets.all(8),
-                    itemBuilder: (BuildContext context, int index) {
-                      return Card(
+                      child: Card(
                         child: ListTile(
                           leading: ClipOval(
                             child: Image.asset(
@@ -92,9 +87,9 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                 ));
                           },
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 );
               }
             } else {

@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 
+import 'FireBase.dart';
+
 class Base64Helper {
   static Image imageFromBase64String(String base64String) {
     return Image.memory(
@@ -10,7 +12,6 @@ class Base64Helper {
       fit: BoxFit.fill,
     );
   }
-
   static Uint8List dataFromBase64String(String base64String) {
     return base64Decode(base64String);
   }

@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
-import 'package:tsuyosuke_tennis_ap/Page/bk_ProfileSetting.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
-
 import '../FireBase/SignupModel.dart';
 import '../FireBase/TextDaialog.dart';
 import '../FireBase/WillPopScope.dart';
 import 'HomePage.dart';
+import 'ProfileSetting.dart';
 import 'SigninPage.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -80,7 +79,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                     children: <Widget>[
                                       Row(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                         children: [
                                           SizedBox(
                                             width: 120,
@@ -144,19 +143,19 @@ class _SignUpPageState extends State<SignUpPage> {
                                       ),
                                       Column(
                                         mainAxisAlignment:
-                                        MainAxisAlignment.center,
+                                            MainAxisAlignment.center,
                                         crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                            CrossAxisAlignment.center,
                                         children: [
                                           Row(
                                             mainAxisAlignment:
-                                            MainAxisAlignment.start,
+                                                MainAxisAlignment.start,
                                             children: [
                                               SizedBox(
                                                 width: 24,
                                                 child: Checkbox(
                                                   activeColor:
-                                                  Color(0xFF4CAF50),
+                                                      Color(0xFF4CAF50),
                                                   checkColor: Colors.white,
                                                   onChanged: (val) {
                                                     model.tapAgreeCheckBox(val);
@@ -174,25 +173,25 @@ class _SignUpPageState extends State<SignUpPage> {
                                                       color: Colors.grey,
                                                       fontSize: 12.0,
                                                       fontWeight:
-                                                      FontWeight.bold,
+                                                          FontWeight.bold,
                                                     ),
                                                     children: [
                                                       TextSpan(
                                                         text: '利用規約',
                                                         style: TextStyle(
                                                           color:
-                                                          Color(0xFF4CAF50),
+                                                              Color(0xFF4CAF50),
                                                           decoration:
-                                                          TextDecoration
-                                                              .underline,
+                                                              TextDecoration
+                                                                  .underline,
                                                           decorationThickness:
-                                                          2.00,
+                                                              2.00,
                                                         ),
                                                         recognizer:
-                                                        TapGestureRecognizer()
-                                                          ..onTap = () {
-                                                            _SignUprulesURL();
-                                                          },
+                                                            TapGestureRecognizer()
+                                                              ..onTap = () {
+                                                                _SignUprulesURL();
+                                                              },
                                                       ),
                                                       TextSpan(
                                                           text: ' を読んで同意しました。'),
@@ -207,32 +206,32 @@ class _SignUpPageState extends State<SignUpPage> {
                                               FloatingActionButton.extended(
                                                 shape: RoundedRectangleBorder(
                                                   borderRadius:
-                                                  BorderRadius.circular(
-                                                      5), //角の丸み
+                                                      BorderRadius.circular(
+                                                          5), //角の丸み
                                                 ),
                                                 label: Text('新規登録'),
                                                 backgroundColor:
-                                                const Color(0xFF4CAF50),
+                                                    const Color(0xFF4CAF50),
                                                 onPressed: model.agreeGuideline
                                                     ? () async {
-                                                  try {
-                                                    await model.signUp();
-                                                    await Navigator
-                                                        .pushReplacement(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder:
-                                                            (context) =>
-                                                                ProfileSetting(),
-                                                      ),
-                                                    );
-                                                    model.endLoading();
-                                                  } catch (e) {
-                                                    showTextDialog(
-                                                        context, e);
-                                                    model.endLoading();
-                                                  }
-                                                }
+                                                        try {
+                                                          await model.signUp();
+                                                          await Navigator
+                                                              .pushReplacement(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (context) =>
+                                                                  ProfileSetting
+                                                                      .Make(),
+                                                            ),
+                                                          );
+                                                          model.endLoading();
+                                                        } catch (e) {
+                                                          showTextDialog(
+                                                              context, e);
+                                                          model.endLoading();
+                                                        }
+                                                      }
                                                     : null,
                                               ),
                                               FlatButton(
