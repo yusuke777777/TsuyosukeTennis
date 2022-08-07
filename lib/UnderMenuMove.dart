@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/HomePage.dart';
 
+import 'Page/TalkList.dart';
+
 /**
  * 下部メニューの動きを制御するクラス
  */
@@ -16,6 +18,8 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
   static const _screens = [
     HomePage(),
     FindPage(),
+    TalkList(),
+    TalkList(),
   ];
 
   int _selectedIndex = 0;

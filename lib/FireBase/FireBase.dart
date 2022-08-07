@@ -10,13 +10,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 import '../Common/CHomePageSetting.dart';
+import '../Common/Cmessage.dart';
 import '../Common/CprofileSetting.dart';
 import '../Common/CactivityList.dart';
+import '../Common/CtalkRoom.dart';
 
 class FirestoreMethod {
   String Uid = '';
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
   static final profileRef = _firestoreInstance.collection('myProfile');
+  //トークルームコレクション
+  static final roomRef = _firestoreInstance.collection('talkRoom');
+  static final roomSnapshot = roomRef.snapshots();
+  static bool roomCheck = false;
+
 
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
@@ -166,6 +173,50 @@ class FirestoreMethod {
     return cprofileSet;
   }
 
+  static Future<CprofileSetting> getYourProfile(String userId) async {
+    final snapShot = await FirebaseFirestore.instance
+        .collection('myProfile')
+        .doc(userId)
+        .get();
+
+    String USER_ID = userId;
+    String PROFILE_IMAGE = snapShot.data()!['PROFILE_IMAGE'];
+    String NICK_NAME = snapShot.data()!['NICK_NAME'];
+    String TOROKU_RANK = snapShot.data()!['TOROKU_RANK'];
+    String AGE = snapShot.data()!['AGE'];
+    String GENDER = snapShot.data()!['GENDER'];
+    String COMENT = snapShot.data()!['COMENT'];
+
+    final snapShotActivity = await FirebaseFirestore.instance
+        .collection('myProfile')
+        .doc(userId)
+        .collection("activityList")
+        .get();
+
+    List<CativityList> activityList = [];
+
+    await Future.forEach<dynamic>(snapShotActivity.docs, (doc) async {
+      activityList.add(CativityList(
+        No: doc.data()['No'],
+        TODOFUKEN: doc.data()['TODOFUKEN'],
+        SHICHOSON: TextEditingController(text:doc.data()['SHICHOSON']),
+      ));
+    });
+
+    CprofileSetting cprofileSet =  await CprofileSetting(
+        USER_ID: USER_ID,
+        PROFILE_IMAGE: PROFILE_IMAGE,
+        NICK_NAME: NICK_NAME,
+        TOROKU_RANK: TOROKU_RANK,
+        activityList: activityList,
+        AGE: AGE,
+        GENDER: GENDER,
+        COMENT: COMENT);
+
+    return cprofileSet;
+  }
+
+
 static Future<String> upload(File? profileImage) async {
   FirebaseStorage storage = FirebaseStorage.instance;
   String imageURL = '';
@@ -180,6 +231,93 @@ static Future<String> upload(File? profileImage) async {
   }
   return imageURL;
 }
+
+  static Future<void> addTeamRoom(String myTeamId , String yourTeamID) async {
+    try {
+      await roomRef.add({
+        'joined_user_ids': [myTeamId, yourTeamID],
+        'updated_time': Timestamp.now()
+      });
+    }
+    catch (e) {
+      print('トークルーム作成に失敗しました --- $e');
+    }
+  }
+
+  static Future<void> checkTeamRoom(String myTeamId , String yourTeamID) async {
+    final snapshot = await roomRef.get();
+
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      if (doc.data()['joined_user_ids'].contains(myTeamId)) {
+        doc.data()['joined_user_ids'].forEach((id) {
+          if (id == yourTeamID) {
+            roomCheck = true;
+          }
+          return;
+        });
+      }
+    });
+  }
+
+  static Future<List<TalkRoomModel>> getRooms(String myUserId) async {
+    final snapshot = await roomRef.get();
+    List<TalkRoomModel> roomList = [];
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      if (doc.data()['joined_user_ids'].contains(myUserId)) {
+        late String yourUserId;
+        doc.data()['joined_user_ids'].forEach((id) {
+          if (id != myUserId) {
+            yourUserId = id;
+            return;
+          }
+        });
+        CprofileSetting yourProfile  = await getYourProfile(yourUserId);
+        TalkRoomModel room = TalkRoomModel(
+            roomId: doc.id,
+            user: yourProfile,
+            lastMessage: doc.data()['last_message'] ?? '');
+        roomList.add(room);
+      }
+    });
+    return roomList;
+  }
+
+  static Future<List<Message>> getMessages(String roomId) async {
+    final messageRef = roomRef
+        .doc(roomId)
+        .collection('message')
+        .orderBy('send_time', descending: true);
+    List<Message> messageList = [];
+    final snapshot = await messageRef.get();
+    Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      bool isMe;
+      if (doc.data()['sender_id'] == auth.currentUser!.uid) {
+        isMe = true;
+      } else {
+        isMe = false;
+      }
+      Message message = Message(
+          message: doc.data()['message'],
+          isMe: isMe,
+          sendTime: doc.data()['send_time']);
+      messageList.add(message);
+    });
+    messageList.sort((a, b) => b.sendTime.compareTo(a.sendTime));
+    return messageList;
+  }
+
+  static Future<void> sendMessage(String roomId, String message) async {
+    final messageRef = roomRef.doc(roomId).collection('message');
+    String? myUid = auth.currentUser!.uid;
+    await messageRef.add(
+        {'message': message, 'sender_id': myUid, 'send_time': Timestamp.now()});
+    roomRef.doc(roomId).update({'last_message': message});
+  }
+
+  static Stream<QuerySnapshot> messageSnapshot(String roomId) {
+    return roomRef.doc(roomId).collection('message').snapshots();
+  }
+
 
 // static Future<void> downloadImage(String PresentValueWk) async {
 //   FirebaseStorage storage = FirebaseStorage.instance;
