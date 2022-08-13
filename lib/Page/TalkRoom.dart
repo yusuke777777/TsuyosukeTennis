@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'as intl;
+import 'package:intl/intl.dart' as intl;
 
 import '../Common/Cmessage.dart';
 import '../Common/CtalkRoom.dart';
@@ -19,14 +19,21 @@ class TalkRoom extends StatefulWidget {
 class _TalkRoomState extends State<TalkRoom> {
   List<Message> messageList = [];
   TextEditingController controller = TextEditingController();
-  Future<void> getMessages()async{
+
+  //プラスボタンを押した時に試合申請ボタン・友人申請ボタンを表示する
+  String addFlg = "0";
+  double menuHeight = 70.0;
+
+  Future<void> getMessages() async {
     messageList = await FirestoreMethod.getMessages(widget.room.roomId);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.lightBlueAccent,
+        backgroundColor: const Color(0xFFF2FFE4),
         appBar: AppBar(
+          backgroundColor: Color(0xFF3CB371),
           title: Text(widget.room.user.NICK_NAME),
         ),
         body: Stack(
@@ -38,64 +45,189 @@ class _TalkRoomState extends State<TalkRoom> {
                   builder: (context, snapshot) {
                     return FutureBuilder(
                       future: getMessages(),
-                      builder:(context,snapshot){
-                        return  ListView.builder(
+                      builder: (context, snapshot) {
+                        return ListView.builder(
                             physics: RangeMaintainingScrollPhysics(),
                             shrinkWrap: true,
                             reverse: true,
                             itemCount: messageList.length,
-                            itemBuilder: (context,index){
+                            itemBuilder: (context, index) {
                               Message _message = messageList[index];
                               DateTime sendtime = _message.sendTime.toDate();
                               return Padding(
-                                padding: EdgeInsets.only(top:10.0,right: 10.0,left: 10, bottom: index == 0 ? 10.0 : 0.0),
+                                padding: EdgeInsets.only(
+                                    top: 10.0,
+                                    right: 10.0,
+                                    left: 10,
+                                    bottom: index == 0 ? 10.0 : 0.0),
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.end,
-                                  textDirection: messageList[index].isMe ? TextDirection.rtl :TextDirection.ltr,
+                                  textDirection: messageList[index].isMe
+                                      ? TextDirection.rtl
+                                      : TextDirection.ltr,
                                   children: [
                                     Container(
-                                        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.6),
-                                        padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 6.0),
+                                        constraints: BoxConstraints(
+                                            maxWidth: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.6),
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10.0, vertical: 6.0),
                                         decoration: BoxDecoration(
-                                            color: messageList[index].isMe ? Colors.green : Colors.white,
-                                            borderRadius: BorderRadius.circular(20)
-                                        ),
-                                        child: Text(messageList[index].message)),
-                                    Text(intl.DateFormat('HH:mm').format(sendtime),style: TextStyle(fontSize: 12),)
+                                            color: messageList[index].isMe
+                                                ? Color(0xFF3CB371)
+                                                : Colors.white,
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
+                                        child:
+                                            Text(messageList[index].message)),
+                                    Text(
+                                      intl.DateFormat('HH:mm').format(sendtime),
+                                      style: TextStyle(fontSize: 12),
+                                    )
                                   ],
                                 ),
                               );
                             });
                       },
                     );
-                  }
-              ),
+                  }),
             ),
             Align(
               alignment: Alignment.bottomCenter,
               child: Container(
-                height: 60,color: Colors.white,
-                child: Row(
+                color: Colors.black,
+                height: menuHeight,
+                child: Column(
                   children: [
-                    Expanded(child: TextField(
-                      controller: controller,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                      ),
-                    )),
-                    IconButton(icon: Icon(Icons.send), onPressed: () async{
-                      print("送信");
-                      if(controller.text.isNotEmpty){
-                        await FirestoreMethod.sendMessage(widget.room.roomId, controller.text);
-                        controller.clear();
-                      }
-                    },),
+                    _buildButton(),
+                    Row(
+                      children: [
+                        Container(
+                          height: 60,
+                          color: Colors.black,
+                          child: IconButton(
+                            color: Colors.white,
+                            icon: Icon(Icons.add),
+                            onPressed: () {
+                              //試合申請・友達申請・チーム招待(追々)
+                              addControl();
+                            },
+                          ),
+                        ),
+                        Expanded(
+                            child: TextField(
+                          style: TextStyle(color: Colors.white),
+                          controller: controller,
+                          decoration: InputDecoration(
+                            hintText: "メッセージを入力",
+                            hintStyle: TextStyle(color: Colors.white),
+                            border: OutlineInputBorder(),
+                          ),
+                        )),
+                        Container(
+                          height: 60,
+                          color: Colors.black,
+                          child: IconButton(
+                            color: Colors.white,
+                            icon: Icon(Icons.send),
+                            onPressed: () async {
+                              print("送信");
+                              if (controller.text.isNotEmpty) {
+                                await FirestoreMethod.sendMessage(
+                                    widget.room.roomId, controller.text);
+                                controller.clear();
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ),
             )
           ],
-        )
-    );
+        ));
+  }
+
+  void addControl() {
+    if (addFlg == "0") {
+      setState(() {
+        menuHeight = 130.0;
+        addFlg = "1";
+      });
+    } else {
+      setState(() {
+        menuHeight = 70.0;
+        addFlg = "0";
+      });
+    }
+  }
+
+  Widget _buildButton() {
+    if (addFlg == "1") {
+      return Center(
+        child: Row(children: [
+          Container(
+            height: 50,
+            color: Colors.black,
+            child: TextButton(
+              child: Column(
+                children: [
+                  Icon(
+                    Icons.wifi_protected_setup_sharp,
+                    size: 20,
+                    color: Colors.white,
+                  ),
+                  Text(
+                    '試合申請',
+                    style: TextStyle(
+                      color: Colors.white, //文字の色を白にする
+                      fontWeight: FontWeight.bold, //文字を太字する
+                      fontSize: 8.0, //文字のサイズを調整する
+                    ),
+                  ),
+                ],
+              ),
+              onPressed: () {}
+                ),
+            ),
+          SizedBox(
+            width: 20,
+          ),
+          Container(
+            height: 50,
+            color: Colors.black,
+            child: TextButton(
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.people_rounded,
+                      size: 20,
+                      color: Colors.white,
+                    ),
+                    Text(
+                      '友人申請',
+                      style: TextStyle(
+                        color: Colors.white, //文字の色を白にする
+                        fontWeight: FontWeight.bold, //文字を太字する
+                        fontSize: 8.0, //文字のサイズを調整する
+                      ),
+                    ),
+                  ],
+                ),
+                onPressed: () {}
+            ),
+          ),
+          SizedBox(
+            width: 20,
+          ),
+        ]),
+      );
+    } else {
+      return SizedBox(height: 2,);
+    }
   }
 }

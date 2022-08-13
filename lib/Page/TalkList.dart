@@ -69,7 +69,7 @@ class _TalkListState extends State<TalkList> {
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                    child: CircleAvatar(backgroundImage: NetworkImage(talkList[index].user.PROFILE_IMAGE),
+                                    child: talkList[index].user.PROFILE_IMAGE == '' ? CircleAvatar(backgroundColor:Colors.white,backgroundImage: NetworkImage("https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),radius: 30,): CircleAvatar(backgroundColor:Colors.white,backgroundImage: NetworkImage(talkList[index].user.PROFILE_IMAGE),
                                       radius: 30,),
                                   ),
                                   Column(

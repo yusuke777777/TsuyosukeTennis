@@ -215,16 +215,6 @@ class _ProfileImageState extends State<ProfileImage> {
       // 端末の一時ファイルを削除
       _deleteFile(imageFile!);
 
-      // final time = DateTime.now().millisecondsSinceEpoch;
-      // final directory = await getApplicationDocumentsDirectory();
-      // final path = directory.path;
-      // final copiedImageFile = await imageFile!.copy('$path/$time.png');
-      // notifyListeners();
-
-      // DBへ保存する為、base64文字列へ変換
-      // _base64ImageString =
-      //     Base64Helper.base64String(copiedImageFile.readAsBytesSync());
-
       setState(() {
         this.myImagePath = imageURL;
       });
