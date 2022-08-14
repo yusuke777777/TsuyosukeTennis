@@ -80,8 +80,59 @@ class _TalkRoomState extends State<TalkRoom> {
                                                 : Colors.white,
                                             borderRadius:
                                                 BorderRadius.circular(20)),
-                                        child:
-                                            Text(messageList[index].message)),
+                                        child: messageList[index]
+                                                    .matchStatusFlg ==
+                                                "1"
+                                            ? Column(
+                                                children: [
+                                                  Text(messageList[index]
+                                                      .message),
+                                                  TextButton(
+                                                      onPressed: () {
+                                                        if (messageList[index]
+                                                            .isMe) {
+                                                          print(
+                                                              "試合の受け入れメッセージ送信済");
+                                                        } else {
+                                                          //受け入れ処理を入れる
+                                                        }
+                                                      },
+                                                      child: Text(
+                                                        "受け入れる",
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.purple),
+                                                      ))
+                                                ],
+                                              )
+                                            : messageList[index]
+                                                        .friendStatusFlg ==
+                                                    "1"
+                                                ? Column(
+                                                    children: [
+                                                      Text(messageList[index]
+                                                          .message),
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            if (messageList[
+                                                                    index]
+                                                                .isMe) {
+                                                              print(
+                                                                  "友達登録申請の受け入れメッセージ送信済");
+                                                            } else {
+                                                              //受け入れ処理を入れる
+                                                            }
+                                                          },
+                                                          child: Text(
+                                                            "受け入れる",
+                                                            style: TextStyle(
+                                                                color: Colors
+                                                                    .purple),
+                                                          ))
+                                                    ],
+                                                  )
+                                                : Text(messageList[index]
+                                                    .message)),
                                     Text(
                                       intl.DateFormat('HH:mm').format(sendtime),
                                       style: TextStyle(fontSize: 12),
@@ -174,26 +225,28 @@ class _TalkRoomState extends State<TalkRoom> {
             height: 50,
             color: Colors.black,
             child: TextButton(
-              child: Column(
-                children: [
-                  Icon(
-                    Icons.wifi_protected_setup_sharp,
-                    size: 20,
-                    color: Colors.white,
-                  ),
-                  Text(
-                    '試合申請',
-                    style: TextStyle(
-                      color: Colors.white, //文字の色を白にする
-                      fontWeight: FontWeight.bold, //文字を太字する
-                      fontSize: 8.0, //文字のサイズを調整する
+                child: Column(
+                  children: [
+                    Icon(
+                      Icons.wifi_protected_setup_sharp,
+                      size: 20,
+                      color: Colors.white,
                     ),
-                  ),
-                ],
-              ),
-              onPressed: () {}
+                    Text(
+                      '試合申請',
+                      style: TextStyle(
+                        color: Colors.white, //文字の色を白にする
+                        fontWeight: FontWeight.bold, //文字を太字する
+                        fontSize: 8.0, //文字のサイズを調整する
+                      ),
+                    ),
+                  ],
                 ),
-            ),
+                onPressed: () async {
+                  print("対戦メッセージ送信");
+                  await FirestoreMethod.sendMatchMessage(widget.room.roomId);
+                }),
+          ),
           SizedBox(
             width: 20,
           ),
@@ -218,8 +271,10 @@ class _TalkRoomState extends State<TalkRoom> {
                     ),
                   ],
                 ),
-                onPressed: () {}
-            ),
+                onPressed: () async {
+                  print("友達登録メッセージ送信");
+                  await FirestoreMethod.sendFriendMessage(widget.room.roomId);
+                }),
           ),
           SizedBox(
             width: 20,
@@ -227,7 +282,9 @@ class _TalkRoomState extends State<TalkRoom> {
         ]),
       );
     } else {
-      return SizedBox(height: 2,);
+      return SizedBox(
+        height: 2,
+      );
     }
   }
 }

@@ -19,11 +19,11 @@ class FirestoreMethod {
   String Uid = '';
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
   static final profileRef = _firestoreInstance.collection('myProfile');
+
   //トークルームコレクション
   static final roomRef = _firestoreInstance.collection('talkRoom');
   static final roomSnapshot = roomRef.snapshots();
   static bool roomCheck = false;
-
 
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
@@ -41,7 +41,7 @@ class FirestoreMethod {
         'NICK_NAME': profile.NICK_NAME,
         'TOROKU_RANK': profile.TOROKU_RANK,
         'AGE': profile.AGE,
-        'GENDER':profile.GENDER,
+        'GENDER': profile.GENDER,
         'COMENT': profile.COMENT,
         'koushinYmd': today,
       });
@@ -158,11 +158,11 @@ class FirestoreMethod {
       activityList.add(CativityList(
         No: doc.data()['No'],
         TODOFUKEN: doc.data()['TODOFUKEN'],
-        SHICHOSON: TextEditingController(text:doc.data()['SHICHOSON']),
+        SHICHOSON: TextEditingController(text: doc.data()['SHICHOSON']),
       ));
     });
 
-    CprofileSetting cprofileSet =  await CprofileSetting(
+    CprofileSetting cprofileSet = await CprofileSetting(
         USER_ID: USER_ID,
         PROFILE_IMAGE: PROFILE_IMAGE,
         NICK_NAME: NICK_NAME,
@@ -201,11 +201,11 @@ class FirestoreMethod {
       activityList.add(CativityList(
         No: doc.data()['No'],
         TODOFUKEN: doc.data()['TODOFUKEN'],
-        SHICHOSON: TextEditingController(text:doc.data()['SHICHOSON']),
+        SHICHOSON: TextEditingController(text: doc.data()['SHICHOSON']),
       ));
     });
 
-    CprofileSetting cprofileSet =  await CprofileSetting(
+    CprofileSetting cprofileSet = await CprofileSetting(
         USER_ID: USER_ID,
         PROFILE_IMAGE: PROFILE_IMAGE,
         NICK_NAME: NICK_NAME,
@@ -218,35 +218,40 @@ class FirestoreMethod {
     return cprofileSet;
   }
 
-
-static Future<String> upload(File? profileImage) async {
-  FirebaseStorage storage = FirebaseStorage.instance;
-  String imageURL = '';
-  try {
-    if(profileImage != null) {
-      await storage.ref().child('myProfileImage/${auth.currentUser!.uid}/photos').child("myProfile.jpg").putFile(
-          profileImage);
+  static Future<String> upload(File? profileImage) async {
+    FirebaseStorage storage = FirebaseStorage.instance;
+    String imageURL = '';
+    try {
+      if (profileImage != null) {
+        await storage
+            .ref()
+            .child('myProfileImage/${auth.currentUser!.uid}/photos')
+            .child("myProfile.jpg")
+            .putFile(profileImage);
+      }
+      imageURL = await storage
+          .ref()
+          .child('myProfileImage/${auth.currentUser!.uid}/photos')
+          .child("myProfile.jpg")
+          .getDownloadURL();
+    } catch (e) {
+      print(e);
     }
-    imageURL =  await storage.ref().child('myProfileImage/${auth.currentUser!.uid}/photos').child("myProfile.jpg").getDownloadURL();
-  } catch (e) {
-    print(e);
+    return imageURL;
   }
-  return imageURL;
-}
 
-  static Future<void> addTeamRoom(String myTeamId , String yourTeamID) async {
+  static Future<void> addTeamRoom(String myTeamId, String yourTeamID) async {
     try {
       await roomRef.add({
         'joined_user_ids': [myTeamId, yourTeamID],
         'updated_time': Timestamp.now()
       });
-    }
-    catch (e) {
+    } catch (e) {
       print('トークルーム作成に失敗しました --- $e');
     }
   }
 
-  static Future<void> checkTeamRoom(String myTeamId , String yourTeamID) async {
+  static Future<void> checkTeamRoom(String myTeamId, String yourTeamID) async {
     final snapshot = await roomRef.get();
 
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
@@ -273,7 +278,7 @@ static Future<String> upload(File? profileImage) async {
             return;
           }
         });
-        CprofileSetting yourProfile  = await getYourProfile(yourUserId);
+        CprofileSetting yourProfile = await getYourProfile(yourUserId);
         TalkRoomModel room = TalkRoomModel(
             roomId: doc.id,
             user: yourProfile,
@@ -301,7 +306,9 @@ static Future<String> upload(File? profileImage) async {
       Message message = Message(
           message: doc.data()['message'],
           isMe: isMe,
-          sendTime: doc.data()['send_time']);
+          sendTime: doc.data()['send_time'],
+          matchStatusFlg: doc.data()['matchStatusFlg'],
+          friendStatusFlg: doc.data()['friendStatusFlg']);
       messageList.add(message);
     });
     messageList.sort((a, b) => b.sendTime.compareTo(a.sendTime));
@@ -312,12 +319,28 @@ static Future<String> upload(File? profileImage) async {
     final messageRef = roomRef.doc(roomId).collection('message');
     String? myUid = auth.currentUser!.uid;
     await messageRef.add(
-        {'message': message, 'sender_id': myUid, 'send_time': Timestamp.now()});
+        {'message': message, 'sender_id': myUid, 'send_time': Timestamp.now(),'matchStatusFlg':"0",'friendStatusFlg':"0"});
     roomRef.doc(roomId).update({'last_message': message});
   }
 
   static Stream<QuerySnapshot> messageSnapshot(String roomId) {
     return roomRef.doc(roomId).collection('message').snapshots();
+  }
+
+  //試合申請メッセージ
+  static Future<void> sendMatchMessage(String roomId) async {
+    final messageRef = roomRef.doc(roomId).collection('message');
+    String? myUid = auth.currentUser!.uid;
+    await messageRef.add(
+        {'message': "対戦お願いします！", 'sender_id': myUid, 'send_time': Timestamp.now(),'matchStatusFlg':"1",'friendStatusFlg':"0"});
+    roomRef.doc(roomId).update({'last_message': "対戦お願いします！"});
+  }
+  static Future<void> sendFriendMessage(String roomId) async {
+    final messageRef = roomRef.doc(roomId).collection('message');
+    String? myUid = auth.currentUser!.uid;
+    await messageRef.add(
+        {'message': "友達登録お願いします！", 'sender_id': myUid, 'send_time': Timestamp.now(),'matchStatusFlg':"0",'friendStatusFlg':"1"});
+    roomRef.doc(roomId).update({'last_message': "友達登録お願いします！"});
   }
 
 
