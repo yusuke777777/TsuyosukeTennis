@@ -39,7 +39,7 @@ class _TalkRoomState extends State<TalkRoom> {
         body: Stack(
           children: [
             Padding(
-              padding: const EdgeInsets.only(bottom: 60.0),
+              padding: EdgeInsets.only(bottom: menuHeight),
               child: StreamBuilder<QuerySnapshot>(
                   stream: FirestoreMethod.messageSnapshot(widget.room.roomId),
                   builder: (context, snapshot) {
@@ -94,6 +94,13 @@ class _TalkRoomState extends State<TalkRoom> {
                                                           print(
                                                               "試合の受け入れメッセージ送信済");
                                                         } else {
+                                                          FirestoreMethod
+                                                              .matchAccept(
+                                                                  widget.room
+                                                                      .roomId,
+                                                                  messageList[
+                                                                          index]
+                                                                      .messageId);
                                                           //受け入れ処理を入れる
                                                         }
                                                       },
@@ -121,6 +128,12 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                   "友達登録申請の受け入れメッセージ送信済");
                                                             } else {
                                                               //受け入れ処理を入れる
+                                                              FirestoreMethod.friendAccept(
+                                                                  widget.room
+                                                                      .roomId,
+                                                                  messageList[
+                                                                          index]
+                                                                      .messageId);
                                                             }
                                                           },
                                                           child: Text(
@@ -131,8 +144,31 @@ class _TalkRoomState extends State<TalkRoom> {
                                                           ))
                                                     ],
                                                   )
-                                                : Text(messageList[index]
-                                                    .message)),
+                                                : messageList[index]
+                                                                .matchStatusFlg ==
+                                                            "2" ||
+                                                        messageList[index]
+                                                                .friendStatusFlg ==
+                                                            "2"
+                                                    ? Column(
+                                                        children: [
+                                                          Text(
+                                                              messageList[index]
+                                                                  .message),
+                                                          TextButton(
+                                                              onPressed: () {
+                                                                //受け入れ済なこと伝えるダイアログ出す？
+                                                              },
+                                                              child: Text(
+                                                                "受け入れ済",
+                                                                style: TextStyle(
+                                                                    color: Colors
+                                                                        .purple),
+                                                              ))
+                                                        ],
+                                                      )
+                                                    : Text(messageList[index]
+                                                        .message)),
                                     Text(
                                       intl.DateFormat('HH:mm').format(sendtime),
                                       style: TextStyle(fontSize: 12),

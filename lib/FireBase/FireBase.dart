@@ -304,6 +304,7 @@ class FirestoreMethod {
         isMe = false;
       }
       Message message = Message(
+          messageId: doc.id,
           message: doc.data()['message'],
           isMe: isMe,
           sendTime: doc.data()['send_time'],
@@ -318,8 +319,17 @@ class FirestoreMethod {
   static Future<void> sendMessage(String roomId, String message) async {
     final messageRef = roomRef.doc(roomId).collection('message');
     String? myUid = auth.currentUser!.uid;
-    await messageRef.add(
-        {'message': message, 'sender_id': myUid, 'send_time': Timestamp.now(),'matchStatusFlg':"0",'friendStatusFlg':"0"});
+    await messageRef.add({
+      'message': message,
+      'sender_id': myUid,
+      'send_time': Timestamp.now(),
+      'matchStatusFlg': "0",
+      'friendStatusFlg': "0"
+    }).then((value) {
+      messageRef.doc(value.id).update({
+        'messageId': value.id
+      });
+    });
     roomRef.doc(roomId).update({'last_message': message});
   }
 
@@ -331,18 +341,112 @@ class FirestoreMethod {
   static Future<void> sendMatchMessage(String roomId) async {
     final messageRef = roomRef.doc(roomId).collection('message');
     String? myUid = auth.currentUser!.uid;
-    await messageRef.add(
-        {'message': "対戦お願いします！", 'sender_id': myUid, 'send_time': Timestamp.now(),'matchStatusFlg':"1",'friendStatusFlg':"0"});
+    await messageRef.add({
+      'message': "対戦お願いします！",
+      'sender_id': myUid,
+      'send_time': Timestamp.now(),
+      'matchStatusFlg': "1",
+      'friendStatusFlg': "0"
+    }).then((value) {
+      messageRef.doc(value.id).update({
+        'messageId': value.id
+      });
+    });
     roomRef.doc(roomId).update({'last_message': "対戦お願いします！"});
   }
+
   static Future<void> sendFriendMessage(String roomId) async {
     final messageRef = roomRef.doc(roomId).collection('message');
     String? myUid = auth.currentUser!.uid;
-    await messageRef.add(
-        {'message': "友達登録お願いします！", 'sender_id': myUid, 'send_time': Timestamp.now(),'matchStatusFlg':"0",'friendStatusFlg':"1"});
+    await messageRef.add({
+      'message': "友達登録お願いします！",
+      'sender_id': myUid,
+      'send_time': Timestamp.now(),
+      'matchStatusFlg': "0",
+      'friendStatusFlg': "1"
+    }).then((value) {
+      messageRef.doc(value.id).update({
+        'messageId': value.id
+      });
+    });
     roomRef.doc(roomId).update({'last_message': "友達登録お願いします！"});
   }
 
+  //試合申請受け入れ
+  static Future<void> matchAccept(String roomId,String messageId) async {
+    final messageRef = roomRef.doc(roomId).collection('message');
+    String? myUid = auth.currentUser!.uid;
+
+    await messageRef.doc(messageId).update({
+      'matchStatusFlg':"2"
+    }
+    );
+
+    await messageRef.add({
+      'message': "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！",
+      'sender_id': myUid,
+      'send_time': Timestamp.now(),
+      'matchStatusFlg': "0",
+      'friendStatusFlg': "0"
+    }).then((value) {
+      messageRef.doc(value.id).update({
+        'messageId': value.id
+      });
+    });;
+    roomRef
+        .doc(roomId)
+        .update({'last_message': "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！"});
+  }
+
+  //友人申請受け入れ
+  static Future<void> friendAccept(String roomId,String messageId) async {
+    final messageRef = roomRef.doc(roomId).collection('message');
+    String? myUid = auth.currentUser!.uid;
+
+    await messageRef.doc(messageId).update({
+      'friendStatusFlg':"2"
+    }
+    );
+
+    await messageRef.add({
+      'message': "友人申請を受け入れました。\n友人一覧を確認してみよう！",
+      'sender_id': myUid,
+      'send_time': Timestamp.now(),
+      'matchStatusFlg': "0",
+      'friendStatusFlg': "0"
+    }).then((value) {
+      messageRef.doc(value.id).update({
+        'messageId': value.id
+      });
+    });
+    roomRef
+        .doc(roomId)
+        .update({'last_message': "友人申請を受け入れました。\n友人一覧を確認してみよう！"});
+  }
+
+  static Future<void> addMatchList(String roomId) async {
+    final snapShot = await roomRef.doc(roomId).get();
+    String joinedUser1 = snapShot.data()!['joined_user_ids'][0];
+    String joinedUser2 = snapShot.data()!['joined_user_ids'][1];
+    late String myUserId;
+    late String yourUserID;
+    if(joinedUser1 == auth.currentUser!.uid){
+      myUserId = joinedUser1;
+      yourUserID = joinedUser2;
+    }else{
+      myUserId = joinedUser2;
+      yourUserID = joinedUser1;
+    }
+
+    try {
+      await roomRef.add({
+        'joined_user_ids': [myUserId, yourUserID],
+        'updated_time': Timestamp.now()
+      });
+    } catch (e) {
+      print('マッチング一覧の作成に失敗しました --- $e');
+    }
+  }
 
 // static Future<void> downloadImage(String PresentValueWk) async {
 //   FirebaseStorage storage = FirebaseStorage.instance;
