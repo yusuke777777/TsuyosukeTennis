@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:intl/intl.dart';
 
 import '../Common/CHomePageSetting.dart';
+import '../Common/CmatchList.dart';
 import '../Common/Cmessage.dart';
 import '../Common/CprofileSetting.dart';
 import '../Common/CactivityList.dart';
@@ -19,11 +20,15 @@ class FirestoreMethod {
   String Uid = '';
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
   static final profileRef = _firestoreInstance.collection('myProfile');
+  static final matchRef = _firestoreInstance.collection('matchList');
 
   //トークルームコレクション
   static final roomRef = _firestoreInstance.collection('talkRoom');
   static final roomSnapshot = roomRef.snapshots();
   static bool roomCheck = false;
+
+  //マッチング一覧
+  static final matchListSnapshot = matchRef.snapshots();
 
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
@@ -326,9 +331,7 @@ class FirestoreMethod {
       'matchStatusFlg': "0",
       'friendStatusFlg': "0"
     }).then((value) {
-      messageRef.doc(value.id).update({
-        'messageId': value.id
-      });
+      messageRef.doc(value.id).update({'messageId': value.id});
     });
     roomRef.doc(roomId).update({'last_message': message});
   }
@@ -348,9 +351,7 @@ class FirestoreMethod {
       'matchStatusFlg': "1",
       'friendStatusFlg': "0"
     }).then((value) {
-      messageRef.doc(value.id).update({
-        'messageId': value.id
-      });
+      messageRef.doc(value.id).update({'messageId': value.id});
     });
     roomRef.doc(roomId).update({'last_message': "対戦お願いします！"});
   }
@@ -365,22 +366,17 @@ class FirestoreMethod {
       'matchStatusFlg': "0",
       'friendStatusFlg': "1"
     }).then((value) {
-      messageRef.doc(value.id).update({
-        'messageId': value.id
-      });
+      messageRef.doc(value.id).update({'messageId': value.id});
     });
     roomRef.doc(roomId).update({'last_message': "友達登録お願いします！"});
   }
 
   //試合申請受け入れ
-  static Future<void> matchAccept(String roomId,String messageId) async {
+  static Future<void> matchAccept(String roomId, String messageId) async {
     final messageRef = roomRef.doc(roomId).collection('message');
     String? myUid = auth.currentUser!.uid;
 
-    await messageRef.doc(messageId).update({
-      'matchStatusFlg':"2"
-    }
-    );
+    await messageRef.doc(messageId).update({'matchStatusFlg': "2"});
 
     await messageRef.add({
       'message': "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！",
@@ -389,24 +385,20 @@ class FirestoreMethod {
       'matchStatusFlg': "0",
       'friendStatusFlg': "0"
     }).then((value) {
-      messageRef.doc(value.id).update({
-        'messageId': value.id
-      });
-    });;
+      messageRef.doc(value.id).update({'messageId': value.id});
+    });
+    ;
     roomRef
         .doc(roomId)
         .update({'last_message': "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！"});
   }
 
   //友人申請受け入れ
-  static Future<void> friendAccept(String roomId,String messageId) async {
+  static Future<void> friendAccept(String roomId, String messageId) async {
     final messageRef = roomRef.doc(roomId).collection('message');
     String? myUid = auth.currentUser!.uid;
 
-    await messageRef.doc(messageId).update({
-      'friendStatusFlg':"2"
-    }
-    );
+    await messageRef.doc(messageId).update({'friendStatusFlg': "2"});
 
     await messageRef.add({
       'message': "友人申請を受け入れました。\n友人一覧を確認してみよう！",
@@ -415,9 +407,7 @@ class FirestoreMethod {
       'matchStatusFlg': "0",
       'friendStatusFlg': "0"
     }).then((value) {
-      messageRef.doc(value.id).update({
-        'messageId': value.id
-      });
+      messageRef.doc(value.id).update({'messageId': value.id});
     });
     roomRef
         .doc(roomId)
@@ -430,10 +420,10 @@ class FirestoreMethod {
     String joinedUser2 = snapShot.data()!['joined_user_ids'][1];
     late String myUserId;
     late String yourUserID;
-    if(joinedUser1 == auth.currentUser!.uid){
+    if (joinedUser1 == auth.currentUser!.uid) {
       myUserId = joinedUser1;
       yourUserID = joinedUser2;
-    }else{
+    } else {
       myUserId = joinedUser2;
       yourUserID = joinedUser1;
     }
@@ -446,6 +436,62 @@ class FirestoreMethod {
     } catch (e) {
       print('マッチング一覧の作成に失敗しました --- $e');
     }
+  }
+
+  //対戦マッチ一覧に追加
+  static Future<void> makeMatch(TalkRoomModel talkRoom) async {
+    DateTime now = DateTime.now();
+    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+    String today = outputFormat.format(now);
+
+    try {
+      await matchRef.add({
+        'RECIPIENT_ID': auth.currentUser!.uid,
+        'SENDER_ID': talkRoom.user.USER_ID,
+        'SAKUSEI_YMD': today,
+        'MATCH_FLG': '1',
+      }).then((value) {
+        matchRef.doc(value.id).update({'MATCH_ID': value.id});
+      });
+    } catch (e) {
+      print('ユーザー登録に失敗しました --- $e');
+    }
+  }
+
+  static Future<List<MatchListModel>> getMatchList(String myUserId) async {
+    final snapshot = await matchRef.get();
+    List<MatchListModel> matchList = [];
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      if (doc.data()['RECIPIENT_ID'].contains(myUserId)) {
+        CprofileSetting yourProfile =
+            await getYourProfile(doc.data()['SENDER_ID']);
+        MatchListModel match = MatchListModel(
+          MATCH_ID: doc.data()['MATCH_ID'],
+          RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
+          SENDER_ID: doc.data()['SENDER_ID'],
+          SAKUSEI_YMD: doc.data()['SAKUSEI_YMD'],
+          MATCH_FLG: doc.data()['MATCH_FLG'],
+          user: yourProfile,
+        );
+        matchList.add(match);
+        print("aa");
+      } else if (doc.data()['SENDER_ID'].contains(myUserId)) {
+        CprofileSetting yourProfile =
+            await getYourProfile(doc.data()['RECIPIENT_ID']);
+        MatchListModel match = MatchListModel(
+          MATCH_ID: doc.data()['MATCH_ID'],
+          RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
+          SENDER_ID: doc.data()['SENDER_ID'],
+          SAKUSEI_YMD: doc.data()['SAKUSEI_YMD'],
+          MATCH_FLG: doc.data()['MATCH_FLG'],
+          user: yourProfile,
+        );
+        matchList.add(match);
+        print("bb");
+      }
+    });
+    print("c");
+    return matchList;
   }
 
 // static Future<void> downloadImage(String PresentValueWk) async {

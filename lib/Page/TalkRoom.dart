@@ -102,6 +102,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                           index]
                                                                       .messageId);
                                                           //受け入れ処理を入れる
+                                                          FirestoreMethod.makeMatch(widget.room);
                                                         }
                                                       },
                                                       child: Text(
