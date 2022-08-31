@@ -294,6 +294,25 @@ class FirestoreMethod {
     return roomList;
   }
 
+  static Future<TalkRoomModel> getRoom(String RECIPIENT_ID,String SENDER_ID,CprofileSetting yourProfile) async {
+    final snapshot = await roomRef.get();
+    late TalkRoomModel room;
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      late String yourUserId;
+      if (doc.data()['joined_user_ids'].contains(RECIPIENT_ID)) {
+        if (doc.data()['joined_user_ids'].contains(SENDER_ID)){
+          room = TalkRoomModel(
+              roomId: doc.id,
+              user: yourProfile,
+              lastMessage: doc.data()['last_message'] ?? '');
+
+        }
+      }
+    });
+    return room;
+  }
+
+
   static Future<List<Message>> getMessages(String roomId) async {
     final messageRef = roomRef
         .doc(roomId)
@@ -487,10 +506,8 @@ class FirestoreMethod {
           user: yourProfile,
         );
         matchList.add(match);
-        print("bb");
       }
     });
-    print("c");
     return matchList;
   }
 
