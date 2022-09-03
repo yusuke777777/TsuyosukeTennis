@@ -35,6 +35,14 @@ class _TalkRoomState extends State<TalkRoom> {
         appBar: AppBar(
           backgroundColor: Color(0xFF3CB371),
           title: Text(widget.room.user.NICK_NAME),
+            leading: IconButton(
+              icon: const Icon(
+                Icons.reply,
+                color: Colors.black,
+                size: 40.0,
+              ),
+              onPressed: () => {Navigator.pop(context)},
+            )
         ),
         body: Stack(
           children: [

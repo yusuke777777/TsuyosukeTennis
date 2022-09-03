@@ -484,26 +484,33 @@ class FirestoreMethod {
       if (doc.data()['RECIPIENT_ID'].contains(myUserId)) {
         CprofileSetting yourProfile =
             await getYourProfile(doc.data()['SENDER_ID']);
+        CprofileSetting myProfile =
+        await getYourProfile(doc.data()['RECIPIENT_ID']);
+
         MatchListModel match = MatchListModel(
           MATCH_ID: doc.data()['MATCH_ID'],
           RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
           SENDER_ID: doc.data()['SENDER_ID'],
           SAKUSEI_YMD: doc.data()['SAKUSEI_YMD'],
           MATCH_FLG: doc.data()['MATCH_FLG'],
-          user: yourProfile,
+          MY_USER: myProfile,
+          YOUR_USER: yourProfile,
         );
         matchList.add(match);
         print("aa");
       } else if (doc.data()['SENDER_ID'].contains(myUserId)) {
         CprofileSetting yourProfile =
             await getYourProfile(doc.data()['RECIPIENT_ID']);
+        CprofileSetting myProfile =
+        await getYourProfile(doc.data()['SENDER_ID']);
         MatchListModel match = MatchListModel(
           MATCH_ID: doc.data()['MATCH_ID'],
           RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
           SENDER_ID: doc.data()['SENDER_ID'],
           SAKUSEI_YMD: doc.data()['SAKUSEI_YMD'],
           MATCH_FLG: doc.data()['MATCH_FLG'],
-          user: yourProfile,
+          MY_USER: myProfile,
+          YOUR_USER: yourProfile,
         );
         matchList.add(match);
       }

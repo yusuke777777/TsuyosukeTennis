@@ -6,9 +6,10 @@ class MatchListModel{
   late String SENDER_ID;
   late String SAKUSEI_YMD;
   late String MATCH_FLG;
-  late CprofileSetting user;
+  late CprofileSetting MY_USER;
+  late CprofileSetting YOUR_USER;
 
   MatchListModel({
-    required this.MATCH_ID,required this.RECIPIENT_ID,required this.SENDER_ID,required this.SAKUSEI_YMD,required this.MATCH_FLG,required this.user
+    required this.MATCH_ID,required this.RECIPIENT_ID,required this.SENDER_ID,required this.SAKUSEI_YMD,required this.MATCH_FLG,required this.MY_USER,required this.YOUR_USER
   });
 }

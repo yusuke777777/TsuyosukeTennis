@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CtalkRoom.dart';
+import 'package:tsuyosuke_tennis_ap/Page/MatchResult.dart';
 import 'package:tsuyosuke_tennis_ap/Page/ProfileSetting.dart';
 import '../Common/CmatchList.dart';
 import '../FireBase/FireBase.dart';
@@ -73,7 +74,7 @@ class _MatchListState extends State<MatchList> {
                                     //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
                                     child: InkWell(
                                       child:
-                                          matchList[index].user.PROFILE_IMAGE ==
+                                          matchList[index].YOUR_USER.PROFILE_IMAGE ==
                                                   ''
                                               ? CircleAvatar(
                                                   backgroundColor: Colors.white,
@@ -85,7 +86,7 @@ class _MatchListState extends State<MatchList> {
                                                   backgroundColor: Colors.white,
                                                   backgroundImage: NetworkImage(
                                                       matchList[index]
-                                                          .user
+                                                          .YOUR_USER
                                                           .PROFILE_IMAGE),
                                                   radius: 30),
                                       onTap: () {
@@ -94,17 +95,16 @@ class _MatchListState extends State<MatchList> {
                                             MaterialPageRoute(
                                                 builder: (context) =>
                                                     ProfileSetting.Edit(
-                                                        matchList[index].user)));
+                                                        matchList[index].YOUR_USER)));
                                       },
                                     ),
                                   ),
-                                  //トーク画面への遷移
                                   InkWell(
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
-                                        Text(matchList[index].user.NICK_NAME,
+                                        Text(matchList[index].YOUR_USER.NICK_NAME,
                                             style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold)),
@@ -115,9 +115,16 @@ class _MatchListState extends State<MatchList> {
                                     ),
                                     onTap: () {
                                       //対戦結果入力画面へ遷移
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MatchResult(matchList[index].MY_USER, matchList[index].YOUR_USER)
+                                                 ));
                                     },
                                   ),
                                   SizedBox(width: 150,),
+                                  //トーク画面へ遷移
                                   IconButton(
                                       icon: const Icon(
                                         Icons.message,
@@ -129,7 +136,7 @@ class _MatchListState extends State<MatchList> {
                                             await FirestoreMethod.getRoom(
                                                 matchList[index].RECIPIENT_ID,
                                                 matchList[index].SENDER_ID,
-                                                matchList[index].user);
+                                                matchList[index].YOUR_USER);
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
