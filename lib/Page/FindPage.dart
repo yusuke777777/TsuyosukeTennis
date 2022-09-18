@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'FindMultiResultPage.dart';
 import 'FindResultPage.dart';
+
 class FindPage extends StatefulWidget {
   const FindPage({Key? key}) : super(key: key);
 
@@ -10,115 +12,135 @@ class FindPage extends StatefulWidget {
 }
 
 class _FindPageState extends State<FindPage> {
+
   //都道府県
   late String todofuken = '東京都';
+
   //登録ランク
   late String torokuRank = 'ランクを入力を選択してください';
+
+  //性別
+  late String gender = '性別を入力してください';
+
   //年齢
   late String torokuAge = '年齢を選択してください';
 
   //アカウントIDで検索BOXに入力された値
   final inputId = TextEditingController();
 
+  //入力された市町村
+  final inputShichouson = TextEditingController();
+
   MaterialColor colorstate = Colors.green;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          //appBarの背景色等設定
-          leading: const Icon(Icons.menu,
-              color:Colors.black),
-          elevation: 0.0,
-          backgroundColor: Colors.white,
-          shadowColor:Colors.white,
+      appBar: AppBar(
+        //appBarの背景色等設定
+        leading: const Icon(Icons.menu, color: Colors.black),
+        elevation: 0.0,
+        backgroundColor: Colors.white,
+        shadowColor: Colors.white,
 
-          title: const Text("検索",
+        title: const Text(
+          "検索",
           style: TextStyle(
-            color:Colors.black,
+            color: Colors.black,
             fontSize: 30,
           ),
         ),
-    ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('アカウントIDで検索',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(
-              height: 5,
-            ),
-            //アカウントID入力欄
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 60,
-                ),
-                Container(
-                  alignment: Alignment.bottomRight,
-                  width: 200,
-                  height: 40,
-                  child:TextFormField(
-                    controller: inputId,
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.vertical()
-                      ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 16),
-            //検索ボタン
-            Align(
-              alignment: const Alignment(0.8, 0.1),
-              child: TextButton(
-                style: ElevatedButton.styleFrom(
-                  primary: Colors.orange,
-                  onPrimary: Colors.white,
-                ),
-                //検索ボタン押下時の処理
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => FindResultPage(inputId.text),
-                      )
-                  );
-                },
-                child: Text('検索'),
-              ),
-            ),
-
-            Text('条件で検索',
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
-            const SizedBox(
-                height: 5
-            ),
-
-            //都道府県タイトル
-            Row(
-              children: [
-                SizedBox(
-                  width: 50,
-                ),
-                Container(
-                  child: Text(
-                    '都道府県',
-                    style: TextStyle(fontSize: 20, color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-
-            //都道府県選択BOX
-            Row(
+      ),
+      body: Scrollbar(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'アカウントIDで検索',
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                //アカウントID入力欄
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 60,
+                    ),
+                    Container(
+                      alignment: Alignment.bottomRight,
+                      width: 200,
+                      height: 40,
+                      child: TextFormField(
+                        controller: inputId,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.vertical()
+                          ),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 16),
+                //検索ボタン
+                Align(
+                  alignment: const Alignment(0.8, 0.1),
+                  child: TextButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.orange,
+                      onPrimary: Colors.white,
+                    ),
+                    //検索ボタン押下時の処理
+                    onPressed: () {
+                      inputId.text == ""?
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title :Text("入力エラー!"),
+                            content: Text("アカウントIDを入力してください"),
+                          )
+                      ):
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FindResultPage(inputId.text),
+                          ));
+                    },
+                    child: Text('検索'),
+                  ),
+                ),
+
+                Text('条件で検索',
+                    style:
+                        TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 5),
+
+                //都道府県タイトル
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 50,
+                    ),
+                    Container(
+                      child: Text(
+                        '都道府県',
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
+
+                //都道府県選択BOX
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(
                       width: 50,
@@ -142,193 +164,258 @@ class _FindPageState extends State<FindPage> {
                       },
                     ),
                   ],
-               ),
+                ),
 
-            //行間の幅調整
-            SizedBox(
-              height: 5,
-            ),
-
-            //市町村タイトル
-            Row(
-              children: [
+                //行間の幅調整
                 SizedBox(
-                  width: 50,
+                  height: 5,
                 ),
-                Container(
-                  child: Text(
-                    '市町村(任意)',
-                    style: TextStyle(fontSize: 20, color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
 
-            //行間の幅調整
-            SizedBox(
-              height: 5,
-            ),
-
-            //市町村入力
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 50,
-                ),
-                Container(
-                  alignment: Alignment.bottomRight,
-                  width: 200,
-                  height: 40,
-                  child:TextFormField(
-                    decoration: InputDecoration(
-                      border: OutlineInputBorder(
-                          borderRadius: BorderRadius.vertical()
+                //市町村タイトル
+                Row(
+                  children: [
+                    SizedBox(
+                      width: 50,
+                    ),
+                    Container(
+                      child: Text(
+                        '市町村(任意)',
+                        style: TextStyle(fontSize: 20, color: Colors.black),
                       ),
-                      contentPadding: EdgeInsets.symmetric(horizontal: 16),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
 
-            //行間の幅調整
-            SizedBox(
-              height: 5,
-            ),
+                //行間の幅調整
+                SizedBox(
+                  height: 5,
+                ),
 
-            //登録ランクタイトル
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 50,
-                  ),
-                  Container(
-                    child: Text(
-                      '登録ランク',
-                      style: TextStyle(fontSize: 20, color: Colors.black),
+                //市町村入力
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 50,
                     ),
-                  ),
-                ],
-              ),
-
-            //行間の幅調整
-            SizedBox(
-              height: 5,
-            ),
-
-              //登録ランク選択BOX
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 50,
-                  ),
-                  Container(
-                    padding: const EdgeInsets.all(5.0),
-                    width: 250,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.grey),
+                    Container(
+                      alignment: Alignment.bottomRight,
+                      width: 200,
+                      height: 40,
+                      child: TextFormField(
+                        controller: inputShichouson,
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.vertical()),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                        ),
+                      ),
                     ),
-                    child: Text(
-                      torokuRank,
-                      style: TextStyle(fontSize: 20, color: Colors.black),
+                  ],
+                ),
+
+                //行間の幅調整
+                SizedBox(
+                  height: 5,
+                ),
+
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 50,
                     ),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                    Container(
+                      child: Text(
+                        '性別',
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
+
+                //行間の幅調整
+                SizedBox(
+                  height: 5,
+                ),
+
+                //登録ランク選択BOX
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 50,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(5.0),
+                      width: 250,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: Text(
+                        gender,
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                      onPressed: () {
+                        _showModalGenderPicker(context);
+                      },
+                    ),
+                  ],
+                ),
+
+                //行間の幅調整
+                SizedBox(
+                  height: 5,
+                ),
+
+                //登録ランクタイトル
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 50,
+                    ),
+                    Container(
+                      child: Text(
+                        '登録ランク',
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
+
+                //行間の幅調整
+                SizedBox(
+                  height: 5,
+                ),
+
+                //登録ランク選択BOX
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 50,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(5.0),
+                      width: 250,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: Text(
+                        torokuRank,
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                      onPressed: () {
+                        _showModalRankPicker(context);
+                      },
+                    ),
+                  ],
+                ),
+
+                //行間の幅調整
+                SizedBox(
+                  height: 5,
+                ),
+
+                //年齢
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 50,
+                    ),
+                    Container(
+                      child: Text(
+                        '年齢',
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(
+                  height: 5,
+                ),
+
+                //登録ランク選択BOX
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      width: 50,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.all(5.0),
+                      width: 250,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                      ),
+                      child: Text(
+                        torokuAge,
+                        style: TextStyle(fontSize: 20, color: Colors.black),
+                      ),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                      onPressed: () {
+                        _showModalAgePicker(context);
+                      },
+                    ),
+                  ],
+                ),
+
+                const SizedBox(
+                  height: 16,
+                ),
+
+                //検索ボタン
+                Align(
+                  alignment: const Alignment(0.8, 0.1),
+                  child: TextButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.orange,
+                      onPrimary: Colors.white,
+                    ),
+                    //検索ボタン押下時の処理
                     onPressed: () {
-                      _showModalRankPicker(context);
+                      todofuken == "" || gender =="性別を入力してください"
+                          || torokuRank =="ランクを入力してください" || torokuAge == "年齢を入力してください" ?
+                      showDialog(
+                          context: context,
+                          builder: (_) => AlertDialog(
+                            title :Text("入力エラー!"),
+                            content: Text("都道府県、性別、登録ランク、年齢は必須条件です"),
+                          )
+                      ):
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => FindMultiResultPage(todofuken, inputShichouson.text,
+                                gender, torokuRank, torokuAge),
+                          ));
                     },
-                  ),
-                ],
-              ),
-
-            //行間の幅調整
-            SizedBox(
-              height: 5,
-            ),
-
-            //年齢
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 50,
-                ),
-                Container(
-                  child: Text(
-                    '年齢',
-                    style: TextStyle(fontSize: 20, color: Colors.black),
+                    child: Text('検索'),
                   ),
                 ),
               ],
             ),
-
-            SizedBox(
-              height: 5,
-            ),
-
-            //登録ランク選択BOX
-            Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 50,
-                ),
-                Container(
-                  padding: const EdgeInsets.all(5.0),
-                  width: 250,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                  ),
-                  child: Text(
-                    torokuAge,
-                    style: TextStyle(fontSize: 20, color: Colors.black),
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.arrow_drop_down_circle_rounded),
-                  onPressed: () {
-                    _showModalAgePicker(context);
-                  },
-                ),
-              ],
-            ),
-
-            const SizedBox(
-              height: 16,
-            ),
-
-            //検索ボタン
-            Align(
-              alignment: const Alignment(0.8, 0.1),
-              child: TextButton(
-                style: ElevatedButton.styleFrom(
-
-                  primary: Colors.orange,
-                  onPrimary: Colors.white,
-                ),
-                //検索ボタン押下時の処理
-                onPressed: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => FindResultPage(inputId.text),
-                      )
-                  );
-                },
-                child: Text('検索'),
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );
     // TODO: implement build
   }
+
   void _showModalLocationPicker(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
@@ -427,6 +514,33 @@ class _FindPageState extends State<FindPage> {
     "上級",
   ];
 
+  void _showModalGenderPicker(BuildContext context) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 200,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: CupertinoPicker(
+              itemExtent: 40,
+              children: _gender.map(_pickerItem).toList(),
+              onSelectedItemChanged: _onSelectedGenderChanged,
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  final List<String> _gender = [
+    "男性",
+    "女性",
+    "その他",
+  ];
+
   void _showModalAgePicker(BuildContext context) {
     showModalBottomSheet<void>(
       context: context,
@@ -449,82 +563,14 @@ class _FindPageState extends State<FindPage> {
   }
 
   final List<String> _Age = [
-    "16",
-    "17",
-    "18",
-    "19",
-    "20",
-    "21",
-    "22",
-    "23",
-    "24",
-    "25",
-    "26",
-    "27",
-    "28",
-    "29",
-    "30",
-    "31",
-    "32",
-    "33",
-    "34",
-    "35",
-    "36",
-    "37",
-    "38",
-    "39",
-    "40",
-    "41",
-    "42",
-    "43",
-    "44",
-    "45",
-    "46",
-    "47",
-    "48",
-    "49",
-    "50",
-    "51",
-    "52",
-    "53",
-    "54",
-    "55",
-    "56",
-    "57",
-    "58",
-    "59",
-    "60",
-    "61",
-    "62",
-    "63",
-    "64",
-    "65",
-    "66",
-    "67",
-    "68",
-    "69",
-    "70",
-    "71",
-    "72",
-    "73",
-    "74",
-    "75",
-    "76",
-    "77",
-    "78",
-    "79",
-    "80",
-    "81",
-    "82",
-    "83",
-    "84",
-    "85",
-    "86",
-    "87",
-    "88",
-    "89",
-    "90",
-  ];
+    "20代",
+    "30代",
+    "40代",
+    "50代",
+    "60代",
+    "70代",
+    "80代",
+   ];
 
   void _onSelectedLocationChanged(int index) {
     setState(() {
@@ -544,6 +590,12 @@ class _FindPageState extends State<FindPage> {
     });
   }
 
+  void _onSelectedGenderChanged(int index) {
+    setState(() {
+      gender = _gender[index];
+    });
+  }
+
   Widget _pickerItem(String str) {
     return Text(
       str,
@@ -551,7 +603,7 @@ class _FindPageState extends State<FindPage> {
     );
   }
 
-  // static String getRecord(){
-  //   return null;
-  // }
+// static String getRecord(){
+//   return null;
+// }
 }

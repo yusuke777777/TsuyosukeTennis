@@ -5,25 +5,36 @@ import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
 import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
 import '../FireBase/FireBase.dart';
 
-class FindResultPage extends StatefulWidget {
-  FindResultPage(this.inputId);
+class FindMultiResultPage extends StatefulWidget {
+  FindMultiResultPage(this.todoufuken, this.shichoson, this.gender, this.rank,
+      this.age);
 
-  // 検索画面　アカウントIDの入力値
-  String inputId;
+  // 検索画面　
+  String todoufuken;
+  String shichoson;
+  String gender;
+  String rank;
+  String age;
 
   @override
-  State<FindResultPage> createState() => _FindResultPageState(inputId);
+  State<FindMultiResultPage> createState() =>
+      _FindMultiResultPageState(todoufuken, shichoson, gender, rank, age);
 }
 
-class _FindResultPageState extends State<FindResultPage> {
-  _FindResultPageState(this.inputId);
+class _FindMultiResultPageState extends State<FindMultiResultPage> {
+  _FindMultiResultPageState(this.todoufuken, this.shichoson, this.gender,
+      this.rank, this.age);
 
   // 検索画面　アカウントIDの入力値
-  String inputId;
+  String todoufuken;
+  String shichoson;
+  String gender;
+  String rank;
+  String age;
 
   //アカウントID入力値から対象の名前を取得
-  late Future<List<String>> futureList =
-      FirestoreMethod.getNickNameAndProfile(inputId);
+  late Future<List<List<String>>> futureList = FirestoreMethod.getFindMultiResult(
+      todoufuken, shichoson, gender, rank,age);
 
   @override
   Widget build(BuildContext context) {
@@ -33,18 +44,18 @@ class _FindResultPageState extends State<FindResultPage> {
       ),
       body: FutureBuilder(
         future: futureList,
-        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<List<List<String>>> snapshot) {
           {
             if (snapshot.connectionState != ConnectionState.done) {
               return new Align(
                   child: Center(
-                child: new CircularProgressIndicator(),
-              ));
+                    child: new CircularProgressIndicator(),
+                  ));
             } else if (snapshot.hasError) {
               return new Text('Error: ${snapshot.error!}');
             } else if (snapshot.hasData) {
               //取得したい値をリスト型で格納
-              List<String>? profileList = snapshot.data;
+              List<List<String>>? profileList = snapshot.data;
               //該当するユーザが存在しない時
               if (profileList!.isEmpty) {
                 return ListView(
@@ -54,8 +65,10 @@ class _FindResultPageState extends State<FindResultPage> {
                       ListTile(title: Text("対象ユーザーは存在しません")),
                     ]);
               } else {
+                List<String> nameList = profileList[0];
+                List<String> imageList = profileList[1];
                 return ListView.builder(
-                  itemCount: 1,
+                  itemCount: nameList.length,
                   // padding: const EdgeInsets.all(8),
                   itemBuilder: (BuildContext context, int index) {
                     return Card(
@@ -63,26 +76,27 @@ class _FindResultPageState extends State<FindResultPage> {
                         leading: ClipOval(
                           child: GestureDetector(
                             //アイコン押下時の挙動
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  //TODO 仮実装で検索画面へ遷移させている
-                                  MaterialPageRoute(
-                                    builder: (context) => FindPage(),
-                                  ));
-                            },
-                            child: profileList[1] == ""
-                                ? Image.asset('images/upper_body-2.png',
-                                    fit: BoxFit.cover)
-                                : Image.network(
-                                    profileList[1],
-                                    width: 70,
-                                    height: 70,
-                                    fit: BoxFit.fill,
-                                  ),
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    //TODO 仮実装で検索画面へ遷移させている
+                                    MaterialPageRoute(
+                                      builder: (context) => FindPage(),
+                                    ));
+                              },
+                              child:
+                              imageList[index] == "" ?
+                              Image.asset(
+                                  'images/upper_body-2.png', fit: BoxFit.cover)
+                                  : Image.network(
+                                imageList[index],
+                                width: 70,
+                                height: 70,
+                                fit: BoxFit.fill,
+                              )
                           ),
                         ),
-                        title: Text(profileList[0],
+                        title: Text(nameList[index],
                             style: TextStyle(fontSize: 30)),
                         //リスト押下時の挙動
                         onTap: () {
@@ -93,8 +107,7 @@ class _FindResultPageState extends State<FindResultPage> {
                                 builder: (context) => UnderMenuMove(),
                               ));
                         },
-                      ),
-                    );
+                      ),);
                   },
                 );
               }

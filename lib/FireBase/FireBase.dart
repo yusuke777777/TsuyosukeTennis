@@ -123,6 +123,32 @@ class FirestoreMethod {
    * uid ドキュメント
    * return　フィールドプロパティのリスト
    */
+  static Future<List<String>> getNickNameAndProfile(uid) async {
+    List<String> stringList = [];
+    final snapShot =
+    await FirebaseFirestore.instance.collection('myProfile').doc(uid).get();
+
+    if (snapShot.data() == null){
+      return stringList;
+    }
+
+    String name = snapShot.data()!['NICK_NAME'];
+    String profile = snapShot.data()!['PROFILE_IMAGE'];
+    if (snapShot == null) {
+      return stringList;
+    }
+
+    stringList.add(name);
+    stringList.add(profile);
+    return stringList;
+  }
+
+
+  /**
+   *ドキュメントをキーに指定コレクションから指定フィールドをリスト型で取得するメソッド
+   * uid ドキュメント
+   * return　フィールドプロパティのリスト
+   */
   static Future<CHomePageSetting> getHomePageStatus(
       uid, todofuken, sicyouson, rank) async {
     final snapShot =
@@ -342,6 +368,50 @@ class FirestoreMethod {
         {'message': "友達登録お願いします！", 'sender_id': myUid, 'send_time': Timestamp.now(),'matchStatusFlg':"0",'friendStatusFlg':"1"});
     roomRef.doc(roomId).update({'last_message': "友達登録お願いします！"});
   }
+
+  /**
+   * 条件で検索時の入力値を参照して対象データの名前を取得するメソッドです
+   * 都道府県
+   * 市町村
+   * 性別
+   * ランク
+   * 年齢
+   */
+  static Future<List<List<String>>> getFindMultiResult(String todofuken,
+      String shichoson, String gender, String rank, String age) async {
+    List<List<String>> resultList = [];
+    List<String> nameList = [];
+    List<String> profileList = [];
+
+    //コレクション「myProfile」から該当データを絞る
+    final snapShot = await FirebaseFirestore.instance
+        .collection('myProfile').where('GENDER',isEqualTo: gender).where('TOROKU_RANK',isEqualTo: rank).where('AGE',isEqualTo: age).get();
+
+    await Future.forEach<dynamic>(snapShot.docs, (document) async {
+      final snapShot_sub = await FirebaseFirestore.instance
+          .collection('myProfile').doc(document.id).collection('activityList').get();
+
+      await Future.forEach<dynamic>(snapShot_sub.docs, (doc) async {
+          if(doc.data()['TODOFUKEN'] == todofuken) {
+            if (shichoson == '') {
+              nameList.add(document.get('NICK_NAME'));
+              profileList.add(document.get('PROFILE_IMAGE'));
+              resultList.add(nameList);
+              resultList.add(profileList);
+            }
+            else if(doc.data()['SHICHOSON'] == shichoson) {
+                nameList.add(document.get('NICK_NAME'));
+                profileList.add(document.get('PROFILE_IMAGE'));
+                resultList.add(nameList);
+                resultList.add(profileList);
+              }
+          }
+        });
+        });
+    return resultList;
+  }
+
+
 
 
 // static Future<void> downloadImage(String PresentValueWk) async {
