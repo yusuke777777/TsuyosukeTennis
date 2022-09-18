@@ -22,6 +22,7 @@ class FirestoreMethod {
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
   static final profileRef = _firestoreInstance.collection('myProfile');
   static final matchRef = _firestoreInstance.collection('matchList');
+  static final friendsListRef = _firestoreInstance.collection('friendsList');
   static final matchResultRef = _firestoreInstance.collection('matchResult');
 
 
@@ -32,6 +33,10 @@ class FirestoreMethod {
 
   //マッチング一覧
   static final matchListSnapshot = matchRef.snapshots();
+
+  //友人一覧
+  static final friendsListSnapshot = friendsListRef.snapshots();
+
 
 
   static final Firebase_Auth.FirebaseAuth auth =
@@ -532,20 +537,20 @@ class FirestoreMethod {
   //対戦マッチ一覧に追加
   static Future<void> makeMatch(TalkRoomModel talkRoom) async {
     DateTime now = DateTime.now();
-    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+    DateFormat outputFormat = DateFormat('yyyy/MM/dd HH:mm');
     String today = outputFormat.format(now);
 
     try {
       await matchRef.add({
         'RECIPIENT_ID': auth.currentUser!.uid,
         'SENDER_ID': talkRoom.user.USER_ID,
-        'SAKUSEI_YMD': today,
+        'SAKUSEI_TIME': today,
         'MATCH_FLG': '1',
       }).then((value) {
         matchRef.doc(value.id).update({'MATCH_ID': value.id});
       });
     } catch (e) {
-      print('ユーザー登録に失敗しました --- $e');
+      print('マッチングに失敗しました --- $e');
     }
   }
 
@@ -563,7 +568,7 @@ class FirestoreMethod {
           MATCH_ID: doc.data()['MATCH_ID'],
           RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
           SENDER_ID: doc.data()['SENDER_ID'],
-          SAKUSEI_YMD: doc.data()['SAKUSEI_YMD'],
+          SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
           MATCH_FLG: doc.data()['MATCH_FLG'],
           MY_USER: myProfile,
           YOUR_USER: yourProfile,
@@ -579,7 +584,7 @@ class FirestoreMethod {
           MATCH_ID: doc.data()['MATCH_ID'],
           RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
           SENDER_ID: doc.data()['SENDER_ID'],
-          SAKUSEI_YMD: doc.data()['SAKUSEI_YMD'],
+          SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
           MATCH_FLG: doc.data()['MATCH_FLG'],
           MY_USER: myProfile,
           YOUR_USER: yourProfile,
@@ -591,10 +596,10 @@ class FirestoreMethod {
   }
 
 
-  //プロフィール情報設定
+  //対戦結果作成
   static Future<void> makeMatchResult(CprofileSetting myProfile,CprofileSetting yourProfile,List<CmatchResult>  matchResultList) async {
     DateTime now = DateTime.now();
-    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+    DateFormat outputFormat = DateFormat('yyyy/MM/dd HH:mm');
     String today = outputFormat.format(now);
 
     matchResultList.forEach((a) async {
@@ -604,20 +609,40 @@ class FirestoreMethod {
             .add({
           'MY_POINT': matchResultList[int.parse(a.No)].myGamePoint,
           'YOUR_POINT': matchResultList[int.parse(a.No)].yourGamePoint,
-          'KOUSHIN_YMD': today,
+          'KOUSHIN_TIME': today,
         });
         await matchResultRef.doc(yourProfile.USER_ID).collection('opponentList')
             .doc(myProfile.USER_ID).collection('matchDetail')
             .add({
           'MY_POINT': matchResultList[int.parse(a.No)].yourGamePoint,
           'YOUR_POINT': matchResultList[int.parse(a.No)].myGamePoint,
-          'KOUSHIN_YMD': today,
+          'KOUSHIN_TIME': today,
         });
       } catch (e) {
         print('対戦結果入力に失敗しました --- $e');
       }
     }
     );
+  }
+
+  //友達一覧に追加
+  static Future<void> makeFriends(TalkRoomModel talkRoom) async {
+    DateTime now = DateTime.now();
+    DateFormat outputFormat = DateFormat('yyyy/MM/dd HH:mm');
+    String today = outputFormat.format(now);
+
+    try {
+      await friendsListRef.add({
+        'RECIPIENT_ID': auth.currentUser!.uid,
+        'SENDER_ID': talkRoom.user.USER_ID,
+        'SAKUSEI_TIME': today,
+        'FRIENDS_FLG': '1',
+      }).then((value) {
+        friendsListRef.doc(value.id).update({'FRIENDS_ID': value.id});
+      });
+    } catch (e) {
+      print('友達登録に失敗しました --- $e');
+    }
   }
 
 

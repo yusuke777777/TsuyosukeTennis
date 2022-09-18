@@ -108,7 +108,7 @@ class _MatchListState extends State<MatchList> {
                                             style: TextStyle(
                                                 fontSize: 18,
                                                 fontWeight: FontWeight.bold)),
-                                        Text(matchList[index].SAKUSEI_YMD,
+                                        Text(matchList[index].SAKUSEI_TIME,
                                             style: TextStyle(color: Colors.grey),
                                             overflow: TextOverflow.ellipsis)
                                       ],
@@ -123,7 +123,7 @@ class _MatchListState extends State<MatchList> {
                                                  ));
                                     },
                                   ),
-                                  SizedBox(width: 150,),
+                                  SizedBox(width: 120,),
                                   //トーク画面へ遷移
                                   IconButton(
                                       icon: const Icon(

@@ -143,6 +143,8 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                   messageList[
                                                                           index]
                                                                       .messageId);
+                                                              //友人一覧追記
+                                                              FirestoreMethod.makeFriends(widget.room);
                                                             }
                                                           },
                                                           child: Text(
