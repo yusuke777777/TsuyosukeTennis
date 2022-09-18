@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/HomePage.dart';
 
+import 'Page/MatchList.dart';
 import 'Page/TalkList.dart';
 
 /**
@@ -18,7 +19,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
   static const _screens = [
     HomePage(),
     FindPage(),
-    TalkList(),
+    MatchList(),
     TalkList(),
   ];
 
