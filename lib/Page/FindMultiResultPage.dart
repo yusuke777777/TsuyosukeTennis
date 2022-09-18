@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/material/list_tile.dart';
 import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
 import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
+import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
+import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
+
+import 'TalkRoom.dart';
 
 class FindMultiResultPage extends StatefulWidget {
   FindMultiResultPage(this.todoufuken, this.shichoson, this.gender, this.rank,
@@ -32,7 +36,12 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
   String rank;
   String age;
 
-  //アカウントID入力値から対象の名前を取得
+  //ログイン中のユーザーのIDを取得
+  static final Firebase_Auth.FirebaseAuth auth =
+      Firebase_Auth.FirebaseAuth.instance;
+  String myUserID = auth.currentUser!.uid;
+
+  //入力値から対象レコードリストを取得
   late Future<List<List<String>>> futureList = FirestoreMethod.getFindMultiResult(
       todoufuken, shichoson, gender, rank,age);
 
@@ -67,6 +76,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
               } else {
                 List<String> nameList = profileList[0];
                 List<String> imageList = profileList[1];
+                List<String> idList = profileList[2];
                 return ListView.builder(
                   itemCount: nameList.length,
                   // padding: const EdgeInsets.all(8),
@@ -99,15 +109,16 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                         title: Text(nameList[index],
                             style: TextStyle(fontSize: 30)),
                         //リスト押下時の挙動
-                        onTap: () {
+                        onTap: () async {
+                          TalkRoomModel room = await FirestoreMethod.makeRoom(myUserID, idList[index]);
                           Navigator.push(
                               context,
-                              //TODO 仮実装で検索画面へ遷移させている
                               MaterialPageRoute(
-                                builder: (context) => UnderMenuMove(),
+                                builder: (context) => TalkRoom(room),
                               ));
                         },
-                      ),);
+                      ),
+                    );
                   },
                 );
               }

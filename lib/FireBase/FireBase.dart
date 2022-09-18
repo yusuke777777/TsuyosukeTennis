@@ -275,24 +275,42 @@ class FirestoreMethod {
     return imageURL;
   }
 
-  static Future<void> addTeamRoom(String myTeamId, String yourTeamID) async {
-    try {
-      await roomRef.add({
-        'joined_user_ids': [myTeamId, yourTeamID],
-        'updated_time': Timestamp.now()
-      });
-    } catch (e) {
-      print('トークルーム作成に失敗しました --- $e');
+  /**
+   * トークルームを作成するメソッドです
+   * myuserID ログインユーザのID
+   * youruserID トーク相手のID
+   * TalkRoom.dartの引数となるTalkRoomModelを返す
+   */
+  static Future<TalkRoomModel> makeRoom(String myuserId, String youruserID) async {
+    late TalkRoomModel room;
+    await checkRoom(myuserId, youruserID);
+    if (roomCheck){
+      room =await getRoomBySearchResult(myuserId, youruserID);
+      return room;
+    }
+    else {
+      try {
+        await roomRef.add({
+          'joined_user_ids': [myuserId, youruserID],
+          'updated_time': Timestamp.now()
+        });
+        room =await getRoomBySearchResult(myuserId, youruserID);
+      } catch (e) {
+        print('トークルーム作成に失敗しました --- $e');
+      }
+      return room;
     }
   }
 
-  static Future<void> checkTeamRoom(String myTeamId, String yourTeamID) async {
+  /**
+   * 相手とのトークルームが既に存在するかどうかチェックするメソッドです
+   */
+  static Future<void> checkRoom(String myUserId, String yourUserID) async {
     final snapshot = await roomRef.get();
-
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      if (doc.data()['joined_user_ids'].contains(myTeamId)) {
+      if (doc.data()['joined_user_ids'].contains(myUserId)) {
         doc.data()['joined_user_ids'].forEach((id) {
-          if (id == yourTeamID) {
+          if (id == yourUserID) {
             roomCheck = true;
           }
           return;
@@ -300,6 +318,29 @@ class FirestoreMethod {
       }
     });
   }
+
+  /**
+   * 検索結果一覧からトークルームを取得するメソッド
+   * myuserID ログインユーザのID
+   * youruserID トーク相手のID
+   * talkRoomコレクションを回して該当するデータのprofileを引数にTalkRoomModelを生成
+   *
+   */
+  static Future<TalkRoomModel> getRoomBySearchResult(String myUserId, String yourUserId) async {
+    final snapshot = await roomRef.get();
+    late TalkRoomModel room;
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      if (doc.data()['joined_user_ids'].contains(myUserId) && doc.data()['joined_user_ids'].contains(yourUserId)) {
+        CprofileSetting yourProfile = await getYourProfile(yourUserId);
+        room = TalkRoomModel(
+            roomId: doc.id,
+            user: yourProfile,
+            lastMessage: doc.data()['last_message'] ?? '');
+      }
+    });
+    return room;
+  }
+
 
   static Future<List<TalkRoomModel>> getRooms(String myUserId) async {
     final snapshot = await roomRef.get();
@@ -427,12 +468,14 @@ class FirestoreMethod {
    * 性別
    * ランク
    * 年齢
+   * 市町村以外は''で来ることはない
    */
   static Future<List<List<String>>> getFindMultiResult(String todofuken,
       String shichoson, String gender, String rank, String age) async {
     List<List<String>> resultList = [];
     List<String> nameList = [];
     List<String> profileList = [];
+    List<String> idList =[];
 
     //コレクション「myProfile」から該当データを絞る
     final snapShot = await FirebaseFirestore.instance
@@ -447,14 +490,18 @@ class FirestoreMethod {
             if (shichoson == '') {
               nameList.add(document.get('NICK_NAME'));
               profileList.add(document.get('PROFILE_IMAGE'));
+              idList.add(document.get('USER_ID'));
               resultList.add(nameList);
               resultList.add(profileList);
+              resultList.add(idList);
             }
             else if(doc.data()['SHICHOSON'] == shichoson) {
                 nameList.add(document.get('NICK_NAME'));
                 profileList.add(document.get('PROFILE_IMAGE'));
+                idList.add(document.get('USER_ID'));
                 resultList.add(nameList);
                 resultList.add(profileList);
+                resultList.add(idList);
               }
           }
         });

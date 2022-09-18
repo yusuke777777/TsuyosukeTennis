@@ -1,9 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/material/list_tile.dart';
 import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
+import 'package:tsuyosuke_tennis_ap/Page/TalkRoom.dart';
 import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
+import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
+import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 
 class FindResultPage extends StatefulWidget {
   FindResultPage(this.inputId);
@@ -20,6 +24,12 @@ class _FindResultPageState extends State<FindResultPage> {
 
   // 検索画面　アカウントIDの入力値
   String inputId;
+
+  //ログイン中のユーザーのIDを取得
+  static final Firebase_Auth.FirebaseAuth auth =
+      Firebase_Auth.FirebaseAuth.instance;
+  String myUserID = auth.currentUser!.uid;
+
 
   //アカウントID入力値から対象の名前を取得
   late Future<List<String>> futureList =
@@ -85,12 +95,12 @@ class _FindResultPageState extends State<FindResultPage> {
                         title: Text(profileList[0],
                             style: TextStyle(fontSize: 30)),
                         //リスト押下時の挙動
-                        onTap: () {
+                        onTap: () async {
+                          TalkRoomModel room = await FirestoreMethod.makeRoom(myUserID, inputId);
                           Navigator.push(
                               context,
-                              //TODO 仮実装で検索画面へ遷移させている
                               MaterialPageRoute(
-                                builder: (context) => UnderMenuMove(),
+                                builder: (context) => TalkRoom(room),
                               ));
                         },
                       ),
