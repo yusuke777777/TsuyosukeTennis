@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 
 import '../Common/CHomePageSetting.dart';
 import '../Common/CmatchList.dart';
+import '../Common/CmatchResult.dart';
 import '../Common/Cmessage.dart';
 import '../Common/CprofileSetting.dart';
 import '../Common/CactivityList.dart';
@@ -21,6 +22,8 @@ class FirestoreMethod {
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
   static final profileRef = _firestoreInstance.collection('myProfile');
   static final matchRef = _firestoreInstance.collection('matchList');
+  static final matchResultRef = _firestoreInstance.collection('matchResult');
+
 
   //トークルームコレクション
   static final roomRef = _firestoreInstance.collection('talkRoom');
@@ -29,6 +32,7 @@ class FirestoreMethod {
 
   //マッチング一覧
   static final matchListSnapshot = matchRef.snapshots();
+
 
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
@@ -517,6 +521,37 @@ class FirestoreMethod {
     });
     return matchList;
   }
+
+
+  //プロフィール情報設定
+  static Future<void> makeMatchResult(CprofileSetting myProfile,CprofileSetting yourProfile,List<CmatchResult>  matchResultList) async {
+    DateTime now = DateTime.now();
+    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+    String today = outputFormat.format(now);
+
+    matchResultList.forEach((a) async {
+      try {
+        await matchResultRef.doc(myProfile.USER_ID).collection('opponentList')
+            .doc(yourProfile.USER_ID).collection('matchDetail')
+            .add({
+          'MY_POINT': matchResultList[int.parse(a.No)].myGamePoint,
+          'YOUR_POINT': matchResultList[int.parse(a.No)].yourGamePoint,
+          'KOUSHIN_YMD': today,
+        });
+        await matchResultRef.doc(yourProfile.USER_ID).collection('opponentList')
+            .doc(myProfile.USER_ID).collection('matchDetail')
+            .add({
+          'MY_POINT': matchResultList[int.parse(a.No)].yourGamePoint,
+          'YOUR_POINT': matchResultList[int.parse(a.No)].myGamePoint,
+          'KOUSHIN_YMD': today,
+        });
+      } catch (e) {
+        print('対戦結果入力に失敗しました --- $e');
+      }
+    }
+    );
+  }
+
 
 // static Future<void> downloadImage(String PresentValueWk) async {
 //   FirebaseStorage storage = FirebaseStorage.instance;

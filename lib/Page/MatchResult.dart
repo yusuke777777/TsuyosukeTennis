@@ -5,6 +5,7 @@ import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
 import '../Common/CmatchResult.dart';
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
+import '../FireBase/FireBase.dart';
 import '../FireBase/ProfileImage.dart';
 import 'MatchList.dart';
 
@@ -24,13 +25,13 @@ class _MatchResultState extends State<MatchResult> {
 
   //アクティビィリスト
   List<CmatchResult> matchResultList = [
-    CmatchResult(No: "0", myGamePoint: "0", yourGamePoint: "0")
+    CmatchResult(No: "0", myGamePoint: 0, yourGamePoint: 0)
   ];
 
   //現在登録中の登録No
   int curTourokuNo = 0;
-  String myGamePoint = "0";
-  String yourGamePoint = "0";
+  int myGamePoint = 0;
+  int yourGamePoint = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -169,6 +170,31 @@ class _MatchResultState extends State<MatchResult> {
                         ),
                       ],
                     ),
+                    Center(
+                      child: Container(
+                        width: 300,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.lightGreenAccent,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                              BorderRadius.all(Radius.circular(80)),
+                            ),
+                          ),
+                          child: Center(
+                            child: Text(
+                              '登録',
+                              style: TextStyle(
+                                  fontSize: 20, color: Colors.black),
+                            ),
+                          ),
+                          onPressed: () {
+                             FirestoreMethod.makeMatchResult(widget.myProfile,widget.yourProfile,matchResultList);
+                             Navigator.pop(context);
+                          },
+                        ),
+                      ),
+                    ),
                   ]),
             ),
           )),
@@ -247,7 +273,7 @@ class _MatchResultState extends State<MatchResult> {
   ];
 
   void _onSelectedMyPointChanged(int index) {
-    myGamePoint = _myPoint[index];
+    myGamePoint = int.parse(_myPoint[index]);
     matchResultList[curTourokuNo] = CmatchResult(
         No: curTourokuNo.toString(),
         myGamePoint: myGamePoint,
@@ -256,7 +282,7 @@ class _MatchResultState extends State<MatchResult> {
   }
 
   void _onSelectedYourPointChanged(int index) {
-    yourGamePoint = _yourPoint[index];
+    yourGamePoint = int.parse(_yourPoint[index]);
     matchResultList[curTourokuNo] = CmatchResult(
         No: curTourokuNo.toString(),
         myGamePoint: myGamePoint,
@@ -267,8 +293,8 @@ class _MatchResultState extends State<MatchResult> {
   activityListAdd(String No) {
     print("No" + No);
     matchResultList
-        .add(CmatchResult(No: No, myGamePoint: "0", yourGamePoint: "0"));
-    myGamePoint = "0";
-    yourGamePoint = "0";
+        .add(CmatchResult(No: No, myGamePoint: 0, yourGamePoint: 0));
+    myGamePoint = 0;
+    yourGamePoint = 0;
   }
 }
