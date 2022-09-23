@@ -1,9 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../Common/CfriendsList.dart';
+import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
 import '../UnderMenuMove.dart';
+import 'ProfileSetting.dart';
+import 'TalkRoom.dart';
 
 /**
  * 友人管理画面です
@@ -16,87 +21,130 @@ class FriendManagerPage extends StatefulWidget {
 }
 
 class _FriendManagerPageState extends State<FriendManagerPage> {
-  //TODO 仮実装です　友人一覧データを取得する予定
-  late Future<List<String>> futureList =
-      FirestoreMethod.getNickNameAndTorokuRank('1HwhZ3H1lNW4QkcfLQHJFVlA40j1');
+  List<FriendsListModel> friendsList = [];
+  Future<void> createFriendsList() async {
+    friendsList = await FirestoreMethod.getFriendsList(
+        FirestoreMethod.auth.currentUser!.uid);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF2FFE4),
       appBar: AppBar(
-        title: Text("検索結果"),
+        backgroundColor: Color(0xFF3CB371),
+        title: Text("友人一覧"),
       ),
-      body: FutureBuilder(
-        future: futureList,
-        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-          {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return new Align(
-                  child: Center(
-                child: new CircularProgressIndicator(),
-              ));
-            } else if (snapshot.hasError) {
-              return new Text('Error: ${snapshot.error!}');
-            } else if (snapshot.hasData) {
-              //取得したい値をリスト型で格納
-              List<String>? profileList = snapshot.data;
-              //該当するユーザが存在しない時
-              if (profileList == null) {
-                return ListView(
-                    padding: const EdgeInsets.all(8),
-                    children: <Widget>[
-                      //TODO このListTileを押せるようにしたい＋アイコン付ける方法調べる
-                      ListTile(title: Text("対象ユーザーは存在しません")),
-                    ]);
-              } else {
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirestoreMethod.friendsListSnapshot,
+        builder: (context, snapshot) {
+          return FutureBuilder(
+            future: createFriendsList(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
                 return ListView.builder(
-                  itemCount: 1,
-                  // padding: const EdgeInsets.all(8),
-                  itemBuilder: (BuildContext context, int index) {
-                    //ListをスライドさせるためにSlidableでラップ
-                    return Slidable(
-                      endActionPane: ActionPane(
-                        motion: DrawerMotion(),
-                        children: [
-                          SlidableAction(
-                            onPressed: (value) {},
-                            backgroundColor: Colors.red,
-                            icon: Icons.delete,
-                            label: '削除',
+                    itemCount: friendsList.length,
+                    itemBuilder: (context, index) {
+                      return Slidable(
+                          endActionPane: ActionPane(
+                            motion: DrawerMotion(),
+                            children: [
+                              SlidableAction(
+                                onPressed: (value) {
+                                  FirestoreMethod.delFriendsList(friendsList[index].FRIENDS_ID,context);
+                                },
+                                backgroundColor: Colors.red,
+                                icon: Icons.delete,
+                                label: '削除',
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      child: Card(
-                        child: ListTile(
-                          leading: ClipOval(
-                            child: Image.asset(
-                              'images/ans_032.jpg',
-                              width: 70,
+                          child: Card(
+                            color: const Color(0xFFF2FFE4),
+                            child: Container(
                               height: 70,
-                              fit: BoxFit.fill,
+                              child: Row(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
+                                    child: InkWell(
+                                      child: friendsList[index]
+                                          .YOUR_USER
+                                          .PROFILE_IMAGE ==
+                                          ''
+                                          ? CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                        backgroundImage: NetworkImage(
+                                            "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                        radius: 30,
+                                      )
+                                          : CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          backgroundImage: NetworkImage(
+                                              friendsList[index]
+                                                  .YOUR_USER
+                                                  .PROFILE_IMAGE),
+                                          radius: 30),
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProfileSetting.Edit(
+                                                        friendsList[index]
+                                                            .YOUR_USER)));
+                                      },
+                                    ),
+                                  ),
+                                  InkWell(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                            friendsList[index]
+                                                .YOUR_USER
+                                                .NICK_NAME,
+                                            style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight:
+                                                FontWeight.bold)),
+                                        Text(friendsList[index].SAKUSEI_TIME,
+                                            style: TextStyle(
+                                                color: Colors.grey),
+                                            overflow: TextOverflow.ellipsis)
+                                      ],
+                                    ),
+                                    onTap: () async{
+                                      //トーク画面へ
+                                        TalkRoomModel room =
+                                        await FirestoreMethod.getRoom(
+                                            friendsList[index]
+                                                .RECIPIENT_ID,
+                                            friendsList[index].SENDER_ID,
+                                            friendsList[index].YOUR_USER);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    TalkRoom(room)));
+                                      }
+                                  )
+                                ],
+                              ),
                             ),
-                          ),
-                          title: Text(profileList[0],
-                              style: TextStyle(fontSize: 30)),
-                          onTap: () {
-                            Navigator.push(
-                                context,
-                                //TODO 仮実装で検索画面へ遷移させている
-                                MaterialPageRoute(
-                                  builder: (context) => UnderMenuMove(),
-                                ));
-                          },
-                        ),
-                      ),
-                    );
-                  },
-                );
+                          ));
+                    });
+              } else {
+                return Center(child: CircularProgressIndicator());
               }
-            } else {
-              return Text("データが存在しません");
-            }
-          }
-        },
+            },
+          );
+        }
       ),
     );
   }

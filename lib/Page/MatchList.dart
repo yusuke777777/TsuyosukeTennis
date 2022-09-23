@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CtalkRoom.dart';
 import 'package:tsuyosuke_tennis_ap/Page/MatchResult.dart';
 import 'package:tsuyosuke_tennis_ap/Page/ProfileSetting.dart';
@@ -61,20 +62,36 @@ class _MatchListState extends State<MatchList> {
                     return ListView.builder(
                         itemCount: matchList.length,
                         itemBuilder: (context, index) {
-                          return Card(
-                            color: const  Color(0xFFF2FFE4),
-                            child: Container(
-                              height: 70,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                          return Slidable(
+                              endActionPane: ActionPane(
+                                motion: DrawerMotion(),
                                 children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
-                                    child: InkWell(
-                                      child:
-                                          matchList[index].YOUR_USER.PROFILE_IMAGE ==
+                                  SlidableAction(
+                                    onPressed: (value) {
+                                      FirestoreMethod.delMatchList(matchList[index].MATCH_ID,context);
+                                    },
+                                    backgroundColor: Colors.red,
+                                    icon: Icons.delete,
+                                    label: '削除',
+                                  ),
+                                ],
+                              ),
+                              child: Card(
+                                color: const Color(0xFFF2FFE4),
+                                child: Container(
+                                  height: 70,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
+                                        child: InkWell(
+                                          child: matchList[index]
+                                                      .YOUR_USER
+                                                      .PROFILE_IMAGE ==
                                                   ''
                                               ? CircleAvatar(
                                                   backgroundColor: Colors.white,
@@ -89,64 +106,76 @@ class _MatchListState extends State<MatchList> {
                                                           .YOUR_USER
                                                           .PROFILE_IMAGE),
                                                   radius: 30),
-                                      onTap: () {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    ProfileSetting.Edit(
-                                                        matchList[index].YOUR_USER)));
-                                      },
-                                    ),
-                                  ),
-                                  InkWell(
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(matchList[index].YOUR_USER.NICK_NAME,
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.bold)),
-                                        Text(matchList[index].SAKUSEI_TIME,
-                                            style: TextStyle(color: Colors.grey),
-                                            overflow: TextOverflow.ellipsis)
-                                      ],
-                                    ),
-                                    onTap: () {
-                                      //対戦結果入力画面へ遷移
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MatchResult(matchList[index].MY_USER, matchList[index].YOUR_USER)
-                                                 ));
-                                    },
-                                  ),
-                                  SizedBox(width: 120,),
-                                  //トーク画面へ遷移
-                                  IconButton(
-                                      icon: const Icon(
-                                        Icons.message,
-                                        color: Colors.black,
-                                        size: 30.0,
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProfileSetting.Edit(
+                                                            matchList[index]
+                                                                .YOUR_USER)));
+                                          },
+                                        ),
                                       ),
-                                      onPressed: () async {
-                                        TalkRoomModel room =
-                                            await FirestoreMethod.getRoom(
-                                                matchList[index].RECIPIENT_ID,
-                                                matchList[index].SENDER_ID,
-                                                matchList[index].YOUR_USER);
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    TalkRoom(room)));
-                                      })
-                                ],
-                              ),
-                            ),
-                          );
+                                      InkWell(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                                matchList[index]
+                                                    .YOUR_USER
+                                                    .NICK_NAME,
+                                                style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight:
+                                                        FontWeight.bold)),
+                                            Text(matchList[index].SAKUSEI_TIME,
+                                                style: TextStyle(
+                                                    color: Colors.grey),
+                                                overflow: TextOverflow.ellipsis)
+                                          ],
+                                        ),
+                                        onTap: () {
+                                          //対戦結果入力画面へ遷移
+                                          Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MatchResult(
+                                                          matchList[index]
+                                                              .MY_USER,
+                                                          matchList[index]
+                                                              .YOUR_USER)));
+                                        },
+                                      ),
+                                      SizedBox(
+                                        width: 120,
+                                      ),
+                                      //トーク画面へ遷移
+                                      IconButton(
+                                          icon: const Icon(
+                                            Icons.message,
+                                            color: Colors.black,
+                                            size: 30.0,
+                                          ),
+                                          onPressed: () async {
+                                            TalkRoomModel room =
+                                                await FirestoreMethod.getRoom(
+                                                    matchList[index]
+                                                        .RECIPIENT_ID,
+                                                    matchList[index].SENDER_ID,
+                                                    matchList[index].YOUR_USER);
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        TalkRoom(room)));
+                                          })
+                                    ],
+                                  ),
+                                ),
+                              ));
                         });
                   } else {
                     return Center(child: CircularProgressIndicator());

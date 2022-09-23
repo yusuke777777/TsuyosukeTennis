@@ -7,9 +7,11 @@ import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../Common/CHomePageSetting.dart';
+import '../Common/CfriendsList.dart';
 import '../Common/CmatchList.dart';
 import '../Common/CmatchResult.dart';
 import '../Common/Cmessage.dart';
@@ -642,6 +644,39 @@ class FirestoreMethod {
     return matchList;
   }
 
+  //マッチング一覧削除
+  static void delMatchList(String delId,BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('本当に削除して宜しいですか'),
+            actions: <Widget>[
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.lightGreenAccent,
+                    onPrimary: Colors.black),
+                child: Text('はい'),
+                onPressed: () {
+                  matchRef.doc(delId).delete();
+                  Navigator.pop(context);
+                },
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.lightGreenAccent,
+                    onPrimary: Colors.black),
+                child: Text('いいえ'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+
 
   //対戦結果作成
   static Future<void> makeMatchResult(CprofileSetting myProfile,CprofileSetting yourProfile,List<CmatchResult>  matchResultList) async {
@@ -672,6 +707,7 @@ class FirestoreMethod {
     );
   }
 
+
   //友達一覧に追加
   static Future<void> makeFriends(TalkRoomModel talkRoom) async {
     DateTime now = DateTime.now();
@@ -691,6 +727,80 @@ class FirestoreMethod {
       print('友達登録に失敗しました --- $e');
     }
   }
+
+  //友人リスト取得
+  static Future<List<FriendsListModel>> getFriendsList(String myUserId) async {
+    final snapshot = await friendsListRef.get();
+    List<FriendsListModel> friendsList = [];
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      if (doc.data()['RECIPIENT_ID'].contains(myUserId)) {
+        CprofileSetting yourProfile =
+        await getYourProfile(doc.data()['SENDER_ID']);
+        CprofileSetting myProfile =
+        await getYourProfile(doc.data()['RECIPIENT_ID']);
+
+        FriendsListModel friends = FriendsListModel(
+          FRIENDS_ID: doc.data()['FRIENDS_ID'],
+          RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
+          SENDER_ID: doc.data()['SENDER_ID'],
+          SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
+          FRIENDS_FLG: doc.data()['FRIENDS_FLG'],
+          MY_USER: myProfile,
+          YOUR_USER: yourProfile,
+        );
+        friendsList.add(friends);
+      } else if (doc.data()['SENDER_ID'].contains(myUserId)) {
+        CprofileSetting yourProfile =
+        await getYourProfile(doc.data()['RECIPIENT_ID']);
+        CprofileSetting myProfile =
+        await getYourProfile(doc.data()['SENDER_ID']);
+        FriendsListModel friends = FriendsListModel(
+          FRIENDS_ID: doc.data()['FRIENDS_ID'],
+          RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
+          SENDER_ID: doc.data()['SENDER_ID'],
+          SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
+          FRIENDS_FLG: doc.data()['FRIENDS_FLG'],
+          MY_USER: myProfile,
+          YOUR_USER: yourProfile,
+        );
+        friendsList.add(friends);
+      }
+    });
+    return friendsList;
+  }
+
+  //友人リスト削除
+  static void delFriendsList(String delId,BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('本当に削除して宜しいですか'),
+            actions: <Widget>[
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.lightGreenAccent,
+                    onPrimary: Colors.black),
+                child: Text('はい'),
+                onPressed: () {
+                  friendsListRef.doc(delId).delete();
+                  Navigator.pop(context);
+                },
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.lightGreenAccent,
+                    onPrimary: Colors.black),
+                child: Text('いいえ'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
 
 
 // static Future<void> downloadImage(String PresentValueWk) async {
