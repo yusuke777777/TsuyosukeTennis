@@ -112,6 +112,12 @@ class _ProfileSettingState extends State<ProfileSetting> {
     if (koushinFlg == "1") {
       activityList = widget.myProfile.activityList;
     }
+
+    //都道府県登録数Index更新
+    if (koushinFlg == "1") {
+      todofukenTourokuNo = widget.myProfile.activityList.length;
+      todofukenTourokuNo = todofukenTourokuNo -1;
+    }
   }
 
   @override
