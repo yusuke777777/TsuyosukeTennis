@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../Common/CHomePageSetting.dart';
+import '../Common/CSinglesRankModel.dart';
 import '../Common/CfriendsList.dart';
 import '../Common/CmatchList.dart';
 import '../Common/CmatchResult.dart';
@@ -26,6 +27,8 @@ class FirestoreMethod {
   static final matchRef = _firestoreInstance.collection('matchList');
   static final friendsListRef = _firestoreInstance.collection('friendsList');
   static final matchResultRef = _firestoreInstance.collection('matchResult');
+  static final manSinglesRankRef = _firestoreInstance.collection('manSinglesRank');
+  static final femailesSinglesRankRef = _firestoreInstance.collection('femailSinglesRank');
 
 
   //トークルームコレクション
@@ -799,6 +802,41 @@ class FirestoreMethod {
             ],
           );
         });
+  }
+
+  //男性シングルス・ランキングテーブルGET
+  static Future<List<RankModel>> getManSinglesRank(String RankLevel) async {
+      final snapshot = await manSinglesRankRef.doc(RankLevel).collection('RankList').get();
+    List<RankModel> rankList = [];
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      String userId = doc.data()['USER_ID'];
+      CprofileSetting yourProfile = await getYourProfile(userId);
+      RankModel rankListWork = RankModel(
+          rankNo: doc.data()['RANK_NO'],
+          user: yourProfile,
+        tpPoint: doc.data()['TP_POINT'],
+        taishoShu: doc.data()['TAISHO_SHU']
+        );
+      rankList.add(rankListWork);
+    });
+    return rankList;
+  }
+  //女子シングルス・ランキングテーブルGET
+  static Future<List<RankModel>> getFemailSinglesRank(String RankLevel) async {
+    final snapshot = await femailesSinglesRankRef.doc(RankLevel).collection('RankList').get();
+    List<RankModel> rankList = [];
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      String userId = doc.data()['USER_ID'];
+      CprofileSetting yourProfile = await getYourProfile(userId);
+      RankModel rankListWork = RankModel(
+          rankNo: doc.data()['RANK_NO'],
+          user: yourProfile,
+          tpPoint: doc.data()['TP_POINT'],
+          taishoShu: doc.data()['TAISHO_SHU']
+      );
+      rankList.add(rankListWork);
+    });
+    return rankList;
   }
 
 

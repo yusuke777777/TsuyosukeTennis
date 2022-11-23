@@ -4,6 +4,7 @@ import 'package:tsuyosuke_tennis_ap/Page/HomePage.dart';
 
 import 'Page/MatchList.dart';
 import 'Page/TalkList.dart';
+import 'Page/manSinglesRankList.dart';
 
 /**
  * 下部メニューの動きを制御するクラス
@@ -16,13 +17,13 @@ class UnderMenuMove extends StatefulWidget {
 }
 
 class _UnderMenuMoveState extends State<UnderMenuMove> {
-  static const _screens = [
+  static final _screens = [
     HomePage(),
     FindPage(),
     MatchList(),
     TalkList(),
+    manSinglesRankList("ShokyuRank"),
   ];
-
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
