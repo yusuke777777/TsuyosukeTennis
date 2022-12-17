@@ -24,31 +24,10 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: const Color(0xFFF2FFE4),
-        appBar: AppBar(
-          backgroundColor: const Color(0xFF3CB371),
-          title: Text('ランキング'),
-        ),
-        drawer: Drawer(
-            child: ListView(
-          children: <Widget>[
-            Padding(padding: EdgeInsets.only(top: 10.0)),
-            Container(
-              height: 60.0,
-              child: DrawerHeader(
-                child: Text("メニュー"),
-                decoration: BoxDecoration(),
-              ),
-            ),
-            ListTile(
-              title: Text('利用規約同意書', style: TextStyle(color: Colors.black54)),
-              // onTap: _manualURL,
-            ),
-            ListTile(
-              title: Text('アプリ操作手順書', style: TextStyle(color: Colors.black54)),
-              // onTap: _FAQURL,
-            )
-          ],
-        )),
+        // appBar: AppBar(
+        //   backgroundColor: const Color(0xFF3CB371),
+        //   title: Text('ランキング'),
+        // ),
         body: Stack(
           children: [
             Column(
@@ -138,7 +117,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                                 ),
                                         ),
                                         Container(
-                                          width: 150,
+                                          width: 120,
                                           child: Text(
                                               RankModelList[index].user.NICK_NAME,
                                               style: TextStyle(

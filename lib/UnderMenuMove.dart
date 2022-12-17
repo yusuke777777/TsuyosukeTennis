@@ -3,6 +3,7 @@ import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/HomePage.dart';
 
 import 'Page/MatchList.dart';
+import 'Page/RankList.dart';
 import 'Page/TalkList.dart';
 import 'Page/manSinglesRankList.dart';
 
@@ -22,7 +23,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     FindPage(),
     MatchList(),
     TalkList(),
-    manSinglesRankList("ShokyuRank"),
+    RankList(),
   ];
   int _selectedIndex = 0;
 
