@@ -679,29 +679,46 @@ class FirestoreMethod {
         });
   }
 
-
-
   //対戦結果作成
   static Future<void> makeMatchResult(CprofileSetting myProfile,CprofileSetting yourProfile,List<CmatchResult>  matchResultList) async {
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy/MM/dd HH:mm');
     String today = outputFormat.format(now);
+    int MY_WIN_FLG = 0;
+    int YOUR_WIN_FLG = 0;
+    int MY_TS_POINT = 0;
+    int YOUR_TS_POINT = 0;
 
     matchResultList.forEach((a) async {
       try {
+        if(a.myGamePoint > a.yourGamePoint){
+          MY_WIN_FLG = 1;
+          YOUR_WIN_FLG = 0;
+          //付与TSポイントの算出
+          //MY_TS_POINT =　TSポイント算出メソッド
+          YOUR_TS_POINT = 0;
+
+        }else{
+          YOUR_WIN_FLG = 1;
+          MY_WIN_FLG = 0;
+          //YOUR_TS_POINT =　TSポイント算出メソッド
+          MY_TS_POINT = 0;
+        }
         await matchResultRef.doc(myProfile.USER_ID).collection('opponentList')
             .doc(yourProfile.USER_ID).collection('matchDetail')
             .add({
-          'MY_POINT': matchResultList[int.parse(a.No)].myGamePoint,
-          'YOUR_POINT': matchResultList[int.parse(a.No)].yourGamePoint,
-          'KOUSHIN_TIME': today,
+          'MY_POINT': a.myGamePoint ,
+          'YOUR_POINT': a.yourGamePoint,
+          'WIN_FLG':MY_WIN_FLG,
+          'KOUSHIN_TIME': today
         });
         await matchResultRef.doc(yourProfile.USER_ID).collection('opponentList')
             .doc(myProfile.USER_ID).collection('matchDetail')
             .add({
-          'MY_POINT': matchResultList[int.parse(a.No)].yourGamePoint,
-          'YOUR_POINT': matchResultList[int.parse(a.No)].myGamePoint,
-          'KOUSHIN_TIME': today,
+          'MY_POINT': a.yourGamePoint,
+          'YOUR_POINT': a.myGamePoint,
+          'WIN_FLG':YOUR_WIN_FLG,
+          'KOUSHIN_TIME': today
         });
       } catch (e) {
         print('対戦結果入力に失敗しました --- $e');
@@ -709,7 +726,6 @@ class FirestoreMethod {
     }
     );
   }
-
 
   //友達一覧に追加
   static Future<void> makeFriends(TalkRoomModel talkRoom) async {

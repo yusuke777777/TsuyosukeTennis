@@ -50,7 +50,7 @@ class RankList extends StatelessWidget {
             child: PreferredSize(
               preferredSize: Size.fromHeight(40.0),
               child: AppBar(
-                title: Text("TPランキング",
+                title: Text("TSPランキング",
                     style: TextStyle(
                       color: const Color(0xFFFFFFFF),
                       fontSize: 18,
