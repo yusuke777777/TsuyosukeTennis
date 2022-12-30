@@ -8,7 +8,7 @@ showTextDialog(context, message) async {
       return AlertDialog(
         content: Text(message),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             child: Text('OK'),
             onPressed: () {
               Navigator.of(context).pop();

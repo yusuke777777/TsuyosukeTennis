@@ -234,11 +234,12 @@ class _SignUpPageState extends State<SignUpPage> {
                                                       }
                                                     : null,
                                               ),
-                                              FlatButton(
+                                              TextButton(
                                                 child: Text(
                                                   'ログイン画面に戻る',
+                                                  style: TextStyle(
+                                                      color: Color(0xFF9E9E9E)),
                                                 ),
-                                                textColor: Color(0xFF9E9E9E),
                                                 onPressed: () {
                                                   Navigator.pushReplacement(
                                                     context,

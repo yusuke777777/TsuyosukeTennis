@@ -1,4 +1,4 @@
-class FirestoreMethod {
+class TsMethod {
   static int tsPointCalculation(
       String myLevel, String yourLevel, int myRank, int yourRank) {
     int tsPoint = 0;
@@ -65,6 +65,7 @@ class FirestoreMethod {
         RankTsPoint = RankTsPoint + 100;
       }
     }
+    tsPoint = NormalTsPoint + RankTsPoint;
     return tsPoint;
   }
 }

@@ -86,10 +86,11 @@ class SignInPage extends StatelessWidget {
                             SizedBox(
                               width: double.infinity,
                               height: 50,
-                              child: RaisedButton(
-                                child: Text('ログイン'),
-                                color: Color(0xFF4CAF50),
-                                textColor: Colors.white,
+                              child: ElevatedButton(
+                                child: Text('ログイン',style: TextStyle(color: Colors.white,),),
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF4CAF50)),
+                                ),
                                 onPressed: model.isMailValid &&
                                     model.isPasswordValid
                                     ? () async {
@@ -116,11 +117,10 @@ class SignInPage extends StatelessWidget {
                             SizedBox(
                               height: 16,
                             ),
-                            FlatButton(
+                            TextButton(
                               child: Text(
                                 '新規登録はこちら',
-                              ),
-                              textColor: Color(0xFF4CAF50),
+                             style: TextStyle(color:Color(0xFF4CAF50) ), ),
                               onPressed: () {
                                 Navigator.pushReplacement(
                                   context,
@@ -130,11 +130,10 @@ class SignInPage extends StatelessWidget {
                                 );
                               },
                             ),
-                            FlatButton(
+                            TextButton(
                               child: Text(
                                 'パスワードを忘れた場合',
-                              ),
-                              textColor: Colors.grey,
+                              style: TextStyle(color:Colors.grey),),
                               onPressed: () {
                                 Navigator.pushReplacement(
                                   context,

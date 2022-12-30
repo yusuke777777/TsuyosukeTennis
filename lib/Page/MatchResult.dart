@@ -7,6 +7,7 @@ import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/ProfileImage.dart';
+import '../FireBase/TsMethod.dart';
 import 'MatchList.dart';
 
 class MatchResult extends StatefulWidget {
