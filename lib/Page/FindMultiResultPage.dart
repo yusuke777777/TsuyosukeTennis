@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/material/list_tile.dart';
 import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
+import 'package:tsuyosuke_tennis_ap/Page/ProfileReference.dart';
 import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
 import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
@@ -91,7 +92,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                                     context,
                                     //TODO 仮実装で検索画面へ遷移させている
                                     MaterialPageRoute(
-                                      builder: (context) => FindPage(),
+                                      builder: (context) => ProfileReference(idList[index]),
                                     ));
                               },
                               child:

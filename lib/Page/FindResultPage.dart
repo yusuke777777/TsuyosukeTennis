@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/material/list_tile.dart';
 import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
+import 'package:tsuyosuke_tennis_ap/Page/ProfileReference.dart';
 import 'package:tsuyosuke_tennis_ap/Page/TalkRoom.dart';
 import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
 import '../Common/CtalkRoom.dart';
@@ -78,7 +79,7 @@ class _FindResultPageState extends State<FindResultPage> {
                                   context,
                                   //TODO 仮実装で検索画面へ遷移させている
                                   MaterialPageRoute(
-                                    builder: (context) => FindPage(),
+                                    builder: (context) => ProfileReference(inputId),
                                   ));
                             },
                             child: profileList[1] == ""

@@ -484,25 +484,20 @@ class FirestoreMethod {
     List<List<String>> resultList = [];
     List<String> nameList = [];
     List<String> profileList = [];
-    List<String> idList = [];
+    List<String> idList =[];
 
     //コレクション「myProfile」から該当データを絞る
     final snapShot = await FirebaseFirestore.instance
-        .collection('myProfile')
-        .where('GENDER', isEqualTo: gender)
-        .where('TOROKU_RANK', isEqualTo: rank)
-        .where('AGE', isEqualTo: age)
-        .get();
+        .collection('myProfile').where('GENDER',isEqualTo: gender).where('TOROKU_RANK',isEqualTo: rank).where('AGE',isEqualTo: age).get();
 
     await Future.forEach<dynamic>(snapShot.docs, (document) async {
       final snapShot_sub = await FirebaseFirestore.instance
-          .collection('myProfile')
-          .doc(document.id)
-          .collection('activityList')
-          .get();
+          .collection('myProfile').doc(document.id).collection('activityList').get();
 
+      //各ユーザーの表示回数を１回に制限
+      int count = 0;
       await Future.forEach<dynamic>(snapShot_sub.docs, (doc) async {
-        if (doc.data()['TODOFUKEN'] == todofuken) {
+        if(doc.data()['TODOFUKEN'] == todofuken && count ==0) {
           if (shichoson == '') {
             nameList.add(document.get('NICK_NAME'));
             profileList.add(document.get('PROFILE_IMAGE'));
@@ -510,13 +505,16 @@ class FirestoreMethod {
             resultList.add(nameList);
             resultList.add(profileList);
             resultList.add(idList);
-          } else if (doc.data()['SHICHOSON'] == shichoson) {
+            count ++;
+          }
+          else if(doc.data()['SHICHOSON'] == shichoson && count == 0) {
             nameList.add(document.get('NICK_NAME'));
             profileList.add(document.get('PROFILE_IMAGE'));
             idList.add(document.get('USER_ID'));
             resultList.add(nameList);
             resultList.add(profileList);
             resultList.add(idList);
+            count ++;
           }
         }
       });
