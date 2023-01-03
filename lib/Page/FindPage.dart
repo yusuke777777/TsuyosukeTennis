@@ -47,7 +47,6 @@ class _FindPageState extends State<FindPage> {
         title: const Text(
           "検索",
           style: TextStyle(
-            color: Colors.black,
             fontSize: 30,
           ),
         ),
