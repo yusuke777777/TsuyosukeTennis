@@ -7,7 +7,7 @@ const manSinglesRankRef = admin.firestore().collection("manSinglesRank");
 /** 定期的にメタ情報を更新する関数。 */
 exports.updateMetaFunction = functions
     .region("asia-northeast1")
-    .pubsub.schedule("every 5 minutes")
+    .pubsub.schedule("every 1 hours")
     .onRun(async (context) => {
       console.log("ランキング作成開始");
       await getRankTable();
@@ -30,7 +30,7 @@ async function getRankTable(): Promise<void> {
     });
   }
   );
-  ranks.sort((a, b) => a.TP_POINT - b.TP_POINT);
+  ranks.sort((a, b) => b.TP_POINT - a.TP_POINT );
 
   for (let index = 0; index < ranks.length; index++) {
     try {

@@ -65,7 +65,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
             Padding(
               padding: EdgeInsets.only(top: 40),
               child: StreamBuilder<QuerySnapshot>(
-                  stream: FirestoreMethod.roomSnapshot,
+                  stream: FirestoreMethod.manRankSnapshot,
                   builder: (context, snapshot) {
                     return FutureBuilder(
                       future: createRankList(),
@@ -87,7 +87,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                       children: [
                                         Padding(padding: EdgeInsets.all(10)),
                                         Container(
-                                          child: Text(RankModelList[index].rankNo,
+                                          child: Text(RankModelList[index].rankNo.toString(),
                                               style: TextStyle(
                                                   fontSize: 25,
                                                   color: Colors.black),
@@ -117,7 +117,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                                 ),
                                         ),
                                         Container(
-                                          width: 120,
+                                          width: 100,
                                           child: Text(
                                               RankModelList[index].user.NICK_NAME,
                                               style: TextStyle(
@@ -125,7 +125,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                               )),
                                         ),
                                         Container(
-                                          width: 100,
+                                          width: 80,
                                           child: Text(
                                               RankModelList[index]
                                                   .tpPoint

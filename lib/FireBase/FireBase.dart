@@ -28,8 +28,12 @@ class FirestoreMethod {
   static final matchRef = _firestoreInstance.collection('matchList');
   static final friendsListRef = _firestoreInstance.collection('friendsList');
   static final matchResultRef = _firestoreInstance.collection('matchResult');
+
+  //ランキングリスト
   static final manSinglesRankRef =
       _firestoreInstance.collection('manSinglesRank');
+  static final manRankSnapshot = manSinglesRankRef.snapshots();
+
   static final femailesSinglesRankRef =
       _firestoreInstance.collection('femailSinglesRank');
 
@@ -484,20 +488,27 @@ class FirestoreMethod {
     List<List<String>> resultList = [];
     List<String> nameList = [];
     List<String> profileList = [];
-    List<String> idList =[];
+    List<String> idList = [];
 
     //コレクション「myProfile」から該当データを絞る
     final snapShot = await FirebaseFirestore.instance
-        .collection('myProfile').where('GENDER',isEqualTo: gender).where('TOROKU_RANK',isEqualTo: rank).where('AGE',isEqualTo: age).get();
+        .collection('myProfile')
+        .where('GENDER', isEqualTo: gender)
+        .where('TOROKU_RANK', isEqualTo: rank)
+        .where('AGE', isEqualTo: age)
+        .get();
 
     await Future.forEach<dynamic>(snapShot.docs, (document) async {
       final snapShot_sub = await FirebaseFirestore.instance
-          .collection('myProfile').doc(document.id).collection('activityList').get();
+          .collection('myProfile')
+          .doc(document.id)
+          .collection('activityList')
+          .get();
 
       //各ユーザーの表示回数を１回に制限
       int count = 0;
       await Future.forEach<dynamic>(snapShot_sub.docs, (doc) async {
-        if(doc.data()['TODOFUKEN'] == todofuken && count ==0) {
+        if (doc.data()['TODOFUKEN'] == todofuken && count == 0) {
           if (shichoson == '') {
             nameList.add(document.get('NICK_NAME'));
             profileList.add(document.get('PROFILE_IMAGE'));
@@ -505,16 +516,15 @@ class FirestoreMethod {
             resultList.add(nameList);
             resultList.add(profileList);
             resultList.add(idList);
-            count ++;
-          }
-          else if(doc.data()['SHICHOSON'] == shichoson && count == 0) {
+            count++;
+          } else if (doc.data()['SHICHOSON'] == shichoson && count == 0) {
             nameList.add(document.get('NICK_NAME'));
             profileList.add(document.get('PROFILE_IMAGE'));
             idList.add(document.get('USER_ID'));
             resultList.add(nameList);
             resultList.add(profileList);
             resultList.add(idList);
-            count ++;
+            count++;
           }
         }
       });
@@ -722,7 +732,7 @@ class FirestoreMethod {
           MY_TS_POINT_FUYO = 0;
           print(YOUR_TS_POINT_FUYO);
         }
-         matchResultRef
+        matchResultRef
             .doc(myProfile.USER_ID)
             .collection('opponentList')
             .doc(yourProfile.USER_ID)
@@ -734,7 +744,7 @@ class FirestoreMethod {
           'TS_POINT': MY_TS_POINT_FUYO,
           'KOUSHIN_TIME': today
         });
-         matchResultRef
+        matchResultRef
             .doc(yourProfile.USER_ID)
             .collection('opponentList')
             .doc(myProfile.USER_ID)
@@ -761,12 +771,8 @@ class FirestoreMethod {
     try {
       MY_TS_POINT = MY_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
       YOUR_TS_POINT = YOUR_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
-      matchResultRef.doc(myProfile.USER_ID).set({
-     'TS_POINT':MY_TS_POINT
-      });
-      matchResultRef.doc(yourProfile.USER_ID).set({
-        'TS_POINT':YOUR_TS_POINT
-      });
+      matchResultRef.doc(myProfile.USER_ID).set({'TS_POINT': MY_TS_POINT});
+      matchResultRef.doc(yourProfile.USER_ID).set({'TS_POINT': YOUR_TS_POINT});
     } catch (e) {
       print('TSPポイントの付与に失敗しました --- $e');
     }
@@ -871,12 +877,18 @@ class FirestoreMethod {
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
       String userId = doc.data()['USER_ID'];
       CprofileSetting yourProfile = await getYourProfile(userId);
-      RankModel rankListWork = RankModel(
-          rankNo: doc.data()['RANK_NO'],
-          user: yourProfile,
-          tpPoint: doc.data()['TP_POINT'],
-          taishoShu: doc.data()['TAISHO_SHU']);
-      rankList.add(rankListWork);
+      print(yourProfile.TOROKU_RANK);
+      try {
+        RankModel rankListWork = RankModel(
+            rankNo: doc.data()['RANK_NO'],
+            user: yourProfile,
+            tpPoint: doc.data()['TP_POINT'],
+            taishoShu: doc.data()['TAISHO_SHU']);
+        rankList.add(rankListWork);
+        rankList.sort((a, b) => b.rankNo.compareTo(a.rankNo));
+      } catch (e) {
+        print(e.toString());
+      }
     });
     return rankList;
   }

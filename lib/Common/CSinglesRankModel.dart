@@ -3,7 +3,7 @@ import 'package:tsuyosuke_tennis_ap/Common/CprofileSetting.dart';
 import 'package:tsuyosuke_tennis_ap/Page/bk_ProfileSetting.dart';
 
 class RankModel{
-  late String rankNo;
+  late int rankNo;
   late CprofileSetting user;
   late int tpPoint;
   late String taishoShu;
