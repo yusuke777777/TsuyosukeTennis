@@ -205,7 +205,7 @@ class FirestoreMethod {
     await Future.forEach<dynamic>(snapShotActivity.docs, (doc) async {
       activityList.add(CativityList(
         No: doc.data()['No'],
-        TODOFUKEN: doc.data()['TODOF  UKEN'],
+        TODOFUKEN: doc.data()['TODOFUKEN'],
         SHICHOSON: TextEditingController(text: doc.data()['SHICHOSON']),
       ));
     });

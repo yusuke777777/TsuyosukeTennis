@@ -36,17 +36,17 @@ class _FindPageState extends State<FindPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF2FFE4),
       appBar: AppBar(
+        backgroundColor: const Color(0xFF3CB371),
         //appBarの背景色等設定
         leading: const Icon(Icons.menu, color: Colors.black),
         elevation: 0.0,
-        backgroundColor: Colors.white,
         shadowColor: Colors.white,
 
         title: const Text(
           "検索",
           style: TextStyle(
-            color: Colors.black,
             fontSize: 30,
           ),
         ),

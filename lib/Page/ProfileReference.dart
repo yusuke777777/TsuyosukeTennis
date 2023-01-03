@@ -30,9 +30,10 @@ class _ProfileReferenceState extends State<ProfileReference> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        backgroundColor: const Color(0xFFF2FFE4),
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: Colors.white,
+          backgroundColor: const Color(0xFF3CB371),
           shadowColor: Colors.white,
           leading: IconButton(
             icon: const Icon(
@@ -72,8 +73,8 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                         fit: BoxFit.cover)
                                     : Image.network(
                                         profileList.PROFILE_IMAGE,
-                                        width: 70,
-                                        height: 70,
+                                        width: 90,
+                                        height: 90,
                                         fit: BoxFit.fill,
                                       )),
                           ),
@@ -84,12 +85,13 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                 child: Text(
                                   profileList.NICK_NAME,
                                   style: TextStyle(
-                                      fontSize: 50, color: Colors.black),
+                                      fontSize: 50,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w900),
                                 ),
                               ),
                             ],
                           ),
-
                           //登録ランク
                           Row(
                             children: [
@@ -98,9 +100,12 @@ class _ProfileReferenceState extends State<ProfileReference> {
                               ),
                               Container(
                                 child: Text(
-                                  '●登録ランク',
+                                  '登録ランク',
                                   style: TextStyle(
-                                      fontSize: 25, color: Colors.black),
+                                      fontSize: 25,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w900,
+                                      decoration: TextDecoration.underline),
                                 ),
                               ),
                             ],
@@ -113,7 +118,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                 child: Text(
                                   profileList.TOROKU_RANK,
                                   style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
+                                      fontSize: 30, color: Colors.black),
                                 ),
                               ),
                             ],
@@ -126,9 +131,12 @@ class _ProfileReferenceState extends State<ProfileReference> {
                               ),
                               Container(
                                 child: Text(
-                                  '●主な活動場所',
+                                  '主な活動場所',
                                   style: TextStyle(
-                                      fontSize: 25, color: Colors.black),
+                                      fontSize: 25,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w900,
+                                      decoration: TextDecoration.underline),
                                 ),
                               ),
                             ],
@@ -154,23 +162,24 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                             '●都道府県',
                                             style: TextStyle(
                                                 fontSize: 25,
-                                                color: Colors.black),
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w900,),
                                           ),
                                         ),
                                       ],
                                     ),
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                          MainAxisAlignment.end,
                                       children: [
                                         Container(
                                           padding: const EdgeInsets.all(5.0),
                                           width: 250,
-                                          height: 40,
+                                          height: 50,
                                           child: Text(
                                             '${profileList.activityList[index].TODOFUKEN}',
                                             style: TextStyle(
-                                                fontSize: 20,
+                                                fontSize: 30,
                                                 color: Colors.black),
                                           ),
                                         ),
@@ -186,19 +195,20 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                             '●市町村',
                                             style: TextStyle(
                                                 fontSize: 25,
-                                                color: Colors.black),
+                                                color: Colors.black,
+                                                fontWeight: FontWeight.w900,),
                                           ),
                                         ),
                                       ],
                                     ),
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                          MainAxisAlignment.end,
                                       children: [
                                         Container(
                                             padding: const EdgeInsets.all(5.0),
                                             width: 250,
-                                            height: 40,
+                                            height: 50,
                                             child: TextField(
                                               decoration:
                                                   InputDecoration.collapsed(
@@ -208,7 +218,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                   .activityList[index]
                                                   .SHICHOSON,
                                               style: TextStyle(
-                                                  fontSize: 20,
+                                                  fontSize: 30,
                                                   color: Colors.black),
                                             ))
                                       ],
@@ -223,9 +233,13 @@ class _ProfileReferenceState extends State<ProfileReference> {
                               ),
                               Container(
                                 child: Text(
-                                  '●年齢',
+                                  '年齢',
                                   style: TextStyle(
-                                      fontSize: 25, color: Colors.black),
+                                      fontSize: 25,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w900,
+                                      decoration: TextDecoration.underline
+                                  ),
                                 ),
                               ),
                             ],
@@ -238,7 +252,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                 child: Text(
                                   profileList.AGE,
                                   style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
+                                      fontSize: 30, color: Colors.black),
                                 ),
                               ),
                             ],
@@ -251,9 +265,13 @@ class _ProfileReferenceState extends State<ProfileReference> {
                               ),
                               Container(
                                 child: Text(
-                                  '●コメント',
+                                  'コメント',
                                   style: TextStyle(
-                                      fontSize: 25, color: Colors.black),
+                                      fontSize: 25,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w900,
+                                      decoration: TextDecoration.underline
+                                  ),
                                 ),
                               ),
                             ],
@@ -266,7 +284,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                 child: Text(
                                   profileList.COMENT,
                                   style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
+                                      fontSize: 30, color: Colors.black),
                                 ),
                               ),
                             ],
