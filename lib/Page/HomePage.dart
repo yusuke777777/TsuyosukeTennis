@@ -28,16 +28,16 @@ class _HomePageState extends State<HomePage> {
     FirestoreMethod.getNickNameAndTorokuRank(uid);
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF2FFE4),
       appBar: AppBar(
+        backgroundColor: const Color(0xFF3CB371),
         title: const Text(
           "Home",
           style: TextStyle(
-            color: Colors.black,
             fontSize: 30,
           ),
         ),
         elevation: 0.0,
-        backgroundColor: Colors.white,
         shadowColor: Colors.white,
         actions: [
           IconButton(

@@ -39,7 +39,9 @@ class _FindResultPageState extends State<FindResultPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF2FFE4),
       appBar: AppBar(
+        backgroundColor: const Color(0xFF3CB371),
         title: Text("検索結果"),
       ),
       body: FutureBuilder(
@@ -70,14 +72,15 @@ class _FindResultPageState extends State<FindResultPage> {
                   // padding: const EdgeInsets.all(8),
                   itemBuilder: (BuildContext context, int index) {
                     return Card(
+                      elevation: 0,
                       child: ListTile(
+                        tileColor: const Color(0xFFF2FFE4),
                         leading: ClipOval(
                           child: GestureDetector(
                             //アイコン押下時の挙動
                             onTap: () {
                               Navigator.push(
                                   context,
-                                  //TODO 仮実装で検索画面へ遷移させている
                                   MaterialPageRoute(
                                     builder: (context) => ProfileReference(inputId),
                                   ));
