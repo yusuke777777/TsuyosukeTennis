@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:tsuyosuke_tennis_ap/Page/ProfileReference.dart';
 
 import '../Common/CfriendsList.dart';
 import '../Common/CtalkRoom.dart';
@@ -94,9 +95,12 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                             context,
                                             MaterialPageRoute(
                                                 builder: (context) =>
-                                                    ProfileSetting.Edit(
+                                                    ProfileReference(
                                                         friendsList[index]
-                                                            .YOUR_USER)));
+                                                            .YOUR_USER
+                                                            .USER_ID)
+                                            )
+                                        );
                                       },
                                     ),
                                   ),
