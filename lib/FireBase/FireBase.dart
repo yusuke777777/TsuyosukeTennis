@@ -773,6 +773,8 @@ class FirestoreMethod {
       YOUR_TS_POINT = YOUR_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
       matchResultRef.doc(myProfile.USER_ID).set({'TS_POINT': MY_TS_POINT});
       matchResultRef.doc(yourProfile.USER_ID).set({'TS_POINT': YOUR_TS_POINT});
+      matchResultRef.doc(myProfile.USER_ID).set({'TOROKU_RANK': myProfile.TOROKU_RANK});
+      matchResultRef.doc(yourProfile.USER_ID).set({'TOROKU_RANK': yourProfile.TOROKU_RANK});
     } catch (e) {
       print('TSPポイントの付与に失敗しました --- $e');
     }
@@ -877,13 +879,13 @@ class FirestoreMethod {
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
       String userId = doc.data()['USER_ID'];
       CprofileSetting yourProfile = await getYourProfile(userId);
-      print(yourProfile.TOROKU_RANK);
+
       try {
         RankModel rankListWork = RankModel(
-            rankNo: doc.data()['RANK_NO'],
-            user: yourProfile,
-            tpPoint: doc.data()['TP_POINT'],
-            taishoShu: doc.data()['TAISHO_SHU']);
+          rankNo: doc.data()['RANK_NO'],
+          user: yourProfile,
+          tpPoint: doc.data()['TS_POINT'],
+        );
         rankList.add(rankListWork);
         rankList.sort((a, b) => b.rankNo.compareTo(a.rankNo));
       } catch (e) {
@@ -904,11 +906,12 @@ class FirestoreMethod {
       String userId = doc.data()['USER_ID'];
       CprofileSetting yourProfile = await getYourProfile(userId);
       RankModel rankListWork = RankModel(
-          rankNo: doc.data()['RANK_NO'],
-          user: yourProfile,
-          tpPoint: doc.data()['TP_POINT'],
-          taishoShu: doc.data()['TAISHO_SHU']);
+        rankNo: doc.data()['RANK_NO'],
+        user: yourProfile,
+        tpPoint: doc.data()['TP_POINT'],
+      );
       rankList.add(rankListWork);
+      rankList.sort((a, b) => b.rankNo.compareTo(a.rankNo));
     });
     return rankList;
   }

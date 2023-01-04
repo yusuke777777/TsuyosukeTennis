@@ -6,9 +6,8 @@ class RankModel{
   late int rankNo;
   late CprofileSetting user;
   late int tpPoint;
-  late String taishoShu;
 
   RankModel({
-    required this.rankNo,required this.user,required this.tpPoint,required this.taishoShu
+    required this.rankNo,required this.user,required this.tpPoint
   });
 }

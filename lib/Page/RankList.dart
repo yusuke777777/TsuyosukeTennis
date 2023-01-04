@@ -70,8 +70,8 @@ class RankList extends StatelessWidget {
         body: TabBarView(
           children: <Widget>[
             manSinglesRankList("ShokyuRank"),
-            manSinglesRankList("ShokyuRank"),
-            manSinglesRankList("ShokyuRank")
+            manSinglesRankList("ChukyuRank"),
+            manSinglesRankList("JyokyuRank")
           ],
         ),
         drawer: Drawer(
