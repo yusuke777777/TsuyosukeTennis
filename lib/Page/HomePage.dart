@@ -1,11 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
-import 'FindPage.dart';
+import '../PropSetCofig.dart';
 import 'FriendManagerPage.dart';
 import 'ProfileSetting.dart';
+import 'package:marquee/marquee.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -23,28 +22,27 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    HeaderConfig().init(context,"ホーム");
+    DrawerConfig().init(context);
+
     uid = FirestoreMethod.getUid();
     Future<List<String>>? futureList =
-    FirestoreMethod.getNickNameAndTorokuRank(uid);
+        FirestoreMethod.getNickNameAndTorokuRank(uid);
 
     return Scaffold(
-      backgroundColor: const Color(0xFFF2FFE4),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF3CB371),
-        title: const Text(
-          "Home",
-          style: TextStyle(
-            fontSize: 30,
-          ),
-        ),
-        elevation: 0.0,
-        shadowColor: Colors.white,
+        backgroundColor: HeaderConfig.backGroundColor,
+        title: HeaderConfig.appBarText,
         actions: [
           IconButton(
-            icon: const Icon(Icons.account_circle_sharp,color: Colors.black,size: 40.0,),
+            icon: const Icon(
+              Icons.account_circle_sharp,
+              color: Colors.black,
+              size: 40.0,
+            ),
             onPressed: () async {
               CprofileSetting myProfile = await FirestoreMethod.getProfile();
-               Navigator.pushReplacement(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
                   builder: (context) => ProfileSetting.Edit(myProfile),
@@ -56,82 +54,144 @@ class _HomePageState extends State<HomePage> {
         iconTheme: IconThemeData(color: Colors.black),
       ),
       //ドロアー画面の処理
-      drawer: Drawer(
-        child: GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => FriendManagerPage(),
-              ),
-            );
-          },
-          child: Container(
-            child: Text('友人管理'),
-            alignment: Alignment.center,
-          ),
-        ),
-      ),
-      body: FutureBuilder(
+      drawer:DrawerConfig.drawer,
+      body:
+      FutureBuilder(
         future: futureList,
         builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
           {
             if (snapshot.connectionState != ConnectionState.done) {
               return new Align(
                   child: Center(
-                    child: new CircularProgressIndicator(),
-                  ));
+                child: new CircularProgressIndicator(),
+              ));
             } else if (snapshot.hasError) {
               return new Text('Error: ${snapshot.error!}');
             } else if (snapshot.hasData) {
               //取得したい値をリスト型で格納
               List<String>? profileList = snapshot.data;
-              return Center(
+              return
+               Center(
                 //全体をカラムとして表示させる。
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                child:
+                Column(
                     children: <Widget>[
+                      const SizedBox(
+                        height: 30,
+                      ),
+                 Expanded(
+                   flex: 0,
+                   child:
+                      SizedBox(
+                        height: 30,
+                          child:Marquee(
+                            crossAxisAlignment :CrossAxisAlignment.start,
+                            text: 'こんにちは！今日はいい天気ですね！',
+                            style: TextStyle(
+                              backgroundColor:Colors.green[50],
+                              color: Colors.white24,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 1 /*影の大きさ*/,
+                                ),
+                              ],
+                            ),//表示するテキスト
+                            velocity: 20,
+                          ),
+                      )
+                 ),
+
+                      //profile画像
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment :CrossAxisAlignment.start,
+                          children: <Widget>[
+                            const SizedBox(
+                              height: 120,
+                            ),
+                            ClipOval(
+                              child: GestureDetector(
+                                //アイコン押下時の挙動
+                                child: profileList![3] == ""
+                                    ? Image.asset('images/upper_body-2.png',
+                                    height: 100,
+                                    width:  100,)
+                                    : Image.network(
+                                  profileList[3],
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.fill,
+                                ),
+                              ),
+                            // This trailing comma makes auto-formatting nicer for build methods.
+                            )]
+                      ),
+
+                      //名前
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            SizedBox(
-                              height: 100,
+                            const SizedBox(
+                              height: 10,
                             ),
-                            Text('名前：' + profileList![0],
-                                style: TextStyle(fontSize: 30)),
-                            // This trailing comma makes auto-formatting nicer for build methods.
-                            SizedBox(
-                              width: 10,
-                            ),
-                            ClipOval(
-                              child: Image.asset(
-                                'images/ans_032.jpg',
-                                width: 70,
-                                height: 70,
-                                fit: BoxFit.fill,
-                              ),
-                            ),
-                          ]),
+                        Text(profileList![0],
+                            style: TextStyle(fontSize: 25,
+                                fontWeight: FontWeight.bold),),
+                      ]),
 
-                      //登録ランク表示
+                      //ID
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                        SizedBox(
+                        height: 30,
+                      ),
+                Text("ID:D0001",
+                  style: TextStyle(fontSize: 15),),
+              ]),
+
+                      //登録ランクタイトル
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             SizedBox(
                               height: 50,
                             ),
-                            Text('登録ランク：' + profileList[1],
-                                style: TextStyle(fontSize: 30)),
+                            Text('登録ランク',
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  decoration: TextDecoration.underline,)),
                             // This trailing comma makes auto-formatting nicer for build methods.
                           ]),
-                      //シングルスランキング表示
+
+                      //登録ランク値
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(profileList![1],
+                                style: TextStyle(fontSize: 20)),
+                            // This trailing comma makes auto-formatting nicer for build methods.
+                          ]),
+
+                      //シングルスランキングタイトル
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const <Widget>[
                             SizedBox(
-                              height: 30,
+                              height: 50,
                             ),
-                            Text('Sランキング:XX位', style: TextStyle(fontSize: 30)),
+                            Text('Sランキング',
+                                style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,decoration: TextDecoration.underline,)),
+                            // This trailing comma makes auto-formatting nicer for build methods.
+                          ]),
+
+                      //Sランキング値
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            Text(profileList![4] + '位',
+                                style: TextStyle(fontSize: 20)),
                             // This trailing comma makes auto-formatting nicer for build methods.
                           ]),
 
@@ -152,41 +212,33 @@ class _HomePageState extends State<HomePage> {
                       //   Text('Mランキング:XX位', style: TextStyle(fontSize: 30)), // This trailing comma makes auto-formatting nicer for build methods.
                       // ]
                       // ),
+
+                      //勝率タイトル
                       Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: const <Widget>[
                             SizedBox(
                               height: 50,
                             ),
-                            Text('勝率：', style: TextStyle(fontSize: 30)),
-                            Text('上級：', style: TextStyle(fontSize: 30))
-                            // This trailing comma makes auto-formatting nicer for build methods.
-                          ]),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const <Widget>[
-                            Text('　　　', style: TextStyle(fontSize: 30)),
-                            Text('中級：', style: TextStyle(fontSize: 30))
-                            // This trailing comma makes auto-formatting nicer for build methods.
-                          ]),
-                      Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: const <Widget>[
-                            Text('　　　', style: TextStyle(fontSize: 30)),
-                            Text('初級：', style: TextStyle(fontSize: 30))
-                            // This trailing comma makes auto-formatting nicer for build methods.
-                          ]),
+                            Text('勝率', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,decoration: TextDecoration.underline,)),
+                          ]
+                      ),
 
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: const <Widget>[
                             SizedBox(
-                              height: 80,
+                              height: 50,
                             ),
-                            Text('現在X連勝中', style: TextStyle(fontSize: 50))
-                          ])
+                            Text('上級: 10%', style: TextStyle(fontSize: 20)),
+                            Text('中級: 10%', style: TextStyle(fontSize: 20)),
+                            Text('初級: 10%', style: TextStyle(fontSize: 20)),
+                          ]
+                      ),
+
+
                     ]),
-              );
+          );
             } else {
               return Text("データが存在しません");
             }
@@ -196,4 +248,3 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-

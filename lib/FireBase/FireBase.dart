@@ -130,6 +130,25 @@ class FirestoreMethod {
     String name = snapShot.data()!['NICK_NAME'];
     String rank = snapShot.data()!['TOROKU_RANK'];
     String id = snapShot.data()!['USER_ID'];
+    String image = snapShot.data()!['PROFILE_IMAGE'];
+
+    late String manSingleRank;
+    if (rank =="初級") {
+      manSingleRank ="ShokyuRank";
+    }
+    else if (rank =="中級"){
+      manSingleRank ="ChukyuRank";
+    }
+
+    else if (rank =="上級") {
+      manSingleRank ="JoukyuRank";
+    }
+
+    final snapShot_msr =
+    await FirebaseFirestore.instance.collection('manSinglesRank').doc(manSingleRank).collection('RankList').doc(id).get();
+
+    int rank_no = snapShot_msr.data()!['RANK_NO'];
+
     if (snapShot == null) {
       return stringList;
     }
@@ -137,6 +156,9 @@ class FirestoreMethod {
     stringList.add(name);
     stringList.add(rank);
     stringList.add(id);
+    stringList.add(image);
+    stringList.add(rank_no.toString());
+
 
     return stringList;
   }
@@ -771,10 +793,10 @@ class FirestoreMethod {
     try {
       MY_TS_POINT = MY_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
       YOUR_TS_POINT = YOUR_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
-      matchResultRef.doc(myProfile.USER_ID).set({'TS_POINT': MY_TS_POINT});
-      matchResultRef.doc(yourProfile.USER_ID).set({'TS_POINT': YOUR_TS_POINT});
-      matchResultRef.doc(myProfile.USER_ID).set({'TOROKU_RANK': myProfile.TOROKU_RANK});
-      matchResultRef.doc(yourProfile.USER_ID).set({'TOROKU_RANK': yourProfile.TOROKU_RANK});
+      matchResultRef.doc(myProfile.USER_ID).set({'TS_POINT': MY_TS_POINT,'TOROKU_RANK': myProfile.TOROKU_RANK});
+      matchResultRef.doc(yourProfile.USER_ID).set({'TS_POINT': YOUR_TS_POINT,'TOROKU_RANK': yourProfile.TOROKU_RANK});
+//      matchResultRef.doc(myProfile.USER_ID).set({'TOROKU_RANK': myProfile.TOROKU_RANK});
+//      matchResultRef.doc(yourProfile.USER_ID).set({'TOROKU_RANK': yourProfile.TOROKU_RANK});
     } catch (e) {
       print('TSPポイントの付与に失敗しました --- $e');
     }

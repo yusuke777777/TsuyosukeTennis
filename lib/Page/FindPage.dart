@@ -1,6 +1,8 @@
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../PropSetCofig.dart';
 import 'FindMultiResultPage.dart';
 import 'FindResultPage.dart';
 
@@ -35,22 +37,17 @@ class _FindPageState extends State<FindPage> {
 
   @override
   Widget build(BuildContext context) {
+    //必要コンフィグの初期化
+    HeaderConfig().init(context, "検索");
+    DrawerConfig().init(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF2FFE4),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF3CB371),
-        //appBarの背景色等設定
-        leading: const Icon(Icons.menu, color: Colors.black),
-        elevation: 0.0,
-        shadowColor: Colors.white,
-
-        title: const Text(
-          "検索",
-          style: TextStyle(
-            fontSize: 30,
-          ),
-        ),
+        backgroundColor: HeaderConfig.backGroundColor,
+        title: HeaderConfig.appBarText,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
+      //ドロアーの定義
+      drawer: DrawerConfig.drawer,
       body: Scrollbar(
         child: SingleChildScrollView(
           child: Padding(
@@ -83,6 +80,8 @@ class _FindPageState extends State<FindPage> {
                               borderRadius: BorderRadius.vertical()
                           ),
                           contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                          fillColor: Colors.white,
+                          filled: true
                         ),
                       ),
                     ),
@@ -151,6 +150,7 @@ class _FindPageState extends State<FindPage> {
                       height: 40,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
+                        color: Colors.white
                       ),
                       child: Text(
                         todofuken,
@@ -208,6 +208,8 @@ class _FindPageState extends State<FindPage> {
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.vertical()),
                           contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                          fillColor: Colors.white,
+                          filled: true
                         ),
                       ),
                     ),
@@ -252,6 +254,7 @@ class _FindPageState extends State<FindPage> {
                       height: 40,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
+                        color: Colors.white
                       ),
                       child: Text(
                         gender,
@@ -306,6 +309,7 @@ class _FindPageState extends State<FindPage> {
                       height: 40,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
+                        color: Colors.white
                       ),
                       child: Text(
                         torokuRank,
@@ -359,6 +363,7 @@ class _FindPageState extends State<FindPage> {
                       height: 40,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
+                        color: Colors.white
                       ),
                       child: Text(
                         torokuAge,

@@ -24,6 +24,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     MatchList(),
     TalkList(),
     RankList(),
+
   ];
   int _selectedIndex = 0;
 
