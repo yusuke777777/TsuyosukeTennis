@@ -712,6 +712,19 @@ class FirestoreMethod {
         });
   }
 
+  //対戦結果_新規フラグ取得
+  static Future<String> newFlgMatchResult(String UserId) async{
+    final snapshot = await matchResultRef.get();
+    String NEW_FLG = "1";
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      if(doc.id == UserId){
+        NEW_FLG = "0";
+      }
+    });
+    return NEW_FLG;
+  }
+
+
   //対戦結果作成
   static Future<void> makeMatchResult(CprofileSetting myProfile,
       CprofileSetting yourProfile, List<CmatchResult> matchResultList) async {
@@ -733,6 +746,27 @@ class FirestoreMethod {
     //対戦結果登録後のTSPポイント
     late int MY_TS_POINT;
     late int YOUR_TS_POINT;
+    //現在の登録ランク
+    late String MY_TOROKU_RANK_CUR;
+    late String YOUR_TOROKU_RANK_CUR;
+    //現在の初級TSPポイント
+    late int MY_SHOKYU_TS_POINT_CUR;
+    late int YOUR_SHOKYU_TS_POINT_CUR;
+    //現在の中級TSPポイント
+    late int MY_CHUKYU_TS_POINT_CUR;
+    late int YOUR_CHUKYU_TS_POINT_CUR;
+    //現在の上級TSPポイント
+    late int MY_JYOKYU_TS_POINT_CUR;
+    late int YOUR_JYOKYU_TS_POINT_CUR;
+    late String MY_NEW_FLG;
+    late String YOUR_NEW_FLG;
+
+    //新規フラグ取得メソッド結果を取得
+    MY_NEW_FLG =  await newFlgMatchResult(myProfile.USER_ID);
+    YOUR_NEW_FLG = await newFlgMatchResult(yourProfile.USER_ID);
+
+    print("MY_NEW_FLG:" + MY_NEW_FLG);
+    print("YOUR_NEW_FLG:" + YOUR_NEW_FLG);
 
     matchResultList.forEach((a) async {
       try {
@@ -782,23 +816,201 @@ class FirestoreMethod {
         print('対戦結果入力に失敗しました --- $e');
       }
     });
-    try {
-      final mySnapShot = await matchResultRef.doc(myProfile.USER_ID).get();
-      MY_TS_POINT_CUR = mySnapShot.data()!['TS_POINT'];
-      final yourSnapShot = await matchResultRef.doc(yourProfile.USER_ID).get();
-      YOUR_TS_POINT_CUR = yourSnapShot.data()!['TS_POINT'];
-    } catch (e) {
-      print('TSPポイントの取得に失敗しました --- $e');
+    if(MY_NEW_FLG == "1"){
+      //新規の場合
+      MY_TS_POINT_CUR = 0;
+      MY_TOROKU_RANK_CUR = myProfile.TOROKU_RANK;
+      MY_SHOKYU_TS_POINT_CUR = 0;
+      MY_CHUKYU_TS_POINT_CUR = 0;
+      MY_JYOKYU_TS_POINT_CUR = 0;
+      await matchResultRef.doc(myProfile.USER_ID).set({
+        'TS_POINT':MY_TS_POINT_CUR,
+        'TOROKU_RANK':MY_TOROKU_RANK_CUR,
+        'SHOKYU_TS_POINT':MY_SHOKYU_TS_POINT_CUR,
+        'CHUKYU_TS_POINT':MY_CHUKYU_TS_POINT_CUR,
+        'JYOKYU_TS_POINT':MY_JYOKYU_TS_POINT_CUR
+      });
+    }else{
+      //現在の登録情報を取得
+      try {
+        final mySnapShot = await matchResultRef.doc(myProfile.USER_ID).get();
+        //現在のTSPポイントの取得
+        MY_TS_POINT_CUR = mySnapShot.data()!['TS_POINT'];
+        //現在の登録ランクを取得
+        MY_TOROKU_RANK_CUR = mySnapShot.data()!['TOROKU_RANK'];
+        //現在の初級TSPポイントの取得
+        MY_SHOKYU_TS_POINT_CUR = mySnapShot.data()!['SHOKYU_TS_POINT'];
+        //現在の中級TSPポイントの取得
+        MY_CHUKYU_TS_POINT_CUR = mySnapShot.data()!['CHUKYU_TS_POINT'];
+        //現在の上級TSPポイントの取得
+        MY_JYOKYU_TS_POINT_CUR = mySnapShot.data()!['JYOKYU_TS_POINT'];
+      }catch (e) {
+        print('各種情報の取得に失敗しました --- $e');
+      }
     }
-    try {
+    if(YOUR_NEW_FLG == "1"){
+      //新規の場合
+      YOUR_TS_POINT_CUR = 0;
+      YOUR_TOROKU_RANK_CUR = yourProfile.TOROKU_RANK;
+      YOUR_SHOKYU_TS_POINT_CUR = 0;
+      YOUR_CHUKYU_TS_POINT_CUR = 0;
+      YOUR_JYOKYU_TS_POINT_CUR = 0;
+      await matchResultRef.doc(yourProfile.USER_ID).set({
+        'TS_POINT':YOUR_TS_POINT_CUR,
+        'TOROKU_RANK':YOUR_TOROKU_RANK_CUR,
+        'SHOKYU_TS_POINT':YOUR_SHOKYU_TS_POINT_CUR,
+        'CHUKYU_TS_POINT':YOUR_CHUKYU_TS_POINT_CUR,
+        'JYOKYU_TS_POINT':YOUR_JYOKYU_TS_POINT_CUR
+      });
+    }else{
+      try{
+        final yourSnapShot = await matchResultRef.doc(yourProfile.USER_ID).get();
+        //現在のTSPポイントの取得
+        YOUR_TS_POINT_CUR = yourSnapShot.data()!['TS_POINT'];
+        //現在の登録ランクを取得
+        YOUR_TOROKU_RANK_CUR = yourSnapShot.data()!['TOROKU_RANK'];
+        //現在の初級TSPポイントの取得
+        YOUR_SHOKYU_TS_POINT_CUR = yourSnapShot.data()!['SHOKYU_TS_POINT'];
+        //現在の中級TSPポイントの取得
+        YOUR_CHUKYU_TS_POINT_CUR = yourSnapShot.data()!['CHUKYU_TS_POINT'];
+        //現在の上級TSPポイントの取得
+        YOUR_JYOKYU_TS_POINT_CUR = yourSnapShot.data()!['JYOKYU_TS_POINT'];
+      } catch (e) {
+        print('TSPポイントの取得に失敗しました --- $e');
+      }
+    }
+    if(MY_TOROKU_RANK_CUR == myProfile.TOROKU_RANK){
+      //登録ランクを変更しなかった場合
       MY_TS_POINT = MY_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
+      try {
+        matchResultRef.doc(myProfile.USER_ID).update({'TS_POINT': MY_TS_POINT});
+      } catch (e) {
+        print('TSPポイントの付与に失敗しました --- $e');
+      }
+      //各ランクのTSPポイントを更新
+      switch (myProfile.TOROKU_RANK) {
+        case '初級':
+          try {
+            matchResultRef.doc(myProfile.USER_ID).update({'SHOKYU_TS_POINT': MY_TS_POINT});
+          } catch (e) {
+            print('初級TSPポイントの付与に失敗しました --- $e');
+          }
+          break;
+        case '中級':
+          try {
+            matchResultRef.doc(myProfile.USER_ID).update({'CHUKYU_TS_POINT': MY_TS_POINT});
+          } catch (e) {
+            print('初級TSPポイントの付与に失敗しました --- $e');
+          }
+          break;
+        case '上級':
+          try {
+            matchResultRef.doc(myProfile.USER_ID).update({'JYOKYU_TS_POINT': MY_TS_POINT});
+          } catch (e) {
+            print('初級TSPポイントの付与に失敗しました --- $e');
+          }
+          break;
+      }
+    }else{
+      //登録ランクを変更した場合
+      switch (myProfile.TOROKU_RANK) {
+        case '初級':
+          try {
+            MY_TS_POINT = MY_SHOKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
+            matchResultRef.doc(myProfile.USER_ID).update({'TS_POINT': MY_TS_POINT});
+            matchResultRef.doc(myProfile.USER_ID).update({'SHOKYU_TS_POINT': MY_TS_POINT});
+            matchResultRef.doc(myProfile.USER_ID).update({'TOROKU_RANK': myProfile.TOROKU_RANK});
+          } catch (e) {
+            print('初級TSPポイントの付与に失敗しました --- $e');
+          }
+          break;
+        case '中級':
+          try {
+            MY_TS_POINT = MY_CHUKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
+            matchResultRef.doc(myProfile.USER_ID).update({'TS_POINT': MY_TS_POINT});
+            matchResultRef.doc(myProfile.USER_ID).update({'CHUKYU_TS_POINT': MY_TS_POINT});
+            matchResultRef.doc(myProfile.USER_ID).update({'TOROKU_RANK': myProfile.TOROKU_RANK});
+          } catch (e) {
+            print('中級TSPポイントの付与に失敗しました --- $e');
+          }
+          break;
+        case '上級':
+          try {
+            MY_TS_POINT = MY_JYOKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
+            matchResultRef.doc(myProfile.USER_ID).update({'TS_POINT': MY_TS_POINT});
+            matchResultRef.doc(myProfile.USER_ID).update({'JYOKYU_TS_POINT': MY_TS_POINT});
+            matchResultRef.doc(myProfile.USER_ID).update({'TOROKU_RANK': myProfile.TOROKU_RANK});
+          } catch (e) {
+            print('上級TSPポイントの付与に失敗しました --- $e');
+          }
+          break;
+      }
+    }
+    if(YOUR_TOROKU_RANK_CUR == yourProfile.TOROKU_RANK){
+      //登録ランクを変更しなかった場合
       YOUR_TS_POINT = YOUR_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
-      matchResultRef.doc(myProfile.USER_ID).set({'TS_POINT': MY_TS_POINT,'TOROKU_RANK': myProfile.TOROKU_RANK});
-      matchResultRef.doc(yourProfile.USER_ID).set({'TS_POINT': YOUR_TS_POINT,'TOROKU_RANK': yourProfile.TOROKU_RANK});
-//      matchResultRef.doc(myProfile.USER_ID).set({'TOROKU_RANK': myProfile.TOROKU_RANK});
-//      matchResultRef.doc(yourProfile.USER_ID).set({'TOROKU_RANK': yourProfile.TOROKU_RANK});
-    } catch (e) {
-      print('TSPポイントの付与に失敗しました --- $e');
+      try {
+        matchResultRef.doc(yourProfile.USER_ID).update({'TS_POINT': YOUR_TS_POINT});
+      } catch (e) {
+        print('TSPポイントの付与に失敗しました --- $e');
+      }
+      switch (yourProfile.TOROKU_RANK) {
+        case '初級':
+          try {
+            matchResultRef.doc(yourProfile.USER_ID).update({'SHOKYU_TS_POINT': YOUR_TS_POINT});
+          } catch (e) {
+            print('初級TSPポイントの付与に失敗しました --- $e');
+          }
+          break;
+        case '中級':
+          try {
+            matchResultRef.doc(yourProfile.USER_ID).update({'CHUKYU_TS_POINT': YOUR_TS_POINT});
+          } catch (e) {
+            print('初級TSPポイントの付与に失敗しました --- $e');
+          }
+          break;
+        case '上級':
+          try {
+            matchResultRef.doc(yourProfile.USER_ID).update({'JYOKYU_TS_POINT': YOUR_TS_POINT});
+          } catch (e) {
+            print('初級TSPポイントの付与に失敗しました --- $e');
+          }
+          break;
+      }
+    }else{
+      //登録ランクを変更した場合
+      switch (yourProfile.TOROKU_RANK) {
+        case '初級':
+          try {
+            YOUR_TS_POINT = YOUR_SHOKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
+            matchResultRef.doc(yourProfile.USER_ID).update({'TS_POINT': YOUR_TS_POINT});
+            matchResultRef.doc(yourProfile.USER_ID).update({'SHOKYU_TS_POINT': YOUR_TS_POINT});
+            matchResultRef.doc(yourProfile.USER_ID).update({'TOROKU_RANK': yourProfile.TOROKU_RANK});
+          } catch (e) {
+            print('初級TSPポイントの付与に失敗しました --- $e');
+          }
+          break;
+        case '中級':
+          try {
+            YOUR_TS_POINT = YOUR_CHUKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
+            matchResultRef.doc(yourProfile.USER_ID).update({'TS_POINT': YOUR_TS_POINT});
+            matchResultRef.doc(yourProfile.USER_ID).update({'CHUKYU_TS_POINT': YOUR_TS_POINT});
+            matchResultRef.doc(yourProfile.USER_ID).update({'TOROKU_RANK': yourProfile.TOROKU_RANK});
+          } catch (e) {
+            print('中級TSPポイントの付与に失敗しました --- $e');
+          }
+          break;
+        case '上級':
+          try {
+            YOUR_TS_POINT = YOUR_JYOKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
+            matchResultRef.doc(yourProfile.USER_ID).update({'TS_POINT': YOUR_TS_POINT});
+            matchResultRef.doc(yourProfile.USER_ID).update({'JYOKYU_TS_POINT': YOUR_TS_POINT});
+            matchResultRef.doc(yourProfile.USER_ID).update({'TOROKU_RANK': yourProfile.TOROKU_RANK});
+          } catch (e) {
+            print('上級TSPポイントの付与に失敗しました --- $e');
+          }
+          break;
+      }
     }
   }
 
@@ -913,27 +1125,6 @@ class FirestoreMethod {
       } catch (e) {
         print(e.toString());
       }
-    });
-    return rankList;
-  }
-
-  //女子シングルス・ランキングテーブルGET
-  static Future<List<RankModel>> getFemailSinglesRank(String RankLevel) async {
-    final snapshot = await femailesSinglesRankRef
-        .doc(RankLevel)
-        .collection('RankList')
-        .get();
-    List<RankModel> rankList = [];
-    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      String userId = doc.data()['USER_ID'];
-      CprofileSetting yourProfile = await getYourProfile(userId);
-      RankModel rankListWork = RankModel(
-        rankNo: doc.data()['RANK_NO'],
-        user: yourProfile,
-        tpPoint: doc.data()['TP_POINT'],
-      );
-      rankList.add(rankListWork);
-      rankList.sort((a, b) => b.rankNo.compareTo(a.rankNo));
     });
     return rankList;
   }

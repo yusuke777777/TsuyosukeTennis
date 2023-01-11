@@ -22,23 +22,53 @@ async function getRankTable(): Promise<void> {
   const chukyuRanks: RankList[] = [];
   const jyokyuRanks: RankList[] = [];
 
-  await matchResultSnapshot.docs.forEach((doc) => {
+  await matchResultSnapshot.docs.forEach( async (doc) => {
     const torokuRank: string = doc.data()["TOROKU_RANK"];
     if (torokuRank == "初級" ) {
       shokyuRanks.push({
         USER_ID: doc.id,
         TS_POINT: doc.data()["TS_POINT"],
       });
+      await manSinglesRankRef
+          .doc("ChukyuRank")
+          .collection("RankList")
+          .doc(doc.id)
+          .delete();
+      await manSinglesRankRef
+          .doc("JyokyuRank")
+          .collection("RankList")
+          .doc(doc.id)
+          .delete();
     } else if (torokuRank == "中級" ) {
       chukyuRanks.push({
         USER_ID: doc.id,
         TS_POINT: doc.data()["TS_POINT"],
       });
+      await manSinglesRankRef
+          .doc("ShokyuRank")
+          .collection("RankList")
+          .doc(doc.id)
+          .delete();
+      await manSinglesRankRef
+          .doc("JyokyuRank")
+          .collection("RankList")
+          .doc(doc.id)
+          .delete();
     } else {
       jyokyuRanks.push({
         USER_ID: doc.id,
         TS_POINT: doc.data()["TS_POINT"],
       });
+      await manSinglesRankRef
+          .doc("ShokyuRank")
+          .collection("RankList")
+          .doc(doc.id)
+          .delete();
+      await manSinglesRankRef
+          .doc("ChukyuRank")
+          .collection("RankList")
+          .doc(doc.id)
+          .delete();
     }
   });
   /** 初級ランキングテーブルを作成 */

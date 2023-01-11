@@ -52,7 +52,7 @@ class TsMethod {
       RankTsPoint = 0;
     } else {
       //自分のランキングより上の相手に勝利した場合、10ポイント
-      if (yourRank > myRank) {
+      if (yourRank < myRank) {
         RankTsPoint = RankTsPoint + 10;
       }
       //自分のランキングより2倍以上、上の相手に勝利した場合、50ポイント
