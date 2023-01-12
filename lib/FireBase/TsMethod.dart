@@ -46,26 +46,27 @@ class TsMethod {
         }
         break;
     }
-
     //ランキングボーナスポイント
-    if (myRank == 0 || yourRank == 0) {
-      RankTsPoint = 0;
-    } else {
-      //自分のランキングより上の相手に勝利した場合、10ポイント
-      if (yourRank < myRank) {
-        RankTsPoint = RankTsPoint + 10;
-      }
-      //自分のランキングより2倍以上、上の相手に勝利した場合、50ポイント
-      int rankRate = (myRank / yourRank).floor();
-      if (rankRate >= 2) {
-        RankTsPoint = RankTsPoint + 50;
-      }
-      //TOP10以上の相手に勝利した場合は100ポイント
-      if (yourRank > 0 && yourRank <= 10) {
-        RankTsPoint = RankTsPoint + 100;
+    if (myLevel == yourLevel) {
+      if (myRank == 0 || yourRank == 0) {
+        RankTsPoint = 0;
+      } else {
+        //自分のランキングより上の相手に勝利した場合、10ポイント
+        if (yourRank < myRank) {
+          RankTsPoint = RankTsPoint + 10;
+        }
+        //自分のランキングより2倍以上、上の相手に勝利した場合、50ポイント
+        int rankRate = (myRank / yourRank).floor();
+        if (rankRate >= 2) {
+          RankTsPoint = RankTsPoint + 50;
+        }
+        //TOP10以上の相手に勝利した場合は100ポイント
+        if (yourRank > 0 && yourRank <= 10) {
+          RankTsPoint = RankTsPoint + 100;
+        }
       }
     }
-    tsPoint = NormalTsPoint + RankTsPoint;
-    return tsPoint;
-  }
+      tsPoint = NormalTsPoint + RankTsPoint;
+      return tsPoint;
+    }
 }
