@@ -179,19 +179,47 @@ class _MatchResultState extends State<MatchResult> {
                             backgroundColor: Colors.lightGreenAccent,
                             shape: const RoundedRectangleBorder(
                               borderRadius:
-                              BorderRadius.all(Radius.circular(80)),
+                                  BorderRadius.all(Radius.circular(80)),
                             ),
                           ),
                           child: Center(
                             child: Text(
                               '登録',
-                              style: TextStyle(
-                                  fontSize: 20, color: Colors.black),
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
                             ),
                           ),
                           onPressed: () {
-                             FirestoreMethod.makeMatchResult(widget.myProfile,widget.yourProfile,matchResultList);
-                             Navigator.pop(context);
+                            String errorFlg = "0";
+                            matchResultList.forEach((matchList) {
+                              if(matchList.myGamePoint == matchList.yourGamePoint){
+                                errorFlg = "1";
+                              }
+                            });
+                            if(errorFlg == "1") {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('対戦結果に引き分けは入力できません'),
+                                      actions: <Widget>[
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: Colors.lightGreenAccent,
+                                              onPrimary: Colors.black),
+                                          child: Text('OK'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            }else{
+                              FirestoreMethod.makeMatchResult(widget.myProfile,
+                                  widget.yourProfile, matchResultList);
+                              Navigator.pop(context);
+                            }
                           },
                         ),
                       ),
@@ -275,26 +303,19 @@ class _MatchResultState extends State<MatchResult> {
 
   void _onSelectedMyPointChanged(int index) {
     myGamePoint = int.parse(_myPoint[index]);
-    matchResultList[curTourokuNo] = CmatchResult(
-        No: curTourokuNo.toString(),
-        myGamePoint: myGamePoint,
-        yourGamePoint: yourGamePoint);
+    matchResultList[curTourokuNo].myGamePoint = myGamePoint;
     setState(() {});
   }
 
   void _onSelectedYourPointChanged(int index) {
     yourGamePoint = int.parse(_yourPoint[index]);
-    matchResultList[curTourokuNo] = CmatchResult(
-        No: curTourokuNo.toString(),
-        myGamePoint: myGamePoint,
-        yourGamePoint: yourGamePoint);
+    matchResultList[curTourokuNo].yourGamePoint = yourGamePoint;
     setState(() {});
   }
 
   activityListAdd(String No) {
     print("No" + No);
-    matchResultList
-        .add(CmatchResult(No: No, myGamePoint: 0, yourGamePoint: 0));
+    matchResultList.add(CmatchResult(No: No, myGamePoint: 0, yourGamePoint: 0));
     myGamePoint = 0;
     yourGamePoint = 0;
   }

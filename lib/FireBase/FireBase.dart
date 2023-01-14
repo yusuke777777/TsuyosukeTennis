@@ -802,49 +802,51 @@ class FirestoreMethod {
 
     matchResultList.forEach((a) async {
       try {
-        if (a.myGamePoint > a.yourGamePoint) {
-          MY_WIN_FLG = 1;
-          YOUR_WIN_FLG = 0;
-          //付与TSポイントの算出
-          MY_TS_POINT_FUYO = TsMethod.tsPointCalculation(
-              myProfile.TOROKU_RANK, yourProfile.TOROKU_RANK, MY_RANK, YOUR_RANK);
-          MY_TS_POINT_FUYO_SUM = MY_TS_POINT_FUYO_SUM + MY_TS_POINT_FUYO;
-          YOUR_TS_POINT_FUYO = 0;
-        } else {
-          YOUR_WIN_FLG = 1;
-          MY_WIN_FLG = 0;
-          //付与TSポイントの算出
-          YOUR_TS_POINT_FUYO = TsMethod.tsPointCalculation(
-              yourProfile.TOROKU_RANK, myProfile.TOROKU_RANK, 15, 1);
-          YOUR_TS_POINT_FUYO_SUM = YOUR_TS_POINT_FUYO_SUM + YOUR_TS_POINT_FUYO;
-          MY_TS_POINT_FUYO = 0;
-          print(YOUR_TS_POINT_FUYO);
-        }
-        matchResultRef
-            .doc(myProfile.USER_ID)
-            .collection('opponentList')
-            .doc(yourProfile.USER_ID)
-            .collection('matchDetail')
-            .add({
-          'MY_POINT': a.myGamePoint,
-          'YOUR_POINT': a.yourGamePoint,
-          'WIN_FLG': MY_WIN_FLG,
-          'TS_POINT': MY_TS_POINT_FUYO,
-          'KOUSHIN_TIME': today
-        });
-        matchResultRef
-            .doc(yourProfile.USER_ID)
-            .collection('opponentList')
-            .doc(myProfile.USER_ID)
-            .collection('matchDetail')
-            .add({
-          'MY_POINT': a.yourGamePoint,
-          'YOUR_POINT': a.myGamePoint,
-          'WIN_FLG': YOUR_WIN_FLG,
-          'TS_POINT': YOUR_TS_POINT_FUYO,
-          'KOUSHIN_TIME': today
-        });
-      } catch (e) {
+          if (a.myGamePoint > a.yourGamePoint) {
+            MY_WIN_FLG = 1;
+            YOUR_WIN_FLG = 0;
+            //付与TSポイントの算出
+            MY_TS_POINT_FUYO = TsMethod.tsPointCalculation(
+                myProfile.TOROKU_RANK, yourProfile.TOROKU_RANK, MY_RANK,
+                YOUR_RANK);
+            MY_TS_POINT_FUYO_SUM = MY_TS_POINT_FUYO_SUM + MY_TS_POINT_FUYO;
+            YOUR_TS_POINT_FUYO = 0;
+          } else {
+            YOUR_WIN_FLG = 1;
+            MY_WIN_FLG = 0;
+            //付与TSポイントの算出
+            YOUR_TS_POINT_FUYO = TsMethod.tsPointCalculation(
+                yourProfile.TOROKU_RANK, myProfile.TOROKU_RANK, 15, 1);
+            YOUR_TS_POINT_FUYO_SUM =
+                YOUR_TS_POINT_FUYO_SUM + YOUR_TS_POINT_FUYO;
+            MY_TS_POINT_FUYO = 0;
+            print(YOUR_TS_POINT_FUYO);
+          }
+          matchResultRef
+              .doc(myProfile.USER_ID)
+              .collection('opponentList')
+              .doc(yourProfile.USER_ID)
+              .collection('matchDetail')
+              .add({
+            'MY_POINT': a.myGamePoint,
+            'YOUR_POINT': a.yourGamePoint,
+            'WIN_FLG': MY_WIN_FLG,
+            'TS_POINT': MY_TS_POINT_FUYO,
+            'KOUSHIN_TIME': today
+          });
+          matchResultRef
+              .doc(yourProfile.USER_ID)
+              .collection('opponentList')
+              .doc(myProfile.USER_ID)
+              .collection('matchDetail')
+              .add({
+            'MY_POINT': a.yourGamePoint,
+            'YOUR_POINT': a.myGamePoint,
+            'WIN_FLG': YOUR_WIN_FLG,
+            'TS_POINT': YOUR_TS_POINT_FUYO,
+            'KOUSHIN_TIME': today
+          });
+        }catch (e) {
         print('対戦結果入力に失敗しました --- $e');
       }
     });
