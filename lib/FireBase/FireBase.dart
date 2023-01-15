@@ -9,6 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
 
 import '../Common/CHomePageSetting.dart';
 import '../Common/CSinglesRankModel.dart';
@@ -123,13 +124,14 @@ class FirestoreMethod {
    * uid ドキュメント
    * return　フィールドプロパティのリスト
    */
-  static Future<List<String>> getNickNameAndTorokuRank(uid) async {
-    List<String> stringList = [];
+  static Future<CHomePageVal> getNickNameAndTorokuRank(uid) async {
     final snapShot =
         await FirebaseFirestore.instance.collection('myProfile').doc(uid).get();
+
     String name = snapShot.data()!['NICK_NAME'];
     String rank = snapShot.data()!['TOROKU_RANK'];
     String id = snapShot.data()!['USER_ID'];
+    String myid = snapShot.data()!['MY_USER_ID'];
     String image = snapShot.data()!['PROFILE_IMAGE'];
 
     late String manSingleRank;
@@ -150,17 +152,14 @@ class FirestoreMethod {
 
     int rank_no = snapShot_msr.data()!['RANK_NO'];
 
-    if (snapShot == null) {
-      return stringList;
-    }
+    CHomePageVal homePageval = CHomePageVal(
+        NAME: name,
+        MYUSERID: myid,
+        TOROKURANK: rank,
+        PROFILEIMAGE: image,
+        SRANK: rank_no);
 
-    stringList.add(name);
-    stringList.add(rank);
-    stringList.add(id);
-    stringList.add(image);
-    stringList.add(rank_no.toString());
-
-    return stringList;
+    return homePageval;
   }
 
   /**

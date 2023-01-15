@@ -39,6 +39,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     return Scaffold(
         body: _screens[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
+          selectedItemColor : Colors.green,
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
           items: const <BottomNavigationBarItem>[

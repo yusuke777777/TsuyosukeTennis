@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
@@ -26,7 +27,7 @@ class _HomePageState extends State<HomePage> {
     DrawerConfig().init(context);
 
     uid = FirestoreMethod.getUid();
-    Future<List<String>>? futureList =
+    Future<CHomePageVal>? futureList =
         FirestoreMethod.getNickNameAndTorokuRank(uid);
 
     return Scaffold(
@@ -58,7 +59,7 @@ class _HomePageState extends State<HomePage> {
       body:
       FutureBuilder(
         future: futureList,
-        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+        builder: (BuildContext context, AsyncSnapshot<CHomePageVal> snapshot) {
           {
             if (snapshot.connectionState != ConnectionState.done) {
               return new Align(
@@ -69,7 +70,7 @@ class _HomePageState extends State<HomePage> {
               return new Text('Error: ${snapshot.error!}');
             } else if (snapshot.hasData) {
               //取得したい値をリスト型で格納
-              List<String>? profileList = snapshot.data;
+              CHomePageVal? homePageVal = snapshot.data;
               return
                Center(
                 //全体をカラムとして表示させる。
@@ -112,12 +113,12 @@ class _HomePageState extends State<HomePage> {
                             ClipOval(
                               child: GestureDetector(
                                 //アイコン押下時の挙動
-                                child: profileList![3] == ""
+                                child: homePageVal?.PROFILEIMAGE == ""
                                     ? Image.asset('images/upper_body-2.png',
                                     height: 100,
                                     width:  100,)
                                     : Image.network(
-                                  profileList[3],
+                                  homePageVal!.PROFILEIMAGE,
                                   width: 100,
                                   height: 100,
                                   fit: BoxFit.fill,
@@ -134,7 +135,7 @@ class _HomePageState extends State<HomePage> {
                             const SizedBox(
                               height: 10,
                             ),
-                        Text(profileList![0],
+                        Text(homePageVal!.NAME,
                             style: TextStyle(fontSize: 25,
                                 fontWeight: FontWeight.bold),),
                       ]),
@@ -146,7 +147,10 @@ class _HomePageState extends State<HomePage> {
                         SizedBox(
                         height: 30,
                       ),
-                Text("ID:D0001",
+                homePageVal.MYUSERID == null
+                          ? Text("ID is not difine",
+                  style: TextStyle(fontSize: 15),)
+                          : Text("ID:" + homePageVal.MYUSERID,
                   style: TextStyle(fontSize: 15),),
               ]),
 
@@ -169,7 +173,7 @@ class _HomePageState extends State<HomePage> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text(profileList![1],
+                            Text(homePageVal.TOROKURANK,
                                 style: TextStyle(fontSize: 20)),
                             // This trailing comma makes auto-formatting nicer for build methods.
                           ]),
@@ -190,7 +194,10 @@ class _HomePageState extends State<HomePage> {
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
-                            Text(profileList![4] + '位',
+                            homePageVal?.SRANK == null
+                            ? Text('-位',
+                                style: TextStyle(fontSize: 20))
+                            : Text(homePageVal.SRANK.toString() + '位',
                                 style: TextStyle(fontSize: 20)),
                             // This trailing comma makes auto-formatting nicer for build methods.
                           ]),
@@ -226,13 +233,22 @@ class _HomePageState extends State<HomePage> {
 
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const <Widget>[
+                          children: <Widget>[
                             SizedBox(
                               height: 50,
                             ),
-                            Text('上級: 10%', style: TextStyle(fontSize: 20)),
-                            Text('中級: 10%', style: TextStyle(fontSize: 20)),
-                            Text('初級: 10%', style: TextStyle(fontSize: 20)),
+                            homePageVal.ADVANCEDWINRATE == null
+                                ? Text('上級: -', style: TextStyle(fontSize: 20))
+                                : Text('上級:' + homePageVal.ADVANCEDWINRATE.toString(), style: TextStyle(fontSize: 20)),
+
+                            homePageVal.MEDIUMWINRATE == null
+                                ? Text('中級: -', style: TextStyle(fontSize: 20))
+                                : Text('中級:' + homePageVal.MEDIUMWINRATE.toString(), style: TextStyle(fontSize: 20)),
+
+                            homePageVal.BEGINWINRATE == null
+                                ? Text('初級: -', style: TextStyle(fontSize: 20))
+                                : Text('初級:' + homePageVal.BEGINWINRATE.toString(), style: TextStyle(fontSize: 20)),
+
                           ]
                       ),
 
