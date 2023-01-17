@@ -216,6 +216,7 @@ class _MatchResultState extends State<MatchResult> {
                                     );
                                   });
                             }else{
+                              //対戦結果を登録する
                               FirestoreMethod.makeMatchResult(widget.myProfile,
                                   widget.yourProfile, matchResultList);
                               Navigator.pop(context);

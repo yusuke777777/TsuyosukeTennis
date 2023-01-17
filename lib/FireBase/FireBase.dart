@@ -724,6 +724,35 @@ class FirestoreMethod {
     return NEW_FLG;
   }
 
+  //個人対戦結果_新規フラグ取得
+  static Future<String> individualNewFlgMatch(String myUserId,String yourUserId) async {
+    final snapshot =
+        await matchResultRef.doc(myUserId).collection('opponentList').get();
+    String NEW_FLG = "1";
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      if (doc.id == yourUserId) {
+        NEW_FLG = "0";
+      }
+    });
+    return NEW_FLG;
+  }
+
+  //ランキング_新規フラグ取得
+  static Future<String> rankNewFlgMatch(String myUserId,String rank) async {
+    final rankSnap = await FirebaseFirestore.instance
+        .collection('manSinglesRank')
+        .doc(rank)
+        .collection('RankList')
+        .get();
+    String NEW_FLG = "1";
+    await Future.forEach<dynamic>(rankSnap.docs, (doc) async {
+      if (doc.id == myUserId) {
+        NEW_FLG = "0";
+      }
+    });
+    return NEW_FLG;
+  }
+
   //ランキング取得
   static Future<int> rankingGet(String UserId) async {
     final myProfileSnap = await FirebaseFirestore.instance
@@ -731,9 +760,13 @@ class FirestoreMethod {
         .doc(UserId)
         .get();
     String rank = myProfileSnap.data()!['TOROKU_RANK'];
+    int rank_no = 0;
 
     late String manSingleRank;
-
+    String NEW_FLG = await rankNewFlgMatch(UserId, rank);
+    if (NEW_FLG == "1") {
+      rank_no = 0;
+    } else {
     if (rank == "初級") {
       manSingleRank = "ShokyuRank";
     } else if (rank == "中級") {
@@ -747,8 +780,67 @@ class FirestoreMethod {
         .collection('RankList')
         .doc(UserId)
         .get();
-    int rank_no = rankSnap.data()!['RANK_NO'];
+    rank_no = rankSnap.data()!['RANK_NO'];
+  }
     return rank_no;
+  }
+
+  //各レベルの勝率算出メソッド
+  static Future<void> winRateUpdate(
+      CprofileSetting myProfile, CprofileSetting yourProfile) async {
+    final snapshotDetail = await matchResultRef
+        .doc(myProfile.USER_ID)
+        .collection('opponentList')
+        .doc(yourProfile.USER_ID)
+        .collection('matchDetail')
+        .get();
+    int winSu = 0;
+    int matchSu = 0;
+    await Future.forEach<dynamic>(snapshotDetail.docs, (doc) async {
+      if (doc.data()['TOROKU_RANK'].contains(yourProfile.TOROKU_RANK)) {
+        winSu = doc.data()['WIN_FLG'] + winSu;
+        matchSu = matchSu + 1;
+      } else {
+        matchSu = matchSu + 1;
+      }
+    });
+    final snapshotResult = await matchResultRef.doc(myProfile.USER_ID);
+
+    int loseSu = matchSu - winSu;
+    int winRate = ((winSu / matchSu) * 100).round();
+
+    switch (yourProfile.TOROKU_RANK) {
+      case '初級':
+        try {
+          snapshotResult.update({'SHOKYU_WIN_SU': winSu});
+          snapshotResult.update({'SHOKYU_LOSE_SU': loseSu});
+          snapshotResult.update({'SHOKYU_MATCH_SU': matchSu});
+          snapshotResult.update({'SHOKYU_WIN_RATE': winRate});
+        } catch (e) {
+          print('初級TSPポイントの付与に失敗しました --- $e');
+        }
+        break;
+      case '中級':
+        try {
+          snapshotResult.update({'CHUKYU_WIN_SU': winSu});
+          snapshotResult.update({'CHUKYU_LOSE_SU': loseSu});
+          snapshotResult.update({'CHUKYU_MATCH_SU': matchSu});
+          snapshotResult.update({'CHUKYU_WIN_RATE': winRate});
+        } catch (e) {
+          print('中級TSPポイントの付与に失敗しました --- $e');
+        }
+        break;
+      case '上級':
+        try {
+          snapshotResult.update({'JYOKYU_WIN_SU': winSu});
+          snapshotResult.update({'JYOKYU_LOSE_SU': loseSu});
+          snapshotResult.update({'JYOKYU_MATCH_SU': matchSu});
+          snapshotResult.update({'JYOKYU_WIN_RATE': winRate});
+        } catch (e) {
+          print('上級TSPポイントの付与に失敗しました --- $e');
+        }
+        break;
+    }
   }
 
   //対戦結果作成
@@ -784,10 +876,78 @@ class FirestoreMethod {
     //現在の上級TSPポイント
     late int MY_JYOKYU_TS_POINT_CUR;
     late int YOUR_JYOKYU_TS_POINT_CUR;
+    //新規フラグ
     late String MY_NEW_FLG;
     late String YOUR_NEW_FLG;
+    //初対戦フラグ
+    late String MY_NEW_MATCH_FLG;
+    late String YOUR_NEW_MATCH_FLG;
+
+    //TSPポイントランキング
     late int MY_RANK;
     late int YOUR_RANK;
+
+    //各レベルの勝利数/敗戦数/試合数/勝率
+    late int MY_SHOKYU_WIN_SU;
+    late int MY_SHOKYU_LOSE_SU;
+    late int MY_SHOKYU_MATCH_SU;
+    late int MY_SHOKYU_WIN_RATE;
+
+    late int MY_CHUKYU_WIN_SU;
+    late int MY_CHUKYU_LOSE_SU;
+    late int MY_CHUKYU_MATCH_SU;
+    late int MY_CHUKYU_WIN_RATE;
+
+    late int MY_JYOKYU_WIN_SU;
+    late int MY_JYOKYU_LOSE_SU;
+    late int MY_JYOKYU_MATCH_SU;
+    late int MY_JYOKYU_WIN_RATE;
+
+    late int YOUR_SHOKYU_WIN_SU;
+    late int YOUR_SHOKYU_LOSE_SU;
+    late int YOUR_SHOKYU_MATCH_SU;
+    late int YOUR_SHOKYU_WIN_RATE;
+
+    late int YOUR_CHUKYU_WIN_SU;
+    late int YOUR_CHUKYU_LOSE_SU;
+    late int YOUR_CHUKYU_MATCH_SU;
+    late int YOUR_CHUKYU_WIN_RATE;
+
+    late int YOUR_JYOKYU_WIN_SU;
+    late int YOUR_JYOKYU_LOSE_SU;
+    late int YOUR_JYOKYU_MATCH_SU;
+    late int YOUR_JYOKYU_WIN_RATE;
+
+    //各レベルの勝利数/敗戦数/試合数/勝率
+    late int MY_SHOKYU_WIN_SU_CUR;
+    late int MY_SHOKYU_LOSE_SU_CUR;
+    late int MY_SHOKYU_MATCH_SU_CUR;
+    late int MY_SHOKYU_WIN_RATE_CUR;
+
+    late int MY_CHUKYU_WIN_SU_CUR;
+    late int MY_CHUKYU_LOSE_SU_CUR;
+    late int MY_CHUKYU_MATCH_SU_CUR;
+    late int MY_CHUKYU_WIN_RATE_CUR;
+
+    late int MY_JYOKYU_WIN_SU_CUR;
+    late int MY_JYOKYU_LOSE_SU_CUR;
+    late int MY_JYOKYU_MATCH_SU_CUR;
+    late int MY_JYOKYU_WIN_RATE_CUR;
+
+    late int YOUR_SHOKYU_WIN_SU_CUR;
+    late int YOUR_SHOKYU_LOSE_SU_CUR;
+    late int YOUR_SHOKYU_MATCH_SU_CUR;
+    late int YOUR_SHOKYU_WIN_RATE_CUR;
+
+    late int YOUR_CHUKYU_WIN_SU_CUR;
+    late int YOUR_CHUKYU_LOSE_SU_CUR;
+    late int YOUR_CHUKYU_MATCH_SU_CUR;
+    late int YOUR_CHUKYU_WIN_RATE_CUR;
+
+    late int YOUR_JYOKYU_WIN_SU_CUR;
+    late int YOUR_JYOKYU_LOSE_SU_CUR;
+    late int YOUR_JYOKYU_MATCH_SU_CUR;
+    late int YOUR_JYOKYU_WIN_RATE_CUR;
 
     //新規フラグ取得メソッド結果を取得
     MY_NEW_FLG = await newFlgMatchResult(myProfile.USER_ID);
@@ -795,61 +955,199 @@ class FirestoreMethod {
 
     //ランキング取得メソッド
     MY_RANK = await rankingGet(myProfile.USER_ID);
+    print('MY_RANK' + MY_RANK.toString());
     YOUR_RANK = await rankingGet(yourProfile.USER_ID);
 
-    print("MY_NEW_FLG:" + MY_NEW_FLG);
-    print("YOUR_NEW_FLG:" + YOUR_NEW_FLG);
+    //個人対戦結果勝率
+    late int MY_WIN_SU = 0;
+    late int MY_LOSE_SU = 0;
+    late int MY_MATCH_SU = 0;
+    late int MY_WIN_RATE = 0;
+
+    late int YOUR_WIN_SU = 0;
+    late int YOUR_LOSE_SU = 0;
+    late int YOUR_MATCH_SU = 0;
+    late int YOUR_WIN_RATE = 0;
+
+    //個人対戦結果勝率
+    late int MY_WIN_SU_CUR;
+    late int MY_LOSE_SU_CUR;
+    late int MY_MATCH_SU_CUR;
+    late int MY_WIN_RATE_CUR;
+    //個人対戦結果勝率_合計
+    late int MY_WIN_SU_SUM;
+    late int MY_LOSE_SU_SUM;
+    late int MY_MATCH_SU_SUM;
+    late int YOUR_WIN_SU_SUM;
+    late int YOUR_LOSE_SU_SUM;
+    late int YOUR_MATCH_SU_SUM;
+
+    late int YOUR_WIN_SU_CUR;
+    late int YOUR_LOSE_SU_CUR;
+    late int YOUR_MATCH_SU_CUR;
+    late int YOUR_WIN_RATE_CUR;
 
     matchResultList.forEach((a) async {
       try {
-          if (a.myGamePoint > a.yourGamePoint) {
-            MY_WIN_FLG = 1;
-            YOUR_WIN_FLG = 0;
-            //付与TSポイントの算出
-            MY_TS_POINT_FUYO = TsMethod.tsPointCalculation(
-                myProfile.TOROKU_RANK, yourProfile.TOROKU_RANK, MY_RANK,
-                YOUR_RANK);
-            MY_TS_POINT_FUYO_SUM = MY_TS_POINT_FUYO_SUM + MY_TS_POINT_FUYO;
-            YOUR_TS_POINT_FUYO = 0;
-          } else {
-            YOUR_WIN_FLG = 1;
-            MY_WIN_FLG = 0;
-            //付与TSポイントの算出
-            YOUR_TS_POINT_FUYO = TsMethod.tsPointCalculation(
-                yourProfile.TOROKU_RANK, myProfile.TOROKU_RANK, 15, 1);
-            YOUR_TS_POINT_FUYO_SUM =
-                YOUR_TS_POINT_FUYO_SUM + YOUR_TS_POINT_FUYO;
-            MY_TS_POINT_FUYO = 0;
-            print(YOUR_TS_POINT_FUYO);
-          }
-          matchResultRef
-              .doc(myProfile.USER_ID)
-              .collection('opponentList')
-              .doc(yourProfile.USER_ID)
-              .collection('matchDetail')
-              .add({
-            'MY_POINT': a.myGamePoint,
-            'YOUR_POINT': a.yourGamePoint,
-            'WIN_FLG': MY_WIN_FLG,
-            'TS_POINT': MY_TS_POINT_FUYO,
-            'KOUSHIN_TIME': today
-          });
-          matchResultRef
-              .doc(yourProfile.USER_ID)
-              .collection('opponentList')
-              .doc(myProfile.USER_ID)
-              .collection('matchDetail')
-              .add({
-            'MY_POINT': a.yourGamePoint,
-            'YOUR_POINT': a.myGamePoint,
-            'WIN_FLG': YOUR_WIN_FLG,
-            'TS_POINT': YOUR_TS_POINT_FUYO,
-            'KOUSHIN_TIME': today
-          });
-        }catch (e) {
+        if (a.myGamePoint > a.yourGamePoint) {
+          //勝利フラグ更新
+          MY_WIN_FLG = 1;
+          YOUR_WIN_FLG = 0;
+          //勝利数カウント
+          MY_WIN_SU = MY_WIN_SU + 1;
+          //試合数カウント
+          MY_MATCH_SU = MY_MATCH_SU + 1;
+          YOUR_MATCH_SU = YOUR_MATCH_SU + 1;
+          //付与TSポイントの算出
+          MY_TS_POINT_FUYO = TsMethod.tsPointCalculation(myProfile.TOROKU_RANK,
+              yourProfile.TOROKU_RANK, MY_RANK, YOUR_RANK);
+          MY_TS_POINT_FUYO_SUM = MY_TS_POINT_FUYO_SUM + MY_TS_POINT_FUYO;
+          YOUR_TS_POINT_FUYO = 0;
+        } else {
+          //勝利フラグ更新
+          YOUR_WIN_FLG = 1;
+          MY_WIN_FLG = 0;
+          //勝利数カウント
+          YOUR_WIN_SU = YOUR_WIN_SU + 1;
+          //試合数カウント
+          MY_MATCH_SU = MY_MATCH_SU + 1;
+          YOUR_MATCH_SU = YOUR_MATCH_SU + 1;
+
+          //付与TSポイントの算出
+          YOUR_TS_POINT_FUYO = TsMethod.tsPointCalculation(
+              yourProfile.TOROKU_RANK,
+              myProfile.TOROKU_RANK,
+              YOUR_RANK,
+              MY_RANK);
+          YOUR_TS_POINT_FUYO_SUM = YOUR_TS_POINT_FUYO_SUM + YOUR_TS_POINT_FUYO;
+          MY_TS_POINT_FUYO = 0;
+          print(YOUR_TS_POINT_FUYO);
+        }
+        matchResultRef
+            .doc(myProfile.USER_ID)
+            .collection('opponentList')
+            .doc(yourProfile.USER_ID)
+            .collection('matchDetail')
+            .add({
+          'MY_POINT': a.myGamePoint,
+          'YOUR_POINT': a.yourGamePoint,
+          'WIN_FLG': MY_WIN_FLG,
+          'TS_POINT': MY_TS_POINT_FUYO,
+          'TOROKU_RANK': yourProfile.TOROKU_RANK,
+          'KOUSHIN_TIME': today
+        });
+        matchResultRef
+            .doc(yourProfile.USER_ID)
+            .collection('opponentList')
+            .doc(myProfile.USER_ID)
+            .collection('matchDetail')
+            .add({
+          'MY_POINT': a.yourGamePoint,
+          'YOUR_POINT': a.myGamePoint,
+          'WIN_FLG': YOUR_WIN_FLG,
+          'TS_POINT': YOUR_TS_POINT_FUYO,
+          'TOROKU_RANK': myProfile.TOROKU_RANK,
+          'KOUSHIN_TIME': today
+        });
+      } catch (e) {
         print('対戦結果入力に失敗しました --- $e');
       }
     });
+
+    //個人対戦結果更新
+    final myResultSnap = await matchResultRef
+        .doc(myProfile.USER_ID)
+        .collection('opponentList')
+        .doc(yourProfile.USER_ID);
+
+    final yourResultSnap = await matchResultRef
+        .doc(yourProfile.USER_ID)
+        .collection('opponentList')
+        .doc(myProfile.USER_ID);
+
+    //初対戦フラグ取得メソッド結果を取得(メソッドは作る必要あり)
+    MY_NEW_MATCH_FLG = await individualNewFlgMatch(myProfile.USER_ID,yourProfile.USER_ID);
+    YOUR_NEW_MATCH_FLG = await individualNewFlgMatch(yourProfile.USER_ID,myProfile.USER_ID);
+    MY_LOSE_SU = MY_MATCH_SU - MY_WIN_SU;
+    if (MY_NEW_MATCH_FLG == "1") {
+      MY_WIN_SU_SUM = 0 + MY_WIN_SU;
+      MY_LOSE_SU_SUM = 0 + MY_LOSE_SU;
+      MY_MATCH_SU_SUM = 0 + MY_MATCH_SU;
+
+      MY_WIN_RATE = ((MY_WIN_SU_SUM / MY_MATCH_SU_SUM) * 100).round();
+
+      try {
+        await myResultSnap.set({
+          'WIN_SU': MY_WIN_SU_SUM,
+          'LOSE_SU': MY_LOSE_SU_SUM,
+          'MATCH_SU': MY_MATCH_SU_SUM,
+          'WIN_RATE': MY_WIN_RATE
+        });
+      } catch (e) {
+        print("初対戦の勝率の入力に失敗しました");
+      }
+    } else {
+      //現在の勝利数・敗北数など取得
+      final myResultSnapGet = await myResultSnap.get();
+      MY_WIN_SU_CUR = myResultSnapGet.data()!['WIN_SU'];
+      MY_LOSE_SU_CUR = myResultSnapGet.data()!['LOSE_SU'];
+      MY_MATCH_SU_CUR = myResultSnapGet.data()!['MATCH_SU'];
+      MY_WIN_SU_SUM = MY_WIN_SU_CUR + MY_WIN_SU;
+      MY_LOSE_SU_SUM = MY_LOSE_SU_CUR + MY_LOSE_SU;
+      MY_MATCH_SU_SUM = MY_MATCH_SU_CUR + MY_MATCH_SU;
+      MY_WIN_RATE = ((MY_WIN_SU_SUM / MY_MATCH_SU_SUM) * 100).round();
+      try {
+        myResultSnap.update({
+          'WIN_SU': MY_WIN_SU_SUM,
+          'LOSE_SU': MY_LOSE_SU_SUM,
+          'MATCH_SU': MY_MATCH_SU_SUM,
+          'WIN_RATE': MY_WIN_RATE
+        });
+      } catch (e) {
+        print("個人勝率の更新に失敗しました");
+      }
+    }
+    YOUR_LOSE_SU = YOUR_MATCH_SU - YOUR_WIN_SU;
+
+    if (YOUR_NEW_MATCH_FLG == "1") {
+
+      YOUR_WIN_SU_SUM = 0 + YOUR_WIN_SU;
+      YOUR_LOSE_SU_SUM = 0 + YOUR_LOSE_SU;
+      YOUR_MATCH_SU_SUM = 0 + YOUR_MATCH_SU;
+
+      YOUR_WIN_RATE = ((YOUR_WIN_SU_SUM / YOUR_MATCH_SU_SUM) * 100).round();
+
+      try {
+        await yourResultSnap.set({
+          'WIN_SU': YOUR_WIN_SU_SUM,
+          'LOSE_SU': YOUR_LOSE_SU_SUM,
+          'MATCH_SU': YOUR_MATCH_SU_SUM,
+          'WIN_RATE': YOUR_WIN_RATE
+        });
+      } catch (e) {
+        print("初対戦の勝率の入力に失敗しました");
+      }
+    } else {
+      //現在の勝利数・敗北数など取得
+      final yourResultSnapGet = await yourResultSnap.get();
+      YOUR_WIN_SU_CUR = yourResultSnapGet.data()!['WIN_SU'];
+      YOUR_LOSE_SU_CUR = yourResultSnapGet.data()!['LOSE_SU'];
+      YOUR_MATCH_SU_CUR = yourResultSnapGet.data()!['MATCH_SU'];
+      YOUR_WIN_SU_SUM = YOUR_WIN_SU_CUR + YOUR_WIN_SU;
+      YOUR_LOSE_SU_SUM = YOUR_LOSE_SU_CUR + YOUR_LOSE_SU;
+      YOUR_MATCH_SU_SUM = YOUR_MATCH_SU_CUR + YOUR_MATCH_SU;
+      YOUR_WIN_RATE = ((YOUR_WIN_SU_SUM / YOUR_MATCH_SU_SUM) * 100).round();
+      try {
+        yourResultSnap.update({
+          'WIN_SU': YOUR_WIN_SU_SUM,
+          'LOSE_SU': YOUR_LOSE_SU_SUM,
+          'MATCH_SU': YOUR_MATCH_SU_SUM,
+          'WIN_RATE': YOUR_WIN_RATE
+        });
+      } catch (e) {
+        print("個人勝率の更新に失敗しました");
+      }
+    }
     if (MY_NEW_FLG == "1") {
       //新規の場合
       MY_TS_POINT_CUR = 0;
@@ -857,12 +1155,40 @@ class FirestoreMethod {
       MY_SHOKYU_TS_POINT_CUR = 0;
       MY_CHUKYU_TS_POINT_CUR = 0;
       MY_JYOKYU_TS_POINT_CUR = 0;
+
+      MY_SHOKYU_WIN_SU_CUR = 0;
+      MY_SHOKYU_LOSE_SU_CUR = 0;
+      MY_SHOKYU_MATCH_SU_CUR = 0;
+      MY_SHOKYU_WIN_RATE_CUR = 0;
+
+      MY_CHUKYU_WIN_SU_CUR = 0;
+      MY_CHUKYU_LOSE_SU_CUR = 0;
+      MY_CHUKYU_MATCH_SU_CUR = 0;
+      MY_CHUKYU_WIN_RATE_CUR = 0;
+
+      MY_JYOKYU_WIN_SU_CUR = 0;
+      MY_JYOKYU_LOSE_SU_CUR = 0;
+      MY_JYOKYU_MATCH_SU_CUR = 0;
+      MY_JYOKYU_WIN_RATE_CUR = 0;
+
       await matchResultRef.doc(myProfile.USER_ID).set({
         'TS_POINT': MY_TS_POINT_CUR,
         'TOROKU_RANK': MY_TOROKU_RANK_CUR,
         'SHOKYU_TS_POINT': MY_SHOKYU_TS_POINT_CUR,
         'CHUKYU_TS_POINT': MY_CHUKYU_TS_POINT_CUR,
-        'JYOKYU_TS_POINT': MY_JYOKYU_TS_POINT_CUR
+        'JYOKYU_TS_POINT': MY_JYOKYU_TS_POINT_CUR,
+        'SHOKYU_WIN_SU': MY_SHOKYU_WIN_SU_CUR,
+        'SHOKYU_LOSE_SU': MY_SHOKYU_LOSE_SU_CUR,
+        'SHOKYU_MATCH_SU': MY_SHOKYU_MATCH_SU_CUR,
+        'SHOKYU_WIN_RATE': MY_SHOKYU_WIN_RATE_CUR,
+        'CHUKYU_WIN_SU': MY_CHUKYU_WIN_SU_CUR,
+        'CHUKYU_LOSE_SU': MY_CHUKYU_LOSE_SU_CUR,
+        'CHUKYU_MATCH_SU': MY_CHUKYU_MATCH_SU_CUR,
+        'CHUKYU_WIN_RATE': MY_CHUKYU_WIN_RATE_CUR,
+        'JYOKYU_WIN_SU': MY_JYOKYU_WIN_SU_CUR,
+        'JYOKYU_LOSE_SU': MY_JYOKYU_LOSE_SU_CUR,
+        'JYOKYU_MATCH_SU': MY_JYOKYU_MATCH_SU_CUR,
+        'JYOKYU_WIN_RATE': MY_JYOKYU_WIN_RATE_CUR,
       });
     } else {
       //現在の登録情報を取得
@@ -878,6 +1204,19 @@ class FirestoreMethod {
         MY_CHUKYU_TS_POINT_CUR = mySnapShot.data()!['CHUKYU_TS_POINT'];
         //現在の上級TSPポイントの取得
         MY_JYOKYU_TS_POINT_CUR = mySnapShot.data()!['JYOKYU_TS_POINT'];
+        //現在の勝率・勝利数・試合数などを取得
+        MY_SHOKYU_WIN_SU_CUR = mySnapShot.data()!['SHOKYU_WIN_SU'];
+        MY_SHOKYU_LOSE_SU_CUR = mySnapShot.data()!['SHOKYU_LOSE_SU'];
+        MY_SHOKYU_MATCH_SU_CUR = mySnapShot.data()!['SHOKYU_MATCH_SU'];
+        MY_SHOKYU_WIN_RATE_CUR = mySnapShot.data()!['SHOKYU_WIN_RATE'];
+        MY_CHUKYU_WIN_SU_CUR = mySnapShot.data()!['CHUKYU_WIN_SU'];
+        MY_CHUKYU_LOSE_SU_CUR = mySnapShot.data()!['CHUKYU_LOSE_SU'];
+        MY_CHUKYU_MATCH_SU_CUR = mySnapShot.data()!['CHUKYU_MATCH_SU'];
+        MY_CHUKYU_WIN_RATE_CUR = mySnapShot.data()!['CHUKYU_WIN_RATE'];
+        MY_JYOKYU_WIN_SU_CUR = mySnapShot.data()!['JYOKYU_WIN_SU'];
+        MY_JYOKYU_LOSE_SU_CUR = mySnapShot.data()!['JYOKYU_LOSE_SU'];
+        MY_JYOKYU_MATCH_SU_CUR = mySnapShot.data()!['JYOKYU_MATCH_SU'];
+        MY_JYOKYU_WIN_RATE_CUR = mySnapShot.data()!['JYOKYU_WIN_RATE'];
       } catch (e) {
         print('各種情報の取得に失敗しました --- $e');
       }
@@ -889,12 +1228,40 @@ class FirestoreMethod {
       YOUR_SHOKYU_TS_POINT_CUR = 0;
       YOUR_CHUKYU_TS_POINT_CUR = 0;
       YOUR_JYOKYU_TS_POINT_CUR = 0;
+
+      YOUR_SHOKYU_WIN_SU_CUR = 0;
+      YOUR_SHOKYU_LOSE_SU_CUR = 0;
+      YOUR_SHOKYU_MATCH_SU_CUR = 0;
+      YOUR_SHOKYU_WIN_RATE_CUR = 0;
+
+      YOUR_CHUKYU_WIN_SU_CUR = 0;
+      YOUR_CHUKYU_LOSE_SU_CUR = 0;
+      YOUR_CHUKYU_MATCH_SU_CUR = 0;
+      YOUR_CHUKYU_WIN_RATE_CUR = 0;
+
+      YOUR_JYOKYU_WIN_SU_CUR = 0;
+      YOUR_JYOKYU_LOSE_SU_CUR = 0;
+      YOUR_JYOKYU_MATCH_SU_CUR = 0;
+      YOUR_JYOKYU_WIN_RATE_CUR = 0;
+
       await matchResultRef.doc(yourProfile.USER_ID).set({
         'TS_POINT': YOUR_TS_POINT_CUR,
         'TOROKU_RANK': YOUR_TOROKU_RANK_CUR,
         'SHOKYU_TS_POINT': YOUR_SHOKYU_TS_POINT_CUR,
         'CHUKYU_TS_POINT': YOUR_CHUKYU_TS_POINT_CUR,
-        'JYOKYU_TS_POINT': YOUR_JYOKYU_TS_POINT_CUR
+        'JYOKYU_TS_POINT': YOUR_JYOKYU_TS_POINT_CUR,
+        'SHOKYU_WIN_SU': YOUR_SHOKYU_WIN_SU_CUR,
+        'SHOKYU_LOSE_SU': YOUR_SHOKYU_LOSE_SU_CUR,
+        'SHOKYU_MATCH_SU': YOUR_SHOKYU_MATCH_SU_CUR,
+        'SHOKYU_WIN_RATE': YOUR_SHOKYU_WIN_RATE_CUR,
+        'CHUKYU_WIN_SU': YOUR_CHUKYU_WIN_SU_CUR,
+        'CHUKYU_LOSE_SU': YOUR_CHUKYU_LOSE_SU_CUR,
+        'CHUKYU_MATCH_SU': YOUR_CHUKYU_MATCH_SU_CUR,
+        'CHUKYU_WIN_RATE': YOUR_CHUKYU_WIN_RATE_CUR,
+        'JYOKYU_WIN_SU': YOUR_JYOKYU_WIN_SU_CUR,
+        'JYOKYU_LOSE_SU': YOUR_JYOKYU_LOSE_SU_CUR,
+        'JYOKYU_MATCH_SU': YOUR_JYOKYU_MATCH_SU_CUR,
+        'JYOKYU_WIN_RATE': YOUR_JYOKYU_WIN_RATE_CUR,
       });
     } else {
       try {
@@ -910,6 +1277,19 @@ class FirestoreMethod {
         YOUR_CHUKYU_TS_POINT_CUR = yourSnapShot.data()!['CHUKYU_TS_POINT'];
         //現在の上級TSPポイントの取得
         YOUR_JYOKYU_TS_POINT_CUR = yourSnapShot.data()!['JYOKYU_TS_POINT'];
+        //現在の勝率・勝利数・試合数などを取得
+        YOUR_SHOKYU_WIN_SU_CUR = yourSnapShot.data()!['SHOKYU_WIN_SU'];
+        YOUR_SHOKYU_LOSE_SU_CUR = yourSnapShot.data()!['SHOKYU_LOSE_SU'];
+        YOUR_SHOKYU_MATCH_SU_CUR = yourSnapShot.data()!['SHOKYU_MATCH_SU'];
+        YOUR_SHOKYU_WIN_RATE_CUR = yourSnapShot.data()!['SHOKYU_WIN_RATE'];
+        YOUR_CHUKYU_WIN_SU_CUR = yourSnapShot.data()!['CHUKYU_WIN_SU'];
+        YOUR_CHUKYU_LOSE_SU_CUR = yourSnapShot.data()!['CHUKYU_LOSE_SU'];
+        YOUR_CHUKYU_MATCH_SU_CUR = yourSnapShot.data()!['CHUKYU_MATCH_SU'];
+        YOUR_CHUKYU_WIN_RATE_CUR = yourSnapShot.data()!['CHUKYU_WIN_RATE'];
+        YOUR_JYOKYU_WIN_SU_CUR = yourSnapShot.data()!['JYOKYU_WIN_SU'];
+        YOUR_JYOKYU_LOSE_SU_CUR = yourSnapShot.data()!['JYOKYU_LOSE_SU'];
+        YOUR_JYOKYU_MATCH_SU_CUR = yourSnapShot.data()!['JYOKYU_MATCH_SU'];
+        YOUR_JYOKYU_WIN_RATE_CUR = yourSnapShot.data()!['JYOKYU_WIN_RATE'];
       } catch (e) {
         print('TSPポイントの取得に失敗しました --- $e');
       }
@@ -939,7 +1319,7 @@ class FirestoreMethod {
                 .doc(myProfile.USER_ID)
                 .update({'CHUKYU_TS_POINT': MY_TS_POINT});
           } catch (e) {
-            print('初級TSPポイントの付与に失敗しました --- $e');
+            print('中級TSPポイントの付与に失敗しました --- $e');
           }
           break;
         case '上級':
@@ -948,7 +1328,7 @@ class FirestoreMethod {
                 .doc(myProfile.USER_ID)
                 .update({'JYOKYU_TS_POINT': MY_TS_POINT});
           } catch (e) {
-            print('初級TSPポイントの付与に失敗しました --- $e');
+            print('上級TSPポイントの付与に失敗しました --- $e');
           }
           break;
       }
@@ -1031,7 +1411,7 @@ class FirestoreMethod {
                 .doc(yourProfile.USER_ID)
                 .update({'CHUKYU_TS_POINT': YOUR_TS_POINT});
           } catch (e) {
-            print('初級TSPポイントの付与に失敗しました --- $e');
+            print('中級TSPポイントの付与に失敗しました --- $e');
           }
           break;
         case '上級':
@@ -1040,7 +1420,7 @@ class FirestoreMethod {
                 .doc(yourProfile.USER_ID)
                 .update({'JYOKYU_TS_POINT': YOUR_TS_POINT});
           } catch (e) {
-            print('初級TSPポイントの付与に失敗しました --- $e');
+            print('上級TSPポイントの付与に失敗しました --- $e');
           }
           break;
       }
@@ -1096,6 +1476,164 @@ class FirestoreMethod {
           }
           break;
       }
+    }
+
+    //各ランクの勝率を更新(自分)
+    switch (yourProfile.TOROKU_RANK) {
+      case '初級':
+        try {
+          MY_SHOKYU_WIN_SU = MY_SHOKYU_WIN_SU_CUR + MY_WIN_SU;
+          matchResultRef
+              .doc(myProfile.USER_ID)
+              .update({'SHOKYU_WIN_SU': MY_SHOKYU_WIN_SU});
+          MY_SHOKYU_LOSE_SU = MY_SHOKYU_LOSE_SU_CUR + MY_LOSE_SU;
+          matchResultRef
+              .doc(myProfile.USER_ID)
+              .update({'SHOKYU_LOSE_SU': MY_SHOKYU_LOSE_SU});
+          MY_SHOKYU_MATCH_SU = MY_SHOKYU_MATCH_SU_CUR + MY_MATCH_SU;
+          matchResultRef
+              .doc(myProfile.USER_ID)
+              .update({'SHOKYU_MATCH_SU': MY_SHOKYU_MATCH_SU});
+
+          MY_SHOKYU_WIN_RATE =
+              ((MY_SHOKYU_WIN_SU / MY_SHOKYU_MATCH_SU) * 100).round();
+
+          matchResultRef
+              .doc(myProfile.USER_ID)
+              .update({'SHOKYU_WIN_RATE': MY_SHOKYU_WIN_RATE});
+        } catch (e) {
+          print('初級の勝率の付与に失敗しました --- $e');
+        }
+        break;
+      case '中級':
+        try {
+          MY_CHUKYU_WIN_SU = MY_CHUKYU_WIN_SU_CUR + MY_WIN_SU;
+          matchResultRef
+              .doc(myProfile.USER_ID)
+              .update({'CHUKYU_WIN_SU': MY_CHUKYU_WIN_SU});
+          MY_CHUKYU_LOSE_SU = MY_CHUKYU_LOSE_SU_CUR + MY_LOSE_SU;
+          matchResultRef
+              .doc(myProfile.USER_ID)
+              .update({'CHUKYU_LOSE_SU': MY_CHUKYU_LOSE_SU});
+          MY_CHUKYU_MATCH_SU = MY_CHUKYU_MATCH_SU_CUR + MY_MATCH_SU;
+          matchResultRef
+              .doc(myProfile.USER_ID)
+              .update({'CHUKYU_MATCH_SU': MY_CHUKYU_MATCH_SU});
+
+          MY_CHUKYU_WIN_RATE =
+              ((MY_CHUKYU_WIN_SU / MY_CHUKYU_MATCH_SU) * 100).round();
+
+          matchResultRef
+              .doc(myProfile.USER_ID)
+              .update({'CHUKYU_WIN_RATE': MY_CHUKYU_WIN_RATE});
+        } catch (e) {
+          print('中級の勝率の付与に失敗しました --- $e');
+        }
+        break;
+      case '上級':
+        try {
+          MY_JYOKYU_WIN_SU = MY_JYOKYU_WIN_SU_CUR + MY_WIN_SU;
+          matchResultRef
+              .doc(myProfile.USER_ID)
+              .update({'JYOKYU_WIN_SU': MY_JYOKYU_WIN_SU});
+          MY_JYOKYU_LOSE_SU = MY_JYOKYU_LOSE_SU_CUR + MY_LOSE_SU;
+          matchResultRef
+              .doc(myProfile.USER_ID)
+              .update({'JYOKYU_LOSE_SU': MY_JYOKYU_LOSE_SU});
+          MY_JYOKYU_MATCH_SU = MY_JYOKYU_MATCH_SU_CUR + MY_MATCH_SU;
+          matchResultRef
+              .doc(myProfile.USER_ID)
+              .update({'JYOKYU_MATCH_SU': MY_JYOKYU_MATCH_SU});
+
+          MY_JYOKYU_WIN_RATE =
+              ((MY_JYOKYU_WIN_SU / MY_JYOKYU_MATCH_SU) * 100).round();
+
+          matchResultRef
+              .doc(myProfile.USER_ID)
+              .update({'JYOKYU_WIN_RATE': MY_JYOKYU_WIN_RATE});
+        } catch (e) {
+          print('上級の勝率の付与に失敗しました --- $e');
+        }
+        break;
+    }
+
+    //各ランクの勝率を更新
+    switch (myProfile.TOROKU_RANK) {
+      case '初級':
+        try {
+          YOUR_SHOKYU_WIN_SU = YOUR_SHOKYU_WIN_SU_CUR + YOUR_WIN_SU;
+          matchResultRef
+              .doc(yourProfile.USER_ID)
+              .update({'SHOKYU_WIN_SU': YOUR_SHOKYU_WIN_SU});
+          YOUR_SHOKYU_LOSE_SU = YOUR_SHOKYU_LOSE_SU_CUR + YOUR_LOSE_SU;
+          matchResultRef
+              .doc(yourProfile.USER_ID)
+              .update({'SHOKYU_LOSE_SU': YOUR_SHOKYU_LOSE_SU});
+          YOUR_SHOKYU_MATCH_SU = YOUR_SHOKYU_MATCH_SU_CUR + YOUR_MATCH_SU;
+          matchResultRef
+              .doc(yourProfile.USER_ID)
+              .update({'SHOKYU_MATCH_SU': YOUR_SHOKYU_MATCH_SU});
+
+          YOUR_SHOKYU_WIN_RATE =
+              ((YOUR_SHOKYU_WIN_SU / YOUR_SHOKYU_MATCH_SU) * 100).round();
+
+          matchResultRef
+              .doc(yourProfile.USER_ID)
+              .update({'SHOKYU_WIN_RATE': YOUR_SHOKYU_WIN_RATE});
+        } catch (e) {
+          print('初級の勝率の付与に失敗しました --- $e');
+        }
+        break;
+      case '中級':
+        try {
+          YOUR_CHUKYU_WIN_SU = YOUR_CHUKYU_WIN_SU_CUR + YOUR_WIN_SU;
+          matchResultRef
+              .doc(yourProfile.USER_ID)
+              .update({'CHUKYU_WIN_SU': YOUR_CHUKYU_WIN_SU});
+          YOUR_CHUKYU_LOSE_SU = YOUR_CHUKYU_LOSE_SU_CUR + YOUR_LOSE_SU;
+          matchResultRef
+              .doc(yourProfile.USER_ID)
+              .update({'CHUKYU_LOSE_SU': YOUR_CHUKYU_LOSE_SU});
+          YOUR_CHUKYU_MATCH_SU = YOUR_CHUKYU_MATCH_SU_CUR + YOUR_MATCH_SU;
+          matchResultRef
+              .doc(yourProfile.USER_ID)
+              .update({'CHUKYU_MATCH_SU': YOUR_CHUKYU_MATCH_SU});
+
+          YOUR_CHUKYU_WIN_RATE =
+              ((YOUR_CHUKYU_WIN_SU / YOUR_CHUKYU_MATCH_SU) * 100).round();
+
+          matchResultRef
+              .doc(yourProfile.USER_ID)
+              .update({'CHUKYU_WIN_RATE': YOUR_CHUKYU_WIN_RATE});
+        } catch (e) {
+          print('中級の勝率の付与に失敗しました --- $e');
+        }
+        break;
+      case '上級':
+        try {
+          YOUR_JYOKYU_WIN_SU = YOUR_JYOKYU_WIN_SU_CUR + YOUR_WIN_SU;
+          matchResultRef
+              .doc(yourProfile.USER_ID)
+              .update({'JYOKYU_WIN_SU': YOUR_JYOKYU_WIN_SU});
+          YOUR_JYOKYU_LOSE_SU = YOUR_JYOKYU_LOSE_SU_CUR + YOUR_LOSE_SU;
+          matchResultRef
+              .doc(yourProfile.USER_ID)
+              .update({'JYOKYU_LOSE_SU': YOUR_JYOKYU_LOSE_SU});
+          YOUR_JYOKYU_MATCH_SU = YOUR_JYOKYU_MATCH_SU_CUR + YOUR_MATCH_SU;
+          matchResultRef
+              .doc(yourProfile.USER_ID)
+              .update({'JYOKYU_MATCH_SU': YOUR_JYOKYU_MATCH_SU});
+
+          YOUR_JYOKYU_WIN_RATE =
+              ((YOUR_JYOKYU_WIN_SU / YOUR_JYOKYU_MATCH_SU) * 100).round();
+
+          matchResultRef
+              .doc(yourProfile.USER_ID)
+              .update({'JYOKYU_WIN_RATE': YOUR_JYOKYU_WIN_RATE});
+        } catch (e) {
+          print('上級の勝率の付与に失敗しました --- $e');
+        }
+        break;
     }
   }
 
