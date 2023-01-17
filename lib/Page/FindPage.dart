@@ -1,4 +1,5 @@
 
+import 'package:bordered_text/bordered_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -16,16 +17,16 @@ class FindPage extends StatefulWidget {
 class _FindPageState extends State<FindPage> {
 
   //都道府県
-  late String todofuken = '東京都';
+  late String todofuken = '都道府県';
 
   //登録ランク
-  late String torokuRank = 'ランクを入力を選択してください';
+  late String torokuRank = '登録ランク';
 
   //性別
-  late String gender = '性別を入力してください';
+  late String gender = '性別';
 
   //年齢
-  late String torokuAge = '年齢を選択してください';
+  late String torokuAge = '年齢';
 
   //アカウントIDで検索BOXに入力された値
   final inputId = TextEditingController();
@@ -48,6 +49,8 @@ class _FindPageState extends State<FindPage> {
       ),
       //ドロアーの定義
       drawer: DrawerConfig.drawer,
+
+      //メイン画面実装
       body: Scrollbar(
         child: SingleChildScrollView(
           child: Padding(
@@ -55,19 +58,15 @@ class _FindPageState extends State<FindPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'アカウントIDで検索',
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
-                ),
                 SizedBox(
-                  height: 5,
+                  height: 20,
                 ),
                 //アカウントID入力欄
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     SizedBox(
-                      width: 60,
+                      width: 50,
                     ),
                     Container(
                       alignment: Alignment.bottomRight,
@@ -76,66 +75,53 @@ class _FindPageState extends State<FindPage> {
                       child: TextFormField(
                         controller: inputId,
                         decoration: InputDecoration(
+                          labelText: 'IDで検索',
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.vertical()
+                              borderRadius: BorderRadius.circular(20),
+                              borderSide : const BorderSide(color: Colors.grey)
                           ),
                           contentPadding: EdgeInsets.symmetric(horizontal: 16),
                           fillColor: Colors.white,
-                          filled: true
+                          filled: true,
                         ),
                       ),
                     ),
+
+                    //検索アイコン実装
+                    const SizedBox(width: 10),
+                    IconButton(icon: Icon(Icons.search),
+                        onPressed: () {
+                          inputId.text == ""?
+                          showDialog(
+                              context: context,
+                              builder: (_) => AlertDialog(
+                                title :Text("入力エラー!"),
+                                content: Text("アカウントIDを入力してください"),
+                              )
+                          ):
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => FindResultPage(inputId.text),
+                              ));
+                        },
+
+                    ),
                   ],
                 ),
 
-                const SizedBox(height: 16),
-                //検索ボタン
-                Align(
-                  alignment: const Alignment(0.8, 0.1),
-                  child: TextButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.orange,
-                      onPrimary: Colors.white,
-                    ),
-                    //検索ボタン押下時の処理
-                    onPressed: () {
-                      inputId.text == ""?
-                      showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title :Text("入力エラー!"),
-                            content: Text("アカウントIDを入力してください"),
-                          )
-                      ):
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FindResultPage(inputId.text),
-                          ));
-                    },
-                    child: Text('検索'),
-                  ),
+                const SizedBox(height: 10),
+                BorderedText(
+                  child:
+                    Text('条件検索はこちら',
+                        style:
+                            TextStyle(fontSize: 20,
+                            color: Colors.green,
+                            )),
+                  strokeWidth: 0.5, //縁の太さ
+                  strokeColor: Colors.black, //縁の色,
                 ),
-
-                Text('条件で検索',
-                    style:
-                        TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
                 const SizedBox(height: 5),
-
-                //都道府県タイトル
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 50,
-                    ),
-                    Container(
-                      child: Text(
-                        '都道府県',
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
 
                 //都道府県選択BOX
                 Row(
@@ -146,15 +132,19 @@ class _FindPageState extends State<FindPage> {
                     ),
                     Container(
                       padding: const EdgeInsets.all(5.0),
-                      width: 250,
+                      width: 200,
                       height: 40,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
-                        color: Colors.white
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(20)
                       ),
                       child: Text(
                         todofuken,
-                        style: TextStyle(fontSize: 20, color: Colors.black),
+                        style:
+                        todofuken == '都道府県'
+                            ? TextStyle(fontSize: 20, color: Colors.grey)
+                            : TextStyle(fontSize: 20, color: Colors.black),
                       ),
                     ),
                     IconButton(
@@ -162,26 +152,6 @@ class _FindPageState extends State<FindPage> {
                       onPressed: () {
                         _showModalLocationPicker(context);
                       },
-                    ),
-                  ],
-                ),
-
-                //行間の幅調整
-                SizedBox(
-                  height: 5,
-                ),
-
-                //市町村タイトル
-                Row(
-                  children: [
-                    SizedBox(
-                      width: 50,
-                    ),
-                    Container(
-                      child: Text(
-                        '市町村(任意)',
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ),
                     ),
                   ],
                 ),
@@ -205,8 +175,9 @@ class _FindPageState extends State<FindPage> {
                       child: TextFormField(
                         controller: inputShichouson,
                         decoration: InputDecoration(
+                            labelText: '市町村(任意)',
                           border: OutlineInputBorder(
-                              borderRadius: BorderRadius.vertical()),
+                              borderRadius: BorderRadius.circular(20)),
                           contentPadding: EdgeInsets.symmetric(horizontal: 16),
                           fillColor: Colors.white,
                           filled: true
@@ -221,27 +192,14 @@ class _FindPageState extends State<FindPage> {
                   height: 5,
                 ),
 
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 50,
-                    ),
-                    Container(
-                      child: Text(
-                        '性別',
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
+
 
                 //行間の幅調整
                 SizedBox(
                   height: 5,
                 ),
 
-                //登録ランク選択BOX
+                //性別
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -250,15 +208,18 @@ class _FindPageState extends State<FindPage> {
                     ),
                     Container(
                       padding: const EdgeInsets.all(5.0),
-                      width: 250,
+                      width: 200,
                       height: 40,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
-                        color: Colors.white
+                        color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)
                       ),
                       child: Text(
                         gender,
-                        style: TextStyle(fontSize: 20, color: Colors.black),
+                        style: gender == '性別'
+                      ? TextStyle(fontSize: 20, color: Colors.grey):
+                        TextStyle(fontSize: 20, color: Colors.black),
                       ),
                     ),
                     IconButton(
@@ -275,22 +236,6 @@ class _FindPageState extends State<FindPage> {
                   height: 5,
                 ),
 
-                //登録ランクタイトル
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 50,
-                    ),
-                    Container(
-                      child: Text(
-                        '登録ランク',
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
-
                 //行間の幅調整
                 SizedBox(
                   height: 5,
@@ -305,15 +250,18 @@ class _FindPageState extends State<FindPage> {
                     ),
                     Container(
                       padding: const EdgeInsets.all(5.0),
-                      width: 250,
+                      width: 200,
                       height: 40,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
-                        color: Colors.white
+                        color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)
                       ),
                       child: Text(
                         torokuRank,
-                        style: TextStyle(fontSize: 20, color: Colors.black),
+                        style: torokuRank == '登録ランク'
+                        ? TextStyle(fontSize: 20, color: Colors.grey)
+                        : TextStyle(fontSize: 20, color: Colors.black),
                       ),
                     ),
                     IconButton(
@@ -330,22 +278,6 @@ class _FindPageState extends State<FindPage> {
                   height: 5,
                 ),
 
-                //年齢
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      width: 50,
-                    ),
-                    Container(
-                      child: Text(
-                        '年齢',
-                        style: TextStyle(fontSize: 20, color: Colors.black),
-                      ),
-                    ),
-                  ],
-                ),
-
                 SizedBox(
                   height: 5,
                 ),
@@ -359,15 +291,18 @@ class _FindPageState extends State<FindPage> {
                     ),
                     Container(
                       padding: const EdgeInsets.all(5.0),
-                      width: 250,
+                      width: 200,
                       height: 40,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
-                        color: Colors.white
+                        color: Colors.white,
+                          borderRadius: BorderRadius.circular(20)
                       ),
                       child: Text(
                         torokuAge,
-                        style: TextStyle(fontSize: 20, color: Colors.black),
+                        style: torokuAge == '年齢'
+                        ? TextStyle(fontSize: 20, color: Colors.grey)
+                        : TextStyle(fontSize: 20, color: Colors.black),
                       ),
                     ),
                     IconButton(
@@ -383,34 +318,29 @@ class _FindPageState extends State<FindPage> {
                   height: 16,
                 ),
 
-                //検索ボタン
-                Align(
-                  alignment: const Alignment(0.8, 0.1),
-                  child: TextButton(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.orange,
-                      onPrimary: Colors.white,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(icon: Icon(Icons.search),
+                      onPressed: () {
+                        todofuken == "都道府県" || gender =="性別を入力してください"
+                            || torokuRank =="ランクを入力してください" || torokuAge == "年齢を入力してください" ?
+                        showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title :Text("入力エラー!"),
+                              content: Text("都道府県、性別、登録ランク、年齢は必須条件です"),
+                            )
+                        ):
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => FindMultiResultPage(todofuken, inputShichouson.text,
+                                  gender, torokuRank, torokuAge),
+                            ));
+                      },
                     ),
-                    //検索ボタン押下時の処理
-                    onPressed: () {
-                      todofuken == "" || gender =="性別を入力してください"
-                          || torokuRank =="ランクを入力してください" || torokuAge == "年齢を入力してください" ?
-                      showDialog(
-                          context: context,
-                          builder: (_) => AlertDialog(
-                            title :Text("入力エラー!"),
-                            content: Text("都道府県、性別、登録ランク、年齢は必須条件です"),
-                          )
-                      ):
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => FindMultiResultPage(todofuken, inputShichouson.text,
-                                gender, torokuRank, torokuAge),
-                          ));
-                    },
-                    child: Text('検索'),
-                  ),
+                  ],
                 ),
               ],
             ),
