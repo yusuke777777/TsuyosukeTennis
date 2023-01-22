@@ -9,6 +9,7 @@ class CprofileSetting{
   late String AGE;
   late String GENDER;
   late String COMENT;
+  late String MY_USER_ID;
 
-  CprofileSetting({required this.USER_ID,required this.PROFILE_IMAGE,required this.NICK_NAME,required this.TOROKU_RANK,required this.activityList,required this.AGE,required this.GENDER,required this.COMENT});
+  CprofileSetting({required this.USER_ID,required this.PROFILE_IMAGE,required this.NICK_NAME,required this.TOROKU_RANK,required this.activityList,required this.AGE,required this.GENDER,required this.COMENT,required this.MY_USER_ID});
 }

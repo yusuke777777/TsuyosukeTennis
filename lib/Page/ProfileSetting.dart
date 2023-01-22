@@ -10,13 +10,15 @@ import '../UnderMenuMove.dart';
 class ProfileSetting extends StatefulWidget {
   late CprofileSetting myProfile;
   String koushinFlg = '0';
+  late String myUserId;
 
   ProfileSetting.Edit(CprofileSetting myProfileWork) {
     myProfile = myProfileWork;
     koushinFlg = '1';
   }
 
-  ProfileSetting.Make() {
+  ProfileSetting.Make(String? myUserId) {
+    print("2ユーザIDは" + myUserId!.toString());
     List<CativityList> activityList = [];
     myProfile = CprofileSetting(
       USER_ID: '',
@@ -27,11 +29,12 @@ class ProfileSetting extends StatefulWidget {
       AGE: '',
       GENDER: '',
       COMENT: '',
+      MY_USER_ID: myUserId,
     );
   }
 
   @override
-  _ProfileSettingState createState() => _ProfileSettingState();
+  _ProfileSettingState createState() => _ProfileSettingState(myProfile);
 }
 
 class _ProfileSettingState extends State<ProfileSetting> {
@@ -49,6 +52,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
 
   //性別
   String gender = "男";
+
+  late String myUserId;
 
   //市町村
   TextEditingController curShichoson = TextEditingController();
@@ -73,6 +78,10 @@ class _ProfileSettingState extends State<ProfileSetting> {
 
   //コメント
   TextEditingController coment = TextEditingController();
+
+  CprofileSetting myProfile;
+
+  _ProfileSettingState(this.myProfile);
 
   // List<Widget> contentWidgets = [];
 
@@ -116,8 +125,15 @@ class _ProfileSettingState extends State<ProfileSetting> {
     //都道府県登録数Index更新
     if (koushinFlg == "1") {
       todofukenTourokuNo = widget.myProfile.activityList.length;
-      todofukenTourokuNo = todofukenTourokuNo -1;
+      todofukenTourokuNo = todofukenTourokuNo - 1;
     }
+
+    //アクティビティリスト
+    if (koushinFlg == "1") {
+      myUserId = widget.myProfile.MY_USER_ID;
+      print(myUserId);
+    }
+
   }
 
   @override
@@ -251,160 +267,151 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     // Column(
                     //   crossAxisAlignment: CrossAxisAlignment.start,
                     //   children: [
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Row(
+                      children: [
                         SizedBox(
-                          height: 30,
+                          width: 30,
                         ),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Container(
-                              child: Text(
-                                '●主な活動場所',
-                                style: TextStyle(
-                                    fontSize: 25, color: Colors.black),
-                              ),
-                            ),
-                          ],
+                        Container(
+                          child: Text(
+                            '●主な活動場所',
+                            style: TextStyle(fontSize: 25, color: Colors.black),
+                          ),
                         ),
-                        ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            padding: const EdgeInsets.all(8),
-                            // ②配列のデータ数分カード表示を行う
-                            itemCount: activityList.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Column(
+                      ],
+                    ),
+                    ListView.builder(
+                        shrinkWrap: true,
+                        physics: NeverScrollableScrollPhysics(),
+                        padding: const EdgeInsets.all(8),
+                        // ②配列のデータ数分カード表示を行う
+                        itemCount: activityList.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return Column(
+                            children: [
+                              Row(
                                 children: [
-                                  Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 50,
-                                      ),
-                                      Container(
-                                        child: Text(
-                                          '都道府県',
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Colors.black),
-                                        ),
-                                      ),
-                                    ],
+                                  SizedBox(
+                                    width: 50,
                                   ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width: 50,
-                                      ),
-                                      Container(
-                                        padding: const EdgeInsets.all(5.0),
-                                        width: 250,
-                                        height: 40,
-                                        decoration: BoxDecoration(
-                                          border:
-                                              Border.all(color: Colors.grey),
-                                        ),
-                                        child: Text(
-                                          '${activityList[index].TODOFUKEN}',
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Colors.black),
-                                        ),
-                                      ),
-                                      IconButton(
-                                        icon: Icon(Icons
-                                            .arrow_drop_down_circle_rounded),
-                                        onPressed: () {
-                                          _showModalLocationPicker(
-                                              context,
-                                              int.parse(activityList[index].No),
-                                              activityList[index].SHICHOSON);
-                                          setState(() {});
-                                        },
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      SizedBox(
-                                        width: 50,
-                                      ),
-                                      Container(
-                                        child: Text(
-                                          '市町村',
-                                          style: TextStyle(
-                                              fontSize: 20,
-                                              color: Colors.black),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        width: 50,
-                                      ),
-                                      Container(
-                                          padding: const EdgeInsets.all(5.0),
-                                          width: 250,
-                                          height: 40,
-                                          decoration: BoxDecoration(
-                                            border:
-                                                Border.all(color: Colors.grey),
-                                          ),
-                                          child: TextField(
-                                            decoration:
-                                                InputDecoration.collapsed(
-                                                    border: InputBorder.none,
-                                                    hintText: ''),
-                                            controller:
-                                                activityList[index].SHICHOSON,
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.black),
-                                          ))
-                                    ],
+                                  Container(
+                                    child: Text(
+                                      '都道府県',
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.black),
+                                    ),
                                   ),
                                 ],
-                              );
-                            }),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.add),
-                              onPressed: () {
-                                //登録Noを更新
-                                todofukenTourokuNo = todofukenTourokuNo + 1;
-                                print(todofukenTourokuNo);
-                                //都道府県ウィジェット追加
-                                // _makeWidgets(todofukenTourokuNo);
-                                activityListAdd(todofukenTourokuNo.toString());
-                                setState(() {});
-                              },
-                            ),
-                            SizedBox(
-                              width: 40,
-                            ),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Container(
-                              child: Text(
-                                '●年齢',
-                                style: TextStyle(
-                                    fontSize: 25, color: Colors.black),
                               ),
-                            ),
-                          ],
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: 50,
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.all(5.0),
+                                    width: 250,
+                                    height: 40,
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey),
+                                    ),
+                                    child: Text(
+                                      '${activityList[index].TODOFUKEN}',
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.black),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(
+                                        Icons.arrow_drop_down_circle_rounded),
+                                    onPressed: () {
+                                      _showModalLocationPicker(
+                                          context,
+                                          int.parse(activityList[index].No),
+                                          activityList[index].SHICHOSON);
+                                      setState(() {});
+                                    },
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: 50,
+                                  ),
+                                  Container(
+                                    child: Text(
+                                      '市町村',
+                                      style: TextStyle(
+                                          fontSize: 20, color: Colors.black),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  SizedBox(
+                                    width: 50,
+                                  ),
+                                  Container(
+                                      padding: const EdgeInsets.all(5.0),
+                                      width: 250,
+                                      height: 40,
+                                      decoration: BoxDecoration(
+                                        border: Border.all(color: Colors.grey),
+                                      ),
+                                      child: TextField(
+                                        decoration: InputDecoration.collapsed(
+                                            border: InputBorder.none,
+                                            hintText: ''),
+                                        controller:
+                                            activityList[index].SHICHOSON,
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.black),
+                                      ))
+                                ],
+                              ),
+                            ],
+                          );
+                        }),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            //登録Noを更新
+                            todofukenTourokuNo = todofukenTourokuNo + 1;
+                            print(todofukenTourokuNo);
+                            //都道府県ウィジェット追加
+                            // _makeWidgets(todofukenTourokuNo);
+                            activityListAdd(todofukenTourokuNo.toString());
+                            setState(() {});
+                          },
                         ),
+                        SizedBox(
+                          width: 40,
+                        ),
+                      ],
+                    ),
+                    Row(
+                      children: [
+                        SizedBox(
+                          width: 30,
+                        ),
+                        Container(
+                          child: Text(
+                            '●年齢',
+                            style: TextStyle(fontSize: 25, color: Colors.black),
+                          ),
+                        ),
+                      ],
+                    ),
                     //   ],
                     // ),
                     Row(
@@ -444,8 +451,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         Container(
                           child: Text(
                             '●性別',
-                            style: TextStyle(
-                                fontSize: 25, color: Colors.black),
+                            style: TextStyle(fontSize: 25, color: Colors.black),
                           ),
                         ),
                       ],
@@ -536,20 +542,32 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             style: TextStyle(color: Colors.black),
                           ),
                           onPressed: () async {
+                            print("中身確認" + myProfile.MY_USER_ID.toString());
+                            myProfile.USER_ID = auth.currentUser!.uid;
+                            myProfile.PROFILE_IMAGE = profileImage;
+                            myProfile.NICK_NAME = nickName.text;
+                            myProfile.TOROKU_RANK = torokuRank;
+                            myProfile.activityList = activityList;
+                            myProfile.AGE = age;
+                            myProfile.GENDER = gender;
+                            myProfile.COMENT = coment.text;
                             print(nickName.text);
                             //必須入力項目のチェック
                             if (nickName.text.isNotEmpty) {
-                              CprofileSetting cprofileSet = CprofileSetting(
-                                USER_ID: auth.currentUser!.uid,
-                                PROFILE_IMAGE: profileImage,
-                                NICK_NAME: nickName.text,
-                                TOROKU_RANK: torokuRank,
-                                activityList: activityList,
-                                AGE: age,
-                                GENDER: gender,
-                                COMENT: coment.text,
-                              );
-                              await FirestoreMethod.makeProfile(cprofileSet);
+                              //   CprofileSetting cprofileSet = CprofileSetting(
+                              //     USER_ID: auth.currentUser!.uid,
+                              //     PROFILE_IMAGE: profileImage,
+                              //     NICK_NAME: nickName.text,
+                              //     TOROKU_RANK: torokuRank,
+                              //     activityList: activityList,
+                              //     AGE: age,
+                              //     GENDER: gender,
+                              //     COMENT: coment.text,
+                              //     MY_USER_ID:
+                              //   );
+                              //   await FirestoreMethod.makeProfile(cprofileSet);
+                              await FirestoreMethod.makeProfile(myProfile);
+
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -778,7 +796,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
       gender = _Gender[index];
     });
   }
-
 
   activityListAdd(String No) {
     print("No" + No);
