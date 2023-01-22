@@ -18,7 +18,6 @@ class ProfileSetting extends StatefulWidget {
   }
 
   ProfileSetting.Make(String? myUserId) {
-    print("2ユーザIDは" + myUserId!.toString());
     List<CativityList> activityList = [];
     myProfile = CprofileSetting(
       USER_ID: '',
@@ -29,7 +28,7 @@ class ProfileSetting extends StatefulWidget {
       AGE: '',
       GENDER: '',
       COMENT: '',
-      MY_USER_ID: myUserId,
+      MY_USER_ID: myUserId!,
     );
   }
 
@@ -131,7 +130,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
     //アクティビティリスト
     if (koushinFlg == "1") {
       myUserId = widget.myProfile.MY_USER_ID;
-      print(myUserId);
     }
 
   }
@@ -387,7 +385,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
                           onPressed: () {
                             //登録Noを更新
                             todofukenTourokuNo = todofukenTourokuNo + 1;
-                            print(todofukenTourokuNo);
                             //都道府県ウィジェット追加
                             // _makeWidgets(todofukenTourokuNo);
                             activityListAdd(todofukenTourokuNo.toString());
@@ -542,7 +539,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             style: TextStyle(color: Colors.black),
                           ),
                           onPressed: () async {
-                            print("中身確認" + myProfile.MY_USER_ID.toString());
                             myProfile.USER_ID = auth.currentUser!.uid;
                             myProfile.PROFILE_IMAGE = profileImage;
                             myProfile.NICK_NAME = nickName.text;
@@ -551,7 +547,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             myProfile.AGE = age;
                             myProfile.GENDER = gender;
                             myProfile.COMENT = coment.text;
-                            print(nickName.text);
                             //必須入力項目のチェック
                             if (nickName.text.isNotEmpty) {
                               //   CprofileSetting cprofileSet = CprofileSetting(
@@ -798,7 +793,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
   }
 
   activityListAdd(String No) {
-    print("No" + No);
     activityList.add(
       CativityList(
         No: No,

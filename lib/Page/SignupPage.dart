@@ -234,7 +234,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                                     ? () async {
                                                         try {
                                                           await model.signUp();
-                                                          print("ここ？１");
                                                           await Navigator
                                                               .pushReplacement(
                                                             context,
@@ -244,11 +243,9 @@ class _SignUpPageState extends State<SignUpPage> {
                                                                       .Make(myUserId),
                                                             ),
                                                           );
-                                                          print("modelの中身"+ model.toString());
 
                                                           model.endLoading();
                                                         } catch (e) {
-                                                          print("エラー内容"+e.toString());
                                                           showTextDialog(
                                                               context, e);
                                                           model.endLoading();
