@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "date-fns": "^2.29.3",
     "firebase-admin": "^11.4.1",
     "firebase-functions": "^4.1.1"
   }

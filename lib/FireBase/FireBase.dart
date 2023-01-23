@@ -265,14 +265,17 @@ class FirestoreMethod {
         .get();
 
     List<CativityList> activityList = [];
-
-    await Future.forEach<dynamic>(snapShotActivity.docs, (doc) async {
-      activityList.add(CativityList(
-        No: doc.data()['No'],
-        TODOFUKEN: doc.data()['TODOFUKEN'],
-        SHICHOSON: TextEditingController(text: doc.data()['SHICHOSON']),
-      ));
-    });
+    try {
+      await Future.forEach<dynamic>(snapShotActivity.docs, (doc) async {
+        activityList.add(CativityList(
+          No: doc.data()!['No'],
+          TODOFUKEN: doc.data()!['TODOFUKEN'],
+          SHICHOSON: TextEditingController(text: doc.data()!['SHICHOSON']),
+        ));
+      });
+    } catch (e) {
+      print("アクティビティリストの登録に失敗しました");
+    }
 
     CprofileSetting cprofileSet = await CprofileSetting(
         USER_ID: USER_ID,
@@ -389,12 +392,17 @@ class FirestoreMethod {
             return;
           }
         });
-        CprofileSetting yourProfile = await getYourProfile(yourUserId);
-        TalkRoomModel room = TalkRoomModel(
-            roomId: doc.id,
-            user: yourProfile,
-            lastMessage: doc.data()['last_message'] ?? '');
-        roomList.add(room);
+        try {
+          CprofileSetting yourProfile = await getYourProfile(yourUserId);
+          TalkRoomModel room = await TalkRoomModel(
+              roomId: doc.id,
+              user: yourProfile,
+              lastMessage: doc.data()['last_message'] ?? '');
+          roomList.add(room);
+        } catch (e) {
+          print("トークルームの取得に失敗しました");
+          print(e);
+        }
       }
     });
     return roomList;
@@ -724,7 +732,8 @@ class FirestoreMethod {
   }
 
   //個人対戦結果_新規フラグ取得
-  static Future<String> individualNewFlgMatch(String myUserId,String yourUserId) async {
+  static Future<String> individualNewFlgMatch(
+      String myUserId, String yourUserId) async {
     final snapshot =
         await matchResultRef.doc(myUserId).collection('opponentList').get();
     String NEW_FLG = "1";
@@ -737,7 +746,7 @@ class FirestoreMethod {
   }
 
   //ランキング_新規フラグ取得
-  static Future<String> rankNewFlgMatch(String myUserId,String rank) async {
+  static Future<String> rankNewFlgMatch(String myUserId, String rank) async {
     final rankSnap = await FirebaseFirestore.instance
         .collection('manSinglesRank')
         .doc(rank)
@@ -766,21 +775,21 @@ class FirestoreMethod {
     if (NEW_FLG == "1") {
       rank_no = 0;
     } else {
-    if (rank == "初級") {
-      manSingleRank = "ShokyuRank";
-    } else if (rank == "中級") {
-      manSingleRank = "ChukyuRank";
-    } else if (rank == "上級") {
-      manSingleRank = "JoukyuRank";
+      if (rank == "初級") {
+        manSingleRank = "ShokyuRank";
+      } else if (rank == "中級") {
+        manSingleRank = "ChukyuRank";
+      } else if (rank == "上級") {
+        manSingleRank = "JoukyuRank";
+      }
+      final rankSnap = await FirebaseFirestore.instance
+          .collection('manSinglesRank')
+          .doc(manSingleRank)
+          .collection('RankList')
+          .doc(UserId)
+          .get();
+      rank_no = rankSnap.data()!['RANK_NO'];
     }
-    final rankSnap = await FirebaseFirestore.instance
-        .collection('manSinglesRank')
-        .doc(manSingleRank)
-        .collection('RankList')
-        .doc(UserId)
-        .get();
-    rank_no = rankSnap.data()!['RANK_NO'];
-  }
     return rank_no;
   }
 
@@ -848,6 +857,7 @@ class FirestoreMethod {
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy/MM/dd HH:mm');
     String today = outputFormat.format(now);
+
     //勝ち負けフラグ 勝った場合にフラグ１とする
     late int MY_WIN_FLG;
     late int YOUR_WIN_FLG;
@@ -860,21 +870,40 @@ class FirestoreMethod {
     //現在のTSPポイント
     late int MY_TS_POINT_CUR;
     late int YOUR_TS_POINT_CUR;
+    //現在の生涯TSPポイント
+    late int MY_ALL_TS_POINT_CUR;
+    late int YOUR_ALL_TS_POINT_CUR;
     //対戦結果登録後のTSPポイント
     late int MY_TS_POINT;
     late int YOUR_TS_POINT;
+    //対戦結果登録後の生涯TSPポイント
+    late int MY_ALL_TS_POINT;
+    late int YOUR_ALL_TS_POINT;
+
     //現在の登録ランク
     late String MY_TOROKU_RANK_CUR;
     late String YOUR_TOROKU_RANK_CUR;
     //現在の初級TSPポイント
     late int MY_SHOKYU_TS_POINT_CUR;
     late int YOUR_SHOKYU_TS_POINT_CUR;
+    //現在の生涯初級TSPポイント
+    late int MY_ALL_SHOKYU_TS_POINT_CUR;
+    late int YOUR_ALL_SHOKYU_TS_POINT_CUR;
+
     //現在の中級TSPポイント
     late int MY_CHUKYU_TS_POINT_CUR;
     late int YOUR_CHUKYU_TS_POINT_CUR;
+    //現在の生涯中級TSPポイント
+    late int MY_ALL_CHUKYU_TS_POINT_CUR;
+    late int YOUR_ALL_CHUKYU_TS_POINT_CUR;
+
     //現在の上級TSPポイント
     late int MY_JYOKYU_TS_POINT_CUR;
     late int YOUR_JYOKYU_TS_POINT_CUR;
+    //現在の生涯上級TSPポイント
+    late int MY_ALL_JYOKYU_TS_POINT_CUR;
+    late int YOUR_ALL_JYOKYU_TS_POINT_CUR;
+
     //新規フラグ
     late String MY_NEW_FLG;
     late String YOUR_NEW_FLG;
@@ -1032,8 +1061,12 @@ class FirestoreMethod {
           'YOUR_POINT': a.yourGamePoint,
           'WIN_FLG': MY_WIN_FLG,
           'TS_POINT': MY_TS_POINT_FUYO,
-          'TOROKU_RANK': yourProfile.TOROKU_RANK,
-          'KOUSHIN_TIME': today
+          'YOUR_TOROKU_RANK': yourProfile.TOROKU_RANK,
+          'YOUR_RANK_NO': YOUR_RANK,
+          'MY_TOROKU_RANK': myProfile.TOROKU_RANK,
+          'MY_RANK_NO': MY_RANK,
+          'KOUSHIN_TIME': today,
+          'TSP_VALID_FLG': '1'
         });
         matchResultRef
             .doc(yourProfile.USER_ID)
@@ -1045,8 +1078,12 @@ class FirestoreMethod {
           'YOUR_POINT': a.myGamePoint,
           'WIN_FLG': YOUR_WIN_FLG,
           'TS_POINT': YOUR_TS_POINT_FUYO,
-          'TOROKU_RANK': myProfile.TOROKU_RANK,
-          'KOUSHIN_TIME': today
+          'YOUR_TOROKU_RANK': myProfile.TOROKU_RANK,
+          'YOUR_RANK_NO': MY_RANK,
+          'MY_TOROKU_RANK': yourProfile.TOROKU_RANK,
+          'MY_RANK_NO': YOUR_RANK,
+          'KOUSHIN_TIME': today,
+          'TSP_VALID_FLG': '1'
         });
       } catch (e) {
         print('対戦結果入力に失敗しました --- $e');
@@ -1065,8 +1102,10 @@ class FirestoreMethod {
         .doc(myProfile.USER_ID);
 
     //初対戦フラグ取得メソッド結果を取得(メソッドは作る必要あり)
-    MY_NEW_MATCH_FLG = await individualNewFlgMatch(myProfile.USER_ID,yourProfile.USER_ID);
-    YOUR_NEW_MATCH_FLG = await individualNewFlgMatch(yourProfile.USER_ID,myProfile.USER_ID);
+    MY_NEW_MATCH_FLG =
+    await individualNewFlgMatch(myProfile.USER_ID, yourProfile.USER_ID);
+    YOUR_NEW_MATCH_FLG =
+    await individualNewFlgMatch(yourProfile.USER_ID, myProfile.USER_ID);
     MY_LOSE_SU = MY_MATCH_SU - MY_WIN_SU;
     if (MY_NEW_MATCH_FLG == "1") {
       MY_WIN_SU_SUM = 0 + MY_WIN_SU;
@@ -1109,7 +1148,6 @@ class FirestoreMethod {
     YOUR_LOSE_SU = YOUR_MATCH_SU - YOUR_WIN_SU;
 
     if (YOUR_NEW_MATCH_FLG == "1") {
-
       YOUR_WIN_SU_SUM = 0 + YOUR_WIN_SU;
       YOUR_LOSE_SU_SUM = 0 + YOUR_LOSE_SU;
       YOUR_MATCH_SU_SUM = 0 + YOUR_MATCH_SU;
@@ -1155,6 +1193,12 @@ class FirestoreMethod {
       MY_CHUKYU_TS_POINT_CUR = 0;
       MY_JYOKYU_TS_POINT_CUR = 0;
 
+      MY_ALL_TS_POINT_CUR = 0;
+      MY_ALL_SHOKYU_TS_POINT_CUR = 0;
+      MY_ALL_CHUKYU_TS_POINT_CUR = 0;
+      MY_ALL_JYOKYU_TS_POINT_CUR = 0;
+
+
       MY_SHOKYU_WIN_SU_CUR = 0;
       MY_SHOKYU_LOSE_SU_CUR = 0;
       MY_SHOKYU_MATCH_SU_CUR = 0;
@@ -1172,10 +1216,14 @@ class FirestoreMethod {
 
       await matchResultRef.doc(myProfile.USER_ID).set({
         'TS_POINT': MY_TS_POINT_CUR,
+        'ALL_TS_POINT': MY_ALL_TS_POINT_CUR,
         'TOROKU_RANK': MY_TOROKU_RANK_CUR,
         'SHOKYU_TS_POINT': MY_SHOKYU_TS_POINT_CUR,
         'CHUKYU_TS_POINT': MY_CHUKYU_TS_POINT_CUR,
         'JYOKYU_TS_POINT': MY_JYOKYU_TS_POINT_CUR,
+        'ALL_SHOKYU_TS_POINT': MY_ALL_SHOKYU_TS_POINT_CUR,
+        'ALL_CHUKYU_TS_POINT': MY_ALL_CHUKYU_TS_POINT_CUR,
+        'ALL_JYOKYU_TS_POINT': MY_ALL_JYOKYU_TS_POINT_CUR,
         'SHOKYU_WIN_SU': MY_SHOKYU_WIN_SU_CUR,
         'SHOKYU_LOSE_SU': MY_SHOKYU_LOSE_SU_CUR,
         'SHOKYU_MATCH_SU': MY_SHOKYU_MATCH_SU_CUR,
@@ -1195,6 +1243,8 @@ class FirestoreMethod {
         final mySnapShot = await matchResultRef.doc(myProfile.USER_ID).get();
         //現在のTSPポイントの取得
         MY_TS_POINT_CUR = mySnapShot.data()!['TS_POINT'];
+        //現在の生涯TSPポイントの取得
+        MY_ALL_TS_POINT_CUR = mySnapShot.data()!['ALL_TS_POINT'];
         //現在の登録ランクを取得
         MY_TOROKU_RANK_CUR = mySnapShot.data()!['TOROKU_RANK'];
         //現在の初級TSPポイントの取得
@@ -1203,6 +1253,12 @@ class FirestoreMethod {
         MY_CHUKYU_TS_POINT_CUR = mySnapShot.data()!['CHUKYU_TS_POINT'];
         //現在の上級TSPポイントの取得
         MY_JYOKYU_TS_POINT_CUR = mySnapShot.data()!['JYOKYU_TS_POINT'];
+        //現在の生涯初級TSPポイントの取得
+        MY_ALL_SHOKYU_TS_POINT_CUR = mySnapShot.data()!['ALL_SHOKYU_TS_POINT'];
+        //現在の生涯中級TSPポイントの取得
+        MY_ALL_CHUKYU_TS_POINT_CUR = mySnapShot.data()!['ALL_CHUKYU_TS_POINT'];
+        //現在の生涯上級TSPポイントの取得
+        MY_ALL_JYOKYU_TS_POINT_CUR = mySnapShot.data()!['ALL_JYOKYU_TS_POINT'];
         //現在の勝率・勝利数・試合数などを取得
         MY_SHOKYU_WIN_SU_CUR = mySnapShot.data()!['SHOKYU_WIN_SU'];
         MY_SHOKYU_LOSE_SU_CUR = mySnapShot.data()!['SHOKYU_LOSE_SU'];
@@ -1228,6 +1284,12 @@ class FirestoreMethod {
       YOUR_CHUKYU_TS_POINT_CUR = 0;
       YOUR_JYOKYU_TS_POINT_CUR = 0;
 
+      YOUR_ALL_TS_POINT_CUR = 0;
+      YOUR_ALL_SHOKYU_TS_POINT_CUR = 0;
+      YOUR_ALL_CHUKYU_TS_POINT_CUR = 0;
+      YOUR_ALL_JYOKYU_TS_POINT_CUR = 0;
+
+
       YOUR_SHOKYU_WIN_SU_CUR = 0;
       YOUR_SHOKYU_LOSE_SU_CUR = 0;
       YOUR_SHOKYU_MATCH_SU_CUR = 0;
@@ -1245,10 +1307,14 @@ class FirestoreMethod {
 
       await matchResultRef.doc(yourProfile.USER_ID).set({
         'TS_POINT': YOUR_TS_POINT_CUR,
+        'ALL_TS_POINT': YOUR_ALL_TS_POINT_CUR,
         'TOROKU_RANK': YOUR_TOROKU_RANK_CUR,
         'SHOKYU_TS_POINT': YOUR_SHOKYU_TS_POINT_CUR,
         'CHUKYU_TS_POINT': YOUR_CHUKYU_TS_POINT_CUR,
         'JYOKYU_TS_POINT': YOUR_JYOKYU_TS_POINT_CUR,
+        'ALL_SHOKYU_TS_POINT': YOUR_ALL_SHOKYU_TS_POINT_CUR,
+        'ALL_CHUKYU_TS_POINT': YOUR_ALL_CHUKYU_TS_POINT_CUR,
+        'ALL_JYOKYU_TS_POINT': YOUR_ALL_JYOKYU_TS_POINT_CUR,
         'SHOKYU_WIN_SU': YOUR_SHOKYU_WIN_SU_CUR,
         'SHOKYU_LOSE_SU': YOUR_SHOKYU_LOSE_SU_CUR,
         'SHOKYU_MATCH_SU': YOUR_SHOKYU_MATCH_SU_CUR,
@@ -1265,9 +1331,11 @@ class FirestoreMethod {
     } else {
       try {
         final yourSnapShot =
-            await matchResultRef.doc(yourProfile.USER_ID).get();
+        await matchResultRef.doc(yourProfile.USER_ID).get();
         //現在のTSPポイントの取得
         YOUR_TS_POINT_CUR = yourSnapShot.data()!['TS_POINT'];
+        //現在の生涯TSPポイントの取得
+        YOUR_ALL_TS_POINT_CUR = yourSnapShot.data()!['ALL_TS_POINT'];
         //現在の登録ランクを取得
         YOUR_TOROKU_RANK_CUR = yourSnapShot.data()!['TOROKU_RANK'];
         //現在の初級TSPポイントの取得
@@ -1276,6 +1344,17 @@ class FirestoreMethod {
         YOUR_CHUKYU_TS_POINT_CUR = yourSnapShot.data()!['CHUKYU_TS_POINT'];
         //現在の上級TSPポイントの取得
         YOUR_JYOKYU_TS_POINT_CUR = yourSnapShot.data()!['JYOKYU_TS_POINT'];
+
+        //現在の生涯初級TSPポイントの取得
+        YOUR_ALL_SHOKYU_TS_POINT_CUR =
+        yourSnapShot.data()!['ALL_SHOKYU_TS_POINT'];
+        //現在の生涯中級TSPポイントの取得
+        YOUR_ALL_CHUKYU_TS_POINT_CUR =
+        yourSnapShot.data()!['ALL_CHUKYU_TS_POINT'];
+        //現在の生涯上級TSPポイントの取得
+        YOUR_ALL_JYOKYU_TS_POINT_CUR =
+        yourSnapShot.data()!['ALL_JYOKYU_TS_POINT'];
+
         //現在の勝率・勝利数・試合数などを取得
         YOUR_SHOKYU_WIN_SU_CUR = yourSnapShot.data()!['SHOKYU_WIN_SU'];
         YOUR_SHOKYU_LOSE_SU_CUR = yourSnapShot.data()!['SHOKYU_LOSE_SU'];
@@ -1296,18 +1375,24 @@ class FirestoreMethod {
     if (MY_TOROKU_RANK_CUR == myProfile.TOROKU_RANK) {
       //登録ランクを変更しなかった場合
       MY_TS_POINT = MY_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
+      MY_ALL_TS_POINT = MY_ALL_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
       try {
-        matchResultRef.doc(myProfile.USER_ID).update({'TS_POINT': MY_TS_POINT});
+        matchResultRef.doc(myProfile.USER_ID).update(
+            {'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
       } catch (e) {
         print('TSPポイントの付与に失敗しました --- $e');
       }
+
       //各ランクのTSPポイントを更新
       switch (myProfile.TOROKU_RANK) {
         case '初級':
           try {
             matchResultRef
                 .doc(myProfile.USER_ID)
-                .update({'SHOKYU_TS_POINT': MY_TS_POINT});
+                .update({
+              'SHOKYU_TS_POINT': MY_TS_POINT,
+              'ALL_SHOKYU_TS_POINT': MY_ALL_TS_POINT
+            });
           } catch (e) {
             print('初級TSPポイントの付与に失敗しました --- $e');
           }
@@ -1316,7 +1401,10 @@ class FirestoreMethod {
           try {
             matchResultRef
                 .doc(myProfile.USER_ID)
-                .update({'CHUKYU_TS_POINT': MY_TS_POINT});
+                .update({
+              'CHUKYU_TS_POINT': MY_TS_POINT,
+              'ALL_CHUKYU_TS_POINT': MY_ALL_TS_POINT
+            });
           } catch (e) {
             print('中級TSPポイントの付与に失敗しました --- $e');
           }
@@ -1325,7 +1413,10 @@ class FirestoreMethod {
           try {
             matchResultRef
                 .doc(myProfile.USER_ID)
-                .update({'JYOKYU_TS_POINT': MY_TS_POINT});
+                .update({
+              'JYOKYU_TS_POINT': MY_TS_POINT,
+              'ALL_JYOKYU_TS_POINT': MY_ALL_TS_POINT
+            });
           } catch (e) {
             print('上級TSPポイントの付与に失敗しました --- $e');
           }
@@ -1337,12 +1428,17 @@ class FirestoreMethod {
         case '初級':
           try {
             MY_TS_POINT = MY_SHOKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
+            MY_ALL_TS_POINT = MY_ALL_SHOKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
             matchResultRef
                 .doc(myProfile.USER_ID)
-                .update({'TS_POINT': MY_TS_POINT});
+                .update(
+                {'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
             matchResultRef
                 .doc(myProfile.USER_ID)
-                .update({'SHOKYU_TS_POINT': MY_TS_POINT});
+                .update({
+              'SHOKYU_TS_POINT': MY_TS_POINT,
+              'ALL_SHOKYU_TS_POINT': MY_ALL_TS_POINT
+            });
             matchResultRef
                 .doc(myProfile.USER_ID)
                 .update({'TOROKU_RANK': myProfile.TOROKU_RANK});
@@ -1353,12 +1449,17 @@ class FirestoreMethod {
         case '中級':
           try {
             MY_TS_POINT = MY_CHUKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
+            MY_ALL_TS_POINT = MY_ALL_CHUKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
             matchResultRef
                 .doc(myProfile.USER_ID)
-                .update({'TS_POINT': MY_TS_POINT});
+                .update(
+                {'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
             matchResultRef
                 .doc(myProfile.USER_ID)
-                .update({'CHUKYU_TS_POINT': MY_TS_POINT});
+                .update({
+              'CHUKYU_TS_POINT': MY_TS_POINT,
+              'ALL_CHUKYU_TS_POINT': MY_ALL_TS_POINT
+            });
             matchResultRef
                 .doc(myProfile.USER_ID)
                 .update({'TOROKU_RANK': myProfile.TOROKU_RANK});
@@ -1369,12 +1470,17 @@ class FirestoreMethod {
         case '上級':
           try {
             MY_TS_POINT = MY_JYOKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
+            MY_ALL_TS_POINT = MY_ALL_JYOKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
             matchResultRef
                 .doc(myProfile.USER_ID)
-                .update({'TS_POINT': MY_TS_POINT});
+                .update(
+                {'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
             matchResultRef
                 .doc(myProfile.USER_ID)
-                .update({'JYOKYU_TS_POINT': MY_TS_POINT});
+                .update({
+              'JYOKYU_TS_POINT': MY_TS_POINT,
+              'ALL_JYOKYU_TS_POINT': MY_ALL_TS_POINT
+            });
             matchResultRef
                 .doc(myProfile.USER_ID)
                 .update({'TOROKU_RANK': myProfile.TOROKU_RANK});
@@ -1387,19 +1493,24 @@ class FirestoreMethod {
     if (YOUR_TOROKU_RANK_CUR == yourProfile.TOROKU_RANK) {
       //登録ランクを変更しなかった場合
       YOUR_TS_POINT = YOUR_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
+      YOUR_ALL_TS_POINT = YOUR_ALL_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
       try {
-        matchResultRef
-            .doc(yourProfile.USER_ID)
-            .update({'TS_POINT': YOUR_TS_POINT});
+        matchResultRef.doc(yourProfile.USER_ID).update(
+            {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
       } catch (e) {
         print('TSPポイントの付与に失敗しました --- $e');
       }
+
+      //各ランクのTSPポイントを更新
       switch (yourProfile.TOROKU_RANK) {
         case '初級':
           try {
             matchResultRef
                 .doc(yourProfile.USER_ID)
-                .update({'SHOKYU_TS_POINT': YOUR_TS_POINT});
+                .update({
+              'SHOKYU_TS_POINT': YOUR_TS_POINT,
+              'ALL_SHOKYU_TS_POINT': YOUR_ALL_TS_POINT
+            });
           } catch (e) {
             print('初級TSPポイントの付与に失敗しました --- $e');
           }
@@ -1408,7 +1519,10 @@ class FirestoreMethod {
           try {
             matchResultRef
                 .doc(yourProfile.USER_ID)
-                .update({'CHUKYU_TS_POINT': YOUR_TS_POINT});
+                .update({
+              'CHUKYU_TS_POINT': YOUR_TS_POINT,
+              'ALL_CHUKYU_TS_POINT': YOUR_ALL_TS_POINT
+            });
           } catch (e) {
             print('中級TSPポイントの付与に失敗しました --- $e');
           }
@@ -1417,7 +1531,10 @@ class FirestoreMethod {
           try {
             matchResultRef
                 .doc(yourProfile.USER_ID)
-                .update({'JYOKYU_TS_POINT': YOUR_TS_POINT});
+                .update({
+              'JYOKYU_TS_POINT': YOUR_TS_POINT,
+              'ALL_JYOKYU_TS_POINT': YOUR_ALL_TS_POINT
+            });
           } catch (e) {
             print('上級TSPポイントの付与に失敗しました --- $e');
           }
@@ -1429,12 +1546,17 @@ class FirestoreMethod {
         case '初級':
           try {
             YOUR_TS_POINT = YOUR_SHOKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
+            YOUR_ALL_TS_POINT = YOUR_ALL_SHOKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
             matchResultRef
                 .doc(yourProfile.USER_ID)
-                .update({'TS_POINT': YOUR_TS_POINT});
+                .update(
+                {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
             matchResultRef
                 .doc(yourProfile.USER_ID)
-                .update({'SHOKYU_TS_POINT': YOUR_TS_POINT});
+                .update({
+              'SHOKYU_TS_POINT': YOUR_TS_POINT,
+              'ALL_SHOKYU_TS_POINT': YOUR_ALL_TS_POINT
+            });
             matchResultRef
                 .doc(yourProfile.USER_ID)
                 .update({'TOROKU_RANK': yourProfile.TOROKU_RANK});
@@ -1445,12 +1567,17 @@ class FirestoreMethod {
         case '中級':
           try {
             YOUR_TS_POINT = YOUR_CHUKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
+            YOUR_ALL_TS_POINT = YOUR_ALL_CHUKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
             matchResultRef
                 .doc(yourProfile.USER_ID)
-                .update({'TS_POINT': YOUR_TS_POINT});
+                .update(
+                {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
             matchResultRef
                 .doc(yourProfile.USER_ID)
-                .update({'CHUKYU_TS_POINT': YOUR_TS_POINT});
+                .update({
+              'CHUKYU_TS_POINT': YOUR_TS_POINT,
+              'ALL_CHUKYU_TS_POINT': YOUR_ALL_TS_POINT
+            });
             matchResultRef
                 .doc(yourProfile.USER_ID)
                 .update({'TOROKU_RANK': yourProfile.TOROKU_RANK});
@@ -1461,12 +1588,17 @@ class FirestoreMethod {
         case '上級':
           try {
             YOUR_TS_POINT = YOUR_JYOKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
+            YOUR_ALL_TS_POINT = YOUR_ALL_JYOKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
             matchResultRef
                 .doc(yourProfile.USER_ID)
-                .update({'TS_POINT': YOUR_TS_POINT});
+                .update(
+                {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
             matchResultRef
                 .doc(yourProfile.USER_ID)
-                .update({'JYOKYU_TS_POINT': YOUR_TS_POINT});
+                .update({
+              'JYOKYU_TS_POINT': YOUR_TS_POINT,
+              'ALL_JYOKYU_TS_POINT': YOUR_ALL_TS_POINT
+            });
             matchResultRef
                 .doc(yourProfile.USER_ID)
                 .update({'TOROKU_RANK': yourProfile.TOROKU_RANK});
