@@ -757,9 +757,17 @@ class FirestoreMethod {
 
   //ランキング_新規フラグ取得
   static Future<String> rankNewFlgMatch(String myUserId, String rank) async {
+    late String manSingleRank;
+    if (rank == "初級") {
+      manSingleRank = "ShokyuRank";
+    } else if (rank == "中級") {
+      manSingleRank = "ChukyuRank";
+    } else if (rank == "上級") {
+      manSingleRank = "JoukyuRank";
+    }
     final rankSnap = await FirebaseFirestore.instance
         .collection('manSinglesRank')
-        .doc(rank)
+        .doc(manSingleRank)
         .collection('RankList')
         .get();
     String NEW_FLG = "1";
