@@ -19,12 +19,6 @@ class SignUpPage extends StatefulWidget {
 
   SignUpPage.make() {}
 
-  SignUpPage.modoru(this.mail, this.password, this.confirm) {
-    this.mailController = TextEditingController(text: this.mail);
-    this.passwordController = TextEditingController(text: this.password);
-    this.confirmController = TextEditingController(text: this.confirm);
-  }
-
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
@@ -34,6 +28,8 @@ class _SignUpPageState extends State<SignUpPage> {
   var mailController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmController = TextEditingController();
+  var useridController = TextEditingController();
+  late String myUserId;
 
   void initState() {
     mailController = widget.mailController;
@@ -63,7 +59,7 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ),
             body: Consumer<SignUpModel>(
-              builder: (context, model, child) {
+              builder: (context,  model, child) {
                 return Stack(
                   children: [
                     Column(
@@ -103,9 +99,31 @@ class _SignUpPageState extends State<SignUpPage> {
                                           border: OutlineInputBorder(),
                                         ),
                                       ),
+
                                       SizedBox(
                                         height: 8,
                                       ),
+                                      TextFormField(
+                                        controller: useridController,
+                                        onChanged: (text) {
+                                          // model.changeConfirm(text);
+                                          myUserId = text;
+                                        },
+                                        obscureText: true,
+                                        maxLines: 1,
+                                        style: TextStyle(fontSize: 16),
+                                        decoration: InputDecoration(
+                                          labelText: 'ユーザID',
+                                          // errorText: model.errorConfirm == ''
+                                          //     ? null
+                                          //     : model.errorConfirm,
+                                          border: OutlineInputBorder(),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        height: 8,
+                                      ),
+
                                       TextFormField(
                                         controller: passwordController,
                                         onChanged: (text) {
@@ -222,9 +240,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                                             MaterialPageRoute(
                                                               builder: (context) =>
                                                                   ProfileSetting
-                                                                      .Make(),
+                                                                      .Make(myUserId),
                                                             ),
                                                           );
+
                                                           model.endLoading();
                                                         } catch (e) {
                                                           showTextDialog(

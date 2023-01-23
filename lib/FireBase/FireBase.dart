@@ -68,6 +68,7 @@ class FirestoreMethod {
         'GENDER': profile.GENDER,
         'COMENT': profile.COMENT,
         'koushinYmd': today,
+        'MY_USER_ID' : profile.MY_USER_ID
       });
     } catch (e) {
       print('ユーザー登録に失敗しました --- $e');
@@ -134,6 +135,12 @@ class FirestoreMethod {
     String myid = snapShot.data()!['MY_USER_ID'];
     String image = snapShot.data()!['PROFILE_IMAGE'];
 
+    CHomePageVal homePageval = CHomePageVal(
+        NAME: name,
+        MYUSERID: myid,
+        TOROKURANK: rank,
+        PROFILEIMAGE: image,);
+
     late String manSingleRank;
     if (rank == "初級") {
       manSingleRank = "ShokyuRank";
@@ -150,14 +157,13 @@ class FirestoreMethod {
         .doc(id)
         .get();
 
+    if(!snapShot_msr.exists){
+      return homePageval;
+    }
+
     int rank_no = snapShot_msr.data()!['RANK_NO'];
 
-    CHomePageVal homePageval = CHomePageVal(
-        NAME: name,
-        MYUSERID: myid,
-        TOROKURANK: rank,
-        PROFILEIMAGE: image,
-        SRANK: rank_no);
+    homePageval.SRANK = rank_no;
 
     return homePageval;
   }
@@ -214,6 +220,7 @@ class FirestoreMethod {
     String AGE = snapShot.data()!['AGE'];
     String GENDER = snapShot.data()!['GENDER'];
     String COMENT = snapShot.data()!['COMENT'];
+    String MY_USER_ID = snapShot.data()!['MY_USER_ID'];
 
     final snapShotActivity = await FirebaseFirestore.instance
         .collection('myProfile')
@@ -239,7 +246,8 @@ class FirestoreMethod {
         activityList: activityList,
         AGE: AGE,
         GENDER: GENDER,
-        COMENT: COMENT);
+        COMENT: COMENT,
+        MY_USER_ID: MY_USER_ID);
 
     return cprofileSet;
   }
@@ -257,6 +265,7 @@ class FirestoreMethod {
     String AGE = snapShot.data()!['AGE'];
     String GENDER = snapShot.data()!['GENDER'];
     String COMENT = snapShot.data()!['COMENT'];
+    String MY_USER_ID = snapShot.data()!['MY_USER_ID'];
 
     final snapShotActivity = await FirebaseFirestore.instance
         .collection('myProfile')
@@ -285,7 +294,8 @@ class FirestoreMethod {
         activityList: activityList,
         AGE: AGE,
         GENDER: GENDER,
-        COMENT: COMENT);
+        COMENT: COMENT,
+        MY_USER_ID: MY_USER_ID);
 
     return cprofileSet;
   }

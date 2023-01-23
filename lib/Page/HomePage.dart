@@ -67,7 +67,7 @@ class _HomePageState extends State<HomePage> {
                 child: new CircularProgressIndicator(),
               ));
             } else if (snapshot.hasError) {
-              return new Text('Error: ${snapshot.error!}');
+              return new Text('Error!!: ${snapshot.error!}');
             } else if (snapshot.hasData) {
               //取得したい値をリスト型で格納
               CHomePageVal? homePageVal = snapshot.data;
