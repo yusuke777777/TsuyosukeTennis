@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
 import '../FireBase/SignupModel.dart';
@@ -30,12 +31,6 @@ class _SignUpPageState extends State<SignUpPage> {
   var confirmController = TextEditingController();
   var useridController = TextEditingController();
   late String myUserId;
-
-  void initState() {
-    mailController = widget.mailController;
-    passwordController = widget.passwordController;
-    confirmController = widget.confirmController;
-  }
 
   bool _isCheck = false;
 
@@ -105,18 +100,23 @@ class _SignUpPageState extends State<SignUpPage> {
                                       ),
                                       TextFormField(
                                         controller: useridController,
+                                        inputFormatters: [
+                                          FilteringTextInputFormatter.deny(
+                                              //日本語入力禁止
+                                              RegExp('[\u3040-\u309F]')),
+                                        ],
                                         onChanged: (text) {
-                                          // model.changeConfirm(text);
+                                          model.changeMyUserID(text);
                                           myUserId = text;
                                         },
-                                        obscureText: true,
+                                        obscureText: false,
                                         maxLines: 1,
                                         style: TextStyle(fontSize: 16),
                                         decoration: InputDecoration(
                                           labelText: 'ユーザID',
-                                          // errorText: model.errorConfirm == ''
-                                          //     ? null
-                                          //     : model.errorConfirm,
+                                          errorText: model.errorMyUserId == ''
+                                              ? null
+                                              : model.errorMyUserId,
                                           border: OutlineInputBorder(),
                                         ),
                                       ),

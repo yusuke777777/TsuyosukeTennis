@@ -12,6 +12,7 @@ class SignUpModel extends ChangeNotifier {
     this.confirm = '';
     this.errorMail = '';
     this.errorPassword = '';
+    this.errorMyUserId = '';
     this.errorConfirm = '';
     this.errorTeamName = '';
     this.errorMission = '';
@@ -38,9 +39,11 @@ class SignUpModel extends ChangeNotifier {
   late bool showingDialog;
   late String mail;
   late String password;
+  late String myUserId;
   late String confirm;
   late String errorMail;
   late String errorPassword;
+  late String errorMyUserId;
   late String errorConfirm;
   late String errorTeamName;
   late String errorMission;
@@ -48,6 +51,7 @@ class SignUpModel extends ChangeNotifier {
   late bool isLoading;
   late bool isMailValid;
   late bool isPasswordValid;
+  late bool isMyUserIdValid;
   late bool isConfirmValid;
   late bool isTeamNameValid;
   late bool isMissionValid;
@@ -121,6 +125,22 @@ class SignUpModel extends ChangeNotifier {
     } else {
       isPasswordValid = true;
       this.errorPassword = '';
+    }
+    notifyListeners();
+  }
+
+  void changeMyUserID(text) {
+    this.myUserId = text;
+    if (text.length == 0) {
+      isMyUserIdValid= false;
+      this.errorMyUserId = 'ユーザーIDを設定してください(英数字のみ可)';
+    } else if (text.length < 5 || text.length > 20) {
+      isMyUserIdValid = false;
+      this.errorMyUserId = 'ユーザーIDは5文字以上20文字以内です。';
+    }
+    else {
+      isMyUserIdValid = true;
+      this.errorMyUserId = '';
     }
     notifyListeners();
   }
