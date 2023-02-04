@@ -34,7 +34,7 @@ class _FindResultPageState extends State<FindResultPage> {
 
   //アカウントID入力値から対象の名前を取得
   late Future<List<String>> futureList =
-      FirestoreMethod.getNickNameAndProfile(inputId);
+      FirestoreMethod.getUserByMyUserId(inputId);
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +82,7 @@ class _FindResultPageState extends State<FindResultPage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => ProfileReference(inputId),
+                                    builder: (context) => ProfileReference(profileList[2]),
                                   ));
                             },
                             child: profileList[1] == ""
@@ -100,7 +100,7 @@ class _FindResultPageState extends State<FindResultPage> {
                             style: TextStyle(fontSize: 30)),
                         //リスト押下時の挙動
                         onTap: () async {
-                          TalkRoomModel room = await FirestoreMethod.makeRoom(myUserID, inputId);
+                          TalkRoomModel room = await FirestoreMethod.makeRoom(myUserID, profileList[2]);
                           Navigator.push(
                               context,
                               MaterialPageRoute(
