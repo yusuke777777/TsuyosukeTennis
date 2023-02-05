@@ -10,6 +10,8 @@ import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 
+import '../PropSetCofig.dart';
+
 class FindResultPage extends StatefulWidget {
   FindResultPage(this.inputId);
 
@@ -34,15 +36,18 @@ class _FindResultPageState extends State<FindResultPage> {
 
   //アカウントID入力値から対象の名前を取得
   late Future<List<String>> futureList =
-      FirestoreMethod.getNickNameAndProfile(inputId);
+      FirestoreMethod.getUserByMyUserId(inputId);
 
   @override
   Widget build(BuildContext context) {
+    //必要コンフィグの初期化
+    HeaderConfig().init(context, "検索結果");
+    DrawerConfig().init(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF2FFE4),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF3CB371),
-        title: Text("検索結果"),
+        backgroundColor: HeaderConfig.backGroundColor,
+        title: HeaderConfig.appBarText,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: FutureBuilder(
         future: futureList,
@@ -58,6 +63,8 @@ class _FindResultPageState extends State<FindResultPage> {
             } else if (snapshot.hasData) {
               //取得したい値をリスト型で格納
               List<String>? profileList = snapshot.data;
+              //共通リストタイルの呼出
+              ListTileConfig().init(context, profileList![0], profileList![1], profileList[2], myUserID);
               //該当するユーザが存在しない時
               if (profileList!.isEmpty) {
                 return ListView(
@@ -73,41 +80,7 @@ class _FindResultPageState extends State<FindResultPage> {
                   itemBuilder: (BuildContext context, int index) {
                     return Card(
                       elevation: 0,
-                      child: ListTile(
-                        tileColor: const Color(0xFFF2FFE4),
-                        leading: ClipOval(
-                          child: GestureDetector(
-                            //アイコン押下時の挙動
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => ProfileReference(inputId),
-                                  ));
-                            },
-                            child: profileList[1] == ""
-                                ? Image.asset('images/upper_body-2.png',
-                                    fit: BoxFit.cover)
-                                : Image.network(
-                                    profileList[1],
-                                    width: 70,
-                                    height: 70,
-                                    fit: BoxFit.fill,
-                                  ),
-                          ),
-                        ),
-                        title: Text(profileList[0],
-                            style: TextStyle(fontSize: 30)),
-                        //リスト押下時の挙動
-                        onTap: () async {
-                          TalkRoomModel room = await FirestoreMethod.makeRoom(myUserID, inputId);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => TalkRoom(room),
-                              ));
-                        },
-                      ),
+                      child: ListTileConfig.listTile,
                     );
                   },
                 );

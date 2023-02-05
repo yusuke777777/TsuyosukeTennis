@@ -6,6 +6,7 @@ import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 
+import '../PropSetCofig.dart';
 import 'TalkRoom.dart';
 
 class FindMultiResultPage extends StatefulWidget {
@@ -46,11 +47,14 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
 
   @override
   Widget build(BuildContext context) {
+    //必要コンフィグの初期化
+    HeaderConfig().init(context, "検索結果");
+    DrawerConfig().init(context);
     return Scaffold(
-      backgroundColor: const Color(0xFFF2FFE4),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF3CB371),
-        title: Text("検索結果"),
+        backgroundColor: HeaderConfig.backGroundColor,
+        title: HeaderConfig.appBarText,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
       body: FutureBuilder(
         future: futureList,
@@ -82,44 +86,11 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                   itemCount: nameList.length,
                   // padding: const EdgeInsets.all(8),
                   itemBuilder: (BuildContext context, int index) {
+                    //共通リストタイルの呼出
+                    ListTileConfig().init(context, nameList[index], imageList[index], idList[index], myUserID);
                     return Card(
                       elevation: 0,
-                      child: ListTile(
-                        tileColor: const Color(0xFFF2FFE4),
-                        leading: ClipOval(
-                          child: GestureDetector(
-                            //アイコン押下時の挙動
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => ProfileReference(idList[index]),
-                                    ));
-                              },
-                              child:
-                              imageList[index] == "" ?
-                              Image.asset(
-                                  'images/upper_body-2.png', fit: BoxFit.cover)
-                                  : Image.network(
-                                imageList[index],
-                                width: 70,
-                                height: 70,
-                                fit: BoxFit.fill,
-                              )
-                          ),
-                        ),
-                        title: Text(nameList[index],
-                            style: TextStyle(fontSize: 30)),
-                        //リスト押下時の挙動
-                        onTap: () async {
-                          TalkRoomModel room = await FirestoreMethod.makeRoom(myUserID, idList[index]);
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => TalkRoom(room),
-                              ));
-                        },
-                      ),
+                      child: ListTileConfig.listTile,
                     );
                   },
                 );

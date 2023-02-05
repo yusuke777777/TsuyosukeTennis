@@ -571,6 +571,32 @@ class FirestoreMethod {
     return resultList;
   }
 
+  /**
+   * MyUserIDを使ってユーザー情報を取得
+   */
+  static Future<List<String>> getUserByMyUserId(String myUserID) async {
+    List<String> resultList = [];
+
+    //コレクション「myProfile」から該当データを絞る
+    final snapShot = await FirebaseFirestore.instance
+        .collection('myProfile')
+        .where('MY_USER_ID', isEqualTo: myUserID)
+        .get();
+
+    if (snapShot.docs.first == null) {
+      return resultList;
+    }
+
+    String id = snapShot.docs.first.id;
+    String name = snapShot.docs.first!['NICK_NAME'];
+    String profile = snapShot.docs.first!['PROFILE_IMAGE'];
+    resultList.add(name);
+    resultList.add(profile);
+    resultList.add(id);
+
+    return resultList;
+  }
+
   //試合申請受け入れ
   static Future<void> matchAccept(String roomId, String messageId) async {
     final messageRef = roomRef.doc(roomId).collection('message');
