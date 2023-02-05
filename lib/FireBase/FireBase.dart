@@ -678,7 +678,6 @@ class FirestoreMethod {
           YOUR_USER: yourProfile,
         );
         matchList.add(match);
-        print("aa");
       } else if (doc.data()['SENDER_ID'].contains(myUserId)) {
         CprofileSetting yourProfile =
             await getYourProfile(doc.data()['RECIPIENT_ID']);
@@ -695,6 +694,7 @@ class FirestoreMethod {
         );
         matchList.add(match);
       }
+      print(matchList.length);
     });
     return matchList;
   }

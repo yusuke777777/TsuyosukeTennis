@@ -19,8 +19,12 @@ class _MatchListState extends State<MatchList> {
   List<MatchListModel> matchList = [];
 
   Future<void> createMatchList() async {
-    matchList = await FirestoreMethod.getMatchList(
-        FirestoreMethod.auth.currentUser!.uid);
+    try {
+      matchList = await FirestoreMethod.getMatchList(
+          FirestoreMethod.auth.currentUser!.uid);
+    }catch(e){
+      print("マッチ一覧の取得に失敗しました");
+    }
   }
 
   @override
