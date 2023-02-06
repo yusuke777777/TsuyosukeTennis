@@ -27,7 +27,9 @@ class HeaderConfig{
   }
 }
 
-//ヘッダー部左のドロアーの共通クラスです
+/**
+ * ヘッダー部左のドロアーの共通クラスです
+ */
 class DrawerConfig {
   static late Drawer drawer;
   void init(BuildContext context) {

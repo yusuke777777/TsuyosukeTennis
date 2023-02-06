@@ -41,7 +41,6 @@ class FirestoreMethod {
   //トークルームコレクション
   static final roomRef = _firestoreInstance.collection('talkRoom');
   static final roomSnapshot = roomRef.snapshots();
-  static bool roomCheck = false;
 
   //マッチング一覧
   static final matchListSnapshot = matchRef.snapshots();
@@ -330,8 +329,9 @@ class FirestoreMethod {
    */
   static Future<TalkRoomModel> makeRoom(
       String myuserId, String youruserID) async {
+    bool roomCheck = false;
     late TalkRoomModel room;
-    await checkRoom(myuserId, youruserID);
+    roomCheck = await checkRoom(myuserId, youruserID, roomCheck);
     if (roomCheck) {
       room = await getRoomBySearchResult(myuserId, youruserID);
       return room;
@@ -352,7 +352,7 @@ class FirestoreMethod {
   /**
    * 相手とのトークルームが既に存在するかどうかチェックするメソッドです
    */
-  static Future<void> checkRoom(String myUserId, String yourUserID) async {
+  static Future<bool> checkRoom(String myUserId, String yourUserID, bool roomCheck) async {
     final snapshot = await roomRef.get();
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
       if (doc.data()['joined_user_ids'].contains(myUserId)) {
@@ -360,10 +360,10 @@ class FirestoreMethod {
           if (id == yourUserID) {
             roomCheck = true;
           }
-          return;
         });
       }
     });
+    return roomCheck;
   }
 
   /**
