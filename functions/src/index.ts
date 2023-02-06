@@ -10,7 +10,7 @@ const matchResultRef = admin.firestore().collection("matchResult");
 /** 定期的にメタ情報を更新する関数。 */
 exports.updateMetaFunction = functions
     .region("asia-northeast1")
-    .pubsub.schedule("* */1 * * *")
+    .pubsub.schedule("0 */1 * * *")
     .timeZone("Asia/Tokyo")
     .onRun(async (context) => {
       console.log("ランキング作成開始");
@@ -24,7 +24,7 @@ exports.updateMetaFunction = functions
 
 exports.tspRevocationFunction = functions
     .region("asia-northeast1")
-    .pubsub.schedule("*/1 * * * *")
+    .pubsub.schedule("0 0 1 * *")
     .timeZone("Asia/Tokyo")
     .onRun(async (context) => {
       console.log("失効TSPポイント再計算");
