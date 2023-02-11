@@ -21,7 +21,7 @@ class HeaderConfig{
 
     appBarText = Text( inputTitle,
       style: TextStyle(
-          fontSize: 25,
+          fontSize: 20,
           color: Colors.black),
     );
   }
