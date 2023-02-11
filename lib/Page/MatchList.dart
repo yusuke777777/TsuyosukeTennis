@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CtalkRoom.dart';
 import 'package:tsuyosuke_tennis_ap/Page/MatchResult.dart';
+import 'package:tsuyosuke_tennis_ap/Page/ProfileReference.dart';
 import 'package:tsuyosuke_tennis_ap/Page/ProfileSetting.dart';
 import '../Common/CmatchList.dart';
 import '../FireBase/FireBase.dart';
+import '../PropSetCofig.dart';
 import 'TalkRoom.dart';
 
 class MatchList extends StatefulWidget {
@@ -29,33 +31,16 @@ class _MatchListState extends State<MatchList> {
 
   @override
   Widget build(BuildContext context) {
+    //必要コンフィグの初期化
+    HeaderConfig().init(context, "マッチング一覧");
+    DrawerConfig().init(context);
     return Scaffold(
-        backgroundColor: const Color(0xFFF2FFE4),
         appBar: AppBar(
-          backgroundColor: const Color(0xFF3CB371),
-          title: Text('マッチング一覧'),
+          backgroundColor: HeaderConfig.backGroundColor,
+          title: HeaderConfig.appBarText,
+          iconTheme: IconThemeData(color: Colors.black),
         ),
-        drawer: Drawer(
-            child: ListView(
-          children: <Widget>[
-            Padding(padding: EdgeInsets.only(top: 10.0)),
-            Container(
-              height: 60.0,
-              child: DrawerHeader(
-                child: Text("メニュー"),
-                decoration: BoxDecoration(),
-              ),
-            ),
-            ListTile(
-              title: Text('利用規約同意書', style: TextStyle(color: Colors.black54)),
-              // onTap: _manualURL,
-            ),
-            ListTile(
-              title: Text('アプリ操作手順書', style: TextStyle(color: Colors.black54)),
-              // onTap: _FAQURL,
-            )
-          ],
-        )),
+        drawer:DrawerConfig.drawer,
         body: StreamBuilder<QuerySnapshot>(
             stream: FirestoreMethod.matchListSnapshot,
             builder: (context, snapshot) {
@@ -81,7 +66,7 @@ class _MatchListState extends State<MatchList> {
                                 ],
                               ),
                               child: Card(
-                                color: const Color(0xFFF2FFE4),
+                                color: Colors.white,
                                 child: Container(
                                   height: 70,
                                   child: Row(
@@ -115,9 +100,8 @@ class _MatchListState extends State<MatchList> {
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
-                                                        ProfileSetting.Edit(
-                                                            matchList[index]
-                                                                .YOUR_USER)));
+                                                        ProfileReference(
+                                                            matchList[index].YOUR_USER.USER_ID)));
                                           },
                                         ),
                                       ),
@@ -131,7 +115,7 @@ class _MatchListState extends State<MatchList> {
                                                     .YOUR_USER
                                                     .NICK_NAME,
                                                 style: TextStyle(
-                                                    fontSize: 18,
+                                                    fontSize: 20,
                                                     fontWeight:
                                                         FontWeight.bold)),
                                             Text(matchList[index].SAKUSEI_TIME,
