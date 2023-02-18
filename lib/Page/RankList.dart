@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../PropSetCofig.dart';
 import 'manSinglesRankList.dart';
 
 class RankList extends StatelessWidget {
@@ -41,6 +42,9 @@ class RankList extends StatelessWidget {
   }
 
   Widget build(BuildContext context) {
+    //必要コンフィグの初期化
+    HeaderConfig().init(context, "TSPランキング");
+    DrawerConfig().init(context);
     return DefaultTabController(
       initialIndex: _screen,
       length: _tab.length,
@@ -50,20 +54,14 @@ class RankList extends StatelessWidget {
             child: PreferredSize(
               preferredSize: Size.fromHeight(40.0),
               child: AppBar(
-                title: Text("TSPランキング",
-                    style: TextStyle(
-                      color: const Color(0xFFFFFFFF),
-                      fontSize: 18,
-                    )),
-                iconTheme: const IconThemeData(
-                  color: const Color(0xFFFFFFFF),
-                ),
-                backgroundColor: Color(0xFF3CB371),
+                backgroundColor: HeaderConfig.backGroundColor,
+                title: HeaderConfig.appBarText,
+                iconTheme: IconThemeData(color: Colors.black),
                 bottom: TabBar(
                   tabs: _tab,
-                  labelColor: const Color(0xFFFFFFFF),
-                  unselectedLabelColor: const Color(0xFFFFFFFF),
-                  indicatorColor: const Color(0xFFFFFFFF),
+                  labelColor: Colors.black,
+                  unselectedLabelColor: Colors.black,
+                  indicatorColor: Colors.black,
                 ),
               ),
             )),
@@ -74,27 +72,7 @@ class RankList extends StatelessWidget {
             manSinglesRankList("JyokyuRank")
           ],
         ),
-        drawer: Drawer(
-            child: ListView(
-              children: <Widget>[
-                Padding(padding: EdgeInsets.only(top: 10.0)),
-                Container(
-                  height: 60.0,
-                  child: DrawerHeader(
-                    child: Text("メニュー"),
-                    decoration: BoxDecoration(),
-                  ),
-                ),
-                ListTile(
-                  title: Text('利用規約同意書', style: TextStyle(color: Colors.black54)),
-                  // onTap: _manualURL,
-                ),
-                ListTile(
-                  title: Text('アプリ操作手順書', style: TextStyle(color: Colors.black54)),
-                  // onTap: _FAQURL,
-                )
-              ],
-            )),
+        drawer: DrawerConfig.drawer,
       ),
     );
   }

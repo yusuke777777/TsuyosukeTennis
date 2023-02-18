@@ -23,7 +23,6 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: const Color(0xFFF2FFE4),
         // appBar: AppBar(
         //   backgroundColor: const Color(0xFF3CB371),
         //   title: Text('ランキング'),
@@ -34,7 +33,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
               children: [
                 Container(
                   height: 40,
-                  decoration: BoxDecoration(color: const Color(0xFFEAFFE4),border: const Border(bottom: const BorderSide(color: Colors.grey,width: 1))),
+                  decoration: BoxDecoration(color: Colors.white,border: const Border(bottom: const BorderSide(color: Colors.grey,width: 1))),
                   child: Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
@@ -78,7 +77,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                               itemCount: RankModelList.length,
                               itemBuilder: (context, index) {
                                 return Card(
-                                  color: const Color(0xFFF2FFE4),
+                                  color: Colors.white,
                                   child: Container(
                                     height: 70,
                                     child: Row(
@@ -89,7 +88,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                         Container(
                                           child: Text(RankModelList[index].rankNo.toString(),
                                               style: TextStyle(
-                                                  fontSize: 25,
+                                                  fontSize: 20,
                                                   color: Colors.black),
                                               overflow: TextOverflow.ellipsis),
                                         ),
@@ -105,7 +104,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                                   backgroundColor: Colors.white,
                                                   backgroundImage: NetworkImage(
                                                       "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                                  radius: 30,
+                                                  radius: 20,
                                                 )
                                               : CircleAvatar(
                                                   backgroundColor: Colors.white,
@@ -113,25 +112,25 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                                       RankModelList[index]
                                                           .user
                                                           .PROFILE_IMAGE),
-                                                  radius: 30,
+                                                  radius: 20,
                                                 ),
                                         ),
                                         Container(
-                                          width: 100,
+                                          width: 180,
                                           child: Text(
                                               RankModelList[index].user.NICK_NAME,
                                               style: TextStyle(
-                                                  fontSize: 25,color: Colors.teal
+                                                  fontSize: 15,color: Colors.teal
                                               )),
                                         ),
                                         Container(
-                                          width: 80,
+                                          width: 50,
                                           child: Text(
                                               RankModelList[index]
                                                   .tpPoint
                                                   .toString(),
                                               style: TextStyle(
-                                                  fontSize: 30,
+                                                  fontSize: 20,
                                                   color: Colors.black),
                                               overflow: TextOverflow.ellipsis),
                                         ),
