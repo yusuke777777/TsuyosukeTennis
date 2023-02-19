@@ -266,10 +266,15 @@ class _HomePageState extends State<HomePage> {
                           ]
                       ),
                   QrImage(
-                    data: 'https://www.ac-illust.com/main/detail.php?id=23545699&word=%E3%81%86%E3%82%93%E3%81%93+%E6%89%8B%E6%9B%B8%E3%81%8D+%E3%82%A4%E3%83%A9%E3%82%B9%E3%83%88&searchId=',
+                    data: uid.toString(),
                     version: QrVersions.auto,
+                    foregroundColor: Colors.green,
+                    embeddedImage: Image.network(
+                        'https://illustimage.com/photo/463.png')
+                        .image, //QRコードの真ん中に表示する画像
                     size: 90.0,
                   ),
+
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
@@ -282,11 +287,8 @@ class _HomePageState extends State<HomePage> {
                                   ));
                             },
                           ),
-
                         ],
                       ),
-
-
                     ]),
               );
             } else {

@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
 
 class QrScanView extends StatefulWidget {
@@ -73,7 +74,10 @@ class _QrScanViewState extends State<QrScanView> {
       this.controller = controller;
     });
     controller.scannedDataStream.listen((scanData) async {
-      print(scanData.code);
+      //読み込んだ相手のID
+      String yourId = scanData.code;
+      //読み込んだ側のID
+      String? myId = FirestoreMethod.getUid();
     });
   }
 

@@ -52,6 +52,6 @@
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-    <string>Camera permission is required for barcode scanning.</string>
+    <string>Camera permission is required for Genera scanning.</string>
 </dict>
 </plist>
