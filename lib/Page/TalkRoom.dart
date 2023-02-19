@@ -114,7 +114,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                         }
                                                       },
                                                       child: Text(
-                                                        "Generate",
+                                                        "受け入れる",
                                                         style: TextStyle(
                                                             color:
                                                                 Colors.purple),
