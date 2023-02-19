@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
 import '../Common/CprofileSetting.dart';
@@ -6,6 +7,7 @@ import '../PropSetCofig.dart';
 import 'FriendManagerPage.dart';
 import 'ProfileSetting.dart';
 import 'package:marquee/marquee.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -252,9 +254,23 @@ class _HomePageState extends State<HomePage> {
                           ]
                       ),
 
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: const <Widget>[
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Text('↓↓今すぐ試合をするならこちら！↓↓', style: TextStyle(fontSize: 10,fontWeight: FontWeight.bold,)),
+                          ]
+                      ),
+                  QrImage(
+                    data: 'https://www.ac-illust.com/main/detail.php?id=23545699&word=%E3%81%86%E3%82%93%E3%81%93+%E6%89%8B%E6%9B%B8%E3%81%8D+%E3%82%A4%E3%83%A9%E3%82%B9%E3%83%88&searchId=',
+                    version: QrVersions.auto,
+                    size: 90.0,
+                  ),
 
-                    ]),
-          );
+                ]),
+              );
             } else {
               return Text("データが存在しません");
             }
