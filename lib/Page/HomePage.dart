@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
+import 'package:tsuyosuke_tennis_ap/Page/QrScanView.dart';
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
@@ -58,7 +59,8 @@ class _HomePageState extends State<HomePage> {
       ),
       //ドロアー画面の処理
       drawer:DrawerConfig.drawer,
-      body:
+      body: SingleChildScrollView(
+    child:
       FutureBuilder(
         future: futureList,
         builder: (BuildContext context, AsyncSnapshot<CHomePageVal> snapshot) {
@@ -268,14 +270,31 @@ class _HomePageState extends State<HomePage> {
                     version: QrVersions.auto,
                     size: 90.0,
                   ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          IconButton(icon: Icon(Icons.camera_alt),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => QrScanView(),
+                                  ));
+                            },
+                          ),
 
-                ]),
+                        ],
+                      ),
+
+
+                    ]),
               );
             } else {
               return Text("データが存在しません");
             }
           }
         },
+      ),
       ),
     );
   }
