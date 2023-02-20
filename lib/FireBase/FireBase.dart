@@ -684,6 +684,26 @@ class FirestoreMethod {
     }
   }
 
+  //対戦マッチ一覧に追加
+  static Future<void> makeMatchByQrScan(String yourUserId) async {
+    DateTime now = DateTime.now();
+    DateFormat outputFormat = DateFormat('yyyy/MM/dd HH:mm');
+    String today = outputFormat.format(now);
+
+    try {
+      await matchRef.add({
+        'RECIPIENT_ID': auth.currentUser!.uid,
+        'SENDER_ID': yourUserId,
+        'SAKUSEI_TIME': today,
+        'MATCH_FLG': '1',
+      }).then((value) {
+        matchRef.doc(value.id).update({'MATCH_ID': value.id});
+      });
+    } catch (e) {
+      print('マッチングに失敗しました --- $e');
+    }
+  }
+
   static Future<List<MatchListModel>> getMatchList(String myUserId) async {
     final snapshot = await matchRef.get();
     List<MatchListModel> matchList = [];

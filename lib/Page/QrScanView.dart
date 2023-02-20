@@ -6,6 +6,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
+import 'HomePage.dart';
 
 class QrScanView extends StatefulWidget {
   const QrScanView({Key? key}) : super(key: key);
@@ -69,16 +70,27 @@ class _QrScanViewState extends State<QrScanView> {
     );
   }
 
+  /**
+   * QRコードを起動した時の動き
+   */
   void _onQRViewCreated(QRViewController controller) {
+    List matchdList = [];
     setState(() {
       this.controller = controller;
     });
     controller.scannedDataStream.listen((scanData) async {
       //読み込んだ相手のID
       String yourId = scanData.code;
-      //読み込んだ側のID
-      String? myId = FirestoreMethod.getUid();
-    });
+      print("読取対象:"+yourId);
+       if (!matchdList.contains(yourId)) {
+        FirestoreMethod.makeMatchByQrScan(yourId);
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('マッチング完了！')),
+        );
+        matchdList.add(yourId);
+      }
+     }
+    );
   }
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
