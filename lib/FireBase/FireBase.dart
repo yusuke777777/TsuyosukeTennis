@@ -349,6 +349,37 @@ class FirestoreMethod {
     }
   }
 
+  //トークルーム削除
+  static void delTalkRoom(String delId, BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('本当に削除して宜しいですか'),
+            actions: <Widget>[
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+                child: Text('はい'),
+                onPressed: () {
+                  roomRef.doc(delId).delete();
+                  Navigator.pop(context);
+                },
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+                child: Text('いいえ'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+
   /**
    * 相手とのトークルームが既に存在するかどうかチェックするメソッドです
    */

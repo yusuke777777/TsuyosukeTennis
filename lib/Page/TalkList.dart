@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
@@ -8,6 +9,7 @@ import 'TalkRoom.dart';
 
 class TalkList extends StatefulWidget {
   const TalkList({Key? key}) : super(key: key);
+
   @override
   _TalkListState createState() => _TalkListState();
 }
@@ -15,8 +17,9 @@ class TalkList extends StatefulWidget {
 class _TalkListState extends State<TalkList> {
   List<TalkRoomModel> talkList = [];
 
-  Future<void> createRooms() async{
-    talkList = await FirestoreMethod.getRooms(FirestoreMethod.auth.currentUser!.uid);
+  Future<void> createRooms() async {
+    talkList =
+        await FirestoreMethod.getRooms(FirestoreMethod.auth.currentUser!.uid);
   }
 
   @override
@@ -26,58 +29,119 @@ class _TalkListState extends State<TalkList> {
     DrawerConfig().init(context);
     return Scaffold(
         appBar: AppBar(
-        backgroundColor: HeaderConfig.backGroundColor,
-        title: HeaderConfig.appBarText,
-        iconTheme: IconThemeData(color: Colors.black),
+          backgroundColor: HeaderConfig.backGroundColor,
+          title: HeaderConfig.appBarText,
+          iconTheme: IconThemeData(color: Colors.black),
         ),
         drawer: DrawerConfig.drawer,
-        body:
-        StreamBuilder<QuerySnapshot>(
+        body: StreamBuilder<QuerySnapshot>(
             stream: FirestoreMethod.roomSnapshot,
             builder: (context, snapshot) {
               return FutureBuilder(
                 future: createRooms(),
-                builder:(context,snapshot){
-                  if(snapshot.connectionState == ConnectionState.done){
-                    return  ListView.builder(
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    return ListView.builder(
                         itemCount: talkList.length,
                         itemBuilder: (context, index) {
-                          return InkWell(
-                            onTap: (){
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => TalkRoom(talkList[index])));
-                            },
-                            child: Card(
-                              color: Colors.white,
-                              child: Container(
-                                height: 70,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                      child: talkList[index].user.PROFILE_IMAGE == '' ? CircleAvatar(backgroundColor:Colors.white,backgroundImage: NetworkImage("https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),radius: 30,): CircleAvatar(backgroundColor:Colors.white,backgroundImage: NetworkImage(talkList[index].user.PROFILE_IMAGE),
-                                        radius: 30,),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(talkList[index].user.NICK_NAME,style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold)),
-                                        Text(talkList[index].lastMessage,style: TextStyle(color: Colors.grey),overflow: TextOverflow.ellipsis)
-                                      ],
-                                    )
-                                  ],
-                                ),
+                          return Slidable(
+                              endActionPane: ActionPane(
+                                motion: DrawerMotion(),
+                                children: [
+                                  SlidableAction(
+                                    onPressed: (value) {
+                                      // FirestoreMethod.delFriendsList(friendsList[index].FRIENDS_ID,context);
+                                    },
+                                    backgroundColor: Colors.grey,
+                                    icon: Icons.block_flipped,
+                                    label: 'ブロック',
+                                    foregroundColor: Colors.white,
+                                  ),
+                                  SlidableAction(
+                                    onPressed: (value) {
+                                      FirestoreMethod.delTalkRoom(talkList[index].roomId,context);
+                                    },
+                                    backgroundColor: Colors.red,
+                                    icon: Icons.delete,
+                                    label: '削除',
+                                  ),
+                                ],
                               ),
-                            ),
-                          );
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              TalkRoom(talkList[index])));
+                                },
+                                child: Card(
+                                  color: Colors.white,
+                                  child: Container(
+                                    height: 70,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              horizontal: 8.0),
+                                          child: talkList[index]
+                                                      .user
+                                                      .PROFILE_IMAGE ==
+                                                  ''
+                                              ? CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: NetworkImage(
+                                                      "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                                  radius: 30,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: NetworkImage(
+                                                      talkList[index]
+                                                          .user
+                                                          .PROFILE_IMAGE),
+                                                  radius: 30,
+                                                ),
+                                        ),
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                  child: Text(
+                                                      talkList[index]
+                                                          .user
+                                                          .NICK_NAME,
+                                                      style: TextStyle(
+                                                          fontSize: 20,
+                                                          fontWeight: FontWeight
+                                                              .bold))),
+                                              Container(
+                                                  child: Text(
+                                                talkList[index].lastMessage,
+                                                style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 13),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 2,
+                                              ))
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ));
                         });
-                  }else{
+                  } else {
                     return Center(child: CircularProgressIndicator());
                   }
                 },
               );
-            }
-        ));
+            }));
   }
 }
-
