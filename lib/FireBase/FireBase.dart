@@ -146,7 +146,7 @@ class FirestoreMethod {
     } else if (rank == "中級") {
       manSingleRank = "ChukyuRank";
     } else if (rank == "上級") {
-      manSingleRank = "JoukyuRank";
+      manSingleRank = "JyokyuRank";
     }
 
     final snapShot_msr = await FirebaseFirestore.instance
@@ -163,6 +163,16 @@ class FirestoreMethod {
     int rank_no = snapShot_msr.data()!['RANK_NO'];
 
     homePageval.SRANK = rank_no;
+
+    final snapShot_matchResult =
+    await FirebaseFirestore.instance.collection('matchResult').doc(uid).get();
+
+    //初級の勝率
+    homePageval.BEGINWINRATE = snapShot_matchResult.data()!['SHOKYU_WIN_RATE'];
+    //中級の勝率
+    homePageval.MEDIUMWINRATE = snapShot_matchResult.data()!['CHUKYU_WIN_RATE'];
+    //上級の勝率
+    homePageval.ADVANCEDWINRATE = snapShot_matchResult.data()!['JYOKYU_WIN_RATE'];
 
     return homePageval;
   }
