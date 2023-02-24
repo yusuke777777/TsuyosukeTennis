@@ -1,3 +1,5 @@
+import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
+
 class CHomePageVal {
   late String NAME;
   late String PROFILEIMAGE;
@@ -7,6 +9,7 @@ class CHomePageVal {
   late int? ADVANCEDWINRATE;
   late int? MEDIUMWINRATE;
   late int? BEGINWINRATE;
+  late CSkilLevelSetting SKILL;
 
   CHomePageVal(
       {required this.NAME,
@@ -16,5 +19,7 @@ class CHomePageVal {
         this.SRANK,
         this.ADVANCEDWINRATE,
         this.MEDIUMWINRATE,
-        this.BEGINWINRATE});
+        this.BEGINWINRATE,
+        required this.SKILL
+      });
 }

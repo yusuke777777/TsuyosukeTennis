@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:tsuyosuke_tennis_ap/Common/CskilLevelSetting.dart';
+import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
 import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
 import '../Common/CmatchResult.dart';
 import '../Common/CprofileSetting.dart';
@@ -38,12 +38,20 @@ class _MatchResultState extends State<MatchResult> {
 
   //評価数を格納
   late String opponent_id;
-  late double stroke_fore;
-  late double stroke_back;
-  late double volley_fore;
-  late double volley_back;
-  late double serve_1st;
-  late double serve_2nd;
+  double stroke_fore = 0;
+  double stroke_back = 0;
+  double volley_fore = 0;
+  double volley_back = 0;
+  double serve_1st = 0;
+  double serve_2nd = 0;
+
+  bool _flag = false;
+
+  void _handleCheckbox(bool? e) {
+    setState(() {
+      _flag = e!;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -190,8 +198,19 @@ class _MatchResultState extends State<MatchResult> {
                       children: [
                         Text('------------------------',
                             style: TextStyle(fontSize: 20)),
-                        Text('レビュー', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,
+                        Text('対戦相手レビュー', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline,)),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text('レビューを入力しない', style: TextStyle(fontSize: 10)),
+                            Checkbox(
+                              activeColor: Colors.blue,// Onになった時の色を指定
+                              value: _flag,
+                              onChanged: _handleCheckbox,
+                            )
+                          ],
+                        ),
                         //ストローク
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -203,8 +222,8 @@ class _MatchResultState extends State<MatchResult> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('フォア：', style: TextStyle(fontSize: 20)),
-                            Text('2', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
+                              allowHalfRating : true,
                               itemBuilder: (context, index) =>
                               const Icon(Icons.star,color: Colors.yellow,),
                               //ratingが星の数
@@ -218,8 +237,8 @@ class _MatchResultState extends State<MatchResult> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('バック：', style: TextStyle(fontSize: 20)),
-                            Text('2', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
+                              allowHalfRating : true,
                               itemBuilder: (context, index) =>
                               const Icon(Icons.star,color: Colors.yellow,),
                               onRatingUpdate: (rating) {
@@ -242,8 +261,8 @@ class _MatchResultState extends State<MatchResult> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('フォア：', style: TextStyle(fontSize: 20)),
-                            Text('2', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
+                              allowHalfRating : true,
                               itemBuilder: (context, index) =>
                               const Icon(Icons.star,color: Colors.yellow,),
                               onRatingUpdate: (rating) {
@@ -256,8 +275,8 @@ class _MatchResultState extends State<MatchResult> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('バック：', style: TextStyle(fontSize: 20)),
-                            Text('2', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
+                              allowHalfRating : true,
                               itemBuilder: (context, index) =>
                               const Icon(Icons.star,color: Colors.yellow,),
                               onRatingUpdate: (rating) {
@@ -281,8 +300,8 @@ class _MatchResultState extends State<MatchResult> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('１ｓｔ：', style: TextStyle(fontSize: 20)),
-                            Text('2', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
+                              allowHalfRating : true,
                               itemBuilder: (context, index) =>
                               const Icon(Icons.star,color: Colors.yellow,),
                               onRatingUpdate: (rating) {
@@ -295,8 +314,8 @@ class _MatchResultState extends State<MatchResult> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('２ｎｄ：', style: TextStyle(fontSize: 20)),
-                            Text('2', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
+                              allowHalfRating : true,
                               itemBuilder: (context, index) =>
                               const Icon(Icons.star,color: Colors.yellow,),
                               onRatingUpdate: (rating) {
@@ -361,10 +380,11 @@ class _MatchResultState extends State<MatchResult> {
                                   widget.yourProfile, matchResultList);
 
                               //星数を登録する
-                              CskilLevelSetting skill = new CskilLevelSetting(
-                                  OPPONENT_ID: opponent_id, SERVE_1ST: serve_1st, SERVE_2ND: serve_2nd, STROKE_BACKHAND: stroke_back, STROKE_FOREHAND: stroke_fore, VOLLEY_BACKHAND: volley_back, VOLLEY_FOREHAND: volley_fore);
-
-                              FirestoreMethod.registSkillLevel(skill);
+                              if (!_flag) {
+                                CSkilLevelSetting skill = new CSkilLevelSetting(
+                                    OPPONENT_ID: opponent_id, SERVE_1ST: serve_1st, SERVE_2ND: serve_2nd, STROKE_BACKHAND: stroke_back, STROKE_FOREHAND: stroke_fore, VOLLEY_BACKHAND: volley_back, VOLLEY_FOREHAND: volley_fore);
+                                FirestoreMethod.registSkillLevel(skill);
+                              }
 
                               Navigator.pop(context);
                             }

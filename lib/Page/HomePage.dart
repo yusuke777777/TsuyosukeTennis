@@ -333,8 +333,11 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('フォア：', style: TextStyle(fontSize: 20)),
-                            Text('2', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
+                              ignoreGestures : true,
+                              allowHalfRating : true,
+                              initialRating: homePageVal.SKILL.STROKE_FOREHAND.isNaN ?
+                                  0 : homePageVal.SKILL.STROKE_FOREHAND,
                               itemBuilder: (context, index) =>
                                   const Icon(Icons.star,color: Colors.yellow,),
                               onRatingUpdate: (rating) {
@@ -347,8 +350,11 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('バック：', style: TextStyle(fontSize: 20)),
-                            Text('2', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
+                              ignoreGestures : true,
+                              allowHalfRating : true,
+                              initialRating: homePageVal.SKILL.STROKE_BACKHAND.isNaN ?
+                                  0 : homePageVal.SKILL.STROKE_BACKHAND,
                               itemBuilder: (context, index) =>
                               const Icon(Icons.star,color: Colors.yellow,),
                               onRatingUpdate: (rating) {
@@ -371,8 +377,11 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('フォア：', style: TextStyle(fontSize: 20)),
-                            Text('2', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
+                              ignoreGestures : true,
+                              allowHalfRating : true,
+                              initialRating: homePageVal.SKILL.VOLLEY_FOREHAND.isNaN ?
+                                  0 : homePageVal.SKILL.VOLLEY_FOREHAND,
                               itemBuilder: (context, index) =>
                               const Icon(Icons.star,color: Colors.yellow,),
                               onRatingUpdate: (rating) {
@@ -385,8 +394,11 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('バック：', style: TextStyle(fontSize: 20)),
-                            Text('2', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
+                              ignoreGestures : true,
+                              allowHalfRating : true,
+                              initialRating: homePageVal.SKILL.VOLLEY_BACKHAND.isNaN ?
+                                  0 : homePageVal.SKILL.VOLLEY_BACKHAND,
                               itemBuilder: (context, index) =>
                               const Icon(Icons.star,color: Colors.yellow,),
                               onRatingUpdate: (rating) {
@@ -410,8 +422,11 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('１ｓｔ：', style: TextStyle(fontSize: 20)),
-                            Text('2', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
+                              ignoreGestures : true,
+                              allowHalfRating : true,
+                              initialRating: homePageVal.SKILL.SERVE_1ST.isNaN ?
+                                  0 : homePageVal.SKILL.SERVE_1ST,
                               itemBuilder: (context, index) =>
                               const Icon(Icons.star,color: Colors.yellow,),
                               onRatingUpdate: (rating) {
@@ -424,8 +439,11 @@ class _HomePageState extends State<HomePage> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text('２ｎｄ：', style: TextStyle(fontSize: 20)),
-                            Text('2', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
+                              ignoreGestures : true,
+                              allowHalfRating : true,
+                              initialRating: homePageVal.SKILL.SERVE_2ND.isNaN ?
+                                  0 : homePageVal.SKILL.SERVE_2ND,
                               itemBuilder: (context, index) =>
                               const Icon(Icons.star,color: Colors.yellow,),
                               onRatingUpdate: (rating) {

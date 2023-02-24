@@ -10,7 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
-import 'package:tsuyosuke_tennis_ap/Common/CskilLevelSetting.dart';
+import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
 
 import '../Common/CHomePageSetting.dart';
 import '../Common/CSinglesRankModel.dart';
@@ -135,12 +135,14 @@ class FirestoreMethod {
     String id = snapShot.data()!['USER_ID'];
     String myid = snapShot.data()!['MY_USER_ID'];
     String image = snapShot.data()!['PROFILE_IMAGE'];
+    CSkilLevelSetting skill = await getAvgSkillLevel();
 
     CHomePageVal homePageval = CHomePageVal(
         NAME: name,
         MYUSERID: myid,
         TOROKURANK: rank,
-        PROFILEIMAGE: image,);
+        PROFILEIMAGE: image,
+        SKILL: skill,);
 
     late String manSingleRank;
     if (rank == "初級") {
@@ -2231,12 +2233,12 @@ class FirestoreMethod {
 
   /**
    * スキル評価登録メソッドです
-   * ドキュメントには評価されるユーザのユーザIDが入力されます
+   * skill.OPPONENT_ID 評価される側のユーザ
+   * auth.currentUser!.uid 評価している(入力中ユーザ)
    */
-  static Future<void> registSkillLevel(CskilLevelSetting skill) async {
+  static Future<void> registSkillLevel(CSkilLevelSetting skill) async {
     try {
-      await skilLevelRef.doc(skill.OPPONENT_ID).set({
-        'OPPONENT_ID': auth.currentUser!.uid,
+      await skilLevelRef.doc(skill.OPPONENT_ID).collection('opponent').doc(auth.currentUser!.uid).set({
         'STROKE_FOREHAND': skill.STROKE_FOREHAND,
         'STROKE_BACKHAND' : skill.STROKE_BACKHAND,
         'VOLLEY_FOREHAND' : skill.VOLLEY_FOREHAND,
@@ -2249,6 +2251,58 @@ class FirestoreMethod {
     }
   }
 
-
-
+  /**
+   * もらった評価の平均を取りホーム画面に表示する
+   */
+  static Future<CSkilLevelSetting> getAvgSkillLevel() async {
+    //対戦相手の評価フィールドを持つドキュメントIDを全て取得
+    late CSkilLevelSetting skill;
+    double stroke_fore_total = 0;
+    double stroke_back_total = 0;
+    double volley_fore_total = 0;
+    double volley_back_total = 0;
+    double serve_1st_total = 0;
+    double serve_2nd_total = 0;
+    double stroke_fore_avg = 0;
+    double stroke_back_avg = 0;
+    double volley_fore_avg = 0;
+    double volley_back_avg = 0;
+    double serve_1st_avg = 0;
+    double serve_2nd_avg = 0;
+    double count = 0;
+    try {
+      await FirebaseFirestore.instance.collection('SkilLevel').doc(
+          auth.currentUser!.uid).collection('opponent').get().then(
+            (QuerySnapshot querySnapshot) =>
+        {
+          querySnapshot.docs.forEach(
+                (doc) {
+              count ++;
+              stroke_fore_total =
+                  stroke_fore_total + doc.get('STROKE_FOREHAND');
+              stroke_back_total =
+                  stroke_back_total + doc.get('STROKE_BACKHAND');
+              volley_fore_total =
+                  volley_fore_total + doc.get('VOLLEY_FOREHAND');
+              volley_back_total =
+                  volley_back_total + doc.get('VOLLEY_BACKHAND');
+              serve_1st_total = serve_1st_total + doc.get('SERVE_1ST');
+              serve_2nd_total = serve_2nd_total + doc.get('SERVE_2ND');
+                },
+          ),
+        },
+      );
+      stroke_fore_avg = stroke_fore_total/count;
+      stroke_back_avg = stroke_back_total/count;
+      volley_fore_avg = volley_fore_total/count;
+      volley_back_avg = volley_back_total/count;
+      serve_1st_avg = serve_1st_total/count;
+      serve_2nd_avg = serve_2nd_total/count;
+    } catch(e){
+      print(e);
+    }
+    return CSkilLevelSetting(SERVE_1ST: serve_1st_avg,
+        SERVE_2ND: serve_2nd_avg, STROKE_BACKHAND: stroke_back_avg, STROKE_FOREHAND: stroke_fore_avg,
+        VOLLEY_BACKHAND: volley_back_avg, VOLLEY_FOREHAND: volley_fore_avg);
+  }
 }
