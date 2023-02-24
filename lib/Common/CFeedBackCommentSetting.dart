@@ -4,6 +4,6 @@
 class CFeedBackCommentSetting{
   String? OPPONENT_ID;
   String? FEED_BACK;
-  DateTime? DATE_TIME;
+  String? DATE_TIME;
   CFeedBackCommentSetting({this.OPPONENT_ID, this.FEED_BACK, this.DATE_TIME});
 }

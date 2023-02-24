@@ -70,7 +70,6 @@ class _FindResultPageState extends State<FindResultPage> {
                 return ListView(
                     padding: const EdgeInsets.all(8),
                     children: <Widget>[
-                      //TODO このListTileを押せるようにしたい＋アイコン付ける方法調べる
                       ListTile(title: Text("対象ユーザーは存在しません")),
                     ]);
               } else {

@@ -205,12 +205,12 @@ class _MatchResultState extends State<MatchResult> {
                       children: [
                         Text('------------------------',
                             style: TextStyle(fontSize: 20)),
-                        Text('対戦相手レビュー', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,
+                        Text('対戦相手へフィードバックを送ろう', style: TextStyle(fontSize: 15,fontWeight: FontWeight.bold,
                           decoration: TextDecoration.underline,)),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text('レビューを入力しない', style: TextStyle(fontSize: 10)),
+                            Text('フィードバックを入力しない', style: TextStyle(fontSize: 10)),
                             Checkbox(
                               activeColor: Colors.blue,// Onになった時の色を指定
                               value: _flag,
@@ -340,7 +340,7 @@ class _MatchResultState extends State<MatchResult> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('フィードバックコメント', style: TextStyle(fontSize: 20)),
+                        Text('コメント', style: TextStyle(fontSize: 20)),
                       ],
                     ),
                     Row(
@@ -414,7 +414,7 @@ class _MatchResultState extends State<MatchResult> {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      title: Text('レビューが未記入です。\nレビューをしない場合は「レビューを入力しない」にチェックをつけてください'),
+                                      title: Text('フィードバックが未記入です。\nフィードバックをしない場合は「レビューを入力しない」にチェックをつけてください。'),
                                       actions: <Widget>[
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
@@ -446,12 +446,14 @@ class _MatchResultState extends State<MatchResult> {
                                     VOLLEY_FOREHAND: volley_fore,);
                                 FirestoreMethod.registSkillLevel(skill);
 
-                                CFeedBackCommentSetting feedBack = CFeedBackCommentSetting(
+                                if (!inputWord.text.isEmpty) {
+                                  CFeedBackCommentSetting feedBack = CFeedBackCommentSetting(
                                     OPPONENT_ID : opponent_id,
                                     FEED_BACK : inputWord.text,
-                                    DATE_TIME :  DateTime.now(),
-                                );
-                                FirestoreMethod.registFeedBack(feedBack);
+                                    DATE_TIME :  DateTime.now().toString(),
+                                  );
+                                  FirestoreMethod.registFeedBack(feedBack);
+                                }
                               }
                               Navigator.pop(context);
                             }

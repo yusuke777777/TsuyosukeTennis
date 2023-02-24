@@ -2318,10 +2318,37 @@ class FirestoreMethod {
       await feedBackRef.doc(feedBack.OPPONENT_ID).collection('daily').doc(feedBack.DATE_TIME.toString()).set({
         'OPPONENT_ID': auth.currentUser!.uid,
         'FEEDBACK_COMMENT' : feedBack.FEED_BACK,
-        'DateTime' : feedBack.DATE_TIME.toString(),
+        'DATE_TIME' : feedBack.DATE_TIME.toString(),
       });
     } catch (e) {
       print('スキルレベル登録に失敗しました --- $e');
     }
+  }
+
+  /**
+   * ログインユーザに対してのフィードバックのリストを取得
+   */
+  static Future<List<CFeedBackCommentSetting>> getFeedBack() async {
+    List<CFeedBackCommentSetting> feedBackList =[];
+    try {
+      await feedBackRef.doc(auth.currentUser!.uid).collection('daily').get().then(
+              (QuerySnapshot querySnapshot) =>
+          {
+            querySnapshot.docs.forEach(
+                  (doc) {
+                    feedBackList.add(CFeedBackCommentSetting(
+                        OPPONENT_ID : doc.get('OPPONENT_ID'),
+                        FEED_BACK : doc.get('FEEDBACK_COMMENT'),
+                        DATE_TIME : doc.get('DATE_TIME')));
+              },
+            ),
+          }
+      );
+    } catch (e) {
+
+      print('フィードバックリスト取得に失敗しました --- $e');
+    }
+    return feedBackList;
+
   }
 }

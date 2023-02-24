@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
+import 'package:tsuyosuke_tennis_ap/Page/CheckFeedBack.dart';
 import 'package:tsuyosuke_tennis_ap/Page/QrScanView.dart';
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
@@ -452,9 +453,51 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ],
                         ),
+
+                      ],
+                    ),
+
+                    const SizedBox(
+                      height: 20,
+                    ),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Center(
+                          child: Container(
+                            width: 300,
+                            child: TextButton(
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.lightGreenAccent,
+                                shape: const RoundedRectangleBorder(
+                                  borderRadius:
+                                  BorderRadius.all(Radius.circular(80)),
+                                ),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  'フィードバックを確認',
+                                  style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
+                                ),
+                              ),
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => CheckFeedBack(),
+                                    ));
+                                }
+                            ),
+                          ),
+                        ),
+
+
                       ],
                     ),
                   ]),
+
                 );
               } else {
                 return Text("データが存在しません");
