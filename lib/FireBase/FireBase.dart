@@ -10,6 +10,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
+import 'package:tsuyosuke_tennis_ap/Common/CskilLevelSetting.dart';
 
 import '../Common/CHomePageSetting.dart';
 import '../Common/CSinglesRankModel.dart';
@@ -29,6 +30,7 @@ class FirestoreMethod {
   static final matchRef = _firestoreInstance.collection('matchList');
   static final friendsListRef = _firestoreInstance.collection('friendsList');
   static final matchResultRef = _firestoreInstance.collection('matchResult');
+  static final skilLevelRef = _firestoreInstance.collection('SkilLevel');
 
   //ランキングリスト
   static final manSinglesRankRef =
@@ -2226,4 +2228,27 @@ class FirestoreMethod {
 // //   }
 // //   return todofukenImageList;
 // // }
+
+  /**
+   * スキル評価登録メソッドです
+   * ドキュメントには評価されるユーザのユーザIDが入力されます
+   */
+  static Future<void> registSkillLevel(CskilLevelSetting skill) async {
+    try {
+      await skilLevelRef.doc(skill.OPPONENT_ID).set({
+        'OPPONENT_ID': auth.currentUser!.uid,
+        'STROKE_FOREHAND': skill.STROKE_FOREHAND,
+        'STROKE_BACKHAND' : skill.STROKE_BACKHAND,
+        'VOLLEY_FOREHAND' : skill.VOLLEY_FOREHAND,
+        'VOLLEY_BACKHAND' : skill.VOLLEY_BACKHAND,
+        'SERVE_1ST' : skill.SERVE_1ST,
+        'SERVE_2ND' : skill.SERVE_2ND
+      });
+    } catch (e) {
+      print('スキルレベル登録に失敗しました --- $e');
+    }
+  }
+
+
+
 }

@@ -409,7 +409,7 @@ class _HomePageState extends State<HomePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('1st：', style: TextStyle(fontSize: 20)),
+                            Text('１ｓｔ：', style: TextStyle(fontSize: 20)),
                             Text('2', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
                               itemBuilder: (context, index) =>
@@ -423,7 +423,7 @@ class _HomePageState extends State<HomePage> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text('2nd：', style: TextStyle(fontSize: 20)),
+                            Text('２ｎｄ：', style: TextStyle(fontSize: 20)),
                             Text('2', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
                               itemBuilder: (context, index) =>

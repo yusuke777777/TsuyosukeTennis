@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:tsuyosuke_tennis_ap/Common/CskilLevelSetting.dart';
 import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
 import '../Common/CmatchResult.dart';
 import '../Common/CprofileSetting.dart';
@@ -34,8 +36,18 @@ class _MatchResultState extends State<MatchResult> {
   int myGamePoint = 0;
   int yourGamePoint = 0;
 
+  //評価数を格納
+  late String opponent_id;
+  late double stroke_fore;
+  late double stroke_back;
+  late double volley_fore;
+  late double volley_back;
+  late double serve_1st;
+  late double serve_2nd;
+
   @override
   Widget build(BuildContext context) {
+    opponent_id = widget.yourProfile.USER_ID;
     return MaterialApp(
       home: Scaffold(
           appBar: AppBar(
@@ -171,6 +183,134 @@ class _MatchResultState extends State<MatchResult> {
                         ),
                       ],
                     ),
+
+
+                    //レビュー集計機能
+                    Column(
+                      children: [
+                        Text('------------------------',
+                            style: TextStyle(fontSize: 20)),
+                        Text('レビュー', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,
+                          decoration: TextDecoration.underline,)),
+                        //ストローク
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('ストローク', style: TextStyle(fontSize: 20)),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('フォア：', style: TextStyle(fontSize: 20)),
+                            Text('2', style: TextStyle(fontSize: 20)),
+                            RatingBar.builder(
+                              itemBuilder: (context, index) =>
+                              const Icon(Icons.star,color: Colors.yellow,),
+                              //ratingが星の数
+                              onRatingUpdate: (rating) {
+                                stroke_fore = rating;
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('バック：', style: TextStyle(fontSize: 20)),
+                            Text('2', style: TextStyle(fontSize: 20)),
+                            RatingBar.builder(
+                              itemBuilder: (context, index) =>
+                              const Icon(Icons.star,color: Colors.yellow,),
+                              onRatingUpdate: (rating) {
+                                stroke_back = rating;
+                              },
+                            ),
+                          ],
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        //ボレー
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('ボレー', style: TextStyle(fontSize: 20)),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('フォア：', style: TextStyle(fontSize: 20)),
+                            Text('2', style: TextStyle(fontSize: 20)),
+                            RatingBar.builder(
+                              itemBuilder: (context, index) =>
+                              const Icon(Icons.star,color: Colors.yellow,),
+                              onRatingUpdate: (rating) {
+                                volley_fore = rating;
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('バック：', style: TextStyle(fontSize: 20)),
+                            Text('2', style: TextStyle(fontSize: 20)),
+                            RatingBar.builder(
+                              itemBuilder: (context, index) =>
+                              const Icon(Icons.star,color: Colors.yellow,),
+                              onRatingUpdate: (rating) {
+                                volley_back = rating;
+                              },
+                            ),
+                          ],
+                        ),
+
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        //サーブ
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('サーブ', style: TextStyle(fontSize: 20)),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('１ｓｔ：', style: TextStyle(fontSize: 20)),
+                            Text('2', style: TextStyle(fontSize: 20)),
+                            RatingBar.builder(
+                              itemBuilder: (context, index) =>
+                              const Icon(Icons.star,color: Colors.yellow,),
+                              onRatingUpdate: (rating) {
+                                serve_1st = rating;
+                              },
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text('２ｎｄ：', style: TextStyle(fontSize: 20)),
+                            Text('2', style: TextStyle(fontSize: 20)),
+                            RatingBar.builder(
+                              itemBuilder: (context, index) =>
+                              const Icon(Icons.star,color: Colors.yellow,),
+                              onRatingUpdate: (rating) {
+                                serve_2nd = rating;
+                              },
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+
                     Center(
                       child: Container(
                         width: 300,
@@ -219,6 +359,13 @@ class _MatchResultState extends State<MatchResult> {
                               //対戦結果を登録する
                               FirestoreMethod.makeMatchResult(widget.myProfile,
                                   widget.yourProfile, matchResultList);
+
+                              //星数を登録する
+                              CskilLevelSetting skill = new CskilLevelSetting(
+                                  OPPONENT_ID: opponent_id, SERVE_1ST: serve_1st, SERVE_2ND: serve_2nd, STROKE_BACKHAND: stroke_back, STROKE_FOREHAND: stroke_fore, VOLLEY_BACKHAND: volley_back, VOLLEY_FOREHAND: volley_fore);
+
+                              FirestoreMethod.registSkillLevel(skill);
+
                               Navigator.pop(context);
                             }
                           },
