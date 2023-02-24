@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
 import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
+import '../Common/CFeedBackCommentSetting.dart';
 import '../Common/CmatchResult.dart';
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
@@ -45,6 +46,9 @@ class _MatchResultState extends State<MatchResult> {
   double serve_1st = 0;
   double serve_2nd = 0;
 
+  //フィードバックBOXに入力された値
+  final inputWord = TextEditingController();
+
   bool _flag = false;
 
   void _handleCheckbox(bool? e) {
@@ -56,7 +60,10 @@ class _MatchResultState extends State<MatchResult> {
   @override
   Widget build(BuildContext context) {
     opponent_id = widget.yourProfile.USER_ID;
-    return MaterialApp(
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child:
+      MaterialApp(
       home: Scaffold(
           appBar: AppBar(
               title: Text('対戦結果入力'),
@@ -330,6 +337,32 @@ class _MatchResultState extends State<MatchResult> {
                       height: 20,
                     ),
 
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('フィードバックコメント', style: TextStyle(fontSize: 20)),
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 300,
+                          height: 100,
+                          child: TextFormField(
+                            controller: inputWord,
+                            maxLines: 20,
+                            decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
                     Center(
                       child: Container(
                         width: 300,
@@ -374,18 +407,52 @@ class _MatchResultState extends State<MatchResult> {
                                       ],
                                     );
                                   });
-                            }else{
+                            }
+                            else if (!_flag && serve_1st == 0 && serve_2nd == 0 && stroke_back == 0
+                            && stroke_fore == 0 && volley_back == 0 && volley_fore == 0 && inputWord.text.isEmpty){
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('レビューが未記入です。\nレビューをしない場合は「レビューを入力しない」にチェックをつけてください'),
+                                      actions: <Widget>[
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: Colors.lightGreenAccent,
+                                              onPrimary: Colors.black),
+                                          child: Text('OK'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            }
+                            else{
                               //対戦結果を登録する
                               FirestoreMethod.makeMatchResult(widget.myProfile,
                                   widget.yourProfile, matchResultList);
 
                               //星数を登録する
                               if (!_flag) {
-                                CSkilLevelSetting skill = new CSkilLevelSetting(
-                                    OPPONENT_ID: opponent_id, SERVE_1ST: serve_1st, SERVE_2ND: serve_2nd, STROKE_BACKHAND: stroke_back, STROKE_FOREHAND: stroke_fore, VOLLEY_BACKHAND: volley_back, VOLLEY_FOREHAND: volley_fore);
+                                CSkilLevelSetting skill = CSkilLevelSetting(
+                                    OPPONENT_ID: opponent_id,
+                                    SERVE_1ST: serve_1st,
+                                    SERVE_2ND: serve_2nd,
+                                    STROKE_BACKHAND: stroke_back,
+                                    STROKE_FOREHAND: stroke_fore,
+                                    VOLLEY_BACKHAND: volley_back,
+                                    VOLLEY_FOREHAND: volley_fore,);
                                 FirestoreMethod.registSkillLevel(skill);
-                              }
 
+                                CFeedBackCommentSetting feedBack = CFeedBackCommentSetting(
+                                    OPPONENT_ID : opponent_id,
+                                    FEED_BACK : inputWord.text,
+                                    DATE_TIME :  DateTime.now(),
+                                );
+                                FirestoreMethod.registFeedBack(feedBack);
+                              }
                               Navigator.pop(context);
                             }
                           },
@@ -395,6 +462,7 @@ class _MatchResultState extends State<MatchResult> {
                   ]),
             ),
           )),
+    )
     );
   }
 
@@ -486,5 +554,8 @@ class _MatchResultState extends State<MatchResult> {
     matchResultList.add(CmatchResult(No: No, myGamePoint: 0, yourGamePoint: 0));
     myGamePoint = 0;
     yourGamePoint = 0;
+  }
+  void regi() {
+
   }
 }

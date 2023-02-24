@@ -41,7 +41,10 @@ class _FindPageState extends State<FindPage> {
     //必要コンフィグの初期化
     HeaderConfig().init(context, "検索");
     DrawerConfig().init(context);
-    return Scaffold(
+    return GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+    child:
+      Scaffold(
       appBar: AppBar(
         backgroundColor: HeaderConfig.backGroundColor,
         title: HeaderConfig.appBarText,
@@ -347,6 +350,7 @@ class _FindPageState extends State<FindPage> {
           ),
         ),
       ),
+    )
     );
     // TODO: implement build
   }

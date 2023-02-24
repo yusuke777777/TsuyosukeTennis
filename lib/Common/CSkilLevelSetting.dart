@@ -10,5 +10,11 @@ class CSkilLevelSetting{
   late double VOLLEY_BACKHAND;
   late double VOLLEY_FOREHAND;
 
-  CSkilLevelSetting({this.OPPONENT_ID,required this.SERVE_1ST,required this.SERVE_2ND,required this.STROKE_BACKHAND,required this.STROKE_FOREHAND,required this.VOLLEY_BACKHAND,required this.VOLLEY_FOREHAND});
+  CSkilLevelSetting({this.OPPONENT_ID,
+    required this.SERVE_1ST,
+    required this.SERVE_2ND,
+    required this.STROKE_BACKHAND,
+    required this.STROKE_FOREHAND,
+    required this.VOLLEY_BACKHAND,
+    required this.VOLLEY_FOREHAND});
 }

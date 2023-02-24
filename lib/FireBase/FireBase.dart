@@ -12,6 +12,7 @@ import 'package:intl/intl.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
 
+import '../Common/CFeedBackCommentSetting.dart';
 import '../Common/CHomePageSetting.dart';
 import '../Common/CSinglesRankModel.dart';
 import '../Common/CfriendsList.dart';
@@ -31,6 +32,7 @@ class FirestoreMethod {
   static final friendsListRef = _firestoreInstance.collection('friendsList');
   static final matchResultRef = _firestoreInstance.collection('matchResult');
   static final skilLevelRef = _firestoreInstance.collection('SkilLevel');
+  static final feedBackRef = _firestoreInstance.collection('feedBack');
 
   //ランキングリスト
   static final manSinglesRankRef =
@@ -2244,7 +2246,7 @@ class FirestoreMethod {
         'VOLLEY_FOREHAND' : skill.VOLLEY_FOREHAND,
         'VOLLEY_BACKHAND' : skill.VOLLEY_BACKHAND,
         'SERVE_1ST' : skill.SERVE_1ST,
-        'SERVE_2ND' : skill.SERVE_2ND
+        'SERVE_2ND' : skill.SERVE_2ND,
       });
     } catch (e) {
       print('スキルレベル登録に失敗しました --- $e');
@@ -2304,5 +2306,22 @@ class FirestoreMethod {
     return CSkilLevelSetting(SERVE_1ST: serve_1st_avg,
         SERVE_2ND: serve_2nd_avg, STROKE_BACKHAND: stroke_back_avg, STROKE_FOREHAND: stroke_fore_avg,
         VOLLEY_BACKHAND: volley_back_avg, VOLLEY_FOREHAND: volley_fore_avg);
+  }
+
+  /**
+   * フィードバックコメント登録メソッドです
+   * OPPONENT_ID 評価される側のユーザ
+   * auth.currentUser!.uid 評価している(入力中ユーザ)
+   */
+  static Future<void> registFeedBack(CFeedBackCommentSetting feedBack) async {
+    try {
+      await feedBackRef.doc(feedBack.OPPONENT_ID).collection('daily').doc(feedBack.DATE_TIME.toString()).set({
+        'OPPONENT_ID': auth.currentUser!.uid,
+        'FEEDBACK_COMMENT' : feedBack.FEED_BACK,
+        'DateTime' : feedBack.DATE_TIME.toString(),
+      });
+    } catch (e) {
+      print('スキルレベル登録に失敗しました --- $e');
+    }
   }
 }
