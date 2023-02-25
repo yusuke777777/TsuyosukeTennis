@@ -2335,29 +2335,26 @@ class FirestoreMethod {
    * ログインユーザに対してのフィードバックのリストを取得
    */
   static Future<List<CFeedBackCommentSetting>> getFeedBack() async {
-    List<CFeedBackCommentSetting> feedBackList =[];
+    List<CFeedBackCommentSetting> feedBackList = [];
     try {
-      await feedBackRef.doc(auth.currentUser!.uid).collection('daily').get().then(
-              (QuerySnapshot querySnapshot) =>
-          {
-            querySnapshot.docs.forEach(
-                  (doc) async {
-                     // CHomePageVal home = await getNickNameAndTorokuRank(doc.get('OPPONENT_ID'));
-                    feedBackList.add(CFeedBackCommentSetting(
-                        OPPONENT_ID : doc.get('OPPONENT_ID'),
-                        FEED_BACK : doc.get('FEEDBACK_COMMENT'),
-                        DATE_TIME : doc.get('DATE_TIME'),
-                        // HOME: home
-                    ));
-              },
-            ),
-          }
-      );
+      await feedBackRef
+          .doc(auth.currentUser!.uid)
+          .collection('daily')
+          .get()
+          .then((QuerySnapshot querySnapshot) async => {
+                await Future.forEach<dynamic>(querySnapshot.docs, (doc) async {
+                  CHomePageVal home =
+                      await getNickNameAndTorokuRank(doc.get('OPPONENT_ID'));
+                  feedBackList.add(CFeedBackCommentSetting(
+                      OPPONENT_ID: doc.get('OPPONENT_ID'),
+                      FEED_BACK: doc.get('FEEDBACK_COMMENT'),
+                      DATE_TIME: doc.get('DATE_TIME'),
+                      HOME: home));
+                }),
+              });
     } catch (e) {
-
       print('フィードバックリスト取得に失敗しました --- $e');
     }
     return feedBackList;
-
   }
 }
