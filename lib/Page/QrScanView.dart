@@ -61,7 +61,7 @@ class _QrScanViewState extends State<QrScanView> {
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
       overlay: QrScannerOverlayShape(
-          borderColor: Colors.red,
+          borderColor: Colors.green,
           borderRadius: 10,
           borderLength: 30,
           borderWidth: 10,
@@ -74,14 +74,16 @@ class _QrScanViewState extends State<QrScanView> {
    * QRコードを起動した時の動き
    */
   void _onQRViewCreated(QRViewController controller) {
+    //一度スキャンした相手のQRコードは読み込まない
+    //カメラを再起動することで読取可能
     List matchdList = [];
     setState(() {
       this.controller = controller;
     });
+    //読み込み時の処理
     controller.scannedDataStream.listen((scanData) async {
       //読み込んだ相手のID
       String yourId = scanData.code;
-      print("読取対象:"+yourId);
        if (!matchdList.contains(yourId)) {
         FirestoreMethod.makeMatchByQrScan(yourId);
         ScaffoldMessenger.of(context).showSnackBar(

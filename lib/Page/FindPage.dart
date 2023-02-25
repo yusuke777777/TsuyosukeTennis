@@ -41,7 +41,10 @@ class _FindPageState extends State<FindPage> {
     //必要コンフィグの初期化
     HeaderConfig().init(context, "検索");
     DrawerConfig().init(context);
-    return Scaffold(
+    return GestureDetector(
+        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+    child:
+      Scaffold(
       appBar: AppBar(
         backgroundColor: HeaderConfig.backGroundColor,
         title: HeaderConfig.appBarText,
@@ -323,8 +326,8 @@ class _FindPageState extends State<FindPage> {
                   children: [
                     IconButton(icon: Icon(Icons.search),
                       onPressed: () {
-                        todofuken == "都道府県" || gender =="性別を入力してください"
-                            || torokuRank =="ランクを入力してください" || torokuAge == "年齢を入力してください" ?
+                        todofuken == "都道府県" || gender =="性別"
+                            || torokuRank =="登録ランク" || torokuAge == "年齢" ?
                         showDialog(
                             context: context,
                             builder: (_) => AlertDialog(
@@ -347,6 +350,7 @@ class _FindPageState extends State<FindPage> {
           ),
         ),
       ),
+    )
     );
     // TODO: implement build
   }
