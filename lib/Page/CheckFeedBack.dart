@@ -20,6 +20,7 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
   Future<List<CFeedBackCommentSetting>> feedBackList =
       FirestoreMethod.getFeedBack();
 
+
   @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "フィードバック一覧");
@@ -33,7 +34,7 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
       body: SingleChildScrollView(
         child: FutureBuilder(
           future: feedBackList,
-          builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+          builder: (BuildContext context, AsyncSnapshot<List<CFeedBackCommentSetting>> snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
               return new Align(
                   child: Center(
@@ -43,15 +44,16 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
               return new Text('Error: ${snapshot.error!}');
             } else if (snapshot.hasData) {
               //取得したい値をリスト型で格納
-              List<CFeedBackCommentSetting>? profileList = snapshot.data;
-              //該当するユーザが存在しない時
+              List<CFeedBackCommentSetting>? profileList = snapshot!.data;
+              // print("aaaa" + profileList![0].HOME!.TOROKURANK.toString());
+              //フィードバックが存在しない時
               if (profileList!.isEmpty) {
                 return ListView(
                     shrinkWrap: true,
                     physics: NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(8),
                     children: <Widget>[
-                      Text("対象ユーザーは存在しません"),
+                      Text("フィードバックはありません。対戦してフィードバックをもらおう！"),
                     ]);
               } else {
                 return ListView.builder(
@@ -69,25 +71,25 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
                           child: GestureDetector(
                             //アイコン押下時の挙動
                             onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => HomePage(),
-                                  ));
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => HomePage(),
+                              //     ));
                             },
-                            child: Image.asset('images/upper_body-2.png', fit: BoxFit.cover)
-                            //     profileList == ""
+                            child:Image.asset('images/upper_body-2.png', fit: BoxFit.cover)
+                            // profileList[index].HOME!.PROFILEIMAGE == ""
                             //     ? Image.asset('images/upper_body-2.png', fit: BoxFit.cover)
                             //     : Image.network(
-                            //   profileList,
+                            //   profileList[index].HOME!.PROFILEIMAGE,
                             //   width: 70,
                             //   height: 70,
                             //   fit: BoxFit.fill,
                             // ),
                           ),
                         ),
-                          title:Text(profileList[index].FEED_BACK.toString())
-
+                          title:Text(profileList[index].FEED_BACK.toString()),
+                          subtitle:Text("入力日時：" + profileList[index].DATE_TIME.toString().substring(0, 16))
                       ),
                     );
                   },
@@ -99,7 +101,7 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
                   padding: const EdgeInsets.all(8),
                   children: <Widget>[
                     //TODO このListTileを押せるようにしたい＋アイコン付ける方法調べる
-                    ListTile(title: Text("対象ユーザーは存在しません")),
+                    ListTile(title: Text("フィードバックはありません。対戦してフィードバックをもらおう！")),
                   ]);
             }
           },

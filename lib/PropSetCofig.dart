@@ -36,19 +36,56 @@ class DrawerConfig {
 
   void init(BuildContext context) {
     drawer = Drawer(
-      child: GestureDetector(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const FriendManagerPage(),
+      child: ListView(
+        children: [
+          const SizedBox(
+            height: 20,
+          ),
+          //ボレー
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text('管理一覧', style: TextStyle(fontSize: 30)),
+            ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FriendManagerPage(),
+                ),
+              );
+            },
+            child: Container(
+              child: Text('登録内容変更'),
+              alignment: Alignment.center,
             ),
-          );
-        },
-        child: Container(
-          child: Text('友人管理'),
-          alignment: Alignment.center,
-        ),
+          ),
+
+          const SizedBox(
+            height: 20,
+          ),
+
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const FriendManagerPage(),
+                ),
+              );
+            },
+            child: Container(
+              child: Text('友人管理'),
+              alignment: Alignment.center,
+            ),
+          ),
+
+        ],
       ),
     );
   }

@@ -63,8 +63,6 @@ class _FindResultPageState extends State<FindResultPage> {
             } else if (snapshot.hasData) {
               //取得したい値をリスト型で格納
               List<String>? profileList = snapshot.data;
-              //共通リストタイルの呼出
-              ListTileConfig().init(context, profileList![0], profileList![1], profileList[2], myUserID);
               //該当するユーザが存在しない時
               if (profileList!.isEmpty) {
                 return ListView(
@@ -73,6 +71,8 @@ class _FindResultPageState extends State<FindResultPage> {
                       ListTile(title: Text("対象ユーザーは存在しません")),
                     ]);
               } else {
+                //共通リストタイルの呼出
+                ListTileConfig().init(context, profileList![0], profileList![1], profileList[2], myUserID);
                 return ListView.builder(
                   itemCount: 1,
                   // padding: const EdgeInsets.all(8),

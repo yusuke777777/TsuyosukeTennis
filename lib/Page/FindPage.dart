@@ -326,8 +326,8 @@ class _FindPageState extends State<FindPage> {
                   children: [
                     IconButton(icon: Icon(Icons.search),
                       onPressed: () {
-                        todofuken == "都道府県" || gender =="性別を入力してください"
-                            || torokuRank =="ランクを入力してください" || torokuAge == "年齢を入力してください" ?
+                        todofuken == "都道府県" || gender =="性別"
+                            || torokuRank =="登録ランク" || torokuAge == "年齢" ?
                         showDialog(
                             context: context,
                             builder: (_) => AlertDialog(

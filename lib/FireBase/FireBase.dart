@@ -191,7 +191,7 @@ class FirestoreMethod {
   static Future<List<String>> getNickNameAndProfile(uid) async {
     List<String> stringList = [];
     final snapShot =
-        await FirebaseFirestore.instance.collection('myProfile').doc(uid).get();
+        await profileRef.doc(uid).get();
 
     if (snapShot.data() == null) {
       return stringList;
@@ -575,6 +575,7 @@ class FirestoreMethod {
     List<String> nameList = [];
     List<String> profileList = [];
     List<String> idList = [];
+    final snapShot_self = await profileRef.where('USER_ID', isEqualTo: auth.currentUser!.uid).get();
 
     //コレクション「myProfile」から該当データを絞る
     final snapShot = await FirebaseFirestore.instance
@@ -596,21 +597,25 @@ class FirestoreMethod {
       await Future.forEach<dynamic>(snapShot_sub.docs, (doc) async {
         if (doc.data()['TODOFUKEN'] == todofuken && count == 0) {
           if (shichoson == '') {
-            nameList.add(document.get('NICK_NAME'));
-            profileList.add(document.get('PROFILE_IMAGE'));
-            idList.add(document.get('USER_ID'));
-            resultList.add(nameList);
-            resultList.add(profileList);
-            resultList.add(idList);
-            count++;
+            if (document.get('USER_ID') != snapShot_self.docs.first.get('USER_ID')) {
+              nameList.add(document.get('NICK_NAME'));
+              profileList.add(document.get('PROFILE_IMAGE'));
+              idList.add(document.get('USER_ID'));
+              resultList.add(nameList);
+              resultList.add(profileList);
+              resultList.add(idList);
+              count++;
+            }
           } else if (doc.data()['SHICHOSON'] == shichoson && count == 0) {
-            nameList.add(document.get('NICK_NAME'));
-            profileList.add(document.get('PROFILE_IMAGE'));
-            idList.add(document.get('USER_ID'));
-            resultList.add(nameList);
-            resultList.add(profileList);
-            resultList.add(idList);
-            count++;
+            if (document.get('USER_ID') != snapShot_self.docs.first.get('USER_ID')) {
+              nameList.add(document.get('NICK_NAME'));
+              profileList.add(document.get('PROFILE_IMAGE'));
+              idList.add(document.get('USER_ID'));
+              resultList.add(nameList);
+              resultList.add(profileList);
+              resultList.add(idList);
+              count++;
+            }
           }
         }
       });
@@ -624,11 +629,12 @@ class FirestoreMethod {
   static Future<List<String>> getUserByMyUserId(String myUserID) async {
     List<String> resultList = [];
 
+    final snapShot_self = await profileRef.where('USER_ID', isEqualTo: auth.currentUser!.uid).get();
+    if (myUserID == snapShot_self.docs.first.get('MY_USER_ID')){
+      return resultList;
+    }
     //コレクション「myProfile」から該当データを絞る
-    final snapShot = await FirebaseFirestore.instance
-        .collection('myProfile')
-        .where('MY_USER_ID', isEqualTo: myUserID)
-        .get();
+    final snapShot = await profileRef.where('MY_USER_ID', isEqualTo: myUserID).get();
 
     if (snapShot.docs.first == null) {
       return resultList;
@@ -2335,11 +2341,14 @@ class FirestoreMethod {
               (QuerySnapshot querySnapshot) =>
           {
             querySnapshot.docs.forEach(
-                  (doc) {
+                  (doc) async {
+                     // CHomePageVal home = await getNickNameAndTorokuRank(doc.get('OPPONENT_ID'));
                     feedBackList.add(CFeedBackCommentSetting(
                         OPPONENT_ID : doc.get('OPPONENT_ID'),
                         FEED_BACK : doc.get('FEEDBACK_COMMENT'),
-                        DATE_TIME : doc.get('DATE_TIME')));
+                        DATE_TIME : doc.get('DATE_TIME'),
+                        // HOME: home
+                    ));
               },
             ),
           }
