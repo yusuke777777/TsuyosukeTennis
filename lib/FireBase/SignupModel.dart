@@ -228,4 +228,11 @@ class SignUpModel extends ChangeNotifier {
     }
   }
 
+  Future<void> sendEmailVerification() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    if (user != null && !user.emailVerified) {
+      await user.sendEmailVerification();
+    }
+  }
+
 }
