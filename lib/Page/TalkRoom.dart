@@ -9,6 +9,8 @@ import '../Common/CprofileSetting.dart';
 import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/NotificationMethod.dart';
+import '../UnderMenuMove.dart';
+import 'TalkList.dart';
 
 class TalkRoom extends StatefulWidget {
   final TalkRoomModel room;
@@ -39,13 +41,15 @@ class _TalkRoomState extends State<TalkRoom> {
             backgroundColor: Color(0xFF3CB371),
             title: Text(widget.room.user.NICK_NAME),
             leading: IconButton(
-              icon: const Icon(
-                Icons.reply,
-                color: Colors.black,
-                size: 40.0,
-              ),
-              onPressed: () => {Navigator.pop(context)},
-            )),
+                icon: const Icon(
+                  Icons.reply,
+                  color: Colors.black,
+                  size: 40.0,
+                ),
+                onPressed: () => {
+                      Navigator.push(context,
+                          MaterialPageRoute(builder: (context) => UnderMenuMove.make(3)))
+                    })),
         body: Stack(
           children: [
             Padding(
@@ -239,7 +243,8 @@ class _TalkRoomState extends State<TalkRoom> {
                             icon: Icon(Icons.send),
                             onPressed: () async {
                               print("送信");
-                              CprofileSetting myProfile = await FirestoreMethod.getProfile();
+                              CprofileSetting myProfile =
+                                  await FirestoreMethod.getProfile();
                               if (controller.text.isNotEmpty) {
                                 await FirestoreMethod.sendMessage(
                                     widget.room.roomId, controller.text);
@@ -252,8 +257,8 @@ class _TalkRoomState extends State<TalkRoom> {
                                   //トークンIDが登録されていない場合
                                 } else {
                                   //トークンIDが登録されている場合
-                                  await NotificationMethod.sendMessage(tokenId!,
-                                      message, myProfile.NICK_NAME);
+                                  await NotificationMethod.sendMessage(
+                                      tokenId!, message, myProfile.NICK_NAME);
                                 }
                               }
                             },

@@ -22,7 +22,9 @@ Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 class UnderMenuMove extends StatefulWidget {
-  const UnderMenuMove({Key? key}) : super(key: key);
+  // const UnderMenuMove({Key? key}) : super(key: key);
+   int selectedIndex = 0;
+  UnderMenuMove.make(this.selectedIndex);
 
   @override
   State<UnderMenuMove> createState() => _UnderMenuMoveState();
@@ -35,9 +37,8 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     MatchList(),
     TalkList(),
     RankList(),
-
   ];
-  int _selectedIndex = 0;
+  late int _selectedIndex;
 
   void _onItemTapped(int index) {
     setState(() {
@@ -109,6 +110,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
   }
   @override
   void initState() {
+    _selectedIndex = widget.selectedIndex;
     requestAndRegisterNotification();
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       CPushNotification notification = CPushNotification(

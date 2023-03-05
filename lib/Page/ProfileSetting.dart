@@ -150,7 +150,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => UnderMenuMove(),
+                          builder: (context) => UnderMenuMove.make(0),
                         ),
                       )
                     },
@@ -566,7 +566,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => UnderMenuMove(),
+                                  builder: (context) => UnderMenuMove.make(0),
                                 ),
                               );
                             } else {

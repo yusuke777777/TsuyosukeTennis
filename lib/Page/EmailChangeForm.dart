@@ -101,7 +101,7 @@ class _EmailChangeFormState extends State<EmailChangeForm> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const UnderMenuMove(),
+                                    builder: (context) =>  UnderMenuMove.make(0),
                                   ));
                             } catch (e) {
                               ScaffoldMessenger.of(context).showSnackBar(
@@ -127,7 +127,7 @@ class _EmailChangeFormState extends State<EmailChangeForm> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const UnderMenuMove(),
+                                  builder: (context) => UnderMenuMove.make(0),
                                 ));
                       },
                       child: Text('ホームへ戻る'),

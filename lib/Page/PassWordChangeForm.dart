@@ -122,7 +122,7 @@ class _PassWordChangeFormState extends State<PassWordChangeForm> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (
-                                          context) => const UnderMenuMove(),
+                                          context) =>  UnderMenuMove.make(0),
                                     ));
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(content: Text('パスワードを変更しました')),
@@ -146,7 +146,7 @@ class _PassWordChangeFormState extends State<PassWordChangeForm> {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => const UnderMenuMove(),
+                                  builder: (context) => UnderMenuMove.make(0),
                                 ));
                       },
                       child: Text('ホームへ戻る'),
