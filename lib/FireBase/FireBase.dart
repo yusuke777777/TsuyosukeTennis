@@ -71,7 +71,7 @@ class FirestoreMethod {
         'GENDER': profile.GENDER,
         'COMENT': profile.COMENT,
         'koushinYmd': today,
-        'MY_USER_ID' : profile.MY_USER_ID
+        'MY_USER_ID': profile.MY_USER_ID
       });
     } catch (e) {
       print('ユーザー登録に失敗しました --- $e');
@@ -140,11 +140,12 @@ class FirestoreMethod {
     CSkilLevelSetting skill = await getAvgSkillLevel();
 
     CHomePageVal homePageval = CHomePageVal(
-        NAME: name,
-        MYUSERID: myid,
-        TOROKURANK: rank,
-        PROFILEIMAGE: image,
-        SKILL: skill,);
+      NAME: name,
+      MYUSERID: myid,
+      TOROKURANK: rank,
+      PROFILEIMAGE: image,
+      SKILL: skill,
+    );
 
     late String manSingleRank;
     if (rank == "初級") {
@@ -162,7 +163,7 @@ class FirestoreMethod {
         .doc(id)
         .get();
 
-    if(!snapShot_msr.exists){
+    if (!snapShot_msr.exists) {
       return homePageval;
     }
 
@@ -170,15 +171,18 @@ class FirestoreMethod {
 
     homePageval.SRANK = rank_no;
 
-    final snapShot_matchResult =
-    await FirebaseFirestore.instance.collection('matchResult').doc(uid).get();
+    final snapShot_matchResult = await FirebaseFirestore.instance
+        .collection('matchResult')
+        .doc(uid)
+        .get();
 
     //初級の勝率
     homePageval.BEGINWINRATE = snapShot_matchResult.data()!['SHOKYU_WIN_RATE'];
     //中級の勝率
     homePageval.MEDIUMWINRATE = snapShot_matchResult.data()!['CHUKYU_WIN_RATE'];
     //上級の勝率
-    homePageval.ADVANCEDWINRATE = snapShot_matchResult.data()!['JYOKYU_WIN_RATE'];
+    homePageval.ADVANCEDWINRATE =
+        snapShot_matchResult.data()!['JYOKYU_WIN_RATE'];
 
     return homePageval;
   }
@@ -190,8 +194,7 @@ class FirestoreMethod {
    */
   static Future<List<String>> getNickNameAndProfile(uid) async {
     List<String> stringList = [];
-    final snapShot =
-        await profileRef.doc(uid).get();
+    final snapShot = await profileRef.doc(uid).get();
 
     if (snapShot.data() == null) {
       return stringList;
@@ -395,11 +398,11 @@ class FirestoreMethod {
         });
   }
 
-
   /**
    * 相手とのトークルームが既に存在するかどうかチェックするメソッドです
    */
-  static Future<bool> checkRoom(String myUserId, String yourUserID, bool roomCheck) async {
+  static Future<bool> checkRoom(
+      String myUserId, String yourUserID, bool roomCheck) async {
     final snapshot = await roomRef.get();
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
       if (doc.data()['joined_user_ids'].contains(myUserId)) {
@@ -424,14 +427,29 @@ class FirestoreMethod {
       String myUserId, String yourUserId) async {
     final snapshot = await roomRef.get();
     late TalkRoomModel room;
+    late int count;
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
       if (doc.data()['joined_user_ids'].contains(myUserId) &&
           doc.data()['joined_user_ids'].contains(yourUserId)) {
         CprofileSetting yourProfile = await getYourProfile(yourUserId);
+        try {
+          count = await FirestoreMethod().getUnreadMessageCount(doc.id);
+        } catch (e) {
+          print("未読メッセージ数を正しく取得できませんでした");
+        }
         room = TalkRoomModel(
             roomId: doc.id,
             user: yourProfile,
-            lastMessage: doc.data()['last_message'] ?? '');
+            lastMessage: doc.data()['last_message'] ?? '',
+            unReadCnt: count);
+        try{
+          roomRef
+              .doc(doc.id)
+              .update({'unReadCnt': count});
+        }catch(e){
+          print("未読メッセージ数の更新に失敗しました");
+          print(e);
+        }
       }
     });
     return room;
@@ -440,6 +458,7 @@ class FirestoreMethod {
   static Future<List<TalkRoomModel>> getRooms(String myUserId) async {
     final snapshot = await roomRef.get();
     List<TalkRoomModel> roomList = [];
+    late int count;
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
       if (doc.data()['joined_user_ids'].contains(myUserId)) {
         late String yourUserId;
@@ -450,14 +469,29 @@ class FirestoreMethod {
           }
         });
         try {
+          count = await FirestoreMethod().getUnreadMessageCount(doc.id);
+          print("count" + count.toString());
+        } catch (e) {
+          print("未読メッセージ数を正しく取得できませんでした");
+        }
+        try {
           CprofileSetting yourProfile = await getYourProfile(yourUserId);
           TalkRoomModel room = await TalkRoomModel(
               roomId: doc.id,
               user: yourProfile,
-              lastMessage: doc.data()['last_message'] ?? '');
+              lastMessage: doc.data()['last_message'] ?? '',
+              unReadCnt: count);
           roomList.add(room);
         } catch (e) {
           print("トークルームの取得に失敗しました");
+          print(e);
+        }
+        try{
+          roomRef
+              .doc(doc.id)
+              .update({'unReadCnt': count});
+        }catch(e){
+          print("未読メッセージ数の更新に失敗しました");
           print(e);
         }
       }
@@ -469,14 +503,30 @@ class FirestoreMethod {
       CprofileSetting yourProfile) async {
     final snapshot = await roomRef.get();
     late TalkRoomModel room;
+    late int count;
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
       late String yourUserId;
       if (doc.data()['joined_user_ids'].contains(RECIPIENT_ID)) {
         if (doc.data()['joined_user_ids'].contains(SENDER_ID)) {
+          try {
+            count = await FirestoreMethod().getUnreadMessageCount(doc.id);
+          } catch (e) {
+            print("未読メッセージ数を正しく取得できませんでした");
+            print(e);
+          }
           room = TalkRoomModel(
               roomId: doc.id,
               user: yourProfile,
-              lastMessage: doc.data()['last_message'] ?? '');
+              lastMessage: doc.data()['last_message'] ?? '',
+              unReadCnt: count);
+          try{
+            roomRef
+                .doc(doc.id)
+                .update({'unReadCnt': count});
+          }catch(e){
+            print("未読メッセージ数の更新に失敗しました");
+            print(e);
+          }
         }
       }
     });
@@ -503,11 +553,46 @@ class FirestoreMethod {
           isMe: isMe,
           sendTime: doc.data()['send_time'],
           matchStatusFlg: doc.data()['matchStatusFlg'],
-          friendStatusFlg: doc.data()['friendStatusFlg']);
+          friendStatusFlg: doc.data()['friendStatusFlg'],
+          isRead: true);
       messageList.add(message);
+      if(isMe == false){
+        try{
+          roomRef
+              .doc(roomId)
+              .collection('message')
+              .doc(doc.id)
+              .update({'isRead': true});
+        }catch(e){
+          print("未読メッセージの更新に失敗しました");
+          print(e);
+        }
+      }
     });
     messageList.sort((a, b) => b.sendTime.compareTo(a.sendTime));
+
     return messageList;
+  }
+
+  Future<int> getUnreadMessageCount(String roomId) async {
+    final messageRef = roomRef.doc(roomId).collection('message');
+    final snapshot = await messageRef.get();
+    int count = 0;
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      bool isMe;
+      if (doc.data()['sender_id'] == auth.currentUser!.uid) {
+        isMe = true;
+      } else {
+        isMe = false;
+      }
+      print(isMe);
+      print(doc.data()['sender_id']);
+      print(doc.data()['isRead']);
+      if (isMe == false && doc.data()['isRead'] == false) {
+        count++;
+      }
+    });
+    return count;
   }
 
   static Future<void> sendMessage(String roomId, String message) async {
@@ -518,7 +603,8 @@ class FirestoreMethod {
       'sender_id': myUid,
       'send_time': Timestamp.now(),
       'matchStatusFlg': "0",
-      'friendStatusFlg': "0"
+      'friendStatusFlg': "0",
+      'isRead': false
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
@@ -538,7 +624,8 @@ class FirestoreMethod {
       'sender_id': myUid,
       'send_time': Timestamp.now(),
       'matchStatusFlg': "1",
-      'friendStatusFlg': "0"
+      'friendStatusFlg': "0",
+      'isRead': false
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
@@ -553,7 +640,8 @@ class FirestoreMethod {
       'sender_id': myUid,
       'send_time': Timestamp.now(),
       'matchStatusFlg': "0",
-      'friendStatusFlg': "1"
+      'friendStatusFlg': "1",
+      'isRead': false
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
@@ -575,7 +663,9 @@ class FirestoreMethod {
     List<String> nameList = [];
     List<String> profileList = [];
     List<String> idList = [];
-    final snapShot_self = await profileRef.where('USER_ID', isEqualTo: auth.currentUser!.uid).get();
+    final snapShot_self = await profileRef
+        .where('USER_ID', isEqualTo: auth.currentUser!.uid)
+        .get();
 
     //コレクション「myProfile」から該当データを絞る
     final snapShot = await FirebaseFirestore.instance
@@ -597,7 +687,8 @@ class FirestoreMethod {
       await Future.forEach<dynamic>(snapShot_sub.docs, (doc) async {
         if (doc.data()['TODOFUKEN'] == todofuken && count == 0) {
           if (shichoson == '') {
-            if (document.get('USER_ID') != snapShot_self.docs.first.get('USER_ID')) {
+            if (document.get('USER_ID') !=
+                snapShot_self.docs.first.get('USER_ID')) {
               nameList.add(document.get('NICK_NAME'));
               profileList.add(document.get('PROFILE_IMAGE'));
               idList.add(document.get('USER_ID'));
@@ -607,7 +698,8 @@ class FirestoreMethod {
               count++;
             }
           } else if (doc.data()['SHICHOSON'] == shichoson && count == 0) {
-            if (document.get('USER_ID') != snapShot_self.docs.first.get('USER_ID')) {
+            if (document.get('USER_ID') !=
+                snapShot_self.docs.first.get('USER_ID')) {
               nameList.add(document.get('NICK_NAME'));
               profileList.add(document.get('PROFILE_IMAGE'));
               idList.add(document.get('USER_ID'));
@@ -629,12 +721,15 @@ class FirestoreMethod {
   static Future<List<String>> getUserByMyUserId(String myUserID) async {
     List<String> resultList = [];
 
-    final snapShot_self = await profileRef.where('USER_ID', isEqualTo: auth.currentUser!.uid).get();
-    if (myUserID == snapShot_self.docs.first.get('MY_USER_ID')){
+    final snapShot_self = await profileRef
+        .where('USER_ID', isEqualTo: auth.currentUser!.uid)
+        .get();
+    if (myUserID == snapShot_self.docs.first.get('MY_USER_ID')) {
       return resultList;
     }
     //コレクション「myProfile」から該当データを絞る
-    final snapShot = await profileRef.where('MY_USER_ID', isEqualTo: myUserID).get();
+    final snapShot =
+        await profileRef.where('MY_USER_ID', isEqualTo: myUserID).get();
 
     if (snapShot.docs.first == null) {
       return resultList;
@@ -1220,9 +1315,9 @@ class FirestoreMethod {
 
     //初対戦フラグ取得メソッド結果を取得(メソッドは作る必要あり)
     MY_NEW_MATCH_FLG =
-    await individualNewFlgMatch(myProfile.USER_ID, yourProfile.USER_ID);
+        await individualNewFlgMatch(myProfile.USER_ID, yourProfile.USER_ID);
     YOUR_NEW_MATCH_FLG =
-    await individualNewFlgMatch(yourProfile.USER_ID, myProfile.USER_ID);
+        await individualNewFlgMatch(yourProfile.USER_ID, myProfile.USER_ID);
     MY_LOSE_SU = MY_MATCH_SU - MY_WIN_SU;
     if (MY_NEW_MATCH_FLG == "1") {
       MY_WIN_SU_SUM = 0 + MY_WIN_SU;
@@ -1315,7 +1410,6 @@ class FirestoreMethod {
       MY_ALL_CHUKYU_TS_POINT_CUR = 0;
       MY_ALL_JYOKYU_TS_POINT_CUR = 0;
 
-
       MY_SHOKYU_WIN_SU_CUR = 0;
       MY_SHOKYU_LOSE_SU_CUR = 0;
       MY_SHOKYU_MATCH_SU_CUR = 0;
@@ -1406,7 +1500,6 @@ class FirestoreMethod {
       YOUR_ALL_CHUKYU_TS_POINT_CUR = 0;
       YOUR_ALL_JYOKYU_TS_POINT_CUR = 0;
 
-
       YOUR_SHOKYU_WIN_SU_CUR = 0;
       YOUR_SHOKYU_LOSE_SU_CUR = 0;
       YOUR_SHOKYU_MATCH_SU_CUR = 0;
@@ -1448,7 +1541,7 @@ class FirestoreMethod {
     } else {
       try {
         final yourSnapShot =
-        await matchResultRef.doc(yourProfile.USER_ID).get();
+            await matchResultRef.doc(yourProfile.USER_ID).get();
         //現在のTSPポイントの取得
         YOUR_TS_POINT_CUR = yourSnapShot.data()!['TS_POINT'];
         //現在の生涯TSPポイントの取得
@@ -1464,13 +1557,13 @@ class FirestoreMethod {
 
         //現在の生涯初級TSPポイントの取得
         YOUR_ALL_SHOKYU_TS_POINT_CUR =
-        yourSnapShot.data()!['ALL_SHOKYU_TS_POINT'];
+            yourSnapShot.data()!['ALL_SHOKYU_TS_POINT'];
         //現在の生涯中級TSPポイントの取得
         YOUR_ALL_CHUKYU_TS_POINT_CUR =
-        yourSnapShot.data()!['ALL_CHUKYU_TS_POINT'];
+            yourSnapShot.data()!['ALL_CHUKYU_TS_POINT'];
         //現在の生涯上級TSPポイントの取得
         YOUR_ALL_JYOKYU_TS_POINT_CUR =
-        yourSnapShot.data()!['ALL_JYOKYU_TS_POINT'];
+            yourSnapShot.data()!['ALL_JYOKYU_TS_POINT'];
 
         //現在の勝率・勝利数・試合数などを取得
         YOUR_SHOKYU_WIN_SU_CUR = yourSnapShot.data()!['SHOKYU_WIN_SU'];
@@ -1494,8 +1587,9 @@ class FirestoreMethod {
       MY_TS_POINT = MY_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
       MY_ALL_TS_POINT = MY_ALL_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
       try {
-        matchResultRef.doc(myProfile.USER_ID).update(
-            {'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
+        matchResultRef
+            .doc(myProfile.USER_ID)
+            .update({'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
       } catch (e) {
         print('TSPポイントの付与に失敗しました --- $e');
       }
@@ -1504,9 +1598,7 @@ class FirestoreMethod {
       switch (myProfile.TOROKU_RANK) {
         case '初級':
           try {
-            matchResultRef
-                .doc(myProfile.USER_ID)
-                .update({
+            matchResultRef.doc(myProfile.USER_ID).update({
               'SHOKYU_TS_POINT': MY_TS_POINT,
               'ALL_SHOKYU_TS_POINT': MY_ALL_TS_POINT
             });
@@ -1516,9 +1608,7 @@ class FirestoreMethod {
           break;
         case '中級':
           try {
-            matchResultRef
-                .doc(myProfile.USER_ID)
-                .update({
+            matchResultRef.doc(myProfile.USER_ID).update({
               'CHUKYU_TS_POINT': MY_TS_POINT,
               'ALL_CHUKYU_TS_POINT': MY_ALL_TS_POINT
             });
@@ -1528,9 +1618,7 @@ class FirestoreMethod {
           break;
         case '上級':
           try {
-            matchResultRef
-                .doc(myProfile.USER_ID)
-                .update({
+            matchResultRef.doc(myProfile.USER_ID).update({
               'JYOKYU_TS_POINT': MY_TS_POINT,
               'ALL_JYOKYU_TS_POINT': MY_ALL_TS_POINT
             });
@@ -1546,13 +1634,9 @@ class FirestoreMethod {
           try {
             MY_TS_POINT = MY_SHOKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
             MY_ALL_TS_POINT = MY_ALL_SHOKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
-            matchResultRef
-                .doc(myProfile.USER_ID)
-                .update(
+            matchResultRef.doc(myProfile.USER_ID).update(
                 {'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
-            matchResultRef
-                .doc(myProfile.USER_ID)
-                .update({
+            matchResultRef.doc(myProfile.USER_ID).update({
               'SHOKYU_TS_POINT': MY_TS_POINT,
               'ALL_SHOKYU_TS_POINT': MY_ALL_TS_POINT
             });
@@ -1567,13 +1651,9 @@ class FirestoreMethod {
           try {
             MY_TS_POINT = MY_CHUKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
             MY_ALL_TS_POINT = MY_ALL_CHUKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
-            matchResultRef
-                .doc(myProfile.USER_ID)
-                .update(
+            matchResultRef.doc(myProfile.USER_ID).update(
                 {'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
-            matchResultRef
-                .doc(myProfile.USER_ID)
-                .update({
+            matchResultRef.doc(myProfile.USER_ID).update({
               'CHUKYU_TS_POINT': MY_TS_POINT,
               'ALL_CHUKYU_TS_POINT': MY_ALL_TS_POINT
             });
@@ -1588,13 +1668,9 @@ class FirestoreMethod {
           try {
             MY_TS_POINT = MY_JYOKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
             MY_ALL_TS_POINT = MY_ALL_JYOKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
-            matchResultRef
-                .doc(myProfile.USER_ID)
-                .update(
+            matchResultRef.doc(myProfile.USER_ID).update(
                 {'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
-            matchResultRef
-                .doc(myProfile.USER_ID)
-                .update({
+            matchResultRef.doc(myProfile.USER_ID).update({
               'JYOKYU_TS_POINT': MY_TS_POINT,
               'ALL_JYOKYU_TS_POINT': MY_ALL_TS_POINT
             });
@@ -1622,9 +1698,7 @@ class FirestoreMethod {
       switch (yourProfile.TOROKU_RANK) {
         case '初級':
           try {
-            matchResultRef
-                .doc(yourProfile.USER_ID)
-                .update({
+            matchResultRef.doc(yourProfile.USER_ID).update({
               'SHOKYU_TS_POINT': YOUR_TS_POINT,
               'ALL_SHOKYU_TS_POINT': YOUR_ALL_TS_POINT
             });
@@ -1634,9 +1708,7 @@ class FirestoreMethod {
           break;
         case '中級':
           try {
-            matchResultRef
-                .doc(yourProfile.USER_ID)
-                .update({
+            matchResultRef.doc(yourProfile.USER_ID).update({
               'CHUKYU_TS_POINT': YOUR_TS_POINT,
               'ALL_CHUKYU_TS_POINT': YOUR_ALL_TS_POINT
             });
@@ -1646,9 +1718,7 @@ class FirestoreMethod {
           break;
         case '上級':
           try {
-            matchResultRef
-                .doc(yourProfile.USER_ID)
-                .update({
+            matchResultRef.doc(yourProfile.USER_ID).update({
               'JYOKYU_TS_POINT': YOUR_TS_POINT,
               'ALL_JYOKYU_TS_POINT': YOUR_ALL_TS_POINT
             });
@@ -1663,14 +1733,11 @@ class FirestoreMethod {
         case '初級':
           try {
             YOUR_TS_POINT = YOUR_SHOKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
-            YOUR_ALL_TS_POINT = YOUR_ALL_SHOKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
-            matchResultRef
-                .doc(yourProfile.USER_ID)
-                .update(
+            YOUR_ALL_TS_POINT =
+                YOUR_ALL_SHOKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
+            matchResultRef.doc(yourProfile.USER_ID).update(
                 {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
-            matchResultRef
-                .doc(yourProfile.USER_ID)
-                .update({
+            matchResultRef.doc(yourProfile.USER_ID).update({
               'SHOKYU_TS_POINT': YOUR_TS_POINT,
               'ALL_SHOKYU_TS_POINT': YOUR_ALL_TS_POINT
             });
@@ -1684,14 +1751,11 @@ class FirestoreMethod {
         case '中級':
           try {
             YOUR_TS_POINT = YOUR_CHUKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
-            YOUR_ALL_TS_POINT = YOUR_ALL_CHUKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
-            matchResultRef
-                .doc(yourProfile.USER_ID)
-                .update(
+            YOUR_ALL_TS_POINT =
+                YOUR_ALL_CHUKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
+            matchResultRef.doc(yourProfile.USER_ID).update(
                 {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
-            matchResultRef
-                .doc(yourProfile.USER_ID)
-                .update({
+            matchResultRef.doc(yourProfile.USER_ID).update({
               'CHUKYU_TS_POINT': YOUR_TS_POINT,
               'ALL_CHUKYU_TS_POINT': YOUR_ALL_TS_POINT
             });
@@ -1705,14 +1769,11 @@ class FirestoreMethod {
         case '上級':
           try {
             YOUR_TS_POINT = YOUR_JYOKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
-            YOUR_ALL_TS_POINT = YOUR_ALL_JYOKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
-            matchResultRef
-                .doc(yourProfile.USER_ID)
-                .update(
+            YOUR_ALL_TS_POINT =
+                YOUR_ALL_JYOKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
+            matchResultRef.doc(yourProfile.USER_ID).update(
                 {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
-            matchResultRef
-                .doc(yourProfile.USER_ID)
-                .update({
+            matchResultRef.doc(yourProfile.USER_ID).update({
               'JYOKYU_TS_POINT': YOUR_TS_POINT,
               'ALL_JYOKYU_TS_POINT': YOUR_ALL_TS_POINT
             });
@@ -2246,13 +2307,17 @@ class FirestoreMethod {
    */
   static Future<void> registSkillLevel(CSkilLevelSetting skill) async {
     try {
-      await skilLevelRef.doc(skill.OPPONENT_ID).collection('opponent').doc(auth.currentUser!.uid).set({
+      await skilLevelRef
+          .doc(skill.OPPONENT_ID)
+          .collection('opponent')
+          .doc(auth.currentUser!.uid)
+          .set({
         'STROKE_FOREHAND': skill.STROKE_FOREHAND,
-        'STROKE_BACKHAND' : skill.STROKE_BACKHAND,
-        'VOLLEY_FOREHAND' : skill.VOLLEY_FOREHAND,
-        'VOLLEY_BACKHAND' : skill.VOLLEY_BACKHAND,
-        'SERVE_1ST' : skill.SERVE_1ST,
-        'SERVE_2ND' : skill.SERVE_2ND,
+        'STROKE_BACKHAND': skill.STROKE_BACKHAND,
+        'VOLLEY_FOREHAND': skill.VOLLEY_FOREHAND,
+        'VOLLEY_BACKHAND': skill.VOLLEY_BACKHAND,
+        'SERVE_1ST': skill.SERVE_1ST,
+        'SERVE_2ND': skill.SERVE_2ND,
       });
     } catch (e) {
       print('スキルレベル登録に失敗しました --- $e');
@@ -2279,39 +2344,46 @@ class FirestoreMethod {
     double serve_2nd_avg = 0;
     double count = 0;
     try {
-      await FirebaseFirestore.instance.collection('SkilLevel').doc(
-          auth.currentUser!.uid).collection('opponent').get().then(
-            (QuerySnapshot querySnapshot) =>
-        {
-          querySnapshot.docs.forEach(
+      await FirebaseFirestore.instance
+          .collection('SkilLevel')
+          .doc(auth.currentUser!.uid)
+          .collection('opponent')
+          .get()
+          .then(
+            (QuerySnapshot querySnapshot) => {
+              querySnapshot.docs.forEach(
                 (doc) {
-              count ++;
-              stroke_fore_total =
-                  stroke_fore_total + doc.get('STROKE_FOREHAND');
-              stroke_back_total =
-                  stroke_back_total + doc.get('STROKE_BACKHAND');
-              volley_fore_total =
-                  volley_fore_total + doc.get('VOLLEY_FOREHAND');
-              volley_back_total =
-                  volley_back_total + doc.get('VOLLEY_BACKHAND');
-              serve_1st_total = serve_1st_total + doc.get('SERVE_1ST');
-              serve_2nd_total = serve_2nd_total + doc.get('SERVE_2ND');
+                  count++;
+                  stroke_fore_total =
+                      stroke_fore_total + doc.get('STROKE_FOREHAND');
+                  stroke_back_total =
+                      stroke_back_total + doc.get('STROKE_BACKHAND');
+                  volley_fore_total =
+                      volley_fore_total + doc.get('VOLLEY_FOREHAND');
+                  volley_back_total =
+                      volley_back_total + doc.get('VOLLEY_BACKHAND');
+                  serve_1st_total = serve_1st_total + doc.get('SERVE_1ST');
+                  serve_2nd_total = serve_2nd_total + doc.get('SERVE_2ND');
                 },
-          ),
-        },
-      );
-      stroke_fore_avg = stroke_fore_total/count;
-      stroke_back_avg = stroke_back_total/count;
-      volley_fore_avg = volley_fore_total/count;
-      volley_back_avg = volley_back_total/count;
-      serve_1st_avg = serve_1st_total/count;
-      serve_2nd_avg = serve_2nd_total/count;
-    } catch(e){
+              ),
+            },
+          );
+      stroke_fore_avg = stroke_fore_total / count;
+      stroke_back_avg = stroke_back_total / count;
+      volley_fore_avg = volley_fore_total / count;
+      volley_back_avg = volley_back_total / count;
+      serve_1st_avg = serve_1st_total / count;
+      serve_2nd_avg = serve_2nd_total / count;
+    } catch (e) {
       print(e);
     }
-    return CSkilLevelSetting(SERVE_1ST: serve_1st_avg,
-        SERVE_2ND: serve_2nd_avg, STROKE_BACKHAND: stroke_back_avg, STROKE_FOREHAND: stroke_fore_avg,
-        VOLLEY_BACKHAND: volley_back_avg, VOLLEY_FOREHAND: volley_fore_avg);
+    return CSkilLevelSetting(
+        SERVE_1ST: serve_1st_avg,
+        SERVE_2ND: serve_2nd_avg,
+        STROKE_BACKHAND: stroke_back_avg,
+        STROKE_FOREHAND: stroke_fore_avg,
+        VOLLEY_BACKHAND: volley_back_avg,
+        VOLLEY_FOREHAND: volley_fore_avg);
   }
 
   /**
@@ -2321,10 +2393,14 @@ class FirestoreMethod {
    */
   static Future<void> registFeedBack(CFeedBackCommentSetting feedBack) async {
     try {
-      await feedBackRef.doc(feedBack.OPPONENT_ID).collection('daily').doc(feedBack.DATE_TIME.toString()).set({
+      await feedBackRef
+          .doc(feedBack.OPPONENT_ID)
+          .collection('daily')
+          .doc(feedBack.DATE_TIME.toString())
+          .set({
         'OPPONENT_ID': auth.currentUser!.uid,
-        'FEEDBACK_COMMENT' : feedBack.FEED_BACK,
-        'DATE_TIME' : feedBack.DATE_TIME.toString(),
+        'FEEDBACK_COMMENT': feedBack.FEED_BACK,
+        'DATE_TIME': feedBack.DATE_TIME.toString(),
       });
     } catch (e) {
       print('スキルレベル登録に失敗しました --- $e');
@@ -2335,29 +2411,28 @@ class FirestoreMethod {
    * ログインユーザに対してのフィードバックのリストを取得
    */
   static Future<List<CFeedBackCommentSetting>> getFeedBack() async {
-    List<CFeedBackCommentSetting> feedBackList =[];
+    List<CFeedBackCommentSetting> feedBackList = [];
     try {
-      await feedBackRef.doc(auth.currentUser!.uid).collection('daily').get().then(
-              (QuerySnapshot querySnapshot) =>
-          {
-            querySnapshot.docs.forEach(
+      await feedBackRef
+          .doc(auth.currentUser!.uid)
+          .collection('daily')
+          .get()
+          .then((QuerySnapshot querySnapshot) => {
+                querySnapshot.docs.forEach(
                   (doc) async {
-                     // CHomePageVal home = await getNickNameAndTorokuRank(doc.get('OPPONENT_ID'));
+                    // CHomePageVal home = await getNickNameAndTorokuRank(doc.get('OPPONENT_ID'));
                     feedBackList.add(CFeedBackCommentSetting(
-                        OPPONENT_ID : doc.get('OPPONENT_ID'),
-                        FEED_BACK : doc.get('FEEDBACK_COMMENT'),
-                        DATE_TIME : doc.get('DATE_TIME'),
-                        // HOME: home
+                      OPPONENT_ID: doc.get('OPPONENT_ID'),
+                      FEED_BACK: doc.get('FEEDBACK_COMMENT'),
+                      DATE_TIME: doc.get('DATE_TIME'),
+                      // HOME: home
                     ));
-              },
-            ),
-          }
-      );
+                  },
+                ),
+              });
     } catch (e) {
-
       print('フィードバックリスト取得に失敗しました --- $e');
     }
     return feedBackList;
-
   }
 }

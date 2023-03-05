@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:tsuyosuke_tennis_ap/Page/bk_ProfileSetting.dart';
 
 import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
@@ -37,8 +38,8 @@ class _TalkListState extends State<TalkList> {
         body: StreamBuilder<QuerySnapshot>(
             stream: FirestoreMethod.roomSnapshot,
             builder: (context, snapshot) {
-              return FutureBuilder(
-                future: createRooms(),
+              return StreamBuilder(
+                stream: Stream.fromFuture(createRooms()),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return ListView.builder(
@@ -59,7 +60,8 @@ class _TalkListState extends State<TalkList> {
                                   ),
                                   SlidableAction(
                                     onPressed: (value) {
-                                      FirestoreMethod.delTalkRoom(talkList[index].roomId,context);
+                                      FirestoreMethod.delTalkRoom(
+                                          talkList[index].roomId, context);
                                     },
                                     backgroundColor: Colors.red,
                                     icon: Icons.delete,
@@ -130,7 +132,25 @@ class _TalkListState extends State<TalkList> {
                                               ))
                                             ],
                                           ),
-                                        )
+                                        ),
+                                        Container(
+                                          alignment: Alignment.center,
+                                          width: 25.0,
+                                          height: 25.0,
+                                          decoration: BoxDecoration(
+                                            color: Colors.green,
+                                            shape: BoxShape.circle,
+                                          ),
+                                          child: Text(
+                                            talkList[index]
+                                                .unReadCnt
+                                                .toString(),
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18 ),
+                                          ),
+                                        ),
+                                        SizedBox(width: 10,)
                                       ],
                                     ),
                                   ),

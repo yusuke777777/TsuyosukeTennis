@@ -2,10 +2,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:tsuyosuke_tennis_ap/Page/bk_ProfileSetting.dart';
 
 import '../Common/Cmessage.dart';
+import '../Common/CprofileSetting.dart';
 import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
+import '../FireBase/NotificationMethod.dart';
 
 class TalkRoom extends StatefulWidget {
   final TalkRoomModel room;
@@ -33,8 +36,8 @@ class _TalkRoomState extends State<TalkRoom> {
     return Scaffold(
         backgroundColor: const Color(0xFFF2FFE4),
         appBar: AppBar(
-          backgroundColor: Color(0xFF3CB371),
-          title: Text(widget.room.user.NICK_NAME),
+            backgroundColor: Color(0xFF3CB371),
+            title: Text(widget.room.user.NICK_NAME),
             leading: IconButton(
               icon: const Icon(
                 Icons.reply,
@@ -42,8 +45,7 @@ class _TalkRoomState extends State<TalkRoom> {
                 size: 40.0,
               ),
               onPressed: () => {Navigator.pop(context)},
-            )
-        ),
+            )),
         body: Stack(
           children: [
             Padding(
@@ -110,7 +112,9 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                           index]
                                                                       .messageId);
                                                           //受け入れ処理を入れる
-                                                          FirestoreMethod.makeMatch(widget.room);
+                                                          FirestoreMethod
+                                                              .makeMatch(
+                                                                  widget.room);
                                                         }
                                                       },
                                                       child: Text(
@@ -144,7 +148,10 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                           index]
                                                                       .messageId);
                                                               //友人一覧追記
-                                                              FirestoreMethod.makeFriends(widget.room);
+                                                              FirestoreMethod
+                                                                  .makeFriends(
+                                                                      widget
+                                                                          .room);
                                                             }
                                                           },
                                                           child: Text(
@@ -232,10 +239,22 @@ class _TalkRoomState extends State<TalkRoom> {
                             icon: Icon(Icons.send),
                             onPressed: () async {
                               print("送信");
+                              CprofileSetting myProfile = await FirestoreMethod.getProfile();
                               if (controller.text.isNotEmpty) {
                                 await FirestoreMethod.sendMessage(
                                     widget.room.roomId, controller.text);
+                                String message = controller.text;
                                 controller.clear();
+                                String? tokenId =
+                                    await NotificationMethod.getTokenId(
+                                        widget.room.user.USER_ID);
+                                if (tokenId == "") {
+                                  //トークンIDが登録されていない場合
+                                } else {
+                                  //トークンIDが登録されている場合
+                                  await NotificationMethod.sendMessage(tokenId!,
+                                      message, myProfile.NICK_NAME);
+                                }
                               }
                             },
                           ),
