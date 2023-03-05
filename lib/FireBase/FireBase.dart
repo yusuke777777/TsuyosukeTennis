@@ -2417,6 +2417,7 @@ class FirestoreMethod {
           .doc(auth.currentUser!.uid)
           .collection('daily')
           .get()
+<<<<<<< HEAD
           .then((QuerySnapshot querySnapshot) => {
                 querySnapshot.docs.forEach(
                   (doc) async {
@@ -2429,6 +2430,18 @@ class FirestoreMethod {
                     ));
                   },
                 ),
+=======
+          .then((QuerySnapshot querySnapshot) async => {
+                await Future.forEach<dynamic>(querySnapshot.docs, (doc) async {
+                  CHomePageVal home =
+                      await getNickNameAndTorokuRank(doc.get('OPPONENT_ID'));
+                  feedBackList.add(CFeedBackCommentSetting(
+                      OPPONENT_ID: doc.get('OPPONENT_ID'),
+                      FEED_BACK: doc.get('FEEDBACK_COMMENT'),
+                      DATE_TIME: doc.get('DATE_TIME'),
+                      HOME: home));
+                }),
+>>>>>>> ac7faf3cf710f89c0fa4cc12e81a036167aa08a4
               });
     } catch (e) {
       print('フィードバックリスト取得に失敗しました --- $e');

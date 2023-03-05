@@ -67,29 +67,31 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
                       elevation: 0,
                       child:ListTile(
                         tileColor: Colors.white24,
-                        leading: ClipOval(
+                        leading:
+                        ClipOval(
                           child: GestureDetector(
                             //アイコン押下時の挙動
                             onTap: () {
                               // Navigator.push(
                               //     context,
                               //     MaterialPageRoute(
-                              //       builder: (context) => HomePage(),
+                              //       builder: (context) => ProfileReference(pro),
                               //     ));
                             },
-                            child:Image.asset('images/upper_body-2.png', fit: BoxFit.cover)
-                            // profileList[index].HOME!.PROFILEIMAGE == ""
-                            //     ? Image.asset('images/upper_body-2.png', fit: BoxFit.cover)
-                            //     : Image.network(
-                            //   profileList[index].HOME!.PROFILEIMAGE,
-                            //   width: 70,
-                            //   height: 70,
-                            //   fit: BoxFit.fill,
-                            // ),
+                            child:
+                            profileList[index].HOME!.PROFILEIMAGE == ""
+                                ? Image.asset('images/upper_body-2.png', fit: BoxFit.cover)
+                                :
+                                Image.network(
+                                  profileList[index].HOME!.PROFILEIMAGE,
+                                  width: 50,
+                                  height: 50,
+                                  fit: BoxFit.fill,
+                                ),
                           ),
                         ),
                           title:Text(profileList[index].FEED_BACK.toString()),
-                          subtitle:Text("入力日時：" + profileList[index].DATE_TIME.toString().substring(0, 16))
+                          subtitle:Text("入力者：" + profileList[index].HOME!.NAME + "\n入力日時：" + profileList[index].DATE_TIME.toString().substring(0, 16))
                       ),
                     );
                   },

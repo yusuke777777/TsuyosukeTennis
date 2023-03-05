@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:tsuyosuke_tennis_ap/Page/PassWordChangeForm.dart';
 
 import 'Common/CtalkRoom.dart';
 import 'FireBase/FireBase.dart';
+import 'Page/EmailChangeForm.dart';
 import 'Page/FriendManagerPage.dart';
 import 'Page/ProfileReference.dart';
 import 'Page/TalkRoom.dart';
@@ -41,7 +43,6 @@ class DrawerConfig {
           const SizedBox(
             height: 20,
           ),
-          //ボレー
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -61,7 +62,24 @@ class DrawerConfig {
               );
             },
             child: Container(
-              child: Text('登録内容変更'),
+              child: Text('友人管理'),
+              alignment: Alignment.center,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EmailChangeForm(),
+                ),
+              );
+            },
+            child: Container(
+              child: Text('メールアドレス変更'),
               alignment: Alignment.center,
             ),
           ),
@@ -69,21 +87,21 @@ class DrawerConfig {
           const SizedBox(
             height: 20,
           ),
-
           GestureDetector(
             onTap: () {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => const FriendManagerPage(),
+                  builder: (context) => PassWordChangeForm(),
                 ),
               );
             },
             child: Container(
-              child: Text('友人管理'),
+              child: Text('パスワード変更'),
               alignment: Alignment.center,
             ),
           ),
+
 
         ],
       ),
