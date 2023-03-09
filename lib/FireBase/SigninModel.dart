@@ -1,4 +1,4 @@
-import 'package:firebase_auth/firebase_auth.dart';
+  import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'ConvertErrorMessage.dart';
@@ -12,6 +12,7 @@ class SignInModel extends ChangeNotifier {
   bool isMailValid = false;
   bool isPasswordValid = false;
   FirebaseAuth auth = FirebaseAuth.instance;
+
 
   Future login() async {
     try {

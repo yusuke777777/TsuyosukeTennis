@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:overlay_support/overlay_support.dart';
@@ -7,13 +8,17 @@ import 'FireBase/NotificationMethod.dart';
 import 'Page/SigninPage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 
+import 'UnderMenuMove.dart';
+
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
 }
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
+  //常時ログイン処理
 
   runApp(const MyApp());
 }
@@ -38,7 +43,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
       ),
       // home: TestHomePage(),
-      home: SignInPage(),
+      home: FirebaseAuth.instance.currentUser == null ? SignInPage() : UnderMenuMove.make(0),
     );
   }
 }

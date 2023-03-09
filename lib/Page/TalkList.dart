@@ -132,7 +132,9 @@ class _TalkListState extends State<TalkList> {
                                               ))
                                             ],
                                           ),
-                                        ),
+                                        ),talkList[index]
+                                            .unReadCnt == 0 ?
+                                Container():
                                         Container(
                                           alignment: Alignment.center,
                                           width: 25.0,

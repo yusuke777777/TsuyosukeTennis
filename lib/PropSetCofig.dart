@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -8,6 +9,7 @@ import 'FireBase/FireBase.dart';
 import 'Page/EmailChangeForm.dart';
 import 'Page/FriendManagerPage.dart';
 import 'Page/ProfileReference.dart';
+import 'Page/SigninPage.dart';
 import 'Page/TalkRoom.dart';
 
 /**
@@ -83,7 +85,6 @@ class DrawerConfig {
               alignment: Alignment.center,
             ),
           ),
-
           const SizedBox(
             height: 20,
           ),
@@ -101,8 +102,25 @@ class DrawerConfig {
               alignment: Alignment.center,
             ),
           ),
-
-
+          const SizedBox(
+            height: 20,
+          ),
+          GestureDetector(
+            onTap: () async {
+              await FirebaseAuth.instance.signOut();
+              // ログアウト後の画面に遷移
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SignInPage(),
+                ),
+              );
+            },
+            child: Container(
+              child: Text('ログアウト'),
+              alignment: Alignment.center,
+            ),
+          ),
         ],
       ),
     );
