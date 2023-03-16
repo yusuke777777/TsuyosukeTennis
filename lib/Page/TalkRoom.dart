@@ -28,9 +28,11 @@ class _TalkRoomState extends State<TalkRoom> {
   //プラスボタンを押した時に試合申請ボタン・友人申請ボタンを表示する
   String addFlg = "0";
   double menuHeight = 70.0;
+  bool friendflg = false;
 
   Future<void> getMessages() async {
     messageList = await FirestoreMethod.getMessages(widget.room.roomId);
+    friendflg = await FirestoreMethod.checkFriends(widget.room.roomId);
   }
 
   @override
@@ -143,11 +145,20 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                     index]
                                                                 .isMe) {
                                                               print(
-                                                                  "友達登録申請の受け入れメッセージ送信済");
+                                                                  "自身の友人申請に自身で受け入れはできません");
                                                             } else {
-                                                              //受け入れ処理を入れる
-                                                              FirestoreMethod
-                                                                  .friendAccept(
+                                                              friendflg == true
+                                                                  ? showDialog(
+                                                                      context:
+                                                                          context,
+                                                                      builder:
+                                                                          (_) =>
+                                                                              AlertDialog(
+                                                                                content: Text("すでに友人登録済みです"),
+                                                                              ))
+                                                                  :
+                                                                  //受け入れ処理を入れる
+                                                                  FirestoreMethod.friendAccept(
                                                                       widget
                                                                           .room,
                                                                       messageList[

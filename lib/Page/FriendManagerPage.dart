@@ -7,6 +7,7 @@ import 'package:tsuyosuke_tennis_ap/Page/ProfileReference.dart';
 import '../Common/CfriendsList.dart';
 import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
+import '../PropSetCofig.dart';
 import '../UnderMenuMove.dart';
 import 'ProfileSetting.dart';
 import 'TalkRoom.dart';
@@ -30,12 +31,17 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
 
   @override
   Widget build(BuildContext context) {
+    HeaderConfig().init(context, "友人管理");
+    DrawerConfig().init(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFF2FFE4),
       appBar: AppBar(
-        backgroundColor: Color(0xFF3CB371),
-        title: Text("友人一覧"),
+        backgroundColor: HeaderConfig.backGroundColor,
+        title: HeaderConfig.appBarText,
+        iconTheme: IconThemeData(color: Colors.black),
       ),
+      //ドロアー画面の処理
+      drawer: DrawerConfig.drawer,
       body: StreamBuilder<QuerySnapshot>(
         stream: FirestoreMethod.friendsListSnapshot,
         builder: (context, snapshot) {
@@ -61,7 +67,7 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                             ],
                           ),
                           child: Card(
-                            color: const Color(0xFFF2FFE4),
+                            color: Colors.white,
                             child: Container(
                               height: 70,
                               child: Row(
