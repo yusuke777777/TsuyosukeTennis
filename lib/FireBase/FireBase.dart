@@ -1966,6 +1966,26 @@ class FirestoreMethod {
     }
   }
 
+  /**
+   * 友人済みか確認する
+   */
+  static Future<bool> checkFriends(String roomID) async {
+    final doc = await roomRef.doc(roomID).get();
+    bool alreadyFriendflg = false;
+    List<String> checkList = [];
+    checkList.add(doc.data()!['joined_user_ids'][0]);
+    checkList.add(doc.data()!['joined_user_ids'][1]);
+
+    final snapshot = await friendsListRef.get();
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      if((doc.data()['RECIPIENT_ID'].contains(checkList[0]) && doc.data()['SENDER_ID'].contains(checkList[1]))
+           || (doc.data()['RECIPIENT_ID'].contains(checkList[1]) && doc.data()['SENDER_ID'].contains(checkList[0]))){
+        alreadyFriendflg = true;
+      }
+    });
+    return alreadyFriendflg;
+  }
+
   //友人リスト取得
   static Future<List<FriendsListModel>> getFriendsList(String myUserId) async {
     final snapshot = await friendsListRef.get();
