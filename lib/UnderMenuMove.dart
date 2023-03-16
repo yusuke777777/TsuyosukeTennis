@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/HomePage.dart';
@@ -19,6 +20,9 @@ import 'Page/manSinglesRankList.dart';
 
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
+  // 通知を受信して行いたい処理
+  //残メッセージ数を取得メソッドを作成する
+  //メッセージ送信時に送信者のIDを持たせられないか検討(payloadを用いればできる)
 }
 
 class UnderMenuMove extends StatefulWidget {
@@ -46,7 +50,6 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     });
   }
 
-  late int _totalNotifications;
   late final FirebaseMessaging _messaging;
   CPushNotification? _notificationInfo;
 
@@ -92,9 +95,12 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
           title: message.notification?.title,
           body: message.notification?.body,
         );
+
         setState(() {
           _notificationInfo = notification;
-          _totalNotifications++;
+          int _totalNotifications = 5;
+          //残メッセージ数を取得メソッドを作成する
+          FlutterAppBadger.updateBadgeCount(_totalNotifications);
         });
         // if (_notificationInfo != null) {
         //   showSimpleNotification(Text(_notificationInfo!.title!),
@@ -119,11 +125,11 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
       );
       setState(() {
         _notificationInfo = notification;
-        _totalNotifications++;
+        // _totalNotifications++;
+        // FlutterAppBadger.updateBadgeCount(_totalNotifications);
       });
     });
-
-    _totalNotifications = 0;
+    // _totalNotifications = 0;
     super.initState();
   }
 

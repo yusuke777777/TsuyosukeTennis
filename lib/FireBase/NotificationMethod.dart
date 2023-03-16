@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:http/http.dart' as http;
+import 'package:flutter_app_badger/flutter_app_badger.dart';
 
 class NotificationMethod {
   static final Firebase_Auth.FirebaseAuth auth =
@@ -67,6 +68,7 @@ class NotificationMethod {
       'notification': {
         'title': name,
         'body': message,
+        'payload': auth.currentUser!.uid
       },
       "to": recipientToken
       // 通知をタップしたときに開く画面の指定など、必要に応じてカスタマイズできるキーと値を指定することができます。
@@ -77,5 +79,15 @@ class NotificationMethod {
 
     print(response.statusCode);
     print(response.body);
+  }
+
+  Future<void> setBadgeCount(int count) async {
+    await FlutterAppBadger.updateBadgeCount(count);
+  }
+
+  //メッセージ受信時に送信相手の通知数をカウントアップする
+  //トークルームから戻るとき、入るときにリセットできるようにする
+  makeMessageNotificationCount(){
+
   }
 }

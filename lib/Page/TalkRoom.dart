@@ -47,8 +47,10 @@ class _TalkRoomState extends State<TalkRoom> {
                   size: 40.0,
                 ),
                 onPressed: () => {
-                      Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => UnderMenuMove.make(3)))
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => UnderMenuMove.make(3)))
                     })),
         body: Stack(
           children: [
@@ -110,8 +112,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                         } else {
                                                           FirestoreMethod
                                                               .matchAccept(
-                                                                  widget.room
-                                                                      .roomId,
+                                                                  widget.room,
                                                                   messageList[
                                                                           index]
                                                                       .messageId);
@@ -145,12 +146,13 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                   "友達登録申請の受け入れメッセージ送信済");
                                                             } else {
                                                               //受け入れ処理を入れる
-                                                              FirestoreMethod.friendAccept(
-                                                                  widget.room
-                                                                      .roomId,
-                                                                  messageList[
-                                                                          index]
-                                                                      .messageId);
+                                                              FirestoreMethod
+                                                                  .friendAccept(
+                                                                      widget
+                                                                          .room,
+                                                                      messageList[
+                                                                              index]
+                                                                          .messageId);
                                                               //友人一覧追記
                                                               FirestoreMethod
                                                                   .makeFriends(
@@ -247,19 +249,8 @@ class _TalkRoomState extends State<TalkRoom> {
                                   await FirestoreMethod.getProfile();
                               if (controller.text.isNotEmpty) {
                                 await FirestoreMethod.sendMessage(
-                                    widget.room.roomId, controller.text);
-                                String message = controller.text;
+                                    widget.room, controller.text);
                                 controller.clear();
-                                String? tokenId =
-                                    await NotificationMethod.getTokenId(
-                                        widget.room.user.USER_ID);
-                                if (tokenId == "") {
-                                  //トークンIDが登録されていない場合
-                                } else {
-                                  //トークンIDが登録されている場合
-                                  await NotificationMethod.sendMessage(
-                                      tokenId!, message, myProfile.NICK_NAME);
-                                }
                               }
                             },
                           ),
@@ -315,7 +306,7 @@ class _TalkRoomState extends State<TalkRoom> {
                 ),
                 onPressed: () async {
                   print("対戦メッセージ送信");
-                  await FirestoreMethod.sendMatchMessage(widget.room.roomId);
+                  await FirestoreMethod.sendMatchMessage(widget.room);
                 }),
           ),
           SizedBox(
@@ -344,7 +335,7 @@ class _TalkRoomState extends State<TalkRoom> {
                 ),
                 onPressed: () async {
                   print("友達登録メッセージ送信");
-                  await FirestoreMethod.sendFriendMessage(widget.room.roomId);
+                  await FirestoreMethod.sendFriendMessage(widget.room);
                 }),
           ),
           SizedBox(

@@ -22,6 +22,7 @@ import '../Common/Cmessage.dart';
 import '../Common/CprofileSetting.dart';
 import '../Common/CactivityList.dart';
 import '../Common/CtalkRoom.dart';
+import 'NotificationMethod.dart';
 import 'TsMethod.dart';
 
 class FirestoreMethod {
@@ -595,8 +596,8 @@ class FirestoreMethod {
     return count;
   }
 
-  static Future<void> sendMessage(String roomId, String message) async {
-    final messageRef = roomRef.doc(roomId).collection('message');
+  static Future<void> sendMessage(TalkRoomModel room, String message) async {
+    final messageRef = roomRef.doc(room.roomId).collection('message');
     String? myUid = auth.currentUser!.uid;
     await messageRef.add({
       'message': message,
@@ -608,7 +609,18 @@ class FirestoreMethod {
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
-    roomRef.doc(roomId).update({'last_message': message});
+    roomRef.doc(room.roomId).update({'last_message': message});
+    CprofileSetting myProfile =
+    await FirestoreMethod.getProfile();
+    String? tokenId = await NotificationMethod.getTokenId(
+        room.user.USER_ID);
+    if (tokenId == "") {
+      //トークンIDが登録されていない場合
+    } else {
+      //トークンIDが登録されている場合
+      await NotificationMethod.sendMessage(
+          tokenId!, message, myProfile.NICK_NAME);
+    }
   }
 
   static Stream<QuerySnapshot> messageSnapshot(String roomId) {
@@ -616,8 +628,8 @@ class FirestoreMethod {
   }
 
   //試合申請メッセージ
-  static Future<void> sendMatchMessage(String roomId) async {
-    final messageRef = roomRef.doc(roomId).collection('message');
+  static Future<void> sendMatchMessage(TalkRoomModel room) async {
+    final messageRef = roomRef.doc(room.roomId).collection('message');
     String? myUid = auth.currentUser!.uid;
     await messageRef.add({
       'message': "対戦お願いします！",
@@ -629,11 +641,22 @@ class FirestoreMethod {
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
-    roomRef.doc(roomId).update({'last_message': "対戦お願いします！"});
+    roomRef.doc(room.roomId).update({'last_message': "対戦お願いします！"});
+    CprofileSetting myProfile =
+    await FirestoreMethod.getProfile();
+    String? tokenId = await NotificationMethod.getTokenId(
+        room.user.USER_ID);
+    if (tokenId == "") {
+      //トークンIDが登録されていない場合
+    } else {
+      //トークンIDが登録されている場合
+      await NotificationMethod.sendMessage(
+          tokenId!, "対戦お願いします！", myProfile.NICK_NAME);
+    }
   }
 
-  static Future<void> sendFriendMessage(String roomId) async {
-    final messageRef = roomRef.doc(roomId).collection('message');
+  static Future<void> sendFriendMessage(TalkRoomModel room) async {
+    final messageRef = roomRef.doc(room.roomId).collection('message');
     String? myUid = auth.currentUser!.uid;
     await messageRef.add({
       'message': "友達登録お願いします！",
@@ -645,7 +668,18 @@ class FirestoreMethod {
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
-    roomRef.doc(roomId).update({'last_message': "友達登録お願いします！"});
+    roomRef.doc(room.roomId).update({'last_message': "友達登録お願いします！"});
+    CprofileSetting myProfile =
+    await FirestoreMethod.getProfile();
+    String? tokenId = await NotificationMethod.getTokenId(
+        room.user.USER_ID);
+    if (tokenId == "") {
+      //トークンIDが登録されていない場合
+    } else {
+      //トークンIDが登録されている場合
+      await NotificationMethod.sendMessage(
+          tokenId!, "友達登録お願いします！", myProfile.NICK_NAME);
+    }
   }
 
   /**
@@ -746,8 +780,8 @@ class FirestoreMethod {
   }
 
   //試合申請受け入れ
-  static Future<void> matchAccept(String roomId, String messageId) async {
-    final messageRef = roomRef.doc(roomId).collection('message');
+  static Future<void> matchAccept(TalkRoomModel room, String messageId) async {
+    final messageRef = roomRef.doc(room.roomId).collection('message');
     String? myUid = auth.currentUser!.uid;
 
     await messageRef.doc(messageId).update({'matchStatusFlg': "2"});
@@ -763,13 +797,26 @@ class FirestoreMethod {
     });
     ;
     roomRef
-        .doc(roomId)
+        .doc(room.roomId)
         .update({'last_message': "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！"});
+    CprofileSetting myProfile =
+    await FirestoreMethod.getProfile();
+    String? tokenId = await NotificationMethod.getTokenId(
+        room.user.USER_ID);
+    if (tokenId == "") {
+      //トークンIDが登録されていない場合
+      //トークンIDが登録されていない場合
+    } else {
+      //トークンIDが登録されている場合
+      await NotificationMethod.sendMessage(
+          tokenId!, "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！", myProfile.NICK_NAME);
+    }
+
   }
 
   //友人申請受け入れ
-  static Future<void> friendAccept(String roomId, String messageId) async {
-    final messageRef = roomRef.doc(roomId).collection('message');
+  static Future<void> friendAccept(TalkRoomModel room, String messageId) async {
+    final messageRef = roomRef.doc(room.roomId).collection('message');
     String? myUid = auth.currentUser!.uid;
 
     await messageRef.doc(messageId).update({'friendStatusFlg': "2"});
@@ -784,8 +831,19 @@ class FirestoreMethod {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
     roomRef
-        .doc(roomId)
+        .doc(room.roomId)
         .update({'last_message': "友人申請を受け入れました。\n友人一覧を確認してみよう！"});
+    CprofileSetting myProfile =
+    await FirestoreMethod.getProfile();
+    String? tokenId = await NotificationMethod.getTokenId(
+        room.user.USER_ID);
+    if (tokenId == "") {
+      //トークンIDが登録されていない場合
+    } else {
+      //トークンIDが登録されている場合
+      await NotificationMethod.sendMessage(
+          tokenId!, "友人申請を受け入れました。\n友人一覧を確認してみよう！", myProfile.NICK_NAME);
+    }
   }
 
   static Future<void> addMatchList(String roomId) async {

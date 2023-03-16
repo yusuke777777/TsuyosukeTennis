@@ -1,14 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:tsuyosuke_tennis_ap/FireBase/Notification_badge.dart';
 import 'Common/CPushNotification.dart';
 import 'FireBase/NotificationMethod.dart';
 import 'Page/SigninPage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-
 import 'UnderMenuMove.dart';
+import 'package:flutter_app_badger/flutter_app_badger.dart';
+
 
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
@@ -18,14 +20,20 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
-  //常時ログイン処理
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarBrightness: Brightness.light,
+  ));
 
-  runApp(const MyApp());
+  runApp( MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
 
+class _MyAppState extends State<MyApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
