@@ -32,7 +32,7 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
   @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "友人管理");
-    DrawerConfig().init(context);
+
 
     return Scaffold(
       appBar: AppBar(
@@ -40,8 +40,7 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
         title: HeaderConfig.appBarText,
         iconTheme: IconThemeData(color: Colors.black),
       ),
-      //ドロアー画面の処理
-      drawer: DrawerConfig.drawer,
+
       body: StreamBuilder<QuerySnapshot>(
         stream: FirestoreMethod.friendsListSnapshot,
         builder: (context, snapshot) {

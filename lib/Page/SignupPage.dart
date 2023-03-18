@@ -230,7 +230,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                                 label: Text('新規登録'),
                                                 backgroundColor:
                                                     const Color(0xFF4CAF50),
-                                                onPressed: model.agreeGuideline
+                                                onPressed: model.agreeGuideline && model.isMyUserIdValid
                                                     ? () async {
                                                         try {
                                                           await model.signUp();

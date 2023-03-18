@@ -2511,4 +2511,18 @@ class FirestoreMethod {
     }
     return feedBackList;
   }
+
+  /**
+   * MyUserIdの重複チェックを行うメソッドです
+   */
+  static Future<bool> checkDoubleMyUserID(String inputText, bool isDoubleMyUserId)async {
+    final snapShot =
+    await profileRef.where('MY_USER_ID', isEqualTo: inputText).get();
+
+    print("bb"+snapShot.docs.toString());
+    if(snapShot.size !=0){
+      isDoubleMyUserId = true;
+    }
+    return isDoubleMyUserId;
+  }
 }

@@ -20,7 +20,7 @@ class _PassWordChangeFormState extends State<PassWordChangeForm> {
   Widget build(BuildContext context) {
     //必要コンフィグの初期化
     HeaderConfig().init(context, "パスワード変更");
-    DrawerConfig().init(context);
+
     final FocusNode _focusNode = FocusNode();
     final FocusNode _focusNode_2 = FocusNode();
     return GestureDetector(
@@ -31,8 +31,6 @@ class _PassWordChangeFormState extends State<PassWordChangeForm> {
           title: HeaderConfig.appBarText,
           iconTheme: IconThemeData(color: Colors.black),
         ),
-        //ドロアーの定義
-        drawer: DrawerConfig.drawer,
 
         //メイン画面実装
         body: Scrollbar(
