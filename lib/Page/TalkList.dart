@@ -5,6 +5,7 @@ import 'package:tsuyosuke_tennis_ap/Page/bk_ProfileSetting.dart';
 
 import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
+import '../FireBase/NotificationMethod.dart';
 import '../PropSetCofig.dart';
 import 'TalkRoom.dart';
 
@@ -70,8 +71,10 @@ class _TalkListState extends State<TalkList> {
                                 ],
                               ),
                               child: InkWell(
-                                onTap: () {
-                                  Navigator.push(
+                                onTap: () async {
+                                  await NotificationMethod.unreadCountRest(
+                                      talkList[index].user.USER_ID);
+                                  await Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) =>
@@ -132,27 +135,29 @@ class _TalkListState extends State<TalkList> {
                                               ))
                                             ],
                                           ),
-                                        ),talkList[index]
-                                            .unReadCnt == 0 ?
-                                Container():
-                                        Container(
-                                          alignment: Alignment.center,
-                                          width: 25.0,
-                                          height: 25.0,
-                                          decoration: BoxDecoration(
-                                            color: Colors.green,
-                                            shape: BoxShape.circle,
-                                          ),
-                                          child: Text(
-                                            talkList[index]
-                                                .unReadCnt
-                                                .toString(),
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18 ),
-                                          ),
                                         ),
-                                        SizedBox(width: 10,)
+                                        talkList[index].unReadCnt == 0
+                                            ? Container()
+                                            : Container(
+                                                alignment: Alignment.center,
+                                                width: 25.0,
+                                                height: 25.0,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.green,
+                                                  shape: BoxShape.circle,
+                                                ),
+                                                child: Text(
+                                                  talkList[index]
+                                                      .unReadCnt
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 18),
+                                                ),
+                                              ),
+                                        SizedBox(
+                                          width: 10,
+                                        )
                                       ],
                                     ),
                                   ),

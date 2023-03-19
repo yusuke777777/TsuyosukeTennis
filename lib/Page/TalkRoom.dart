@@ -48,12 +48,14 @@ class _TalkRoomState extends State<TalkRoom> {
                   color: Colors.black,
                   size: 40.0,
                 ),
-                onPressed: () => {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => UnderMenuMove.make(3)))
-                    })),
+                onPressed: () async {
+                  await NotificationMethod.unreadCountRest(
+                      widget.room.user.USER_ID);
+                  await Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => UnderMenuMove.make(3)));
+                })),
         body: Stack(
           children: [
             Padding(

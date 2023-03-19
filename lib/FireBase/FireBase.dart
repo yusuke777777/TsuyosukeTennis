@@ -434,7 +434,7 @@ class FirestoreMethod {
           doc.data()['joined_user_ids'].contains(yourUserId)) {
         CprofileSetting yourProfile = await getYourProfile(yourUserId);
         try {
-          count = await FirestoreMethod().getUnreadMessageCount(doc.id);
+          count = await NotificationMethod.unreadCountGet(yourUserId);
         } catch (e) {
           print("未読メッセージ数を正しく取得できませんでした");
         }
@@ -443,14 +443,6 @@ class FirestoreMethod {
             user: yourProfile,
             lastMessage: doc.data()['last_message'] ?? '',
             unReadCnt: count);
-        try{
-          roomRef
-              .doc(doc.id)
-              .update({'unReadCnt': count});
-        }catch(e){
-          print("未読メッセージ数の更新に失敗しました");
-          print(e);
-        }
       }
     });
     return room;
@@ -470,7 +462,7 @@ class FirestoreMethod {
           }
         });
         try {
-          count = await FirestoreMethod().getUnreadMessageCount(doc.id);
+          count = await NotificationMethod.unreadCountGet(yourUserId);
           print("count" + count.toString());
         } catch (e) {
           print("未読メッセージ数を正しく取得できませんでした");
@@ -485,14 +477,6 @@ class FirestoreMethod {
           roomList.add(room);
         } catch (e) {
           print("トークルームの取得に失敗しました");
-          print(e);
-        }
-        try{
-          roomRef
-              .doc(doc.id)
-              .update({'unReadCnt': count});
-        }catch(e){
-          print("未読メッセージ数の更新に失敗しました");
           print(e);
         }
       }
@@ -510,7 +494,7 @@ class FirestoreMethod {
       if (doc.data()['joined_user_ids'].contains(RECIPIENT_ID)) {
         if (doc.data()['joined_user_ids'].contains(SENDER_ID)) {
           try {
-            count = await FirestoreMethod().getUnreadMessageCount(doc.id);
+            count = await NotificationMethod.unreadCountGet(yourProfile.USER_ID);
           } catch (e) {
             print("未読メッセージ数を正しく取得できませんでした");
             print(e);
@@ -520,14 +504,6 @@ class FirestoreMethod {
               user: yourProfile,
               lastMessage: doc.data()['last_message'] ?? '',
               unReadCnt: count);
-          try{
-            roomRef
-                .doc(doc.id)
-                .update({'unReadCnt': count});
-          }catch(e){
-            print("未読メッセージ数の更新に失敗しました");
-            print(e);
-          }
         }
       }
     });
@@ -575,26 +551,26 @@ class FirestoreMethod {
     return messageList;
   }
 
-  Future<int> getUnreadMessageCount(String roomId) async {
-    final messageRef = roomRef.doc(roomId).collection('message');
-    final snapshot = await messageRef.get();
-    int count = 0;
-    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      bool isMe;
-      if (doc.data()['sender_id'] == auth.currentUser!.uid) {
-        isMe = true;
-      } else {
-        isMe = false;
-      }
-      print(isMe);
-      print(doc.data()['sender_id']);
-      print(doc.data()['isRead']);
-      if (isMe == false && doc.data()['isRead'] == false) {
-        count++;
-      }
-    });
-    return count;
-  }
+  // Future<int> getUnreadMessageCount(String roomId) async {
+  //   final messageRef = roomRef.doc(roomId).collection('message');
+  //   final snapshot = await messageRef.get();
+  //   int count = 0;
+  //   await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+  //     bool isMe;
+  //     if (doc.data()['sender_id'] == auth.currentUser!.uid) {
+  //       isMe = true;
+  //     } else {
+  //       isMe = false;
+  //     }
+  //     print(isMe);
+  //     print(doc.data()['sender_id']);
+  //     print(doc.data()['isRead']);
+  //     if (isMe == false && doc.data()['isRead'] == false) {
+  //       count++;
+  //     }
+  //   });
+  //   return count;
+  // }
 
   static Future<void> sendMessage(TalkRoomModel room, String message) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
@@ -621,6 +597,8 @@ class FirestoreMethod {
       await NotificationMethod.sendMessage(
           tokenId!, message, myProfile.NICK_NAME);
     }
+    //未読メッセージ数の更新
+    await NotificationMethod.unreadCount(room.user.USER_ID);
   }
 
   static Stream<QuerySnapshot> messageSnapshot(String roomId) {
@@ -653,6 +631,8 @@ class FirestoreMethod {
       await NotificationMethod.sendMessage(
           tokenId!, "対戦お願いします！", myProfile.NICK_NAME);
     }
+    //未読メッセージ数の更新
+    await NotificationMethod.unreadCount(room.user.USER_ID);
   }
 
   static Future<void> sendFriendMessage(TalkRoomModel room) async {
@@ -680,6 +660,8 @@ class FirestoreMethod {
       await NotificationMethod.sendMessage(
           tokenId!, "友達登録お願いします！", myProfile.NICK_NAME);
     }
+    //未読メッセージ数の更新
+    await NotificationMethod.unreadCount(room.user.USER_ID);
   }
 
   /**
@@ -811,6 +793,8 @@ class FirestoreMethod {
       await NotificationMethod.sendMessage(
           tokenId!, "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！", myProfile.NICK_NAME);
     }
+    //未読メッセージ数の更新
+    await NotificationMethod.unreadCount(room.user.USER_ID);
 
   }
 
@@ -844,6 +828,8 @@ class FirestoreMethod {
       await NotificationMethod.sendMessage(
           tokenId!, "友人申請を受け入れました。\n友人一覧を確認してみよう！", myProfile.NICK_NAME);
     }
+    //未読メッセージ数の更新
+    await NotificationMethod.unreadCount(room.user.USER_ID);
   }
 
   static Future<void> addMatchList(String roomId) async {
