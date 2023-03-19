@@ -136,8 +136,8 @@ class NotificationMethod {
   static Future<int> unreadCount(String recipientId) async {
     int unreadCount = 0;
     //新規フラグチェック
-    String newFlg = await newFlgSendNotification(recipientId);
-    print("newFlg" + newFlg);
+    // String newFlg = await newFlgSendNotification(recipientId);
+    String newFlg = "0";
     if (newFlg == "1") {
       unreadCount++;
     } else {
@@ -171,7 +171,8 @@ class NotificationMethod {
   static Future<int> unreadCountGet(String senderId) async {
     int unreadCount = 0;
     //新規フラグチェック
-    String newFlg = await newFlgNotification(senderId);
+    // String newFlg = await newFlgNotification(senderId);
+    String newFlg = "0";
 
     if (newFlg == "1") {
       unreadCount = 0;
@@ -186,18 +187,6 @@ class NotificationMethod {
       } catch (e) {
         print('未読数のカウント数取得に失敗しました --- $e');
       }
-    }
-    //未読数を更新して登録する
-    try {
-      await MyNotificationRef
-          .doc(auth.currentUser!.uid)
-          .collection('talkNotification')
-          .doc(senderId)
-          .set({
-        'UNREAD_COUNT': unreadCount,
-      });
-    } catch (e) {
-      print('未読数のカウント登録に失敗しました --- $e');
     }
     return unreadCount;
   }
