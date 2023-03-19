@@ -21,7 +21,7 @@ class _TalkListState extends State<TalkList> {
 
   Future<void> createRooms() async {
     talkList =
-        await FirestoreMethod.getRooms(FirestoreMethod.auth.currentUser!.uid);
+        await FirestoreMethod.getRooms(FirestoreMethod.auth.currentUser!.uid);  
   }
 
   @override
