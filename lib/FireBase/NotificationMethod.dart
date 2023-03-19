@@ -90,7 +90,7 @@ class NotificationMethod {
   //通知テーブル
   static final notificationRef = _firestoreInstance.collection('notification');
 
-  //メッセージ通知_新規フラグ取得
+  //メッセージ通知_新規フラグ取得(GET)
   static Future<String> newFlgNotification(String senderId) async {
     final snapshot = await notificationRef.get();
     String NEW_FLG = "1";
@@ -110,21 +110,41 @@ class NotificationMethod {
     return NEW_FLG;
   }
 
+  //メッセージ通知_新規フラグ取得(SEND)
+  static Future<String> newFlgSendNotification(String senderId) async {
+    final snapshot = await notificationRef.get();
+    String NEW_FLG = "1";
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      if (doc.id == senderId) {
+        final mySnapshot = await notificationRef
+            .doc(senderId)
+            .collection('talkNotification')
+            .get();
+        await Future.forEach<dynamic>(mySnapshot.docs, (doc) async {
+          if (doc.id == auth.currentUser!.uid) {
+            NEW_FLG = "0";
+          }
+        });
+      }
+    });
+    return NEW_FLG;
+  }
+
   //メッセージ受信時に送信相手の通知数をカウントアップする
   //トークルームから戻るとき、入るときにリセットできるようにする
-  static Future<int> unreadCount(String senderId) async {
+  static Future<int> unreadCount(String recipientId) async {
     int unreadCount = 0;
     //新規フラグチェック
-    String newFlg = await newFlgNotification(senderId);
+    String newFlg = await newFlgSendNotification(recipientId);
 
     if (newFlg == "1") {
       unreadCount++;
     } else {
       try {
         final snapShot_notification = await notificationRef
-            .doc(auth.currentUser!.uid)
+            .doc(recipientId)
             .collection('talkNotification')
-            .doc(senderId)
+            .doc(auth.currentUser!.uid)
             .get();
         unreadCount = await snapShot_notification.data()!['UNREAD_COUNT'];
         unreadCount++;
@@ -135,9 +155,9 @@ class NotificationMethod {
     //未読数を更新して登録する
     try {
       await notificationRef
-          .doc(auth.currentUser!.uid)
+          .doc(recipientId)
           .collection('talkNotification')
-          .doc(senderId)
+          .doc(auth.currentUser!.uid)
           .set({
         'UNREAD_COUNT': unreadCount,
       });
