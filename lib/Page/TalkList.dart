@@ -52,7 +52,7 @@ class _TalkListState extends State<TalkList> {
                                 children: [
                                   SlidableAction(
                                     onPressed: (value) {
-                                      // FirestoreMethod.delFriendsList(friendsList[index].FRIENDS_ID,context);
+                                      FirestoreMethod.addBlockList(talkList[index].user.USER_ID);
                                     },
                                     backgroundColor: Colors.grey,
                                     icon: Icons.block_flipped,

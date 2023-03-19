@@ -9,9 +9,13 @@ import 'package:flutter_app_badger/flutter_app_badger.dart';
 class NotificationMethod {
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
+
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
   static final userTokenListRef =
       _firestoreInstance.collection('userTokenList');
+
+  //通知テーブル
+  static final MyNotificationRef = _firestoreInstance.collection('myNotification');
 
   static Future<String?> getMyTokenId() async {
     late final FirebaseMessaging _messaging;
@@ -87,16 +91,13 @@ class NotificationMethod {
     await FlutterAppBadger.updateBadgeCount(count);
   }
 
-  //通知テーブル
-  static final notificationRef = _firestoreInstance.collection('notification');
-
   //メッセージ通知_新規フラグ取得(GET)
   static Future<String> newFlgNotification(String senderId) async {
-    final snapshot = await notificationRef.get();
+    final snapshot = await MyNotificationRef.get();
     String NEW_FLG = "1";
     for (final doc in snapshot.docs) {
       if (doc.id == auth.currentUser!.uid) {
-        final mySnapshot = await notificationRef
+        final mySnapshot = await MyNotificationRef
             .doc(auth.currentUser!.uid)
             .collection('talkNotification')
             .get();
@@ -111,14 +112,12 @@ class NotificationMethod {
   }
 
   //メッセージ通知_新規フラグ取得(SEND)
-
   static Future<String> newFlgSendNotification(String senderId) async {
-    final snapshot = await notificationRef.get();
+    final snapshot = await MyNotificationRef.get();
     String NEW_FLG = "1";
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
       if (doc.id == senderId) {
-        
-        final mySnapshot = await notificationRef
+        final mySnapshot = await MyNotificationRef
             .doc(senderId)
             .collection('talkNotification')
             .get();
@@ -132,7 +131,6 @@ class NotificationMethod {
     return NEW_FLG;
   }
 
-
   //メッセージ受信時に送信相手の通知数をカウントアップする
   //トークルームから戻るとき、入るときにリセットできるようにする
   static Future<int> unreadCount(String recipientId) async {
@@ -144,7 +142,7 @@ class NotificationMethod {
       unreadCount++;
     } else {
       try {
-        final snapShot_notification = await notificationRef
+        final snapShot_notification = await MyNotificationRef
             .doc(recipientId)
             .collection('talkNotification')
             .doc(auth.currentUser!.uid)
@@ -157,7 +155,7 @@ class NotificationMethod {
     }
     //未読数を更新して登録する
     try {
-      await notificationRef
+      await MyNotificationRef
           .doc(recipientId)
           .collection('talkNotification')
           .doc(auth.currentUser!.uid)
@@ -179,7 +177,7 @@ class NotificationMethod {
       unreadCount = 0;
     } else {
       try {
-        final snapShot_notification = await notificationRef
+        final snapShot_notification = await MyNotificationRef
             .doc(auth.currentUser!.uid)
             .collection('talkNotification')
             .doc(senderId)
@@ -191,7 +189,7 @@ class NotificationMethod {
     }
     //未読数を更新して登録する
     try {
-      await notificationRef
+      await MyNotificationRef
           .doc(auth.currentUser!.uid)
           .collection('talkNotification')
           .doc(senderId)
@@ -208,7 +206,7 @@ class NotificationMethod {
   static Future<void> unreadCountRest(String yourUserId) async {
     int unreadCount = 0;
     try {
-      await notificationRef
+      await MyNotificationRef
           .doc(auth.currentUser!.uid)
           .collection('talkNotification')
           .doc(yourUserId)
@@ -219,5 +217,4 @@ class NotificationMethod {
       print('未読数のリセット登録に失敗しました --- $e');
     }
   }
-
 }
