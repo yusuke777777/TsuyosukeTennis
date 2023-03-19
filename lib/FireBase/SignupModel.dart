@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tsuyosuke_tennis_ap/FireBase/FireBase.dart';
 
 import 'ConvertErrorMessage.dart';
 
@@ -105,6 +106,7 @@ class SignUpModel extends ChangeNotifier {
   void changeMail(text) {
     this.mail = text.trim();
     if (text.length == 0) {
+
       this.isMailValid = false;
       this.errorMail = 'メールアドレスを入力して下さい。';
     } else {
@@ -129,12 +131,19 @@ class SignUpModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void changeMyUserID(text) {
+  Future<void> changeMyUserID(text) async {
+    bool isDoubleMyUserId = false;
+    isDoubleMyUserId = await FirestoreMethod.checkDoubleMyUserID(text, isDoubleMyUserId);
+    print("aa"+isDoubleMyUserId.toString());
     this.myUserId = text;
     if (text.length == 0) {
       isMyUserIdValid= false;
       this.errorMyUserId = 'ユーザーIDを設定してください(英数字のみ可)';
-    } else if (text.length < 5 || text.length > 20) {
+    } else if(isDoubleMyUserId){
+      isMyUserIdValid= false;
+      this.errorMyUserId = '既に存在するユーザーIDです';
+    }
+    else if (text.length < 5 || text.length > 20) {
       isMyUserIdValid = false;
       this.errorMyUserId = 'ユーザーIDは5文字以上20文字以内です。';
     }
