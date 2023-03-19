@@ -36,8 +36,11 @@ class _TalkListState extends State<TalkList> {
           iconTheme: IconThemeData(color: Colors.black),
         ),
         drawer: DrawerConfig.drawer,
-        body: StreamBuilder(
-                stream: Stream.fromFuture(createRooms()),
+        body: StreamBuilder<QuerySnapshot>(
+            stream: NotificationMethod.MyNotificationSnap,
+            builder: (context, snapshot) {
+              return FutureBuilder(
+                future: createRooms(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
                     return ListView.builder(
@@ -165,7 +168,7 @@ class _TalkListState extends State<TalkList> {
                     return Center(child: CircularProgressIndicator());
                   }
                 },
-              )
-            );
+              );
+            }));
   }
 }

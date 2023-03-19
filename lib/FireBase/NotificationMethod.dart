@@ -14,8 +14,12 @@ class NotificationMethod {
   static final userTokenListRef =
       _firestoreInstance.collection('userTokenList');
 
+
   //通知テーブル
   static final MyNotificationRef = _firestoreInstance.collection('myNotification');
+  static final MyNotificationSnap = MyNotificationRef
+      .doc(auth.currentUser!.uid)
+      .collection('talkNotification').snapshots();
 
   static Future<String?> getMyTokenId() async {
     late final FirebaseMessaging _messaging;
