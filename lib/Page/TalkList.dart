@@ -36,10 +36,7 @@ class _TalkListState extends State<TalkList> {
           iconTheme: IconThemeData(color: Colors.black),
         ),
         drawer: DrawerConfig.drawer,
-        body: StreamBuilder<QuerySnapshot>(
-            stream: FirestoreMethod.roomSnapshot,
-            builder: (context, snapshot) {
-              return StreamBuilder(
+        body: StreamBuilder(
                 stream: Stream.fromFuture(createRooms()),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
@@ -168,7 +165,7 @@ class _TalkListState extends State<TalkList> {
                     return Center(child: CircularProgressIndicator());
                   }
                 },
-              );
-            }));
+              )
+            );
   }
 }
