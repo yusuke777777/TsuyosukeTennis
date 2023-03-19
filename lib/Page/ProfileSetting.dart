@@ -131,7 +131,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
     if (koushinFlg == "1") {
       myUserId = widget.myProfile.MY_USER_ID;
     }
-
   }
 
   @override
@@ -170,20 +169,23 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     Center(
                       child: Column(children: [
                         SizedBox(
-                          height: 50,
+                          height: 30,
                         ),
                         InkWell(
-                            child: Container(
-                                clipBehavior: Clip.antiAlias,
-                                height: 200,
-                                width: 200,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                ),
-                                child: profileImage == ""
-                                    ? Image.asset('images/upper_body-2.png',
-                                        fit: BoxFit.cover)
-                                    : Image.network(profileImage)),
+                            child: ClipOval(
+                                child: Container(
+                                    child: profileImage == ""
+                                        ? Image.asset(
+                                            'images/upper_body-2.png',
+                                            height: 100,
+                                            width: 100,
+                                          )
+                                        : Image.network(
+                                            profileImage,
+                                            height: 100,
+                                            width: 100,
+                                            fit: BoxFit.cover,
+                                          ))),
                             onTap: () async {
                               Future result = Navigator.push(
                                   context,

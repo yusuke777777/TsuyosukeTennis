@@ -1,12 +1,6 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/material/list_tile.dart';
-import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
-import 'package:tsuyosuke_tennis_ap/Page/ProfileReference.dart';
-import 'package:tsuyosuke_tennis_ap/Page/TalkRoom.dart';
-import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
-import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 
@@ -59,7 +53,8 @@ class _FindResultPageState extends State<FindResultPage> {
                 child: new CircularProgressIndicator(),
               ));
             } else if (snapshot.hasError) {
-              return new Text('Error: ${snapshot.error!}');
+              print('Error: ${snapshot.error!}');
+              return new Text("対象ユーザーは存在しません");
             } else if (snapshot.hasData) {
               //取得したい値をリスト型で格納
               List<String>? profileList = snapshot.data;
