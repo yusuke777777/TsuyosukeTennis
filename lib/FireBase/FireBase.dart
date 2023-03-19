@@ -438,7 +438,7 @@ class FirestoreMethod {
           doc.data()['joined_user_ids'].contains(yourUserId)) {
         CprofileSetting yourProfile = await getYourProfile(yourUserId);
         try {
-          // count = await NotificationMethod.unreadCountGet(yourUserId);
+          count = await NotificationMethod.unreadCountGet(yourUserId);
         } catch (e) {
           print("未読メッセージ数を正しく取得できませんでした");
         }
@@ -446,7 +446,7 @@ class FirestoreMethod {
             roomId: doc.id,
             user: yourProfile,
             lastMessage: doc.data()['last_message'] ?? '',
-            unReadCnt: 0);
+            unReadCnt: count);
       }
     });
     return room;
@@ -466,8 +466,7 @@ class FirestoreMethod {
           }
         });
         try {
-          // count = await NotificationMethod.unreadCountGet(yourUserId);
-          // print("count" + count.toString());
+          count = await NotificationMethod.unreadCountGet(yourUserId);
         } catch (e) {
           print("未読メッセージ数を正しく取得できませんでした");
         }
@@ -477,7 +476,7 @@ class FirestoreMethod {
               roomId: doc.id,
               user: yourProfile,
               lastMessage: doc.data()['last_message'] ?? '',
-              unReadCnt: 0);
+              unReadCnt: count);
           roomList.add(room);
         } catch (e) {
           print("トークルームの取得に失敗しました");
@@ -498,8 +497,8 @@ class FirestoreMethod {
       if (doc.data()['joined_user_ids'].contains(RECIPIENT_ID)) {
         if (doc.data()['joined_user_ids'].contains(SENDER_ID)) {
           try {
-            // count =
-            // await NotificationMethod.unreadCountGet(yourProfile.USER_ID);
+            count =
+            await NotificationMethod.unreadCountGet(yourProfile.USER_ID);
           } catch (e) {
             print("未読メッセージ数を正しく取得できませんでした");
             print(e);
@@ -508,7 +507,7 @@ class FirestoreMethod {
               roomId: doc.id,
               user: yourProfile,
               lastMessage: doc.data()['last_message'] ?? '',
-              unReadCnt: 0);
+              unReadCnt: count);
         }
       }
     });
