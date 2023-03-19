@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
+import '../PropSetCofig.dart';
 
 /**
  * 他人のプロフィールを参照する用画面
@@ -30,11 +31,9 @@ class _ProfileReferenceState extends State<ProfileReference> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        backgroundColor: const Color(0xFFF2FFE4),
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor: const Color(0xFF3CB371),
-          shadowColor: Colors.white,
+          backgroundColor:Colors.white,
           leading: IconButton(
             icon: const Icon(
               Icons.reply,
@@ -59,18 +58,24 @@ class _ProfileReferenceState extends State<ProfileReference> {
                 return Scrollbar(
                     isAlwaysShown: false,
                     child: SingleChildScrollView(
+
                       //画面の中身
                       //プロフィール画像
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          SizedBox(
+                            height: 30,
+                          ),
                           Center(
                             child: ClipOval(
                                 //プロフィール画像が設定されていなければデフォ画像
                                 child: profileList!.PROFILE_IMAGE == ""
                                     ? Image.asset('images/upper_body-2.png',
-                                        fit: BoxFit.cover)
+                                    width: 90,
+                                    height: 90,
+                                    fit: BoxFit.cover)
                                     : Image.network(
                                         profileList.PROFILE_IMAGE,
                                         width: 90,
@@ -85,30 +90,34 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                 child: Text(
                                   profileList.NICK_NAME,
                                   style: TextStyle(
-                                      fontSize: 50,
+                                      fontSize: 25,
                                       color: Colors.black,
                                       fontWeight: FontWeight.w900),
                                 ),
                               ),
                             ],
                           ),
+                          SizedBox(
+                            height: 10,
+                          ),
                           //登録ランク
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                width: 30,
-                              ),
                               Container(
                                 child: Text(
                                   '登録ランク',
                                   style: TextStyle(
-                                      fontSize: 25,
+                                      fontSize: 20,
                                       color: Colors.black,
                                       fontWeight: FontWeight.w900,
                                       decoration: TextDecoration.underline),
                                 ),
                               ),
                             ],
+                          ),
+                          SizedBox(
+                            height: 10,
                           ),
                           //登録ランクの値
                           Row(
@@ -118,22 +127,24 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                 child: Text(
                                   profileList.TOROKU_RANK,
                                   style: TextStyle(
-                                      fontSize: 30, color: Colors.black),
+                                      fontSize: 20, color: Colors.black),
                                 ),
                               ),
                             ],
                           ),
+
+                          SizedBox(
+                            height: 10,
+                          ),
                           //主な活動場所
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                width: 30,
-                              ),
                               Container(
                                 child: Text(
                                   '主な活動場所',
                                   style: TextStyle(
-                                      fontSize: 25,
+                                      fontSize: 20,
                                       color: Colors.black,
                                       fontWeight: FontWeight.w900,
                                       decoration: TextDecoration.underline),
@@ -153,89 +164,104 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                 return Column(
                                   children: [
                                     Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        SizedBox(
-                                          width: 50,
-                                        ),
                                         Container(
                                           child: Text(
-                                            '●都道府県',
+                                            '都道府県',
                                             style: TextStyle(
-                                                fontSize: 25,
+                                                fontSize: 20,
                                                 color: Colors.black,
-                                                fontWeight: FontWeight.w900,),
+                                                fontWeight: FontWeight.w900,
+                                                decoration: TextDecoration.underline),
                                           ),
                                         ),
                                       ],
                                     ),
+
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.end,
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                          padding: const EdgeInsets.all(5.0),
-                                          width: 250,
-                                          height: 50,
+                                          // padding: const EdgeInsets.all(5.0),
+                                          // width: 250,
+                                          // height: 50,
                                           child: Text(
                                             '${profileList.activityList[index].TODOFUKEN}',
                                             style: TextStyle(
-                                                fontSize: 30,
+                                                fontSize: 20,
                                                 color: Colors.black),
                                           ),
                                         ),
                                       ],
                                     ),
+
+                                    SizedBox(
+                                      height: 10,
+                                    ),
+
                                     Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
-                                        SizedBox(
-                                          width: 50,
-                                        ),
                                         Container(
                                           child: Text(
-                                            '●市町村',
+                                            '市町村',
                                             style: TextStyle(
-                                                fontSize: 25,
+                                                fontSize: 20,
                                                 color: Colors.black,
-                                                fontWeight: FontWeight.w900,),
+                                                fontWeight: FontWeight.w900,
+                                                decoration: TextDecoration.underline
+                                            ),
                                           ),
                                         ),
                                       ],
                                     ),
+
+                                    // SizedBox(
+                                    //   height: 10,
+                                    // ),
+
                                     Row(
                                       mainAxisAlignment:
-                                          MainAxisAlignment.end,
+                                      MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                            padding: const EdgeInsets.all(5.0),
-                                            width: 250,
-                                            height: 50,
+                                           padding: const EdgeInsets.all(8.0),
+                                           width: 400,
+                                           height: 50,
                                             child: TextField(
+                                              textAlign: TextAlign.center,
                                               decoration:
-                                                  InputDecoration.collapsed(
-                                                      border: InputBorder.none,
-                                                      hintText: ''),
+                                              InputDecoration.collapsed(
+                                                  border: InputBorder.none,
+                                                  hintText: ''),
                                               controller: profileList
                                                   .activityList[index]
                                                   .SHICHOSON,
                                               style: TextStyle(
-                                                  fontSize: 30,
+                                                  fontSize: 20,
                                                   color: Colors.black),
-                                            ))
+                                            )
+                                        )
                                       ],
                                     ),
                                   ],
                                 );
-                              }),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 30,
+                              }
                               ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
                               Container(
                                 child: Text(
                                   '年齢',
                                   style: TextStyle(
-                                      fontSize: 25,
+                                      fontSize: 20,
                                       color: Colors.black,
                                       fontWeight: FontWeight.w900,
                                       decoration: TextDecoration.underline
@@ -244,6 +270,11 @@ class _ProfileReferenceState extends State<ProfileReference> {
                               ),
                             ],
                           ),
+
+                          SizedBox(
+                            height: 10,
+                          ),
+
                           //登録ランクの値
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -252,22 +283,24 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                 child: Text(
                                   profileList.AGE,
                                   style: TextStyle(
-                                      fontSize: 30, color: Colors.black),
+                                      fontSize: 20, color: Colors.black),
                                 ),
                               ),
                             ],
                           ),
 
+                          SizedBox(
+                            height: 10,
+                          ),
+
                           Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                width: 30,
-                              ),
                               Container(
                                 child: Text(
                                   'コメント',
                                   style: TextStyle(
-                                      fontSize: 25,
+                                      fontSize: 20,
                                       color: Colors.black,
                                       fontWeight: FontWeight.w900,
                                       decoration: TextDecoration.underline
@@ -276,6 +309,11 @@ class _ProfileReferenceState extends State<ProfileReference> {
                               ),
                             ],
                           ),
+
+                          SizedBox(
+                            height: 10,
+                          ),
+
                           //登録ランクの値
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -284,7 +322,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                 child: Text(
                                   profileList.COMENT,
                                   style: TextStyle(
-                                      fontSize: 30, color: Colors.black),
+                                      fontSize: 20, color: Colors.black),
                                 ),
                               ),
                             ],
