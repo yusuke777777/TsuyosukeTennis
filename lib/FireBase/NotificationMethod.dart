@@ -21,6 +21,7 @@ class NotificationMethod {
       .doc(auth.currentUser!.uid)
       .collection('talkNotification').snapshots();
 
+
   static Future<String?> getMyTokenId() async {
     late final FirebaseMessaging _messaging;
     _messaging = FirebaseMessaging.instance;

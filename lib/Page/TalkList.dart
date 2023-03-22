@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -18,10 +20,27 @@ class TalkList extends StatefulWidget {
 
 class _TalkListState extends State<TalkList> {
   List<TalkRoomModel> talkList = [];
+  late Stream<QuerySnapshot> _stream;
+
+  @override
+  void initState() {
+    super.initState();
+    // Firestoreのストリームを購読する
+    _stream = FirebaseFirestore.instance
+        .collection('myNotification')
+        .doc(FirestoreMethod.auth.currentUser!.uid)
+        .collection('talkNotification').snapshots();
+
+    // ストリームに変更があったら、addNewDataToListメソッドを呼び出す
+    _stream.listen((data) {
+      setState(() {
+      });
+    });
+  }
 
   Future<void> createRooms() async {
     talkList =
-        await FirestoreMethod.getRooms(FirestoreMethod.auth.currentUser!.uid);  
+        await FirestoreMethod.getRooms(FirestoreMethod.auth.currentUser!.uid);
   }
 
   @override
@@ -36,10 +55,7 @@ class _TalkListState extends State<TalkList> {
           iconTheme: IconThemeData(color: Colors.black),
         ),
         drawer: DrawerConfig.drawer,
-        body: StreamBuilder<QuerySnapshot>(
-            stream: NotificationMethod.MyNotificationSnap,
-            builder: (context, snapshot) {
-              return FutureBuilder(
+        body:FutureBuilder(
                 future: createRooms(),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.done) {
@@ -52,7 +68,8 @@ class _TalkListState extends State<TalkList> {
                                 children: [
                                   SlidableAction(
                                     onPressed: (value) {
-                                      FirestoreMethod.addBlockList(talkList[index].user.USER_ID);
+                                      FirestoreMethod.addBlockList(
+                                          talkList[index].user.USER_ID);
                                     },
                                     backgroundColor: Colors.grey,
                                     icon: Icons.block_flipped,
@@ -168,7 +185,7 @@ class _TalkListState extends State<TalkList> {
                     return Center(child: CircularProgressIndicator());
                   }
                 },
-              );
-            }));
+              )
+            );
   }
 }
