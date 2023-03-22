@@ -20,19 +20,18 @@ class TalkList extends StatefulWidget {
 
 class _TalkListState extends State<TalkList> {
   List<TalkRoomModel> talkList = [];
-  late Stream<QuerySnapshot> _stream;
+  late StreamSubscription<QuerySnapshot> _subscription;
 
   @override
   void initState() {
     super.initState();
     // Firestoreのストリームを購読する
-    _stream = FirebaseFirestore.instance
+    _subscription = FirebaseFirestore.instance
         .collection('myNotification')
         .doc(FirestoreMethod.auth.currentUser!.uid)
-        .collection('talkNotification').snapshots();
-
+        .collection('talkNotification').snapshots()
     // ストリームに変更があったら、addNewDataToListメソッドを呼び出す
-    _stream.listen((data) {
+    .listen((data) {
       setState(() {
       });
     });
@@ -45,6 +44,8 @@ class _TalkListState extends State<TalkList> {
 
   @override
   void dispose() {
+// ストリームの購読をキャンセルする
+    _subscription.cancel();
     super.dispose();
   }
 
