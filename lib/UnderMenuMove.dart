@@ -106,6 +106,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
         });
         // 遷移先の画面を指定する
         String senderId = await message.data['key'];
+        print(senderId);
         TalkRoomModel room = await FirestoreMethod.getRoomBySearchResult(FirestoreMethod.auth.currentUser!.uid,senderId);
         Navigator.push(
           context,
