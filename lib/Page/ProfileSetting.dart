@@ -140,20 +140,20 @@ class _ProfileSettingState extends State<ProfileSetting> {
           appBar: AppBar(
             leading: widget.koushinFlg == '1'
                 ? IconButton(
-                    icon: const Icon(
-                      Icons.reply,
-                      color: Colors.black,
-                      size: 40.0,
-                    ),
-                    onPressed: () => {
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => UnderMenuMove.make(0),
-                        ),
-                      )
-                    },
-                  )
+              icon: const Icon(
+                Icons.reply,
+                color: Colors.black,
+                size: 40.0,
+              ),
+              onPressed: () => {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UnderMenuMove.make(0),
+                  ),
+                )
+              },
+            )
                 : null,
             elevation: 0.0,
             backgroundColor: Colors.white,
@@ -176,16 +176,16 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                 child: Container(
                                     child: profileImage == ""
                                         ? Image.asset(
-                                            'images/upper_body-2.png',
-                                            height: 100,
-                                            width: 100,
-                                          )
+                                      'images/upper_body-2.png',
+                                      height: 100,
+                                      width: 100,
+                                    )
                                         : Image.network(
-                                            profileImage,
-                                            height: 100,
-                                            width: 100,
-                                            fit: BoxFit.cover,
-                                          ))),
+                                      profileImage,
+                                      height: 100,
+                                      width: 100,
+                                      fit: BoxFit.cover,
+                                    ))),
                             onTap: () async {
                               Future result = Navigator.push(
                                   context,
@@ -201,22 +201,25 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         Container(
                           padding: const EdgeInsets.all(5.0),
                           width: 300,
-                          height: 40,
-                          decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                          ),
-                          child: TextField(
+                          height: 50,
+
+                          child: TextFormField(
                             controller: nickName,
-                            decoration: InputDecoration.collapsed(
-                                border: InputBorder.none,
-                                hintText: '名前を入力してください'),
+                            decoration: InputDecoration(
+                                labelText: '名前',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20)),
+                                contentPadding: EdgeInsets.symmetric(horizontal: 16),
+                                fillColor: Colors.white,
+                                filled: true
+                            ),
                             style: TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
                       ]),
                     ),
                     Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(
                             height: 30,
@@ -230,7 +233,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                 child: Text(
                                   '●登録ランク',
                                   style: TextStyle(
-                                      fontSize: 25, color: Colors.black),
+                                      fontSize: 20, color: Colors.black),
                                 ),
                               ),
                             ],
@@ -246,7 +249,9 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                 width: 250,
                                 height: 40,
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: Colors.grey),
+                                    border: Border.all(color: Colors.grey),
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(20)
                                 ),
                                 child: Text(
                                   torokuRank,
@@ -256,7 +261,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               ),
                               IconButton(
                                 icon:
-                                    Icon(Icons.arrow_drop_down_circle_rounded),
+                                Icon(Icons.arrow_drop_down_circle_rounded),
                                 onPressed: () {
                                   _showModalRankPicker(context);
                                 },
@@ -278,7 +283,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         Container(
                           child: Text(
                             '●主な活動場所',
-                            style: TextStyle(fontSize: 25, color: Colors.black),
+                            style: TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
                       ],
@@ -317,7 +322,9 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                     width: 250,
                                     height: 40,
                                     decoration: BoxDecoration(
-                                      border: Border.all(color: Colors.grey),
+                                        border: Border.all(color: Colors.grey),
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.circular(20)
                                     ),
                                     child: Text(
                                       '${activityList[index].TODOFUKEN}',
@@ -363,14 +370,16 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                       width: 250,
                                       height: 40,
                                       decoration: BoxDecoration(
-                                        border: Border.all(color: Colors.grey),
+                                          border: Border.all(color: Colors.grey),
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(20)
                                       ),
                                       child: TextField(
                                         decoration: InputDecoration.collapsed(
                                             border: InputBorder.none,
                                             hintText: ''),
                                         controller:
-                                            activityList[index].SHICHOSON,
+                                        activityList[index].SHICHOSON,
                                         style: TextStyle(
                                             fontSize: 20, color: Colors.black),
                                       ))
@@ -406,7 +415,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         Container(
                           child: Text(
                             '●年齢',
-                            style: TextStyle(fontSize: 25, color: Colors.black),
+                            style: TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
                       ],
@@ -424,7 +433,9 @@ class _ProfileSettingState extends State<ProfileSetting> {
                           width: 250,
                           height: 40,
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
+                              border: Border.all(color: Colors.grey),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20)
                           ),
                           child: Text(
                             age,
@@ -450,7 +461,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         Container(
                           child: Text(
                             '●性別',
-                            style: TextStyle(fontSize: 25, color: Colors.black),
+                            style: TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
                       ],
@@ -466,7 +477,9 @@ class _ProfileSettingState extends State<ProfileSetting> {
                           width: 250,
                           height: 40,
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
+                              border: Border.all(color: Colors.grey),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20)
                           ),
                           child: Text(
                             gender,
@@ -493,7 +506,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         Container(
                           child: Text(
                             '●コメント',
-                            style: TextStyle(fontSize: 25, color: Colors.black),
+                            style: TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
                       ],
@@ -506,12 +519,15 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         ),
                         Container(
                           padding: const EdgeInsets.all(5.0),
-                          width: 270,
-                          height: 100,
+                          width: 300,
+                          height: 150,
                           decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
+                              border: Border.all(color: Colors.grey),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20)
                           ),
                           child: TextField(
+                            maxLines: 6,
                             decoration: InputDecoration.collapsed(
                                 border: InputBorder.none, hintText: ''),
                             controller: coment,
@@ -533,7 +549,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             backgroundColor: Colors.lightGreenAccent,
                             shape: const RoundedRectangleBorder(
                               borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
+                              BorderRadius.all(Radius.circular(100)),
                             ),
                           ),
                           child: Text(
@@ -886,3 +902,4 @@ class _ProfileSettingState extends State<ProfileSetting> {
 //   return contentWidgets;
 // }
 }
+

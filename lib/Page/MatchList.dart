@@ -148,12 +148,15 @@ class _MatchListState extends State<MatchList> {
                                             size: 30.0,
                                           ),
                                           onPressed: () async {
-                                            TalkRoomModel room =
-                                                await FirestoreMethod.getRoom(
-                                                    matchList[index]
-                                                        .RECIPIENT_ID,
-                                                    matchList[index].SENDER_ID,
-                                                    matchList[index].YOUR_USER);
+                                            TalkRoomModel room = await FirestoreMethod.makeRoom(matchList[index].MY_USER.USER_ID ,
+                                                matchList[index].YOUR_USER.USER_ID);
+
+                                            // TalkRoomModel room =
+                                            //     await FirestoreMethod.getRoom(
+                                            //         matchList[index]
+                                            //             .RECIPIENT_ID,
+                                            //         matchList[index].SENDER_ID,
+                                            //         matchList[index].YOUR_USER);
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(

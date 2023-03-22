@@ -33,7 +33,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
       home: Scaffold(
         appBar: AppBar(
           elevation: 0.0,
-          backgroundColor:Colors.white,
+          backgroundColor: Colors.white,
           leading: IconButton(
             icon: const Icon(
               Icons.reply,
@@ -58,7 +58,6 @@ class _ProfileReferenceState extends State<ProfileReference> {
                 return Scrollbar(
                     isAlwaysShown: false,
                     child: SingleChildScrollView(
-
                       //画面の中身
                       //プロフィール画像
                       child: Column(
@@ -73,9 +72,9 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                 //プロフィール画像が設定されていなければデフォ画像
                                 child: profileList!.PROFILE_IMAGE == ""
                                     ? Image.asset('images/upper_body-2.png',
-                                    width: 90,
-                                    height: 90,
-                                    fit: BoxFit.cover)
+                                        width: 90,
+                                        height: 90,
+                                        fit: BoxFit.cover)
                                     : Image.network(
                                         profileList.PROFILE_IMAGE,
                                         width: 90,
@@ -164,7 +163,8 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                 return Column(
                                   children: [
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           child: Text(
@@ -173,7 +173,8 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                 fontSize: 20,
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.w900,
-                                                decoration: TextDecoration.underline),
+                                                decoration:
+                                                    TextDecoration.underline),
                                           ),
                                         ),
                                       ],
@@ -206,7 +207,8 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                     ),
 
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
                                           child: Text(
@@ -215,8 +217,8 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                 fontSize: 20,
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.w900,
-                                                decoration: TextDecoration.underline
-                                            ),
+                                                decoration:
+                                                    TextDecoration.underline),
                                           ),
                                         ),
                                       ],
@@ -228,32 +230,30 @@ class _ProfileReferenceState extends State<ProfileReference> {
 
                                     Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                          MainAxisAlignment.center,
                                       children: [
                                         Container(
-                                           padding: const EdgeInsets.all(8.0),
-                                           width: 400,
-                                           height: 50,
+                                            padding: const EdgeInsets.all(8.0),
+                                            width: 400,
+                                            height: 50,
                                             child: TextField(
                                               textAlign: TextAlign.center,
                                               decoration:
-                                              InputDecoration.collapsed(
-                                                  border: InputBorder.none,
-                                                  hintText: ''),
+                                                  InputDecoration.collapsed(
+                                                      border: InputBorder.none,
+                                                      hintText: ''),
                                               controller: profileList
                                                   .activityList[index]
                                                   .SHICHOSON,
                                               style: TextStyle(
                                                   fontSize: 20,
                                                   color: Colors.black),
-                                            )
-                                        )
+                                            ))
                                       ],
                                     ),
                                   ],
                                 );
-                              }
-                              ),
+                              }),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
@@ -264,8 +264,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                       fontSize: 20,
                                       color: Colors.black,
                                       fontWeight: FontWeight.w900,
-                                      decoration: TextDecoration.underline
-                                  ),
+                                      decoration: TextDecoration.underline),
                                 ),
                               ),
                             ],
@@ -303,8 +302,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                       fontSize: 20,
                                       color: Colors.black,
                                       fontWeight: FontWeight.w900,
-                                      decoration: TextDecoration.underline
-                                  ),
+                                      decoration: TextDecoration.underline),
                                 ),
                               ),
                             ],
@@ -314,13 +312,19 @@ class _ProfileReferenceState extends State<ProfileReference> {
                             height: 10,
                           ),
 
-                          //登録ランクの値
+                          //コメントの値
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
+                                constraints: BoxConstraints(
+                                  maxWidth: 400, // 最大幅を400に設定
+                                ),
                                 child: Text(
                                   profileList.COMENT,
+                                  textAlign: TextAlign.center,
+                                  softWrap: true,
+                                  maxLines: 6,
                                   style: TextStyle(
                                       fontSize: 20, color: Colors.black),
                                 ),
