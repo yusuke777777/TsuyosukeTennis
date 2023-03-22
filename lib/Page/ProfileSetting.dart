@@ -528,7 +528,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
                           ),
                           child: TextField(
                             maxLines: 6,
-
                             decoration: InputDecoration.collapsed(
                                 border: InputBorder.none, hintText: ''),
                             controller: coment,
