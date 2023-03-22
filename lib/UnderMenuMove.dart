@@ -105,7 +105,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
           // FlutterAppBadger.updateBadgeCount(_totalNotifications);
         });
         // 遷移先の画面を指定する
-        String senderId = message.data['key'];
+        String senderId = await message.data['key'];
         TalkRoomModel room = await FirestoreMethod.getRoomBySearchResult(FirestoreMethod.auth.currentUser!.uid,senderId);
         Navigator.push(
           context,
