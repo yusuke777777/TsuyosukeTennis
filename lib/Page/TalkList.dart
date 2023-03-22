@@ -44,6 +44,12 @@ class _TalkListState extends State<TalkList> {
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     //必要コンフィグの初期化
     HeaderConfig().init(context, "トーク一覧");
