@@ -7,11 +7,14 @@ import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/HomePage.dart';
 
 import 'Common/CPushNotification.dart';
+import 'Common/CtalkRoom.dart';
+import 'FireBase/FireBase.dart';
 import 'FireBase/NotificationMethod.dart';
 import 'FireBase/Notification_badge.dart';
 import 'Page/MatchList.dart';
 import 'Page/RankList.dart';
 import 'Page/TalkList.dart';
+import 'Page/TalkRoom.dart';
 import 'Page/manSinglesRankList.dart';
 
 /**
@@ -90,26 +93,25 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
 
       print("The token is " + myTokenId!);
 
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) async{
         CPushNotification notification = CPushNotification(
           title: message.notification?.title,
           body: message.notification?.body,
         );
-
         setState(() {
           _notificationInfo = notification;
-          int _totalNotifications = 5;
-          //残メッセージ数を取得メソッドを作成する
-          FlutterAppBadger.updateBadgeCount(_totalNotifications);
+          // int _totalNotifications = 5;
+          // //残メッセージ数を取得メソッドを作成する
+          // FlutterAppBadger.updateBadgeCount(_totalNotifications);
         });
-        // if (_notificationInfo != null) {
-        //   showSimpleNotification(Text(_notificationInfo!.title!),
-        //       leading:
-        //       NotificationBadge(totalNotifications: _totalNotifications),
-        //       subtitle: Text(_notificationInfo!.body!),
-        //       background: Colors.cyan.shade700,
-        //       duration: Duration(seconds: 2));
-        // }
+        // 遷移先の画面を指定する
+        String senderId = message.data['key'];
+        TalkRoomModel room = await FirestoreMethod.getRoomBySearchResult(FirestoreMethod.auth.currentUser!.uid,senderId);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => TalkRoom(room)),
+        );
+
       });
 
     }

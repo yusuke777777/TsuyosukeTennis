@@ -78,10 +78,10 @@ class NotificationMethod {
       'notification': {
         'title': name,
         'body': message,
-        'payload': auth.currentUser!.uid
       },
-      "to": recipientToken
+      "to": recipientToken,
       // 通知をタップしたときに開く画面の指定など、必要に応じてカスタマイズできるキーと値を指定することができます。
+      "key":auth.currentUser!.uid
     };
 
     var response = await http.post(Uri.parse(fcmUrl),
