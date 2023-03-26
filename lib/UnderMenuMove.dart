@@ -30,7 +30,8 @@ Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 class UnderMenuMove extends StatefulWidget {
   // const UnderMenuMove({Key? key}) : super(key: key);
-   int selectedIndex = 0;
+  int selectedIndex = 0;
+
   UnderMenuMove.make(this.selectedIndex);
 
   @override
@@ -61,7 +62,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     return Scaffold(
         body: _screens[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
-          selectedItemColor : Colors.green,
+          selectedItemColor: Colors.green,
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
           items: const <BottomNavigationBarItem>[
@@ -69,7 +70,8 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
             BottomNavigationBarItem(icon: Icon(Icons.search), label: '検索'),
             BottomNavigationBarItem(
                 icon: Icon(Icons.leaderboard), label: 'マッチ'),
-            BottomNavigationBarItem(icon: Icon(Icons.chat_bubble), label: 'トーク'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.chat_bubble), label: 'トーク'),
             BottomNavigationBarItem(icon: Icon(Icons.star), label: 'ランク'),
           ],
           type: BottomNavigationBarType.fixed,
@@ -93,7 +95,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
 
       print("The token is " + myTokenId!);
 
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) async{
+      FirebaseMessaging.onMessage.listen((RemoteMessage message)  {
         CPushNotification notification = CPushNotification(
           title: message.notification?.title,
           body: message.notification?.body,
@@ -104,19 +106,18 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
           // //残メッセージ数を取得メソッドを作成する
           // FlutterAppBadger.updateBadgeCount(_totalNotifications);
         });
-        // 遷移先の画面を指定する
-        String senderId = await message.data['key'];
-        print(senderId);
-        TalkRoomModel room = await FirestoreMethod.getRoomBySearchResult(FirestoreMethod.auth.currentUser!.uid,senderId);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => TalkRoom(room)),
-        );
-
       });
-
     }
   }
+
+  // 通知メッセージに応じて画面遷移
+  Future<void> notificationMove(BuildContext context, String senderId) async {
+    TalkRoomModel room = await FirestoreMethod.getRoomBySearchResult(
+        FirestoreMethod.auth.currentUser!.uid, senderId);
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => TalkRoom(room)));
+  }
+
   @override
   void initState() {
     _selectedIndex = widget.selectedIndex;
@@ -135,6 +136,4 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     // _totalNotifications = 0;
     super.initState();
   }
-
-
 }
