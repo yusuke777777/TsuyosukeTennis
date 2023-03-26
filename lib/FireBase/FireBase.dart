@@ -16,6 +16,7 @@ import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
 import '../Common/CFeedBackCommentSetting.dart';
 import '../Common/CHomePageSetting.dart';
 import '../Common/CSinglesRankModel.dart';
+import '../Common/CblockList.dart';
 import '../Common/CfriendsList.dart';
 import '../Common/CmatchList.dart';
 import '../Common/CmatchResult.dart';
@@ -470,17 +471,21 @@ class FirestoreMethod {
         } catch (e) {
           print("未読メッセージ数を正しく取得できませんでした");
         }
-        try {
-          CprofileSetting yourProfile = await getYourProfile(yourUserId);
-          TalkRoomModel room = await TalkRoomModel(
-              roomId: doc.id,
-              user: yourProfile,
-              lastMessage: doc.data()['last_message'] ?? '',
-              unReadCnt: count);
-          roomList.add(room);
-        } catch (e) {
-          print("トークルームの取得に失敗しました");
-          print(e);
+        //ブロックリストに存在しない場合に表示する
+        String blockUserChk = await getBlockListChk(yourUserId);
+        if (blockUserChk == "0") {
+          try {
+            CprofileSetting yourProfile = await getYourProfile(yourUserId);
+            TalkRoomModel room = await TalkRoomModel(
+                roomId: doc.id,
+                user: yourProfile,
+                lastMessage: doc.data()['last_message'] ?? '',
+                unReadCnt: count);
+            roomList.add(room);
+          } catch (e) {
+            print("トークルームの取得に失敗しました");
+            print(e);
+          }
         }
       }
     });
@@ -2513,7 +2518,8 @@ class FirestoreMethod {
   //ブロックリスト追加処理
   static Future<void> addBlockList(String userId) async {
     //ブロックリストチェック
-    String newFlg = await FirestoreMethod.newFlgBlockList(auth.currentUser!.uid);
+    String newFlg = await FirestoreMethod.newFlgBlockList(
+        auth.currentUser!.uid);
 
     if (newFlg == "0") {
       final snapshot = await blockListRef.doc(auth.currentUser!.uid).collection(
@@ -2540,22 +2546,62 @@ class FirestoreMethod {
   static Future<void> delBlockList(String userId) async {
     QuerySnapshot querySnapshot = await blockListRef
         .doc(auth.currentUser!.uid)
-        .collection('blockUserList').where('BLOCK_USER', isEqualTo: userId).get();
+        .collection('blockUserList')
+        .where('BLOCK_USER', isEqualTo: userId)
+        .get();
 
     querySnapshot.docs.forEach((doc) {
-      blockListRef.doc(auth.currentUser!.uid).collection('blockUserList').doc(doc.id).delete();
+      blockListRef.doc(auth.currentUser!.uid).collection('blockUserList').doc(
+          doc.id).delete();
     });
   }
 
-    //ブロックリスト_新規フラグ取得
-    static Future<String> newFlgBlockList(String userId) async {
-      final snapshot = await blockListRef.get();
-      String newFlg = "1";
-      await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-        if (doc.id == userId) {
-          newFlg = "0";
-        }
-      });
-      return newFlg;
+  //ブロックリスト_新規フラグ取得
+  static Future<String> newFlgBlockList(String userId) async {
+    final snapshot = await blockListRef.get();
+    String newFlg = "1";
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      if (doc.id == userId) {
+        newFlg = "0";
+      }
+    });
+    return newFlg;
+  }
+
+  //ブロックリストチェック
+  static Future<String> getBlockListChk(String userId) async {
+    int blockListCount = await blockListRef
+        .doc(auth.currentUser!.uid)
+        .collection('blockUserList')
+        .where('BLOCK_USER', isEqualTo: userId)
+        .get()
+        .then((querySnapshot) => querySnapshot.size);
+    if (blockListCount > 0) {
+      return "1";
+    } else {
+      return "0";
     }
   }
+
+  //ブロックリスト取得
+  static Future<List<BlockListModel>> getBlockList(String myUserId) async {
+    final snapshot = await await blockListRef
+        .doc(auth.currentUser!.uid)
+        .collection('blockUserList').get();
+    List<BlockListModel> blockList = [];
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      CprofileSetting yourProfile =
+      await getYourProfile(doc.data()['BLOCK_USER']);
+      try {
+        BlockListModel blockUser = BlockListModel(
+          BLOCK_USER_ID: doc.data()['BLOCK_USER'],
+          YOUR_USER: yourProfile,
+        );
+        blockList.add(blockUser);
+      } catch (e) {
+        print('ブロックリスト追加に失敗しました --- $e');
+      }
+    });
+    return blockList;
+  }
+}

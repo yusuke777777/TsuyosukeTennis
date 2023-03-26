@@ -6,6 +6,7 @@ import 'package:tsuyosuke_tennis_ap/Page/PassWordChangeForm.dart';
 
 import 'Common/CtalkRoom.dart';
 import 'FireBase/FireBase.dart';
+import 'Page/BlockList.dart';
 import 'Page/EmailChangeForm.dart';
 import 'Page/FriendManagerPage.dart';
 import 'Page/ProfileReference.dart';
@@ -99,6 +100,23 @@ class DrawerConfig {
             },
             child: Container(
               child: Text('パスワード変更'),
+              alignment: Alignment.center,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BlockList(),
+                ),
+              );
+            },
+            child: Container(
+              child: Text('ブロックリスト確認'),
               alignment: Alignment.center,
             ),
           ),

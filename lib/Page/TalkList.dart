@@ -73,6 +73,8 @@ class _TalkListState extends State<TalkList> {
                               onPressed: (value) {
                                 FirestoreMethod.addBlockList(
                                     talkList[index].user.USER_ID);
+                                setState(() {
+                                });
                               },
                               backgroundColor: Colors.grey,
                               icon: Icons.block_flipped,
