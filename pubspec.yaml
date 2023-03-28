@@ -58,15 +58,15 @@ dependencies:
 
 
 flutter_native_splash:
-  image: "images/FriendsTree_icon.png"
+  image: "images/tennispoicon.png"
   color: "#FFFFFF"
 
 flutter_icons:
   android: true
   ios: true
-  image_path: "assets/icon/icon.png"
+  image_path: "assets/icon/icon2.png"
   adaptive_icon_background: "#ffffff"
-  adaptive_icon_foreground: "assets/icon/icon.png"
+  adaptive_icon_foreground: "assets/icon/icon2.png"
   badge_count: $_notificationCount
 
 

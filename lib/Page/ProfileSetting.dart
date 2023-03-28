@@ -730,8 +730,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
   ];
 
   final List<String> _Gender = [
-    "男",
-    "女",
+    "男性",
+    "女性",
   ];
 
   void _showModalAgePicker(BuildContext context) {
