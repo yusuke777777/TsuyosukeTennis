@@ -57,8 +57,8 @@ class _BlockListState extends State<BlockList> {
                               motion: DrawerMotion(),
                               children: [
                                 SlidableAction(
-                                  onPressed: (value) {
-                                    FirestoreMethod.delBlockList(blockList[index].BLOCK_USER_ID);
+                                  onPressed: (value) async{
+                                    await FirestoreMethod.delBlockList(blockList[index].BLOCK_USER_ID);
                                     setState(() {
                                     });
                                   },
