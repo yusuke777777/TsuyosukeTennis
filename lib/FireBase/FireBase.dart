@@ -36,6 +36,8 @@ class FirestoreMethod {
   static final matchResultRef = _firestoreInstance.collection('matchResult');
   static final skilLevelRef = _firestoreInstance.collection('SkilLevel');
   static final feedBackRef = _firestoreInstance.collection('feedBack');
+  static final blockRef = _firestoreInstance.collection('blockList');
+
 
   //ランキングリスト
   static final manSinglesRankRef =
@@ -686,9 +688,17 @@ class FirestoreMethod {
     List<String> nameList = [];
     List<String> profileList = [];
     List<String> idList = [];
+    List<String> blockList =[];
     final snapShot_self = await profileRef
         .where('USER_ID', isEqualTo: auth.currentUser!.uid)
         .get();
+
+    final snapShot_block = await blockRef.doc(auth.currentUser!.uid)
+        .collection('blockUserList').get();
+
+    await Future.forEach<dynamic>(snapShot_block.docs, (document) async {
+      blockList.add(document.data()['BLOCK_USER']);
+    });
 
     //コレクション「myProfile」から該当データを絞る
     final snapShot = await FirebaseFirestore.instance
@@ -699,6 +709,9 @@ class FirestoreMethod {
         .get();
 
     await Future.forEach<dynamic>(snapShot.docs, (document) async {
+      if(blockList.contains(document.data()['USER_ID'])){
+        return;
+      }
       final snapShot_sub = await FirebaseFirestore.instance
           .collection('myProfile')
           .doc(document.id)
@@ -759,6 +772,14 @@ class FirestoreMethod {
     }
 
     String id = snapShot.docs.first.id;
+    final snapShot_block = await blockRef.doc(auth.currentUser!.uid)
+        .collection('blockUserList').where('BLOCK_USER', isEqualTo: id).get();
+
+    print("aaa" +snapShot_block.size.toString());
+    if(snapShot_block.size !=0) {
+      return resultList;
+    }
+
     String name = snapShot.docs.first!['NICK_NAME'];
     String profile = snapShot.docs.first!['PROFILE_IMAGE'];
     resultList.add(name);
