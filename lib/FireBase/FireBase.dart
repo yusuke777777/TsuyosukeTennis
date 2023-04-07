@@ -38,7 +38,6 @@ class FirestoreMethod {
   static final feedBackRef = _firestoreInstance.collection('feedBack');
   static final blockRef = _firestoreInstance.collection('blockList');
 
-
   //ランキングリスト
   static final manSinglesRankRef =
       _firestoreInstance.collection('manSinglesRank');
@@ -62,6 +61,10 @@ class FirestoreMethod {
 
   //ブロックリスト
   static final blockListRef = _firestoreInstance.collection('blockList');
+
+  //ユーザー向けメッセージ取得
+  static final toUserMessageRef =
+      _firestoreInstance.collection('toUserMessage');
 
   //プロフィール情報設定
   static Future<void> makeProfile(CprofileSetting profile) async {
@@ -146,14 +149,15 @@ class FirestoreMethod {
     String myid = snapShot.data()!['MY_USER_ID'];
     String image = snapShot.data()!['PROFILE_IMAGE'];
     CSkilLevelSetting skill = await getAvgSkillLevel();
+    String toUserMessage = await FirestoreMethod.getToUserMessage();
 
     CHomePageVal homePageval = CHomePageVal(
-      NAME: name,
-      MYUSERID: myid,
-      TOROKURANK: rank,
-      PROFILEIMAGE: image,
-      SKILL: skill,
-    );
+        NAME: name,
+        MYUSERID: myid,
+        TOROKURANK: rank,
+        PROFILEIMAGE: image,
+        SKILL: skill,
+        TOUSERMESSAGE: toUserMessage);
 
     late String manSingleRank;
     if (rank == "初級") {
@@ -600,7 +604,9 @@ class FirestoreMethod {
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
-    roomRef.doc(room.roomId).update({'last_message': message,'updated_time':Timestamp.now()});
+    roomRef
+        .doc(room.roomId)
+        .update({'last_message': message, 'updated_time': Timestamp.now()});
     CprofileSetting myProfile = await FirestoreMethod.getProfile();
     String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
     if (tokenId == "") {
@@ -632,7 +638,9 @@ class FirestoreMethod {
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
-    roomRef.doc(room.roomId).update({'last_message': "対戦お願いします！",'updated_time':Timestamp.now()});
+    roomRef
+        .doc(room.roomId)
+        .update({'last_message': "対戦お願いします！", 'updated_time': Timestamp.now()});
     CprofileSetting myProfile = await FirestoreMethod.getProfile();
     String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
     if (tokenId == "") {
@@ -659,7 +667,8 @@ class FirestoreMethod {
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
-    roomRef.doc(room.roomId).update({'last_message': "友達登録お願いします！",'updated_time':Timestamp.now()});
+    roomRef.doc(room.roomId).update(
+        {'last_message': "友達登録お願いします！", 'updated_time': Timestamp.now()});
     CprofileSetting myProfile = await FirestoreMethod.getProfile();
     String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
     if (tokenId == "") {
@@ -688,13 +697,15 @@ class FirestoreMethod {
     List<String> nameList = [];
     List<String> profileList = [];
     List<String> idList = [];
-    List<String> blockList =[];
+    List<String> blockList = [];
     final snapShot_self = await profileRef
         .where('USER_ID', isEqualTo: auth.currentUser!.uid)
         .get();
 
-    final snapShot_block = await blockRef.doc(auth.currentUser!.uid)
-        .collection('blockUserList').get();
+    final snapShot_block = await blockRef
+        .doc(auth.currentUser!.uid)
+        .collection('blockUserList')
+        .get();
 
     await Future.forEach<dynamic>(snapShot_block.docs, (document) async {
       blockList.add(document.data()['BLOCK_USER']);
@@ -709,7 +720,7 @@ class FirestoreMethod {
         .get();
 
     await Future.forEach<dynamic>(snapShot.docs, (document) async {
-      if(blockList.contains(document.data()['USER_ID'])){
+      if (blockList.contains(document.data()['USER_ID'])) {
         return;
       }
       final snapShot_sub = await FirebaseFirestore.instance
@@ -772,11 +783,14 @@ class FirestoreMethod {
     }
 
     String id = snapShot.docs.first.id;
-    final snapShot_block = await blockRef.doc(auth.currentUser!.uid)
-        .collection('blockUserList').where('BLOCK_USER', isEqualTo: id).get();
+    final snapShot_block = await blockRef
+        .doc(auth.currentUser!.uid)
+        .collection('blockUserList')
+        .where('BLOCK_USER', isEqualTo: id)
+        .get();
 
-    print("aaa" +snapShot_block.size.toString());
-    if(snapShot_block.size !=0) {
+    print("aaa" + snapShot_block.size.toString());
+    if (snapShot_block.size != 0) {
       return resultList;
     }
 
@@ -806,9 +820,10 @@ class FirestoreMethod {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
     ;
-    roomRef
-        .doc(room.roomId)
-        .update({'last_message': "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！",'updated_time':Timestamp.now()});
+    roomRef.doc(room.roomId).update({
+      'last_message': "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！",
+      'updated_time': Timestamp.now()
+    });
     CprofileSetting myProfile = await FirestoreMethod.getProfile();
     String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
     if (tokenId == "") {
@@ -839,9 +854,10 @@ class FirestoreMethod {
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
-    roomRef
-        .doc(room.roomId)
-        .update({'last_message': "友人申請を受け入れました。\n友人一覧を確認してみよう！",'updated_time':Timestamp.now()});
+    roomRef.doc(room.roomId).update({
+      'last_message': "友人申請を受け入れました。\n友人一覧を確認してみよう！",
+      'updated_time': Timestamp.now()
+    });
     CprofileSetting myProfile = await FirestoreMethod.getProfile();
     String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
     if (tokenId == "") {
@@ -2632,5 +2648,12 @@ class FirestoreMethod {
       }
     });
     return blockList;
+  }
+
+  //開発者からユーザーへのメッセージ
+  static Future<String> getToUserMessage() async {
+    final snapShot = await toUserMessageRef.doc("message").get();
+    String userToMessage = snapShot.data()!["userMessage"];
+    return userToMessage;
   }
 }

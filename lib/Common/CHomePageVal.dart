@@ -10,6 +10,7 @@ class CHomePageVal {
   late int? MEDIUMWINRATE;
   late int? BEGINWINRATE;
   late CSkilLevelSetting SKILL;
+  late String TOUSERMESSAGE;
 
   CHomePageVal(
       {required this.NAME,
@@ -20,6 +21,7 @@ class CHomePageVal {
         this.ADVANCEDWINRATE,
         this.MEDIUMWINRATE,
         this.BEGINWINRATE,
-        required this.SKILL
+        required this.SKILL,
+        required this.TOUSERMESSAGE
       });
 }

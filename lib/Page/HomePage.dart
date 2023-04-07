@@ -32,6 +32,7 @@ class _HomePageState extends State<HomePage> {
     DrawerConfig().init(context);
 
     uid = FirestoreMethod.getUid();
+
     Future<CHomePageVal>? futureList =
         FirestoreMethod.getNickNameAndTorokuRank(uid);
 
@@ -89,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                           height: 30,
                           child: Marquee(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            text: 'こんにちは！今日はいい天気ですね！',
+                            text: homePageVal!.TOUSERMESSAGE,
                             style: TextStyle(
                               backgroundColor: Colors.green[50],
                               color: Colors.white24,
@@ -321,8 +322,12 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Text('------------------------',
                             style: TextStyle(fontSize: 20)),
-                        Text('スキルレベル', style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,
-                          decoration: TextDecoration.underline,)),
+                        Text('スキルレベル',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                            )),
                         //ストローク
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -335,12 +340,16 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Text('フォア：', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
-                              ignoreGestures : true,
-                              allowHalfRating : true,
-                              initialRating: homePageVal.SKILL.STROKE_FOREHAND.isNaN ?
-                                  0 : homePageVal.SKILL.STROKE_FOREHAND,
-                              itemBuilder: (context, index) =>
-                                  const Icon(Icons.star,color: Colors.yellow,),
+                              ignoreGestures: true,
+                              allowHalfRating: true,
+                              initialRating:
+                                  homePageVal.SKILL.STROKE_FOREHAND.isNaN
+                                      ? 0
+                                      : homePageVal.SKILL.STROKE_FOREHAND,
+                              itemBuilder: (context, index) => const Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                              ),
                               onRatingUpdate: (rating) {
                                 //評価が更新されたときの処理を書く
                               },
@@ -352,12 +361,16 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Text('バック：', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
-                              ignoreGestures : true,
-                              allowHalfRating : true,
-                              initialRating: homePageVal.SKILL.STROKE_BACKHAND.isNaN ?
-                                  0 : homePageVal.SKILL.STROKE_BACKHAND,
-                              itemBuilder: (context, index) =>
-                              const Icon(Icons.star,color: Colors.yellow,),
+                              ignoreGestures: true,
+                              allowHalfRating: true,
+                              initialRating:
+                                  homePageVal.SKILL.STROKE_BACKHAND.isNaN
+                                      ? 0
+                                      : homePageVal.SKILL.STROKE_BACKHAND,
+                              itemBuilder: (context, index) => const Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                              ),
                               onRatingUpdate: (rating) {
                                 //評価が更新されたときの処理を書く
                               },
@@ -379,12 +392,16 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Text('フォア：', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
-                              ignoreGestures : true,
-                              allowHalfRating : true,
-                              initialRating: homePageVal.SKILL.VOLLEY_FOREHAND.isNaN ?
-                                  0 : homePageVal.SKILL.VOLLEY_FOREHAND,
-                              itemBuilder: (context, index) =>
-                              const Icon(Icons.star,color: Colors.yellow,),
+                              ignoreGestures: true,
+                              allowHalfRating: true,
+                              initialRating:
+                                  homePageVal.SKILL.VOLLEY_FOREHAND.isNaN
+                                      ? 0
+                                      : homePageVal.SKILL.VOLLEY_FOREHAND,
+                              itemBuilder: (context, index) => const Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                              ),
                               onRatingUpdate: (rating) {
                                 //評価が更新されたときの処理を書く
                               },
@@ -396,12 +413,16 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Text('バック：', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
-                              ignoreGestures : true,
-                              allowHalfRating : true,
-                              initialRating: homePageVal.SKILL.VOLLEY_BACKHAND.isNaN ?
-                                  0 : homePageVal.SKILL.VOLLEY_BACKHAND,
-                              itemBuilder: (context, index) =>
-                              const Icon(Icons.star,color: Colors.yellow,),
+                              ignoreGestures: true,
+                              allowHalfRating: true,
+                              initialRating:
+                                  homePageVal.SKILL.VOLLEY_BACKHAND.isNaN
+                                      ? 0
+                                      : homePageVal.SKILL.VOLLEY_BACKHAND,
+                              itemBuilder: (context, index) => const Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                              ),
                               onRatingUpdate: (rating) {
                                 //評価が更新されたときの処理を書く
                               },
@@ -424,12 +445,15 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Text('１ｓｔ：', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
-                              ignoreGestures : true,
-                              allowHalfRating : true,
-                              initialRating: homePageVal.SKILL.SERVE_1ST.isNaN ?
-                                  0 : homePageVal.SKILL.SERVE_1ST,
-                              itemBuilder: (context, index) =>
-                              const Icon(Icons.star,color: Colors.yellow,),
+                              ignoreGestures: true,
+                              allowHalfRating: true,
+                              initialRating: homePageVal.SKILL.SERVE_1ST.isNaN
+                                  ? 0
+                                  : homePageVal.SKILL.SERVE_1ST,
+                              itemBuilder: (context, index) => const Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                              ),
                               onRatingUpdate: (rating) {
                                 //評価が更新されたときの処理を書く
                               },
@@ -441,19 +465,21 @@ class _HomePageState extends State<HomePage> {
                           children: [
                             Text('２ｎｄ：', style: TextStyle(fontSize: 20)),
                             RatingBar.builder(
-                              ignoreGestures : true,
-                              allowHalfRating : true,
-                              initialRating: homePageVal.SKILL.SERVE_2ND.isNaN ?
-                                  0 : homePageVal.SKILL.SERVE_2ND,
-                              itemBuilder: (context, index) =>
-                              const Icon(Icons.star,color: Colors.yellow,),
+                              ignoreGestures: true,
+                              allowHalfRating: true,
+                              initialRating: homePageVal.SKILL.SERVE_2ND.isNaN
+                                  ? 0
+                                  : homePageVal.SKILL.SERVE_2ND,
+                              itemBuilder: (context, index) => const Icon(
+                                Icons.star,
+                                color: Colors.yellow,
+                              ),
                               onRatingUpdate: (rating) {
                                 //評価が更新されたときの処理を書く
                               },
                             ),
                           ],
                         ),
-
                       ],
                     ),
 
@@ -468,36 +494,32 @@ class _HomePageState extends State<HomePage> {
                           child: Container(
                             width: 300,
                             child: TextButton(
-                              style: TextButton.styleFrom(
-                                backgroundColor: Colors.lightGreenAccent,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                  BorderRadius.all(Radius.circular(80)),
+                                style: TextButton.styleFrom(
+                                  backgroundColor: Colors.lightGreenAccent,
+                                  shape: const RoundedRectangleBorder(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(80)),
+                                  ),
                                 ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  'フィードバックを確認',
-                                  style:
-                                  TextStyle(fontSize: 20, color: Colors.black),
+                                child: Center(
+                                  child: Text(
+                                    'フィードバックを確認',
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.black),
+                                  ),
                                 ),
-                              ),
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => CheckFeedBack(),
-                                    ));
-                                }
-                            ),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => CheckFeedBack(),
+                                      ));
+                                }),
                           ),
                         ),
-
-
                       ],
                     ),
                   ]),
-
                 );
               } else {
                 return Text("データが存在しません");
