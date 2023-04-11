@@ -654,6 +654,69 @@ class FirestoreMethod {
     await NotificationMethod.unreadCount(room.user.USER_ID);
   }
 
+  //対戦結果入力メッセージ(フィードバック入力希望しない場合)
+  static Future<void> sendMatchResultMessage(String myUserId,String yourUserId) async {
+    TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
+    final messageRef = roomRef.doc(room.roomId).collection('message');
+    String? myUid = auth.currentUser!.uid;
+    await messageRef.add({
+      'message': "対戦結果が入力されました！",
+      'sender_id': myUid,
+      'send_time': Timestamp.now(),
+      'matchStatusFlg': "3",
+      'friendStatusFlg': "0",
+      'isRead': false
+    }).then((value) {
+      messageRef.doc(value.id).update({'messageId': value.id});
+    });
+    roomRef
+        .doc(room.roomId)
+        .update({'last_message': "対戦結果が入力されました！", 'updated_time': Timestamp.now()});
+    CprofileSetting myProfile = await FirestoreMethod.getProfile();
+    String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
+    if (tokenId == "") {
+      //トークンIDが登録されていない場合
+    } else {
+      //トークンIDが登録されている場合
+      await NotificationMethod.sendMessage(
+          tokenId!, "対戦結果が入力されました！", myProfile.NICK_NAME);
+    }
+    //未読メッセージ数の更新
+    await NotificationMethod.unreadCount(room.user.USER_ID);
+  }
+
+  //対戦結果入力メッセージ(フィードバック入力希望の場合)
+  static Future<void> sendMatchResultFeedMessage(String myUserId,String yourUserId) async {
+    TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
+    final messageRef = roomRef.doc(room.roomId).collection('message');
+    String? myUid = auth.currentUser!.uid;
+    await messageRef.add({
+      'message': "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！",
+      'sender_id': myUid,
+      'send_time': Timestamp.now(),
+      'matchStatusFlg': "4",
+      'friendStatusFlg': "0",
+      'isRead': false
+    }).then((value) {
+      messageRef.doc(value.id).update({'messageId': value.id});
+    });
+    roomRef
+        .doc(room.roomId)
+        .update({'last_message': "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！", 'updated_time': Timestamp.now()});
+    CprofileSetting myProfile = await FirestoreMethod.getProfile();
+    String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
+    if (tokenId == "") {
+      //トークンIDが登録されていない場合
+    } else {
+      //トークンIDが登録されている場合
+      await NotificationMethod.sendMessage(
+          tokenId!, "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！", myProfile.NICK_NAME);
+    }
+    //未読メッセージ数の更新
+    await NotificationMethod.unreadCount(room.user.USER_ID);
+  }
+
+
   static Future<void> sendFriendMessage(TalkRoomModel room) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
     String? myUid = auth.currentUser!.uid;
@@ -836,6 +899,13 @@ class FirestoreMethod {
     }
     //未読メッセージ数の更新
     await NotificationMethod.unreadCount(room.user.USER_ID);
+  }
+
+  //マッチフィードバック受け入れ
+  static Future<void> matchFeedAccept(TalkRoomModel room, String messageId) async {
+    final messageRef = roomRef.doc(room.roomId).collection('message');
+
+    await messageRef.doc(messageId).update({'matchStatusFlg': "5"});
   }
 
   //友人申請受け入れ

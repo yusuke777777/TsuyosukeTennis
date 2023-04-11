@@ -50,10 +50,17 @@ class _MatchResultState extends State<MatchResult> {
   final inputWord = TextEditingController();
 
   bool _flag = false;
+  bool _feedbackFlg = false;
 
   void _handleCheckbox(bool? e) {
     setState(() {
       _flag = e!;
+    });
+  }
+
+  void _handleCheckbox2(bool? e) {
+    setState(() {
+      _feedbackFlg = e!;
     });
   }
 
@@ -336,11 +343,10 @@ class _MatchResultState extends State<MatchResult> {
                     const SizedBox(
                       height: 20,
                     ),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('コメント', style: TextStyle(fontSize: 20)),
+                        Text('感想・フィードバック', style: TextStyle(fontSize: 20)),
                       ],
                     ),
                     Row(
@@ -358,6 +364,20 @@ class _MatchResultState extends State<MatchResult> {
                             ),
                           ),
                         ),
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text('フィードバックを希望しますか？', style: TextStyle(fontSize: 16)),
+                        Checkbox(
+                          activeColor: Colors.blue,// Onになった時の色を指定
+                          value: _feedbackFlg,
+                          onChanged: _handleCheckbox2,
+                        )
                       ],
                     ),
                     const SizedBox(
@@ -433,7 +453,12 @@ class _MatchResultState extends State<MatchResult> {
                               //対戦結果を登録する
                               FirestoreMethod.makeMatchResult(widget.myProfile,
                                   widget.yourProfile, matchResultList);
-
+                              //対戦結果のメッセージを送信する
+                              if(_feedbackFlg){
+                                FirestoreMethod.sendMatchResultFeedMessage(widget.myProfile.USER_ID,widget.yourProfile.USER_ID);
+                              }else{
+                                FirestoreMethod.sendMatchResultMessage(widget.myProfile.USER_ID,widget.yourProfile.USER_ID);
+                              }
                               //星数を登録する
                               if (!_flag) {
                                 CSkilLevelSetting skill = CSkilLevelSetting(

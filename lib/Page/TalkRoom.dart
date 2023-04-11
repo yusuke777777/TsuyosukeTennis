@@ -74,44 +74,47 @@ class _TalkRoomState extends State<TalkRoom> {
                             itemBuilder: (context, index) {
                               Message _message = messageList[index];
                               DateTime sendtime = _message.sendTime.toDate();
-                              String dateString = "";
-                              if (index == 0) {
-                                dateString =
-                                    intl.DateFormat("yyyy年M月d日").format(sendtime);
-                              } else {
-                                Message _messageZen = messageList[index - 1];
-                                DateTime sendtimeZen =
-                                    _messageZen.sendTime.toDate();
-                                String dateStringWk1 =
-                                    intl.DateFormat("yyyy年M月d日").format(sendtime);
-                                String dateStringWk2 =
-                                    intl.DateFormat("yyyy年M月d日").format(sendtimeZen);
-                                if (dateStringWk1 != dateStringWk2) {
-                                  dateString = dateStringWk1;
-                                }
-                              }
+                              // String dateString = "";
+                              // if (index == 0 || messageList[index - 1].sendTime.toDate().day != messageList[index].sendTime.toDate().day) {
+                              //   dateString = intl.DateFormat("yyyy年M月d日").format(messageList[index].sendTime.toDate());
+                              // }
+                              // if (index == 0) {
+                              //   dateString = intl.DateFormat("yyyy年M月d日")
+                              //       .format(sendtime);
+                              // } else {
+                              //   Message _messageZen = messageList[index - 1];
+                              //   DateTime sendtimeZen =
+                              //       _messageZen.sendTime.toDate();
+                              //   String dateStringWk1 =
+                              //       intl.DateFormat("yyyy年M月d日")
+                              //           .format(sendtime);
+                              //   String dateStringWk2 =
+                              //       intl.DateFormat("yyyy年M月d日")
+                              //           .format(sendtimeZen);
+                              //   if (dateStringWk1 != dateStringWk2) {
+                              //     dateString = dateStringWk1;
+                              //   }
+                              // }
                               return Column(
                                 children: [
-                                  dateString == ''
-                                      ? Container()
-                                      : Container(
+                                  (index == messageList.length - 1 || messageList[index].sendTime.toDate().day != messageList[index + 1].sendTime.toDate().day)
+                                      ? Container(
                                           child: Text(
-                                            dateString,
+                                            intl.DateFormat("yyyy年M月d日").format(messageList[index].sendTime.toDate()),
                                             style: TextStyle(fontSize: 12),
                                           ),
-                                    constraints: BoxConstraints(
-                                        maxWidth: MediaQuery.of(context)
-                                            .size
-                                            .width *
-                                            0.6),
-                                        padding: EdgeInsets.symmetric(
-                                      horizontal: 10.0,
-                                      vertical: 6.0),
-                                  decoration: BoxDecoration(
-                                      color: Color(0xFFF1FFE4),
-                                      borderRadius:
-                                      BorderRadius.circular(20)),
-                                  ),
+                                          constraints: BoxConstraints(
+                                              maxWidth: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.6),
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: 10.0, vertical: 6.0),
+                                          decoration: BoxDecoration(
+                                              color: Color(0xFFF1FFE4),
+                                              borderRadius:
+                                                  BorderRadius.circular(20)),
+                                        ): Container(),
                                   Padding(
                                     padding: EdgeInsets.only(
                                         top: 10.0,
@@ -140,43 +143,9 @@ class _TalkRoomState extends State<TalkRoom> {
                                                     : Colors.white,
                                                 borderRadius:
                                                     BorderRadius.circular(20)),
-                                            child: messageList[index]
-                                                        .matchStatusFlg ==
-                                                    "1"
-                                                ? Column(
-                                                    children: [
-                                                      Text(messageList[index]
-                                                          .message),
-                                                      TextButton(
-                                                          onPressed: () {
-                                                            if (messageList[
-                                                                    index]
-                                                                .isMe) {
-                                                              print(
-                                                                  "試合の受け入れメッセージ送信済");
-                                                            } else {
-                                                              FirestoreMethod.matchAccept(
-                                                                  widget.room,
-                                                                  messageList[
-                                                                          index]
-                                                                      .messageId);
-                                                              //受け入れ処理を入れる
-                                                              FirestoreMethod
-                                                                  .makeMatch(
-                                                                      widget
-                                                                          .room);
-                                                            }
-                                                          },
-                                                          child: Text(
-                                                            "受け入れる",
-                                                            style: TextStyle(
-                                                                color: Colors
-                                                                    .purple),
-                                                          ))
-                                                    ],
-                                                  )
-                                                : messageList[index]
-                                                            .friendStatusFlg ==
+                                            child:
+                                                messageList[index]
+                                                            .matchStatusFlg ==
                                                         "1"
                                                     ? Column(
                                                         children: [
@@ -189,27 +158,17 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                         index]
                                                                     .isMe) {
                                                                   print(
-                                                                      "自身の友人申請に自身で受け入れはできません");
+                                                                      "試合の受け入れメッセージ送信済");
                                                                 } else {
-                                                                  friendflg ==
-                                                                          true
-                                                                      ? showDialog(
-                                                                          context:
-                                                                              context,
-                                                                          builder: (_) =>
-                                                                              AlertDialog(
-                                                                                content: Text("すでに友人登録済みです"),
-                                                                              ))
-                                                                      :
-                                                                      //受け入れ処理を入れる
-                                                                      FirestoreMethod.friendAccept(
-                                                                          widget
-                                                                              .room,
-                                                                          messageList[index]
-                                                                              .messageId);
-                                                                  //友人一覧追記
+                                                                  FirestoreMethod.matchAccept(
+                                                                      widget
+                                                                          .room,
+                                                                      messageList[
+                                                                              index]
+                                                                          .messageId);
+                                                                  //受け入れ処理を入れる
                                                                   FirestoreMethod
-                                                                      .makeFriends(
+                                                                      .makeMatch(
                                                                           widget
                                                                               .room);
                                                                 }
@@ -222,11 +181,9 @@ class _TalkRoomState extends State<TalkRoom> {
                                                               ))
                                                         ],
                                                       )
-                                                    : messageList[index].matchStatusFlg ==
-                                                                "2" ||
-                                                            messageList[index]
-                                                                    .friendStatusFlg ==
-                                                                "2"
+                                                    : messageList[index]
+                                                                .friendStatusFlg ==
+                                                            "1"
                                                         ? Column(
                                                             children: [
                                                               Text(messageList[
@@ -235,18 +192,108 @@ class _TalkRoomState extends State<TalkRoom> {
                                                               TextButton(
                                                                   onPressed:
                                                                       () {
-                                                                    //受け入れ済なこと伝えるダイアログ出す？
+                                                                    if (messageList[
+                                                                            index]
+                                                                        .isMe) {
+                                                                      print(
+                                                                          "自身の友人申請に自身で受け入れはできません");
+                                                                    } else {
+                                                                      friendflg ==
+                                                                              true
+                                                                          ? showDialog(
+                                                                              context:
+                                                                                  context,
+                                                                              builder: (_) =>
+                                                                                  AlertDialog(
+                                                                                    content: Text("すでに友人登録済みです"),
+                                                                                  ))
+                                                                          :
+                                                                          //受け入れ処理を入れる
+                                                                          FirestoreMethod.friendAccept(
+                                                                              widget.room,
+                                                                              messageList[index].messageId);
+                                                                      //友人一覧追記
+                                                                      FirestoreMethod.makeFriends(
+                                                                          widget
+                                                                              .room);
+                                                                    }
                                                                   },
                                                                   child: Text(
-                                                                    "受け入れ済",
+                                                                    "受け入れる",
                                                                     style: TextStyle(
                                                                         color: Colors
                                                                             .purple),
                                                                   ))
                                                             ],
                                                           )
-                                                        : Text(messageList[index]
-                                                            .message)),
+                                                        : messageList[index]
+                                                                        .matchStatusFlg ==
+                                                                    "2" ||
+                                                                messageList[index]
+                                                                        .friendStatusFlg ==
+                                                                    "2"
+                                                            ? Column(
+                                                                children: [
+                                                                  Text(messageList[
+                                                                          index]
+                                                                      .message),
+                                                                  TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        //受け入れ済なこと伝えるダイアログ出す？
+                                                                      },
+                                                                      child:
+                                                                          Text(
+                                                                        "受け入れ済",
+                                                                        style: TextStyle(
+                                                                            color:
+                                                                                Colors.purple),
+                                                                      ))
+                                                                ],
+                                                              )
+                                                            : messageList[index]
+                                                                        .matchStatusFlg ==
+                                                                    "4"
+                                                                ? Column(
+                                                                    children: [
+                                                                      Text(messageList[
+                                                                              index]
+                                                                          .message),
+                                                                      TextButton(
+                                                                          onPressed:
+                                                                              () {
+                                                                            if (messageList[index].isMe) {
+                                                                              print("対戦結果メッセージ送信済み");
+                                                                            } else {
+                                                                              FirestoreMethod.matchFeedAccept(widget.room, messageList[index].messageId);
+                                                                              //フィードバック更新処理
+                                                                              // FirestoreMethod.makeMatch(widget.room);
+                                                                            }
+                                                                          },
+                                                                          child:
+                                                                              Text(
+                                                                            "フィードバックする",
+                                                                            style:
+                                                                                TextStyle(color: Colors.purple),
+                                                                          ))
+                                                                    ],
+                                                                  )
+                                                                : messageList[index].matchStatusFlg == "5"
+                                                                    ? Column(
+                                                                        children: [
+                                                                          Text(messageList[index]
+                                                                              .message),
+                                                                          TextButton(
+                                                                              onPressed: () {
+                                                                                //受け入れ済なこと伝えるダイアログ出す？
+                                                                              },
+                                                                              child: Text(
+                                                                                "フィードバック済",
+                                                                                style: TextStyle(color: Colors.purple),
+                                                                              ))
+                                                                        ],
+                                                                      )
+                                                                    : Text(messageList[index].message)),
                                         Text(
                                           intl.DateFormat('HH:mm')
                                               .format(sendtime),
