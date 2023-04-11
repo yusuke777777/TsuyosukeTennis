@@ -97,7 +97,7 @@ class _TalkRoomState extends State<TalkRoom> {
                               // }
                               return Column(
                                 children: [
-                                  (index == messageList.length - 1 || messageList[index].sendTime.toDate().day != messageList[index + 1].sendTime.toDate().day)
+                                  (index == messageList.length - 1 || intl.DateFormat("yyyy年M月d日").format(messageList[index].sendTime.toDate()) != intl.DateFormat("yyyy年M月d日").format(messageList[index + 1].sendTime.toDate()))
                                       ? Container(
                                           child: Text(
                                             intl.DateFormat("yyyy年M月d日").format(messageList[index].sendTime.toDate()),
