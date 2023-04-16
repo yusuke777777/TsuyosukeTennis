@@ -11,6 +11,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
+import 'package:tsuyosuke_tennis_ap/Common/CScoreRef.dart';
+import 'package:tsuyosuke_tennis_ap/Common/CScoreRefHistory.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
 
 import '../Common/CFeedBackCommentSetting.dart';
@@ -2726,4 +2728,40 @@ class FirestoreMethod {
     String userToMessage = snapShot.data()!["userMessage"];
     return userToMessage;
   }
+
+  /**
+   * 自分のユーザIDをキーに指定対戦相手との対戦結果を取得するメソッド
+   *  userId 自身のユーザーID
+   */
+  static Future<CScoreRef> getMatchResult(String oponent_UserId) async {
+
+    late List<CScoreRefHistory> historyList = [];
+    //対戦結果を取得
+    final doc = await matchResultRef.doc(auth.currentUser!.uid).collection('opponentList').doc(oponent_UserId).get();
+
+    //対戦日時、ポイント等を取得
+    final snapShot = await matchResultRef.doc(auth.currentUser!.uid).collection('opponentList').doc(oponent_UserId).collection('matchDetail').orderBy('KOUSHIN_TIME').get();
+
+    await Future.forEach<dynamic>(snapShot.docs, (doc_his) async {
+      CScoreRefHistory history =
+      new CScoreRefHistory
+        (KOUSHIN_TIME: doc_his['KOUSHIN_TIME'],
+          MY_POINT: doc_his['MY_POINT'],
+          YOUR_POINT: doc_his['YOUR_POINT']);
+
+      historyList.add(history);
+
+    });
+    CScoreRef result =
+    new CScoreRef
+      (MATCH_COUNT: doc!['MATCH_SU'],
+        WIN_COUNT: doc!['WIN_SU'],
+        LOSE_COUNT: doc!['LOSE_SU'],
+        WIN_LATE: doc!['WIN_RATE'],
+    HISTORYLIST: historyList);
+
+    return result;
+
+  }
+
 }

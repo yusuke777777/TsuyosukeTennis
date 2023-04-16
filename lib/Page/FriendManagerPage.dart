@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:tsuyosuke_tennis_ap/Page/ProfileReference.dart';
+import 'package:tsuyosuke_tennis_ap/Page/ScoreRefPage.dart';
 
 import '../Common/CfriendsList.dart';
 import '../Common/CtalkRoom.dart';
@@ -142,7 +143,23 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                                 builder: (context) =>
                                                     TalkRoom(room)));
                                       }
-                                  )
+                                  ),
+                                  IconButton(
+                                      icon: const Icon(
+                                        Icons.scoreboard,
+                                        color: Colors.black,
+                                        size: 30.0,
+                                      ),
+
+                                      onPressed: () async {
+                                        Navigator.pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ScoreRefPage(friendsList[index].YOUR_USER.USER_ID)),
+                                        );
+                                      },
+                                  ),
                                 ],
                               ),
                             ),
