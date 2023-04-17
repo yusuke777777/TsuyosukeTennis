@@ -26,7 +26,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
     HeaderConfig().init(context, "対戦成績");
     DrawerConfig().init(context);
 
-    Future<CScoreRef>? futureList = FirestoreMethod.getMatchResult(opponent_id);
+    Future<CScoreRef>? futureList = FirestoreMethod.getMatchResultScore(opponent_id);
 
     return Scaffold(
       appBar: AppBar(

@@ -2869,7 +2869,7 @@ class FirestoreMethod {
    * 自分のユーザIDをキーに指定対戦相手との対戦結果を取得するメソッド
    *  userId 自身のユーザーID
    */
-  static Future<CScoreRef> getMatchResult(String oponent_UserId) async {
+  static Future<CScoreRef> getMatchResultScore(String oponent_UserId) async {
 
     late List<CScoreRefHistory> historyList = [];
     //対戦結果を取得
