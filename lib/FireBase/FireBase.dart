@@ -550,7 +550,9 @@ class FirestoreMethod {
           sendTime: doc.data()['send_time'],
           matchStatusFlg: doc.data()['matchStatusFlg'],
           friendStatusFlg: doc.data()['friendStatusFlg'],
-          isRead: true);
+          isRead: true,
+          dayKey:
+              doc.data().containsKey('dayKey') ? doc.data()['dayKey'] : null);
       messageList.add(message);
       if (isMe == false) {
         try {
@@ -655,7 +657,8 @@ class FirestoreMethod {
   }
 
   //対戦結果入力メッセージ(フィードバック入力希望しない場合)
-  static Future<void> sendMatchResultMessage(String myUserId,String yourUserId) async {
+  static Future<void> sendMatchResultMessage(
+      String myUserId, String yourUserId, String dayKey) async {
     TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
     final messageRef = roomRef.doc(room.roomId).collection('message');
     String? myUid = auth.currentUser!.uid;
@@ -665,13 +668,13 @@ class FirestoreMethod {
       'send_time': Timestamp.now(),
       'matchStatusFlg': "3",
       'friendStatusFlg': "0",
-      'isRead': false
+      'isRead': false,
+      'dayKey': dayKey
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
-    roomRef
-        .doc(room.roomId)
-        .update({'last_message': "対戦結果が入力されました！", 'updated_time': Timestamp.now()});
+    roomRef.doc(room.roomId).update(
+        {'last_message': "対戦結果が入力されました！", 'updated_time': Timestamp.now()});
     CprofileSetting myProfile = await FirestoreMethod.getProfile();
     String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
     if (tokenId == "") {
@@ -686,7 +689,8 @@ class FirestoreMethod {
   }
 
   //対戦結果入力メッセージ(フィードバック入力希望の場合)
-  static Future<void> sendMatchResultFeedMessage(String myUserId,String yourUserId) async {
+  static Future<void> sendMatchResultFeedMessage(
+      String myUserId, String yourUserId, String dayKey) async {
     TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
     final messageRef = roomRef.doc(room.roomId).collection('message');
     String? myUid = auth.currentUser!.uid;
@@ -696,26 +700,27 @@ class FirestoreMethod {
       'send_time': Timestamp.now(),
       'matchStatusFlg': "4",
       'friendStatusFlg': "0",
-      'isRead': false
+      'isRead': false,
+      'dayKey': dayKey
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
-    roomRef
-        .doc(room.roomId)
-        .update({'last_message': "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！", 'updated_time': Timestamp.now()});
+    roomRef.doc(room.roomId).update({
+      'last_message': "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！",
+      'updated_time': Timestamp.now()
+    });
     CprofileSetting myProfile = await FirestoreMethod.getProfile();
     String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
     if (tokenId == "") {
       //トークンIDが登録されていない場合
     } else {
       //トークンIDが登録されている場合
-      await NotificationMethod.sendMessage(
-          tokenId!, "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！", myProfile.NICK_NAME);
+      await NotificationMethod.sendMessage(tokenId!,
+          "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！", myProfile.NICK_NAME);
     }
     //未読メッセージ数の更新
     await NotificationMethod.unreadCount(room.user.USER_ID);
   }
-
 
   static Future<void> sendFriendMessage(TalkRoomModel room) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
@@ -726,7 +731,7 @@ class FirestoreMethod {
       'send_time': Timestamp.now(),
       'matchStatusFlg': "0",
       'friendStatusFlg': "1",
-      'isRead': false
+      'isRead': false,
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
@@ -902,10 +907,11 @@ class FirestoreMethod {
   }
 
   //マッチフィードバック受け入れ
-  static Future<void> matchFeedAccept(TalkRoomModel room, String messageId) async {
+  static Future<void> matchFeedAccept(
+      TalkRoomModel room, String messageId) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
 
-    await messageRef.doc(messageId).update({'matchStatusFlg': "5"});
+    await messageRef.doc(messageId).update({'matchStatusFlg': "3"});
   }
 
   //友人申請受け入れ
@@ -1217,8 +1223,11 @@ class FirestoreMethod {
   }
 
   //対戦結果作成
-  static Future<void> makeMatchResult(CprofileSetting myProfile,
-      CprofileSetting yourProfile, List<CmatchResult> matchResultList) async {
+  static Future<void> makeMatchResult(
+      CprofileSetting myProfile,
+      CprofileSetting yourProfile,
+      List<CmatchResult> matchResultList,
+      String dayKey) async {
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy/MM/dd HH:mm');
     String today = outputFormat.format(now);
@@ -1420,8 +1429,11 @@ class FirestoreMethod {
             .doc(myProfile.USER_ID)
             .collection('opponentList')
             .doc(yourProfile.USER_ID)
+            .collection('daily')
+            .doc(dayKey)
             .collection('matchDetail')
             .add({
+          'No': a.No,
           'MY_POINT': a.myGamePoint,
           'YOUR_POINT': a.yourGamePoint,
           'WIN_FLG': MY_WIN_FLG,
@@ -1437,8 +1449,11 @@ class FirestoreMethod {
             .doc(yourProfile.USER_ID)
             .collection('opponentList')
             .doc(myProfile.USER_ID)
+            .collection('daily')
+            .doc(dayKey)
             .collection('matchDetail')
             .add({
+          'No': a.No,
           'MY_POINT': a.yourGamePoint,
           'YOUR_POINT': a.myGamePoint,
           'WIN_FLG': YOUR_WIN_FLG,
@@ -2097,6 +2112,7 @@ class FirestoreMethod {
         }
         break;
     }
+    //フィードバックを
   }
 
   //友達一覧に追加
@@ -2480,13 +2496,14 @@ class FirestoreMethod {
    * skill.OPPONENT_ID 評価される側のユーザ
    * auth.currentUser!.uid 評価している(入力中ユーザ)
    */
-  static Future<void> registSkillLevel(CSkilLevelSetting skill) async {
+  static Future<void> registSkillLevel(
+      CSkilLevelSetting skill, String dayKey) async {
     try {
-      await skilLevelRef
+      await matchResultRef
           .doc(skill.OPPONENT_ID)
-          .collection('opponent')
+          .collection('opponentList')
           .doc(auth.currentUser!.uid)
-          .set({
+          .update({
         'STROKE_FOREHAND': skill.STROKE_FOREHAND,
         'STROKE_BACKHAND': skill.STROKE_BACKHAND,
         'VOLLEY_FOREHAND': skill.VOLLEY_FOREHAND,
@@ -2496,6 +2513,24 @@ class FirestoreMethod {
       });
     } catch (e) {
       print('スキルレベル登録に失敗しました --- $e');
+    }
+    try {
+      matchResultRef
+          .doc(skill.OPPONENT_ID)
+          .collection('opponentList')
+          .doc(auth.currentUser!.uid)
+          .collection('daily')
+          .doc(dayKey)
+          .set({
+        'STROKE_FOREHAND': skill.STROKE_FOREHAND,
+        'STROKE_BACKHAND': skill.STROKE_BACKHAND,
+        'VOLLEY_FOREHAND': skill.VOLLEY_FOREHAND,
+        'VOLLEY_BACKHAND': skill.VOLLEY_BACKHAND,
+        'SERVE_1ST': skill.SERVE_1ST,
+        'SERVE_2ND': skill.SERVE_2ND,
+      });
+    } catch (e) {
+      print('日別スキルレベル登録に失敗しました --- $e');
     }
   }
 
@@ -2519,10 +2554,9 @@ class FirestoreMethod {
     double serve_2nd_avg = 0;
     double count = 0;
     try {
-      await FirebaseFirestore.instance
-          .collection('SkilLevel')
+      await matchResultRef
           .doc(auth.currentUser!.uid)
-          .collection('opponent')
+          .collection('opponentList')
           .get()
           .then(
             (QuerySnapshot querySnapshot) => {
@@ -2566,47 +2600,149 @@ class FirestoreMethod {
    * OPPONENT_ID 評価される側のユーザ
    * auth.currentUser!.uid 評価している(入力中ユーザ)
    */
-  static Future<void> registFeedBack(CFeedBackCommentSetting feedBack) async {
+  static Future<void> registFeedBack(
+      CFeedBackCommentSetting feedBack,
+      CprofileSetting myProfile,
+      CprofileSetting yourProfile,
+      String dayKey) async {
+    print(feedBack.FEED_BACK);
     try {
-      await feedBackRef
-          .doc(feedBack.OPPONENT_ID)
+      await matchResultRef
+          .doc(yourProfile.USER_ID)
+          .collection('opponentList')
+          .doc(myProfile.USER_ID)
           .collection('daily')
-          .doc(feedBack.DATE_TIME.toString())
-          .set({
-        'OPPONENT_ID': auth.currentUser!.uid,
+          .doc(dayKey)
+          .update({
         'FEEDBACK_COMMENT': feedBack.FEED_BACK,
-        'DATE_TIME': feedBack.DATE_TIME.toString(),
       });
     } catch (e) {
-      print('スキルレベル登録に失敗しました --- $e');
+      print('フィードバックの登録に失敗しました --- $e');
     }
   }
 
   /**
    * ログインユーザに対してのフィードバックのリストを取得
    */
-  static Future<List<CFeedBackCommentSetting>> getFeedBack() async {
+  static Future<List<CFeedBackCommentSetting>> getFeedBacks() async {
     List<CFeedBackCommentSetting> feedBackList = [];
     try {
-      await feedBackRef
+      final matchResultSnap = await matchResultRef
           .doc(auth.currentUser!.uid)
-          .collection('daily')
-          .get()
-          .then((QuerySnapshot querySnapshot) async => {
-                await Future.forEach<dynamic>(querySnapshot.docs, (doc) async {
-                  CHomePageVal home =
-                      await getNickNameAndTorokuRank(doc.get('OPPONENT_ID'));
-                  feedBackList.add(CFeedBackCommentSetting(
-                      OPPONENT_ID: doc.get('OPPONENT_ID'),
-                      FEED_BACK: doc.get('FEEDBACK_COMMENT'),
-                      DATE_TIME: doc.get('DATE_TIME'),
-                      HOME: home));
-                }),
-              });
+          .collection('opponentList')
+          .get();
+      await Future.forEach<dynamic>(matchResultSnap.docs, (doc) async {
+        final matchResultSnapWk = await matchResultRef
+            .doc(auth.currentUser!.uid)
+            .collection('opponentList')
+            .doc(doc.id)
+            .collection('daily')
+            .get();
+        await Future.forEach<dynamic>(matchResultSnapWk.docs, (doc2) async {
+          CHomePageVal home = await getNickNameAndTorokuRank(doc.id);
+          feedBackList.add(CFeedBackCommentSetting(
+              OPPONENT_ID: doc.id,
+              FEED_BACK: doc2.get('FEEDBACK_COMMENT'),
+              DATE_TIME: doc2.id,
+              HOME: home));
+        });
+      });
     } catch (e) {
       print('フィードバックリスト取得に失敗しました --- $e');
     }
     return feedBackList;
+  }
+
+  /**
+   * 特定のフィードバックの取得
+   */
+  static Future<String> getFeedBack(String? dayKey, String yourUserId) async {
+    String feedBackComment = "";
+    if (dayKey != null) {
+      try {
+        final snapShot = await matchResultRef
+            .doc(auth.currentUser!.uid)
+            .collection('opponentList')
+            .doc(yourUserId)
+            .collection('daily')
+            .doc(dayKey)
+            .get();
+        feedBackComment = snapShot.data()?['FEEDBACK_COMMENT'] ?? "";
+      } catch (e) {
+        print('フィードバックリスト取得に失敗しました --- $e');
+      }
+    } else {
+      feedBackComment = "";
+    }
+    return feedBackComment;
+  }
+
+  /**
+   * 特定のスキルレビュー結果の取得
+   */
+  static Future<CSkilLevelSetting> getSkillLevel(
+      String? dayKey, String yourUserId) async {
+    late CSkilLevelSetting skillLevel;
+    if (dayKey != null) {
+      try {
+        final snapShot = await matchResultRef
+            .doc(auth.currentUser!.uid)
+            .collection('opponentList')
+            .doc(yourUserId)
+            .collection('daily')
+            .doc(dayKey)
+            .get();
+        skillLevel = CSkilLevelSetting(
+            SERVE_1ST: snapShot.data()?['STROKE_FOREHAND'] ?? 0,
+            SERVE_2ND: snapShot.data()?['STROKE_BACKHAND'] ?? 0,
+            STROKE_BACKHAND: snapShot.data()?['VOLLEY_FOREHAND'] ?? 0,
+            STROKE_FOREHAND: snapShot.data()?['VOLLEY_BACKHAND'] ?? 0,
+            VOLLEY_BACKHAND: snapShot.data()?['SERVE_1ST'] ?? 0,
+            VOLLEY_FOREHAND: snapShot.data()?['SERVE_2ND'] ?? 0);
+      } catch (e) {
+        print('個別スキルレベル取得に失敗しました --- $e');
+      }
+    } else {
+      skillLevel = CSkilLevelSetting(
+          SERVE_1ST: 0,
+          SERVE_2ND: 0,
+          STROKE_BACKHAND: 0,
+          STROKE_FOREHAND: 0,
+          VOLLEY_BACKHAND: 0,
+          VOLLEY_FOREHAND: 0);
+    }
+    return skillLevel;
+  }
+
+  /**
+   * 特定の対戦結果を取得する
+   */
+  static Future<List<CmatchResult>> getMatchResult(
+      String? dayKey, String yourUserId) async {
+    //アクティビィリスト
+    List<CmatchResult> matchResultList = [];
+    if (dayKey != null) {
+      try {
+        final snapShot = await matchResultRef
+            .doc(auth.currentUser!.uid)
+            .collection('opponentList')
+            .doc(yourUserId)
+            .collection('daily')
+            .doc(dayKey)
+            .collection('matchDetail')
+            .get();
+        await Future.forEach<dynamic>(snapShot.docs, (document) async {
+          matchResultList.add(CmatchResult(
+            No: document.data()['No'],
+            myGamePoint: document.data()['MY_POINT'],
+            yourGamePoint: document.data()['YOUR_POINT'],
+          ));
+        });
+      } catch (e) {
+        print('対戦結果取得に失敗しました --- $e');
+      }
+    }
+    return matchResultList;
   }
 
   /**
@@ -2624,9 +2760,9 @@ class FirestoreMethod {
     return isDoubleMyUserId;
   }
 
-  //ブロックリスト追加処理
+//ブロックリスト追加処理
   static Future<void> addBlockList(String userId) async {
-    //ブロックリストチェック
+//ブロックリストチェック
     String newFlg =
         await FirestoreMethod.newFlgBlockList(auth.currentUser!.uid);
 
@@ -2653,7 +2789,7 @@ class FirestoreMethod {
     }
   }
 
-  //ブロックリスト解除
+//ブロックリスト解除
   static Future<void> delBlockList(String userId) async {
     QuerySnapshot querySnapshot = await blockListRef
         .doc(auth.currentUser!.uid)
@@ -2670,7 +2806,7 @@ class FirestoreMethod {
     });
   }
 
-  //ブロックリスト_新規フラグ取得
+//ブロックリスト_新規フラグ取得
   static Future<String> newFlgBlockList(String userId) async {
     final snapshot = await blockListRef.get();
     String newFlg = "1";
@@ -2682,7 +2818,7 @@ class FirestoreMethod {
     return newFlg;
   }
 
-  //ブロックリストチェック
+//ブロックリストチェック
   static Future<String> getBlockListChk(String userId) async {
     int blockListCount = await blockListRef
         .doc(auth.currentUser!.uid)
@@ -2697,7 +2833,7 @@ class FirestoreMethod {
     }
   }
 
-  //ブロックリスト取得
+//ブロックリスト取得
   static Future<List<BlockListModel>> getBlockList(String myUserId) async {
     final snapshot = await await blockListRef
         .doc(auth.currentUser!.uid)
@@ -2720,7 +2856,7 @@ class FirestoreMethod {
     return blockList;
   }
 
-  //開発者からユーザーへのメッセージ
+//開発者からユーザーへのメッセージ
   static Future<String> getToUserMessage() async {
     final snapShot = await toUserMessageRef.doc("message").get();
     String userToMessage = snapShot.data()!["userMessage"];

@@ -18,7 +18,7 @@ class CheckFeedBack extends StatefulWidget {
 
 class _CheckFeedBackState extends State<CheckFeedBack> {
   Future<List<CFeedBackCommentSetting>> feedBackList =
-      FirestoreMethod.getFeedBack();
+      FirestoreMethod.getFeedBacks();
 
 
   @override

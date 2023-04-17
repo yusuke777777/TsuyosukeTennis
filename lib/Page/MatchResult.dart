@@ -127,6 +127,7 @@ class _MatchResultState extends State<MatchResult> {
                                     width: 80,
                                   ),
                                   Container(
+                                    alignment:Alignment.center,
                                     padding: const EdgeInsets.all(5.0),
                                     width: 50,
                                     height: 50,
@@ -159,6 +160,7 @@ class _MatchResultState extends State<MatchResult> {
                                     ),
                                   ),
                                   Container(
+                                    alignment:Alignment.center,
                                     padding: const EdgeInsets.all(5.0),
                                     width: 50,
                                     height: 50,
@@ -401,7 +403,7 @@ class _MatchResultState extends State<MatchResult> {
                                   TextStyle(fontSize: 20, color: Colors.black),
                             ),
                           ),
-                          onPressed: () {
+                          onPressed: () async{
                             String errorFlg = "0";
                             matchResultList.forEach((matchList) {
                               if(matchList.myGamePoint == matchList.yourGamePoint){
@@ -449,16 +451,12 @@ class _MatchResultState extends State<MatchResult> {
                                     );
                                   });
                             }
-                            else{
+                            else {
                               //対戦結果を登録する
-                              FirestoreMethod.makeMatchResult(widget.myProfile,
-                                  widget.yourProfile, matchResultList);
-                              //対戦結果のメッセージを送信する
-                              if(_feedbackFlg){
-                                FirestoreMethod.sendMatchResultFeedMessage(widget.myProfile.USER_ID,widget.yourProfile.USER_ID);
-                              }else{
-                                FirestoreMethod.sendMatchResultMessage(widget.myProfile.USER_ID,widget.yourProfile.USER_ID);
-                              }
+                              String dayKey = DateTime.now().toString();
+                              await FirestoreMethod.makeMatchResult(widget.myProfile,
+                                  widget.yourProfile, matchResultList,dayKey);
+
                               //星数を登録する
                               if (!_flag) {
                                 CSkilLevelSetting skill = CSkilLevelSetting(
@@ -469,18 +467,24 @@ class _MatchResultState extends State<MatchResult> {
                                     STROKE_FOREHAND: stroke_fore,
                                     VOLLEY_BACKHAND: volley_back,
                                     VOLLEY_FOREHAND: volley_fore,);
-                                FirestoreMethod.registSkillLevel(skill);
+                                await FirestoreMethod.registSkillLevel(skill,dayKey);
 
                                 if (!inputWord.text.isEmpty) {
                                   CFeedBackCommentSetting feedBack = CFeedBackCommentSetting(
                                     OPPONENT_ID : opponent_id,
                                     FEED_BACK : inputWord.text,
-                                    DATE_TIME :  DateTime.now().toString(),
+                                    DATE_TIME :  dayKey,
                                   );
-                                  FirestoreMethod.registFeedBack(feedBack);
+                                  await FirestoreMethod.registFeedBack(feedBack,widget.myProfile,widget.yourProfile,dayKey);
                                 }
                               }
                               Navigator.pop(context);
+                              //対戦結果のメッセージを送信する
+                              if(_feedbackFlg){
+                                FirestoreMethod.sendMatchResultFeedMessage(widget.myProfile.USER_ID,widget.yourProfile.USER_ID,dayKey);
+                              }else{
+                                FirestoreMethod.sendMatchResultMessage(widget.myProfile.USER_ID,widget.yourProfile.USER_ID,dayKey);
+                              }
                             }
                           },
                         ),

@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:tsuyosuke_tennis_ap/Page/bk_ProfileSetting.dart';
 
+import '../Common/CSkilLevelSetting.dart';
+import '../Common/CmatchResult.dart';
 import '../Common/Cmessage.dart';
 import '../Common/CprofileSetting.dart';
 import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/NotificationMethod.dart';
 import '../UnderMenuMove.dart';
+import 'MatchResultSansho.dart';
 import 'TalkList.dart';
 
 class TalkRoom extends StatefulWidget {
@@ -97,10 +100,21 @@ class _TalkRoomState extends State<TalkRoom> {
                               // }
                               return Column(
                                 children: [
-                                  (index == messageList.length - 1 || intl.DateFormat("yyyy年M月d日").format(messageList[index].sendTime.toDate()) != intl.DateFormat("yyyy年M月d日").format(messageList[index + 1].sendTime.toDate()))
+                                  (index == messageList.length - 1 ||
+                                          intl.DateFormat("yyyy年M月d日").format(
+                                                  messageList[index]
+                                                      .sendTime
+                                                      .toDate()) !=
+                                              intl.DateFormat("yyyy年M月d日")
+                                                  .format(messageList[index + 1]
+                                                      .sendTime
+                                                      .toDate()))
                                       ? Container(
                                           child: Text(
-                                            intl.DateFormat("yyyy年M月d日").format(messageList[index].sendTime.toDate()),
+                                            intl.DateFormat("yyyy年M月d日").format(
+                                                messageList[index]
+                                                    .sendTime
+                                                    .toDate()),
                                             style: TextStyle(fontSize: 12),
                                           ),
                                           constraints: BoxConstraints(
@@ -114,7 +128,8 @@ class _TalkRoomState extends State<TalkRoom> {
                                               color: Color(0xFFF1FFE4),
                                               borderRadius:
                                                   BorderRadius.circular(20)),
-                                        ): Container(),
+                                        )
+                                      : Container(),
                                   Padding(
                                     padding: EdgeInsets.only(
                                         top: 10.0,
@@ -130,10 +145,9 @@ class _TalkRoomState extends State<TalkRoom> {
                                       children: [
                                         Container(
                                             constraints: BoxConstraints(
-                                                maxWidth: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.6),
+                                                maxWidth:
+                                                    MediaQuery.of(context).size.width *
+                                                        0.6),
                                             padding: EdgeInsets.symmetric(
                                                 horizontal: 10.0,
                                                 vertical: 6.0),
@@ -261,6 +275,33 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                           .message),
                                                                       TextButton(
                                                                           onPressed:
+                                                                              () async {
+                                                                            if (messageList[index].isMe) {
+                                                                              print("対戦結果メッセージ送信済み");
+                                                                            } else {
+                                                                              //フィードバック確認する処理
+                                                                              //フィードバック結果を取得する
+                                                                              String feedBackComment = await FirestoreMethod.getFeedBack(messageList[index].dayKey, widget.room.user.USER_ID);
+                                                                              //対戦結果リストを取得する
+                                                                              List<CmatchResult> matchResultList = await FirestoreMethod.getMatchResult(messageList[index].dayKey, widget.room.user.USER_ID);
+                                                                              //レビュー結果を取得する
+                                                                              CSkilLevelSetting skillLevel = await FirestoreMethod.getSkillLevel(messageList[index].dayKey, widget.room.user.USER_ID);
+                                                                              CprofileSetting myProfile = await FirestoreMethod.getProfile();
+                                                                              CprofileSetting yourProfile = await FirestoreMethod.getYourProfile(widget.room.user.USER_ID);
+
+                                                                              await Navigator.push(context, MaterialPageRoute(builder: (context) => MatchResultSansho(myProfile, yourProfile, matchResultList, feedBackComment, skillLevel)));
+
+                                                                              // FirestoreMethod.makeMatch(widget.room);
+                                                                            }
+                                                                          },
+                                                                          child:
+                                                                              Text(
+                                                                            "確認する",
+                                                                            style:
+                                                                                TextStyle(color: Colors.purple),
+                                                                          )),
+                                                                      TextButton(
+                                                                          onPressed:
                                                                               () {
                                                                             if (messageList[index].isMe) {
                                                                               print("対戦結果メッセージ送信済み");
@@ -278,22 +319,39 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                           ))
                                                                     ],
                                                                   )
-                                                                : messageList[index].matchStatusFlg == "5"
+                                                                : messageList[index]
+                                                                            .matchStatusFlg ==
+                                                                        "3"
                                                                     ? Column(
                                                                         children: [
                                                                           Text(messageList[index]
                                                                               .message),
                                                                           TextButton(
-                                                                              onPressed: () {
-                                                                                //受け入れ済なこと伝えるダイアログ出す？
+                                                                              onPressed: () async {
+                                                                                if (messageList[index].isMe) {
+                                                                                  print("対戦結果メッセージ送信済み");
+                                                                                } else {
+                                                                                  //フィードバック結果を取得する
+                                                                                  String feedBackComment = await FirestoreMethod.getFeedBack(messageList[index].dayKey, widget.room.user.USER_ID);
+                                                                                  //対戦結果リストを取得する
+                                                                                  List<CmatchResult> matchResultList = await FirestoreMethod.getMatchResult(messageList[index].dayKey, widget.room.user.USER_ID);
+                                                                                  //レビュー結果を取得する
+                                                                                  CSkilLevelSetting skillLevel = await FirestoreMethod.getSkillLevel(messageList[index].dayKey, widget.room.user.USER_ID);
+                                                                                  CprofileSetting myProfile = await FirestoreMethod.getProfile();
+                                                                                  CprofileSetting yourProfile = await FirestoreMethod.getYourProfile(widget.room.user.USER_ID);
+
+                                                                                  await Navigator.push(context, MaterialPageRoute(builder: (context) => MatchResultSansho(myProfile, yourProfile, matchResultList, feedBackComment, skillLevel)));
+                                                                                }
                                                                               },
                                                                               child: Text(
-                                                                                "フィードバック済",
+                                                                                "確認する",
                                                                                 style: TextStyle(color: Colors.purple),
-                                                                              ))
+                                                                              )),
                                                                         ],
                                                                       )
-                                                                    : Text(messageList[index].message)),
+                                                                    : Text(messageList[
+                                                                            index]
+                                                                        .message)),
                                         Text(
                                           intl.DateFormat('HH:mm')
                                               .format(sendtime),
