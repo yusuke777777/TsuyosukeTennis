@@ -1229,7 +1229,7 @@ class FirestoreMethod {
       CprofileSetting myProfile,
       CprofileSetting yourProfile,
       List<CmatchResult> matchResultList,
-      String dayKey) async {
+      String dayKey,String matchTitle) async {
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy/MM/dd HH:mm');
     String today = outputFormat.format(now);
@@ -1471,6 +1471,34 @@ class FirestoreMethod {
         print('対戦結果入力に失敗しました --- $e');
       }
     });
+
+    //デイリー対戦結果更新
+    try {
+      matchResultRef
+          .doc(myProfile.USER_ID)
+          .collection('opponentList')
+          .doc(yourProfile.USER_ID)
+          .collection('daily')
+          .doc(dayKey)
+          .set({
+        'matchTitle':matchTitle,
+      });
+    } catch (e) {
+      print('日別タイトルの登録に失敗しました --- $e');
+    }
+    try {
+      matchResultRef
+          .doc(yourProfile.USER_ID)
+          .collection('opponentList')
+          .doc(myProfile.USER_ID)
+          .collection('daily')
+          .doc(dayKey)
+          .set({
+        'matchTitle':matchTitle,
+      });
+    } catch (e) {
+      print('日別タイトルの登録に失敗しました --- $e');
+    }
 
     //個人対戦結果更新
     final myResultSnap = await matchResultRef
@@ -2523,7 +2551,7 @@ class FirestoreMethod {
           .doc(auth.currentUser!.uid)
           .collection('daily')
           .doc(dayKey)
-          .set({
+          .update({
         'STROKE_FOREHAND': skill.STROKE_FOREHAND,
         'STROKE_BACKHAND': skill.STROKE_BACKHAND,
         'VOLLEY_FOREHAND': skill.VOLLEY_FOREHAND,

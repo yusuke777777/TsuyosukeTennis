@@ -151,6 +151,7 @@ type RankList = {
 
 /** TSPポイント減算処理 */
 async function getTspRevocation(): Promise<void> {
+  const matchResultRef = admin.firestore().collection("matchResult");
   const shoriYmd:Date = utcToZonedTime(new Date(), "Asia/Tokyo");
   console.log(shoriYmd);
   const sakunenShoriYmdWk1 = new Date(shoriYmd.getFullYear() - 1,
@@ -165,137 +166,119 @@ async function getTspRevocation(): Promise<void> {
   const sakunenShoriYm = parseInt(sakunenShoriYmWk2);
   console.log(sakunenShoriYm);
 
-  matchResultRef.get().then(function(querySnapshot1) {
-    querySnapshot1.forEach(function(doc1) {
-      matchResultRef.doc(doc1.id)
-          .collection("opponentList")
-          .get().then(function(querySnapshot2) {
-            querySnapshot2.forEach(function(doc2) {
-              matchResultRef.doc(doc1.id)
-                  .collection("opponentList")
-                  .doc(doc2.id)
-                  .collection("daily")
-                  .get().then(function(querySnapshot3) {
-                    querySnapshot3.forEach(function(doc3) {
-                      matchResultRef.doc(doc1.id)
-                          .collection("opponentList")
-                          .doc(doc2.id)
-                          .collection("daily")
-                          .doc(doc3.id)
-                          .collection("matchDetail")
-                          .get().then(function(querySnapshot4) {
-                            querySnapshot4.forEach(function(doc4) {
-                              const koushinTimeGet: string =
-                                doc4.data()["KOUSHIN_TIME"];
-                              const koushinTimeWk =
-                                koushinTimeGet.substring(0, 4) +
-                                koushinTimeGet.substring(5, 7);
-                              const koushinTime = parseInt(koushinTimeWk);
-                              console.log("koushinTime" + koushinTime);
-                              console.log("koushinTimeGet" + koushinTimeGet);
-                              const tspValidFlg = doc4.data()["TSP_VALID_FLG"];
-                              if (koushinTime <= sakunenShoriYm &&
-                                tspValidFlg == "1") {
-                                console.log("TSP_VALID_FLG" + tspValidFlg);
-                                let shokyuTspPoint = 0;
-                                let chukyuTspPoint = 0;
-                                let jyokyuTspPoint = 0;
-                                const individualMatchResultSna =
-                                  admin.firestore()
-                                      .collection("matchResult")
-                                      .doc(doc1.id)
-                                      .collection("opponentList")
-                                      .doc(doc2.id)
-                                      .collection("daily")
-                                      .doc(doc3.id)
-                                      .collection("matchDetail")
-                                      .doc(doc4.id);
-                                const tspPoint: number =
-                                  doc4.data()["TS_POINT"];
-                                const myTorokuRank: string =
-                                  doc4.data()["MY_TOROKU_RANK"];
-                                switch (myTorokuRank) {
-                                  case "初級":
-                                    shokyuTspPoint = shokyuTspPoint + tspPoint;
-                                    console.log("shokyuTspPoint" +
-                                      shokyuTspPoint);
-                                    break;
-                                  case "中級":
-                                    chukyuTspPoint =
-                                      chukyuTspPoint + tspPoint;
-                                    console.log("chukyuTspPoint" +
-                                      chukyuTspPoint);
-                                    break;
-                                  case "上級":
-                                    jyokyuTspPoint =
-                                      jyokyuTspPoint + tspPoint;
-                                    console.log("jyokyuTspPoint" +
-                                      jyokyuTspPoint);
-                                    break;
-                                }
-                                individualMatchResultSna
-                                    .update({"TSP_VALID_FLG": "0"});
-                                console.log("更新処理を行う");
-                                const torokuRank =
-                                  doc1.data()["TOROKU_RANK"];
-                                const shokyuTspPointCur =
-                                  doc1.data()["SHOKYU_TS_POINT"];
-                                const chukyuTspPointCur =
-                                  doc1.data()["CHUKYU_TS_POINT"];
-                                const jyokyuTspPointCur =
-                                  doc1.data()["JYOKYU_TS_POINT"];
-                                const shokyuTspPointNew =
-                                  shokyuTspPointCur - shokyuTspPoint;
-                                const chukyuTspPointNew =
-                                  chukyuTspPointCur - chukyuTspPoint;
-                                const jyokyuTspPointNew =
-                                  jyokyuTspPointCur - jyokyuTspPoint;
-                                const myMatchResult = admin.firestore()
-                                    .collection("matchResult").doc(doc1.id);
-                                console.log("shokyuTspPointNew" +
-                                  shokyuTspPointNew);
-                                console.log("chukyuTspPointNew" +
-                                  chukyuTspPointNew);
-                                console.log("jyokyuTspPointNew" +
-                                  jyokyuTspPointNew);
-                                switch (torokuRank) {
-                                  case "初級":
-                                    myMatchResult.update({"SHOKYU_TS_POINT":
-                                    shokyuTspPointNew,
-                                    "CHUKYU_TS_POINT": chukyuTspPointNew,
-                                    "JYOKYU_TS_POINT": jyokyuTspPointNew,
-                                    "TS_POINT": shokyuTspPointNew});
-                                    break;
-                                  case "中級":
-                                    myMatchResult.update({
-                                      "SHOKYU_TS_POINT": shokyuTspPointNew,
-                                      "CHUKYU_TS_POINT": chukyuTspPointNew,
-                                      "JYOKYU_TS_POINT": jyokyuTspPointNew,
-                                      "TS_POINT": chukyuTspPointNew});
-                                    break;
-                                  case "上級":
-                                    myMatchResult.update({
-                                      "SHOKYU_TS_POINT": shokyuTspPointNew,
-                                      "CHUKYU_TS_POINT": chukyuTspPointNew,
-                                      "JYOKYU_TS_POINT": jyokyuTspPointNew,
-                                      "TS_POINT": jyokyuTspPointNew});
-                                    break;
-                                }
-                              }
-                            }
-                            );
-                          }
-                          );
-                    }
-                    );
-                  }
-                  );
+  const snapshot = await matchResultRef.get();
+  await Promise.all(snapshot.docs.map(async (doc) => {
+    const subcollectionRef =
+      matchResultRef.doc(doc.id).collection("opponentList");
+    const subcollectionSnapshot = await subcollectionRef.get();
+    await Promise.all(subcollectionSnapshot.docs.map(async (subdoc) => {
+      const nestedSubcollectionRef =
+        subcollectionRef.doc(subdoc.id).collection("daily");
+      const sub2collectionSnapshot = await nestedSubcollectionRef.get();
+      await Promise.all(sub2collectionSnapshot.docs.map(async (subdoc2) => {
+        const nestedSubcollection2Ref =
+          nestedSubcollectionRef.doc(subdoc2.id).collection("matchDetail");
+        const sub3collectionSnapshot = await nestedSubcollection2Ref.get();
+        await Promise.all(sub3collectionSnapshot.docs.map(async (subdoc3) => {
+          const koushinTimeGet: string =
+            subdoc3.data()["KOUSHIN_TIME"];
+          const koushinTimeWk =
+            koushinTimeGet.substring(0, 4) +
+            koushinTimeGet.substring(5, 7);
+          const koushinTime = parseInt(koushinTimeWk);
+          console.log("koushinTime" + koushinTime);
+          console.log("koushinTimeGet" + koushinTimeGet);
+          const tspValidFlg = subdoc3.data()["TSP_VALID_FLG"];
+          if (koushinTime <= sakunenShoriYm &&
+            tspValidFlg == "1") {
+            console.log("TSP_VALID_FLG" + tspValidFlg);
+            let shokyuTspPoint = 0;
+            let chukyuTspPoint = 0;
+            let jyokyuTspPoint = 0;
+            const individualMatchResultSna =
+              nestedSubcollection2Ref.doc(subdoc3.id);
+            const tspPoint: number =
+              subdoc3.data()["TS_POINT"];
+            const myTorokuRank: string =
+              subdoc3.data()["MY_TOROKU_RANK"];
+            switch (myTorokuRank) {
+              case "初級":
+                shokyuTspPoint = shokyuTspPoint + tspPoint;
+                console.log("shokyuTspPoint" +
+                  shokyuTspPoint);
+                break;
+              case "中級":
+                chukyuTspPoint =
+                  chukyuTspPoint + tspPoint;
+                console.log("chukyuTspPoint" +
+                  chukyuTspPoint);
+                break;
+              case "上級":
+                jyokyuTspPoint =
+                  jyokyuTspPoint + tspPoint;
+                console.log("jyokyuTspPoint" +
+                  jyokyuTspPoint);
+                break;
             }
-            );
+            individualMatchResultSna
+                .update({"TSP_VALID_FLG": "0"});
+            console.log("更新処理を行う");
+            const torokuRank =
+              doc.data()["TOROKU_RANK"];
+            const shokyuTspPointCur =
+              doc.data()["SHOKYU_TS_POINT"];
+            const chukyuTspPointCur =
+              doc.data()["CHUKYU_TS_POINT"];
+            const jyokyuTspPointCur =
+              doc.data()["JYOKYU_TS_POINT"];
+            const shokyuTspPointNew =
+              shokyuTspPointCur - shokyuTspPoint;
+            const chukyuTspPointNew =
+              chukyuTspPointCur - chukyuTspPoint;
+            const jyokyuTspPointNew =
+              jyokyuTspPointCur - jyokyuTspPoint;
+            const myMatchResult =
+              matchResultRef.doc(doc.id);
+            console.log("shokyuTspPointNew" +
+              shokyuTspPointNew);
+            console.log("chukyuTspPointNew" +
+              chukyuTspPointNew);
+            console.log("jyokyuTspPointNew" +
+              jyokyuTspPointNew);
+            switch (torokuRank) {
+              case "初級":
+                myMatchResult.update({"SHOKYU_TS_POINT":
+                  shokyuTspPointNew,
+                "CHUKYU_TS_POINT": chukyuTspPointNew,
+                "JYOKYU_TS_POINT": jyokyuTspPointNew,
+                "TS_POINT": shokyuTspPointNew});
+                break;
+              case "中級":
+                myMatchResult.update({
+                  "SHOKYU_TS_POINT": shokyuTspPointNew,
+                  "CHUKYU_TS_POINT": chukyuTspPointNew,
+                  "JYOKYU_TS_POINT": jyokyuTspPointNew,
+                  "TS_POINT": chukyuTspPointNew});
+                break;
+              case "上級":
+                myMatchResult.update({
+                  "SHOKYU_TS_POINT": shokyuTspPointNew,
+                  "CHUKYU_TS_POINT": chukyuTspPointNew,
+                  "JYOKYU_TS_POINT": jyokyuTspPointNew,
+                  "TS_POINT": jyokyuTspPointNew});
+                break;
+            }
           }
-          );
+        }
+        )
+        );
+      }
+      )
+      );
     }
+    )
     );
   }
+  )
   );
 }
