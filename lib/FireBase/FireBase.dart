@@ -2901,37 +2901,34 @@ class FirestoreMethod {
 
     late List<CScoreRefHistory> historyList = [];
     late QuerySnapshot snapShot;
+    late List<QuerySnapshot> queryList = [];
+
     //対戦結果を取得
     final doc = await matchResultRef.doc(auth.currentUser!.uid).collection('opponentList').doc(oponent_UserId).get();
 
     print(auth.currentUser!.uid.toString());
     final snapShot_date = await matchResultRef.doc(auth.currentUser!.uid).collection('opponentList').doc(oponent_UserId).collection('daily');
 
-    print("1" + snapShot_date.doc('2023-04-16 19:02:39.841026').toString());
     QuerySnapshot snapShot_date_doc = await snapShot_date.get();
-    print("2ww" + snapShot_date_doc.docs.toString());
-
 
     for (QueryDocumentSnapshot documentSnapshot in snapShot_date_doc.docs) {
-      print("3www" +documentSnapshot.reference.toString());
       snapShot = await documentSnapshot.reference.collection('matchDetail').orderBy('KOUSHIN_TIME').get();
+
+      queryList.add(snapShot);
       // Do something with subQuerySnapshot
     }
+    //matchDetailをdaily毎に配列で取得して全件ループ
+    for (QuerySnapshot matchDetail_Snapshot in queryList) {
+      await Future.forEach<dynamic>(matchDetail_Snapshot.docs, (doc_his) async {
+        CScoreRefHistory history =
+        new CScoreRefHistory
+          (KOUSHIN_TIME: doc_his['KOUSHIN_TIME'],
+            MY_POINT: doc_his['MY_POINT'],
+            YOUR_POINT: doc_his['YOUR_POINT']);
 
-
-    //対戦日時、ポイント等を取得
-    //final snapShot = await matchResultRef.doc(auth.currentUser!.uid).collection('opponentList').doc(oponent_UserId).collection('matchDetail').orderBy('KOUSHIN_TIME').get();
-
-    await Future.forEach<dynamic>(snapShot.docs, (doc_his) async {
-      CScoreRefHistory history =
-      new CScoreRefHistory
-        (KOUSHIN_TIME: doc_his['KOUSHIN_TIME'],
-          MY_POINT: doc_his['MY_POINT'],
-          YOUR_POINT: doc_his['YOUR_POINT']);
-
-      historyList.add(history);
-
-    });
+        historyList.add(history);
+      });
+    }
     CScoreRef result =
     new CScoreRef
       (MATCH_COUNT: doc!['MATCH_SU'],
