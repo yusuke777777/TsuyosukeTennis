@@ -288,8 +288,10 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                               CSkilLevelSetting skillLevel = await FirestoreMethod.getSkillLevel(messageList[index].dayKey, widget.room.user.USER_ID);
                                                                               CprofileSetting myProfile = await FirestoreMethod.getProfile();
                                                                               CprofileSetting yourProfile = await FirestoreMethod.getYourProfile(widget.room.user.USER_ID);
+                                                                              String matchTitle = await FirestoreMethod.getMatchTitle(messageList[index].dayKey, widget.room.user.USER_ID);
 
-                                                                              await Navigator.push(context, MaterialPageRoute(builder: (context) => MatchResultSansho(myProfile, yourProfile, matchResultList, feedBackComment, skillLevel)));
+
+                                                                              await Navigator.push(context, MaterialPageRoute(builder: (context) => MatchResultSansho(myProfile, yourProfile, matchResultList, feedBackComment, skillLevel,matchTitle)));
 
                                                                               // FirestoreMethod.makeMatch(widget.room);
                                                                             }
@@ -339,8 +341,9 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                                   CSkilLevelSetting skillLevel = await FirestoreMethod.getSkillLevel(messageList[index].dayKey, widget.room.user.USER_ID);
                                                                                   CprofileSetting myProfile = await FirestoreMethod.getProfile();
                                                                                   CprofileSetting yourProfile = await FirestoreMethod.getYourProfile(widget.room.user.USER_ID);
+                                                                                  String matchTitle = await FirestoreMethod.getMatchTitle(messageList[index].dayKey, widget.room.user.USER_ID);
 
-                                                                                  await Navigator.push(context, MaterialPageRoute(builder: (context) => MatchResultSansho(myProfile, yourProfile, matchResultList, feedBackComment, skillLevel)));
+                                                                                  await Navigator.push(context, MaterialPageRoute(builder: (context) => MatchResultSansho(myProfile, yourProfile, matchResultList, feedBackComment, skillLevel,matchTitle)));
                                                                                 }
                                                                               },
                                                                               child: Text(

@@ -19,22 +19,21 @@ class MatchResultSansho extends StatefulWidget {
   late List<CmatchResult> matchResultList;
   String? feedBackMessage;
   late CSkilLevelSetting SkillLevel;
+  late String matchTitle;
 
-  MatchResultSansho(this.myProfile, this.yourProfile,this.matchResultList,this.feedBackMessage,this.SkillLevel);
+  MatchResultSansho(this.myProfile, this.yourProfile, this.matchResultList,
+      this.feedBackMessage, this.SkillLevel, this.matchTitle);
 
   @override
   _MatchResultSanshoState createState() => _MatchResultSanshoState();
 }
 
 class _MatchResultSanshoState extends State<MatchResultSansho> {
-
-
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child:
-        MaterialApp(
+        child: MaterialApp(
           home: Scaffold(
               appBar: AppBar(
                   title: Text('対戦結果参照'),
@@ -53,6 +52,19 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                    SizedBox(
+                    width: 80,
+                  ),
+                  Center(
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: MediaQuery.of(context).size.width * 0.8,
+                        height:MediaQuery.of(context).size.height * 0.1,
+                        child: Text(widget.matchTitle,
+                          style: TextStyle(fontSize: 20, color: Colors.black),
+                        ),
+                      ),
+                  ),
                         Row(
                           children: [
                             SizedBox(
@@ -61,7 +73,8 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                             Container(
                               child: Text(
                                 widget.myProfile.NICK_NAME,
-                                style: TextStyle(fontSize: 20, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.black),
                               ),
                             ),
                             SizedBox(
@@ -70,7 +83,8 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                             Container(
                               child: Text(
                                 widget.yourProfile.NICK_NAME,
-                                style: TextStyle(fontSize: 20, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.black),
                               ),
                             ),
                           ],
@@ -84,6 +98,9 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                             itemBuilder: (BuildContext context, int index) {
                               return Column(
                                 children: [
+                                  SizedBox(
+                                    width: 80,
+                                  ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
@@ -91,18 +108,20 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                         width: 80,
                                       ),
                                       Container(
-                                      alignment:Alignment.center,
+                                        alignment: Alignment.center,
                                         padding: const EdgeInsets.all(5.0),
                                         width: 50,
                                         height: 50,
                                         decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.grey),
+                                          border:
+                                              Border.all(color: Colors.grey),
                                         ),
-                                          child: Text(
-                                            '${widget.matchResultList[index].myGamePoint}',
-                                            style: TextStyle(
-                                                fontSize: 20, color: Colors.black),
-                                          ),
+                                        child: Text(
+                                          '${widget.matchResultList[index].myGamePoint}',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.black),
+                                        ),
                                       ),
                                       Container(
                                         width: 80,
@@ -110,23 +129,26 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                           child: Text(
                                             "-",
                                             style: TextStyle(
-                                                fontSize: 20, color: Colors.black),
+                                                fontSize: 20,
+                                                color: Colors.black),
                                           ),
                                         ),
                                       ),
                                       Container(
-                                        alignment:Alignment.center,
+                                        alignment: Alignment.center,
                                         padding: const EdgeInsets.all(5.0),
                                         width: 50,
                                         height: 50,
                                         decoration: BoxDecoration(
-                                          border: Border.all(color: Colors.grey),
+                                          border:
+                                              Border.all(color: Colors.grey),
                                         ),
-                                          child: Text(
-                                            '${widget.matchResultList[index].yourGamePoint}',
-                                            style: TextStyle(
-                                                fontSize: 20, color: Colors.black),
-                                          ),
+                                        child: Text(
+                                          '${widget.matchResultList[index].yourGamePoint}',
+                                          style: TextStyle(
+                                              fontSize: 20,
+                                              color: Colors.black),
+                                        ),
                                       ),
                                       SizedBox(
                                         width: 80,
@@ -158,9 +180,9 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                   ignoreGestures: true,
                                   allowHalfRating: true,
                                   initialRating:
-                                  widget.SkillLevel.STROKE_FOREHAND.isNaN
-                                      ? 0
-                                      : widget.SkillLevel.STROKE_FOREHAND,
+                                      widget.SkillLevel.STROKE_FOREHAND.isNaN
+                                          ? 0
+                                          : widget.SkillLevel.STROKE_FOREHAND,
                                   itemBuilder: (context, index) => const Icon(
                                     Icons.star,
                                     color: Colors.yellow,
@@ -179,9 +201,9 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                   ignoreGestures: true,
                                   allowHalfRating: true,
                                   initialRating:
-                                  widget.SkillLevel.STROKE_BACKHAND.isNaN
-                                      ? 0
-                                      : widget.SkillLevel.STROKE_BACKHAND,
+                                      widget.SkillLevel.STROKE_BACKHAND.isNaN
+                                          ? 0
+                                          : widget.SkillLevel.STROKE_BACKHAND,
                                   itemBuilder: (context, index) => const Icon(
                                     Icons.star,
                                     color: Colors.yellow,
@@ -210,9 +232,9 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                   ignoreGestures: true,
                                   allowHalfRating: true,
                                   initialRating:
-                                  widget.SkillLevel.VOLLEY_FOREHAND.isNaN
-                                      ? 0
-                                      : widget.SkillLevel.VOLLEY_FOREHAND,
+                                      widget.SkillLevel.VOLLEY_FOREHAND.isNaN
+                                          ? 0
+                                          : widget.SkillLevel.VOLLEY_FOREHAND,
                                   itemBuilder: (context, index) => const Icon(
                                     Icons.star,
                                     color: Colors.yellow,
@@ -231,9 +253,9 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                   ignoreGestures: true,
                                   allowHalfRating: true,
                                   initialRating:
-                                  widget.SkillLevel.VOLLEY_BACKHAND.isNaN
-                                      ? 0
-                                      : widget.SkillLevel.VOLLEY_BACKHAND,
+                                      widget.SkillLevel.VOLLEY_BACKHAND.isNaN
+                                          ? 0
+                                          : widget.SkillLevel.VOLLEY_BACKHAND,
                                   itemBuilder: (context, index) => const Icon(
                                     Icons.star,
                                     color: Colors.yellow,
@@ -262,9 +284,10 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                 RatingBar.builder(
                                   ignoreGestures: true,
                                   allowHalfRating: true,
-                                  initialRating: widget.SkillLevel.SERVE_1ST.isNaN
-                                      ? 0
-                                      : widget.SkillLevel.SERVE_1ST,
+                                  initialRating:
+                                      widget.SkillLevel.SERVE_1ST.isNaN
+                                          ? 0
+                                          : widget.SkillLevel.SERVE_1ST,
                                   itemBuilder: (context, index) => const Icon(
                                     Icons.star,
                                     color: Colors.yellow,
@@ -282,9 +305,10 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                 RatingBar.builder(
                                   ignoreGestures: true,
                                   allowHalfRating: true,
-                                  initialRating: widget.SkillLevel.SERVE_2ND.isNaN
-                                      ? 0
-                                      : widget.SkillLevel.SERVE_2ND,
+                                  initialRating:
+                                      widget.SkillLevel.SERVE_2ND.isNaN
+                                          ? 0
+                                          : widget.SkillLevel.SERVE_2ND,
                                   itemBuilder: (context, index) => const Icon(
                                     Icons.star,
                                     color: Colors.yellow,
@@ -326,7 +350,6 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                       ]),
                 ),
               )),
-        )
-    );
+        ));
   }
 }

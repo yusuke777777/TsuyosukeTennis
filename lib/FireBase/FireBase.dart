@@ -1229,7 +1229,8 @@ class FirestoreMethod {
       CprofileSetting myProfile,
       CprofileSetting yourProfile,
       List<CmatchResult> matchResultList,
-      String dayKey,String matchTitle) async {
+      String dayKey,
+      String matchTitle) async {
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy/MM/dd HH:mm');
     String today = outputFormat.format(now);
@@ -1481,7 +1482,7 @@ class FirestoreMethod {
           .collection('daily')
           .doc(dayKey)
           .set({
-        'matchTitle':matchTitle,
+        'matchTitle': matchTitle,
       });
     } catch (e) {
       print('日別タイトルの登録に失敗しました --- $e');
@@ -1494,7 +1495,7 @@ class FirestoreMethod {
           .collection('daily')
           .doc(dayKey)
           .set({
-        'matchTitle':matchTitle,
+        'matchTitle': matchTitle,
       });
     } catch (e) {
       print('日別タイトルの登録に失敗しました --- $e');
@@ -2670,11 +2671,14 @@ class FirestoreMethod {
             .get();
         await Future.forEach<dynamic>(matchResultSnapWk.docs, (doc2) async {
           CHomePageVal home = await getNickNameAndTorokuRank(doc.id);
-          feedBackList.add(CFeedBackCommentSetting(
-              OPPONENT_ID: doc.id,
-              FEED_BACK: doc2.get('FEEDBACK_COMMENT'),
-              DATE_TIME: doc2.id,
-              HOME: home));
+          String feedBackComment = await doc2.data()?['FEEDBACK_COMMENT'] ?? "";
+          if(feedBackComment != "") {
+            feedBackList.add(CFeedBackCommentSetting(
+                OPPONENT_ID: doc.id,
+                FEED_BACK: feedBackComment,
+                DATE_TIME: doc2.id,
+                HOME: home));
+          }
         });
       });
     } catch (e) {
@@ -2773,6 +2777,25 @@ class FirestoreMethod {
       }
     }
     return matchResultList;
+  }
+
+  static Future<String> getMatchTitle(
+      String? dayKey, String yourUserId) async {
+    //タイトル取得
+    String matchTitle = "";
+    if (dayKey != null) {
+      final snapShot = await matchResultRef
+          .doc(auth.currentUser!.uid)
+          .collection('opponentList')
+          .doc(yourUserId)
+          .collection('daily')
+          .doc(dayKey)
+          .get();
+      String matchTitle = await snapShot.data()?['matchTitle'] ?? "";
+      return matchTitle;
+    } else {
+      return matchTitle;
+    }
   }
 
   /**
@@ -2898,34 +2921,38 @@ class FirestoreMethod {
    *  userId 自身のユーザーID
    */
   static Future<CScoreRef> getMatchResultScore(String oponent_UserId) async {
-
     late List<CScoreRefHistory> historyList = [];
     //対戦結果を取得
-    final doc = await matchResultRef.doc(auth.currentUser!.uid).collection('opponentList').doc(oponent_UserId).get();
+    final doc = await matchResultRef
+        .doc(auth.currentUser!.uid)
+        .collection('opponentList')
+        .doc(oponent_UserId)
+        .get();
 
     //対戦日時、ポイント等を取得
-    final snapShot = await matchResultRef.doc(auth.currentUser!.uid).collection('opponentList').doc(oponent_UserId).collection('matchDetail').orderBy('KOUSHIN_TIME').get();
+    final snapShot = await matchResultRef
+        .doc(auth.currentUser!.uid)
+        .collection('opponentList')
+        .doc(oponent_UserId)
+        .collection('matchDetail')
+        .orderBy('KOUSHIN_TIME')
+        .get();
 
     await Future.forEach<dynamic>(snapShot.docs, (doc_his) async {
-      CScoreRefHistory history =
-      new CScoreRefHistory
-        (KOUSHIN_TIME: doc_his['KOUSHIN_TIME'],
+      CScoreRefHistory history = new CScoreRefHistory(
+          KOUSHIN_TIME: doc_his['KOUSHIN_TIME'],
           MY_POINT: doc_his['MY_POINT'],
           YOUR_POINT: doc_his['YOUR_POINT']);
 
       historyList.add(history);
-
     });
-    CScoreRef result =
-    new CScoreRef
-      (MATCH_COUNT: doc!['MATCH_SU'],
+    CScoreRef result = new CScoreRef(
+        MATCH_COUNT: doc!['MATCH_SU'],
         WIN_COUNT: doc!['WIN_SU'],
         LOSE_COUNT: doc!['LOSE_SU'],
         WIN_LATE: doc!['WIN_RATE'],
-    HISTORYLIST: historyList);
+        HISTORYLIST: historyList);
 
     return result;
-
   }
-
 }
