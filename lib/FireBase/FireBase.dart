@@ -2921,38 +2921,46 @@ class FirestoreMethod {
    *  userId 自身のユーザーID
    */
   static Future<CScoreRef> getMatchResultScore(String oponent_UserId) async {
+
     late List<CScoreRefHistory> historyList = [];
+    late QuerySnapshot snapShot;
+    late List<QuerySnapshot> queryList = [];
+
     //対戦結果を取得
-    final doc = await matchResultRef
-        .doc(auth.currentUser!.uid)
-        .collection('opponentList')
-        .doc(oponent_UserId)
-        .get();
+    final doc = await matchResultRef.doc(auth.currentUser!.uid).collection('opponentList').doc(oponent_UserId).get();
 
-    //対戦日時、ポイント等を取得
-    final snapShot = await matchResultRef
-        .doc(auth.currentUser!.uid)
-        .collection('opponentList')
-        .doc(oponent_UserId)
-        .collection('matchDetail')
-        .orderBy('KOUSHIN_TIME')
-        .get();
+    print(auth.currentUser!.uid.toString());
+    final snapShot_date = await matchResultRef.doc(auth.currentUser!.uid).collection('opponentList').doc(oponent_UserId).collection('daily');
 
-    await Future.forEach<dynamic>(snapShot.docs, (doc_his) async {
-      CScoreRefHistory history = new CScoreRefHistory(
-          KOUSHIN_TIME: doc_his['KOUSHIN_TIME'],
-          MY_POINT: doc_his['MY_POINT'],
-          YOUR_POINT: doc_his['YOUR_POINT']);
+    QuerySnapshot snapShot_date_doc = await snapShot_date.get();
 
-      historyList.add(history);
-    });
-    CScoreRef result = new CScoreRef(
-        MATCH_COUNT: doc!['MATCH_SU'],
+    for (QueryDocumentSnapshot documentSnapshot in snapShot_date_doc.docs) {
+      snapShot = await documentSnapshot.reference.collection('matchDetail').orderBy('KOUSHIN_TIME').get();
+
+      queryList.add(snapShot);
+      // Do something with subQuerySnapshot
+    }
+    //matchDetailをdaily毎に配列で取得して全件ループ
+    for (QuerySnapshot matchDetail_Snapshot in queryList) {
+      await Future.forEach<dynamic>(matchDetail_Snapshot.docs, (doc_his) async {
+        CScoreRefHistory history =
+        new CScoreRefHistory
+          (KOUSHIN_TIME: doc_his['KOUSHIN_TIME'],
+            MY_POINT: doc_his['MY_POINT'],
+            YOUR_POINT: doc_his['YOUR_POINT']);
+
+        historyList.add(history);
+      });
+    }
+    CScoreRef result =
+    new CScoreRef
+      (MATCH_COUNT: doc!['MATCH_SU'],
         WIN_COUNT: doc!['WIN_SU'],
         LOSE_COUNT: doc!['LOSE_SU'],
         WIN_LATE: doc!['WIN_RATE'],
         HISTORYLIST: historyList);
 
     return result;
+
   }
 }
