@@ -9,6 +9,7 @@ import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/NotificationMethod.dart';
 import '../PropSetCofig.dart';
+import 'ProfileReference.dart';
 import 'TalkRoom.dart';
 
 class TalkList extends StatefulWidget {
@@ -113,21 +114,31 @@ class _TalkListState extends State<TalkList> {
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 8.0),
                                     child:
-                                        talkList[index].user.PROFILE_IMAGE == ''
-                                            ? CircleAvatar(
-                                                backgroundColor: Colors.white,
-                                                backgroundImage: NetworkImage(
-                                                    "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                                radius: 30,
-                                              )
-                                            : CircleAvatar(
-                                                backgroundColor: Colors.white,
-                                                backgroundImage: NetworkImage(
-                                                    talkList[index]
-                                                        .user
-                                                        .PROFILE_IMAGE),
-                                                radius: 30,
-                                              ),
+                                        InkWell(
+                                          child: talkList[index].user.PROFILE_IMAGE == ''
+                                              ? CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: NetworkImage(
+                                                      "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                                  radius: 30,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: NetworkImage(
+                                                      talkList[index]
+                                                          .user
+                                                          .PROFILE_IMAGE),
+                                                  radius: 30,
+                                                ),
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProfileReference(
+                                                            talkList[index].user.USER_ID)));
+                                          },
+                                        ),
                                   ),
                                   Expanded(
                                     child: Column(
