@@ -2963,6 +2963,7 @@ class FirestoreMethod {
     late List<CScoreRefHistory> historyList = [];
     late QuerySnapshot snapShot;
     late List<QuerySnapshot> queryList = [];
+    late List<String> titleList =[];
 
     //対戦結果を取得
     final doc = await matchResultRef
@@ -2971,16 +2972,38 @@ class FirestoreMethod {
         .doc(oponent_UserId)
         .get();
 
-    print(auth.currentUser!.uid.toString());
-    final snapShot_date = await matchResultRef
+    // final snapShot_date = await matchResultRef
+    //     .doc(auth.currentUser!.uid)
+    //     .collection('opponentList')
+    //     .doc(oponent_UserId)
+    //     .collection('daily')
+    //     .orderBy(FieldPath.documentId).get();
+    //
+
+    final snapShot_daily = await matchResultRef
         .doc(auth.currentUser!.uid)
         .collection('opponentList')
         .doc(oponent_UserId)
         .collection('daily');
 
-    QuerySnapshot snapShot_date_doc = await snapShot_date.get();
+    final snapShot_date = await matchResultRef
+        .doc(auth.currentUser!.uid)
+        .collection('opponentList')
+        .doc(oponent_UserId)
+        .collection('daily')
+        .orderBy(FieldPath.documentId)
+        .get();
+
+    await Future.forEach<dynamic>(snapShot_date.docs, (doc_date) async {
+      titleList.add(doc_date.data()['matchTitle'] ?? "");
+    });
+
+
+
+    QuerySnapshot snapShot_date_doc = await snapShot_daily.get();
 
     for (QueryDocumentSnapshot documentSnapshot in snapShot_date_doc.docs) {
+
       snapShot = await documentSnapshot.reference
           .collection('matchDetail')
           .orderBy('KOUSHIN_TIME')
@@ -3005,7 +3028,8 @@ class FirestoreMethod {
         WIN_COUNT: doc!['WIN_SU'],
         LOSE_COUNT: doc!['LOSE_SU'],
         WIN_LATE: doc!['WIN_RATE'],
-        HISTORYLIST: historyList);
+        HISTORYLIST: historyList,
+        TITLE: titleList);
 
     return result;
   }

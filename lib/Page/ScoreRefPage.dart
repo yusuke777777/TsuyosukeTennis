@@ -22,11 +22,100 @@ class ScoreRefPageState extends State<ScoreRefPage> {
 
   @override
   Widget build(BuildContext context) {
-    print("kkkk");
     HeaderConfig().init(context, "対戦成績");
     DrawerConfig().init(context);
+    List<TextSpan> textSpans = [];
 
     Future<CScoreRef>? futureList = FirestoreMethod.getMatchResultScore(opponent_id);
+
+    /**
+     * score 6
+     * index 0~5
+     */
+    List<TextSpan> makeHistoryList(CScoreRef? scoreRef) {
+      bool isFirst = true;
+      //日付毎に表示するスコアをもつ変数
+      String dispScore = '';
+      String time = '';
+      int scoreRefCnt = 0;
+      int roopCount = 0;
+
+
+      scoreRef!.HISTORYLIST.forEach((scoreRefHistoryElement) {
+        roopCount ++;
+        if(isFirst){
+          dispScore = scoreRefHistoryElement.MY_POINT.toString() + "-" + scoreRefHistoryElement.YOUR_POINT.toString();
+          time = scoreRefHistoryElement.KOUSHIN_TIME;
+          isFirst = false;
+        }
+        else {
+          if (scoreRefHistoryElement.KOUSHIN_TIME == time) {
+            dispScore = dispScore + "," + scoreRefHistoryElement.MY_POINT.toString() + "-" + scoreRefHistoryElement.YOUR_POINT.toString();
+            time = scoreRefHistoryElement.KOUSHIN_TIME;
+
+            if (roopCount == scoreRef!.HISTORYLIST.length) {
+              textSpans.add(
+                TextSpan(
+                  children: [
+                    TextSpan(text: scoreRefHistoryElement.KOUSHIN_TIME),
+                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
+                    TextSpan(text: scoreRef.TITLE[scoreRefCnt].isEmpty ? 'NoTitle' : scoreRef.TITLE[scoreRefCnt+1]),
+                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
+                    TextSpan(text:dispScore),
+                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
+
+                  ],
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              );
+            }
+
+          }
+
+          else {
+
+            if (roopCount == scoreRef!.HISTORYLIST.length) {
+              textSpans.add(
+                TextSpan(
+                  children: [
+                    TextSpan(text: scoreRefHistoryElement.KOUSHIN_TIME),
+                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
+                    TextSpan(text: scoreRef.TITLE[scoreRefCnt].isEmpty ? 'NoTitle' : scoreRef.TITLE[scoreRefCnt+1]),
+                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
+                    TextSpan(text:scoreRefHistoryElement.MY_POINT.toString() + "-" + scoreRefHistoryElement.YOUR_POINT.toString()),
+                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
+
+                  ],
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              );
+            }
+
+            else {
+              textSpans.add(
+                TextSpan(
+                  children: [
+                    TextSpan(text: time),
+                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
+                    TextSpan(text: scoreRef.TITLE[scoreRefCnt].isEmpty ? 'NoTitle' : scoreRef.TITLE[scoreRefCnt]),
+                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
+                    TextSpan(text:dispScore),
+                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
+
+                  ],
+                  style: TextStyle(fontSize: 20, color: Colors.black),
+                ),
+              );
+
+            }
+            scoreRefCnt++;
+            time = scoreRefHistoryElement.KOUSHIN_TIME;
+            dispScore = scoreRefHistoryElement.MY_POINT.toString() + "-" + scoreRefHistoryElement.YOUR_POINT.toString();
+          }
+        }
+      });
+      return textSpans;
+    }
 
     return Scaffold(
       appBar: AppBar(
@@ -126,24 +215,16 @@ class ScoreRefPageState extends State<ScoreRefPage> {
 
                   Container(
                     height: 500,
-                          child: ListView.builder(
-                            itemCount: scoreRef!.HISTORYLIST.length,
-                            itemBuilder: (context, index) {
-                              return ListTile(
-                                title: Text.rich(
-                                  TextSpan(
-                                    children: [
-                                      TextSpan(text: scoreRef!.HISTORYLIST[index].KOUSHIN_TIME),
-                                      TextSpan(text: '\n', style: TextStyle(height: 0.0)), // 改行を追加
-                                      TextSpan(text: scoreRef!.HISTORYLIST[index].MY_POINT.toString() + "-" + scoreRef!.HISTORYLIST[index].YOUR_POINT.toString()),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-
+                    child: ListView(
+                        children: [
+                          RichText(
+                            text: TextSpan(
+                              children: makeHistoryList(scoreRef),
+                            ),
+                          )
+                        ]
+                    ),
+                  ),
                 ]),
               );
             } else {
