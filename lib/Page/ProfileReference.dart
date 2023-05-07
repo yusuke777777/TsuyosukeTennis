@@ -29,20 +29,15 @@ class _ProfileReferenceState extends State<ProfileReference> {
 
   @override
   Widget build(BuildContext context) {
+    HeaderConfig().init(context, "プロフィール参照");
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
+          title: HeaderConfig.appBarText,
           elevation: 0.0,
           backgroundColor: Colors.white,
-          leading: IconButton(
-            icon: const Icon(
-              Icons.reply,
-              color: Colors.black,
-              size: 40.0,
-            ),
-            onPressed: () => {Navigator.pop(context)},
+            leading: HeaderConfig.backIcon
           ),
-        ),
         body: FutureBuilder(
             future: yourProfile,
             builder: (BuildContext context, AsyncSnapshot snapshot) {

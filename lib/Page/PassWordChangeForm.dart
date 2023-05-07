@@ -30,6 +30,7 @@ class _PassWordChangeFormState extends State<PassWordChangeForm> {
           backgroundColor: HeaderConfig.backGroundColor,
           title: HeaderConfig.appBarText,
           iconTheme: IconThemeData(color: Colors.black),
+            leading: HeaderConfig.backIcon
         ),
 
         //メイン画面実装

@@ -20,21 +20,21 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
   Future<List<CFeedBackCommentSetting>> feedBackList =
       FirestoreMethod.getFeedBacks();
 
-
   @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "フィードバック一覧");
-    DrawerConfig().init(context);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: HeaderConfig.backGroundColor,
         title: HeaderConfig.appBarText,
         iconTheme: IconThemeData(color: Colors.black),
+          leading: HeaderConfig.backIcon
       ),
       body: SingleChildScrollView(
         child: FutureBuilder(
           future: feedBackList,
-          builder: (BuildContext context, AsyncSnapshot<List<CFeedBackCommentSetting>> snapshot) {
+          builder: (BuildContext context,
+              AsyncSnapshot<List<CFeedBackCommentSetting>> snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
               return new Align(
                   child: Center(
@@ -65,40 +65,44 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
                     //共通リストタイルの呼出
                     return Card(
                       elevation: 0,
-                      child:ListTile(
-                        tileColor: Colors.white24,
-                        leading:
-                        ClipOval(
-                          child: GestureDetector(
-                            //アイコン押下時の挙動
-                            onTap: () {
-                              // Navigator.push(
-                              //     context,
-                              //     MaterialPageRoute(
-                              //       builder: (context) => ProfileReference(pro),
-                              //     ));
-                            },
-                            child:
-                            profileList[index].HOME!.PROFILEIMAGE == ""
-                                ? Image.asset('images/upper_body-2.png', fit: BoxFit.cover)
-                                :
-                                Image.network(
-                                  profileList[index].HOME!.PROFILEIMAGE,
-                                  width: 50,
-                                  height: 50,
-                                  fit: BoxFit.fill,
-                                ),
+                      child: ListTile(
+                          tileColor: Colors.white24,
+                          leading: ClipOval(
+                            child: GestureDetector(
+                              //アイコン押下時の挙動
+                              onTap: () {
+                                // Navigator.push(
+                                //     context,
+                                //     MaterialPageRoute(
+                                //       builder: (context) => ProfileReference(pro),
+                                //     ));
+                              },
+                              child: profileList[index].HOME!.PROFILEIMAGE == ""
+                                  ? Image.asset('images/upper_body-2.png',
+                                      fit: BoxFit.cover)
+                                  : Image.network(
+                                      profileList[index].HOME!.PROFILEIMAGE,
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.fill,
+                                    ),
+                            ),
                           ),
-                        ),
-                          title:Text(profileList[index].FEED_BACK.toString()),
-                          subtitle:Text("入力者：" + profileList[index].HOME!.NAME + "\n入力日時：" + profileList[index].DATE_TIME.toString().substring(0, 16))
-                      ),
+                          title: Text(profileList[index].FEED_BACK.toString()),
+                          subtitle: Text("タイトル：" +
+                              profileList[index].MATCH_TITLE.toString() +
+                              "\n入力者：" +
+                              profileList[index].HOME!.NAME +
+                              "\n入力日時：" +
+                              profileList[index]
+                                  .DATE_TIME
+                                  .toString()
+                                  .substring(0, 16))),
                     );
                   },
                 );
               }
-            }
-            else {
+            } else {
               return ListView(
                   padding: const EdgeInsets.all(8),
                   children: <Widget>[

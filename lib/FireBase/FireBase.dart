@@ -22,6 +22,7 @@ import '../Common/CblockList.dart';
 import '../Common/CfriendsList.dart';
 import '../Common/CmatchList.dart';
 import '../Common/CmatchResult.dart';
+import '../Common/CmatchResultsList.dart';
 import '../Common/Cmessage.dart';
 import '../Common/CprofileSetting.dart';
 import '../Common/CactivityList.dart';
@@ -54,6 +55,9 @@ class FirestoreMethod {
 
   //マッチング一覧
   static final matchListSnapshot = matchRef.snapshots();
+
+  //マッチング結果一覧
+  static final matchResultListSnapshot = matchResultRef.snapshots();
 
   //友人一覧
   static final friendsListSnapshot = friendsListRef.snapshots();
@@ -1051,6 +1055,7 @@ class FirestoreMethod {
       }
       print(matchList.length);
     });
+    matchList.sort((a, b) => b.SAKUSEI_TIME.compareTo(a.SAKUSEI_TIME));
     return matchList;
   }
 
@@ -2672,11 +2677,13 @@ class FirestoreMethod {
         await Future.forEach<dynamic>(matchResultSnapWk.docs, (doc2) async {
           CHomePageVal home = await getNickNameAndTorokuRank(doc.id);
           String feedBackComment = await doc2.data()?['FEEDBACK_COMMENT'] ?? "";
-          if(feedBackComment != "") {
+          String matchTitle = await doc2.data()?['matchTitle'] ?? "";
+          if (feedBackComment != "") {
             feedBackList.add(CFeedBackCommentSetting(
                 OPPONENT_ID: doc.id,
                 FEED_BACK: feedBackComment,
                 DATE_TIME: doc2.id,
+                MATCH_TITLE: matchTitle,
                 HOME: home));
           }
         });
@@ -2779,8 +2786,40 @@ class FirestoreMethod {
     return matchResultList;
   }
 
-  static Future<String> getMatchTitle(
-      String? dayKey, String yourUserId) async {
+  /**
+   * 対戦結果一覧を取得する
+   */
+  static Future<List<CmatchResultList>> getMatchResults() async {
+    List<CmatchResultList> matchResultList = [];
+    try {
+      final snapShot = await matchResultRef
+          .doc(auth.currentUser!.uid)
+          .collection('opponentList')
+          .get();
+      await Future.forEach<dynamic>(snapShot.docs, (doc1) async {
+        final snapShotWk = await matchResultRef
+            .doc(auth.currentUser!.uid)
+            .collection('opponentList')
+            .doc(doc1.id)
+            .collection('daily')
+            .get();
+        await Future.forEach<dynamic>(snapShotWk.docs, (doc2) async {
+          CprofileSetting yourProfile =
+              await FirestoreMethod.getYourProfile(doc1.id);
+          matchResultList.add(CmatchResultList(
+              YOUR_USER: yourProfile,
+              dayKey: doc2.id,
+              matchTitle: doc2.data()?['matchTitle'] ?? ""));
+        });
+      });
+    } catch (e) {
+      print('対戦結果LIST取得に失敗しました --- $e');
+    }
+    matchResultList.sort((a, b) => b.dayKey.compareTo(a.dayKey));
+    return matchResultList;
+  }
+
+  static Future<String> getMatchTitle(String? dayKey, String yourUserId) async {
     //タイトル取得
     String matchTitle = "";
     if (dayKey != null) {
@@ -2921,21 +2960,31 @@ class FirestoreMethod {
    *  userId 自身のユーザーID
    */
   static Future<CScoreRef> getMatchResultScore(String oponent_UserId) async {
-
     late List<CScoreRefHistory> historyList = [];
     late QuerySnapshot snapShot;
     late List<QuerySnapshot> queryList = [];
 
     //対戦結果を取得
-    final doc = await matchResultRef.doc(auth.currentUser!.uid).collection('opponentList').doc(oponent_UserId).get();
+    final doc = await matchResultRef
+        .doc(auth.currentUser!.uid)
+        .collection('opponentList')
+        .doc(oponent_UserId)
+        .get();
 
     print(auth.currentUser!.uid.toString());
-    final snapShot_date = await matchResultRef.doc(auth.currentUser!.uid).collection('opponentList').doc(oponent_UserId).collection('daily');
+    final snapShot_date = await matchResultRef
+        .doc(auth.currentUser!.uid)
+        .collection('opponentList')
+        .doc(oponent_UserId)
+        .collection('daily');
 
     QuerySnapshot snapShot_date_doc = await snapShot_date.get();
 
     for (QueryDocumentSnapshot documentSnapshot in snapShot_date_doc.docs) {
-      snapShot = await documentSnapshot.reference.collection('matchDetail').orderBy('KOUSHIN_TIME').get();
+      snapShot = await documentSnapshot.reference
+          .collection('matchDetail')
+          .orderBy('KOUSHIN_TIME')
+          .get();
 
       queryList.add(snapShot);
       // Do something with subQuerySnapshot
@@ -2943,24 +2992,21 @@ class FirestoreMethod {
     //matchDetailをdaily毎に配列で取得して全件ループ
     for (QuerySnapshot matchDetail_Snapshot in queryList) {
       await Future.forEach<dynamic>(matchDetail_Snapshot.docs, (doc_his) async {
-        CScoreRefHistory history =
-        new CScoreRefHistory
-          (KOUSHIN_TIME: doc_his['KOUSHIN_TIME'],
+        CScoreRefHistory history = new CScoreRefHistory(
+            KOUSHIN_TIME: doc_his['KOUSHIN_TIME'],
             MY_POINT: doc_his['MY_POINT'],
             YOUR_POINT: doc_his['YOUR_POINT']);
 
         historyList.add(history);
       });
     }
-    CScoreRef result =
-    new CScoreRef
-      (MATCH_COUNT: doc!['MATCH_SU'],
+    CScoreRef result = new CScoreRef(
+        MATCH_COUNT: doc!['MATCH_SU'],
         WIN_COUNT: doc!['WIN_SU'],
         LOSE_COUNT: doc!['LOSE_SU'],
         WIN_LATE: doc!['WIN_RATE'],
         HISTORYLIST: historyList);
 
     return result;
-
   }
 }

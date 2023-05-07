@@ -25,113 +25,115 @@ class _EmailChangeFormState extends State<EmailChangeForm> {
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
         appBar: AppBar(
-          backgroundColor: HeaderConfig.backGroundColor,
-          title: HeaderConfig.appBarText,
-          iconTheme: IconThemeData(color: Colors.black),
-        ),
+            backgroundColor: HeaderConfig.backGroundColor,
+            title: HeaderConfig.appBarText,
+            iconTheme: IconThemeData(color: Colors.black),
+            leading: HeaderConfig.backIcon),
 
         //メイン画面実装
         body: Scrollbar(
           child: SingleChildScrollView(
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  children: [
-                    TextFormField(
-                      focusNode: _focusNode_now,
-                      controller: _emailController_now,
-                      decoration: InputDecoration(
-                        labelStyle: TextStyle(
-                          color: Colors.black,
-                        ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        labelText: '現在のメールアドレス',
-                      ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return '現在のメールアドレスを入力してください';
-                        }
-                        return null;
-                      },
-                    ),
-                    SizedBox(height: 16),
-
-                    TextFormField(
-                      focusNode: _focusNode,
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        labelStyle: TextStyle(
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    focusNode: _focusNode_now,
+                    controller: _emailController_now,
+                    decoration: InputDecoration(
+                      labelStyle: TextStyle(
                         color: Colors.black,
                       ),
-                        focusedBorder: UnderlineInputBorder(
-                          borderSide: BorderSide(color: Colors.black),
-                        ),
-                        labelText: '新しいメールアドレス',
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
                       ),
-                      validator: (value) {
-                        if (value!.isEmpty) {
-                          return 'メールアドレスを入力してください';
-                        }
-                        return null;
-                      },
+                      labelText: '現在のメールアドレス',
                     ),
-                    SizedBox(height: 16),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                          primary: Colors.green, // background
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return '現在のメールアドレスを入力してください';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  TextFormField(
+                    focusNode: _focusNode,
+                    controller: _emailController,
+                    decoration: InputDecoration(
+                      labelStyle: TextStyle(
+                        color: Colors.black,
                       ),
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          final user = _auth.currentUser;
-                          final email = _emailController.text.trim();
-                          final email_now = _emailController_now.text.trim();
+                      focusedBorder: UnderlineInputBorder(
+                        borderSide: BorderSide(color: Colors.black),
+                      ),
+                      labelText: '新しいメールアドレス',
+                    ),
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return 'メールアドレスを入力してください';
+                      }
+                      return null;
+                    },
+                  ),
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.green, // background
+                    ),
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        final user = _auth.currentUser;
+                        final email = _emailController.text.trim();
+                        final email_now = _emailController_now.text.trim();
 
-                          if (email_now == user!.email) {
-                            try {
-                              SignUpModel().changeMail(email);
-                              await user!.updateEmail(email);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('メールアドレスを変更しました')),
-                              );
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>  UnderMenuMove.make(0),
-                                  ));
-                            } catch (e) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("メールアドレス変更に失敗しました\n入力したメールアドレスの確認をしてください"),),
-                              );
-                            }
-                          }
-                          else {
+                        if (email_now == user!.email) {
+                          try {
+                            SignUpModel().changeMail(email);
+                            await user!.updateEmail(email);
                             ScaffoldMessenger.of(context).showSnackBar(
-
-                              SnackBar(content: Text('現在のメールアドレスが異なります')),
+                              SnackBar(content: Text('メールアドレスを変更しました')),
                             );
-                          }
-                        };},
-                      child: Text('メールアドレスを変更する'),
-                    ),
-                    SizedBox(height: 16),
-                    ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        primary: Colors.green, // background
-                      ),
-                      onPressed: () async {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => UnderMenuMove.make(0),
                                 ));
-                      },
-                      child: Text('ホームへ戻る'),
+                          } catch (e) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                    "メールアドレス変更に失敗しました\n入力したメールアドレスの確認をしてください"),
+                              ),
+                            );
+                          }
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('現在のメールアドレスが異なります')),
+                          );
+                        }
+                      }
+                      ;
+                    },
+                    child: Text('メールアドレスを変更する'),
+                  ),
+                  SizedBox(height: 16),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.green, // background
                     ),
-                  ],
-                ),
+                    onPressed: () async {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UnderMenuMove.make(0),
+                          ));
+                    },
+                    child: Text('ホームへ戻る'),
+                  ),
+                ],
               ),
+            ),
           ),
         ),
       ),

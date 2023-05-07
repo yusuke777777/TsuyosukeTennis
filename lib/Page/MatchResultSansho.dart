@@ -7,11 +7,7 @@ import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
 import '../Common/CFeedBackCommentSetting.dart';
 import '../Common/CmatchResult.dart';
 import '../Common/CprofileSetting.dart';
-import '../FireBase/FireBase.dart';
-import '../FireBase/FireBase.dart';
-import '../FireBase/ProfileImage.dart';
-import '../FireBase/TsMethod.dart';
-import 'MatchList.dart';
+import '../PropSetCofig.dart';
 
 class MatchResultSansho extends StatefulWidget {
   late CprofileSetting myProfile;
@@ -31,40 +27,38 @@ class MatchResultSansho extends StatefulWidget {
 class _MatchResultSanshoState extends State<MatchResultSansho> {
   @override
   Widget build(BuildContext context) {
+    HeaderConfig().init(context, "対戦結果参照");
     return GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: MaterialApp(
           home: Scaffold(
               appBar: AppBar(
-                  title: Text('対戦結果参照'),
-                  backgroundColor: const Color(0xFF3CB371),
-                  leading: IconButton(
-                    icon: const Icon(
-                      Icons.reply,
-                      color: Colors.black,
-                      size: 40.0,
-                    ),
-                    onPressed: () => {Navigator.pop(context)},
-                  )),
+                backgroundColor: HeaderConfig.backGroundColor,
+                title: HeaderConfig.appBarText,
+                iconTheme: IconThemeData(color: Colors.black),
+                leading: HeaderConfig.backIcon
+              ),
               body: Scrollbar(
                 isAlwaysShown: false,
                 child: SingleChildScrollView(
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                    SizedBox(
-                    width: 80,
-                  ),
-                  Center(
-                      child: Container(
-                        alignment: Alignment.center,
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        height:MediaQuery.of(context).size.height * 0.1,
-                        child: Text(widget.matchTitle,
-                          style: TextStyle(fontSize: 20, color: Colors.black),
+                        SizedBox(
+                          width: 80,
                         ),
-                      ),
-                  ),
+                        Center(
+                          child: Container(
+                            alignment: Alignment.center,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            height: MediaQuery.of(context).size.height * 0.1,
+                            child: Text(
+                              widget.matchTitle,
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
+                            ),
+                          ),
+                        ),
                         Row(
                           children: [
                             SizedBox(

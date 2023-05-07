@@ -55,6 +55,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
         backgroundColor: HeaderConfig.backGroundColor,
         title: HeaderConfig.appBarText,
         iconTheme: IconThemeData(color: Colors.black),
+          leading: HeaderConfig.backIcon
       ),
       body: FutureBuilder(
         future: futureList,

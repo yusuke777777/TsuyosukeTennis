@@ -40,6 +40,7 @@ class _BlockListState extends State<BlockList> {
         backgroundColor: HeaderConfig.backGroundColor,
         title: HeaderConfig.appBarText,
         iconTheme: IconThemeData(color: Colors.black),
+          leading: HeaderConfig.backIcon
       ),
 
       body: StreamBuilder<QuerySnapshot>(

@@ -27,7 +27,6 @@ class _FindResultPageState extends State<FindResultPage> {
       Firebase_Auth.FirebaseAuth.instance;
   String myUserID = auth.currentUser!.uid;
 
-
   //アカウントID入力値から対象の名前を取得
   late Future<List<String>> futureList =
       FirestoreMethod.getUserByMyUserId(inputId);
@@ -39,10 +38,10 @@ class _FindResultPageState extends State<FindResultPage> {
     DrawerConfig().init(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: HeaderConfig.backGroundColor,
-        title: HeaderConfig.appBarText,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
+          backgroundColor: HeaderConfig.backGroundColor,
+          title: HeaderConfig.appBarText,
+          iconTheme: IconThemeData(color: Colors.black),
+          leading: HeaderConfig.backIcon),
       body: FutureBuilder(
         future: futureList,
         builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
@@ -67,7 +66,8 @@ class _FindResultPageState extends State<FindResultPage> {
                     ]);
               } else {
                 //共通リストタイルの呼出
-                ListTileConfig().init(context, profileList![0], profileList![1], profileList[2], myUserID);
+                ListTileConfig().init(context, profileList![0], profileList![1],
+                    profileList[2], myUserID);
                 return ListView.builder(
                   itemCount: 1,
                   // padding: const EdgeInsets.all(8),

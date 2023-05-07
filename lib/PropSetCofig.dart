@@ -9,6 +9,7 @@ import 'FireBase/FireBase.dart';
 import 'Page/BlockList.dart';
 import 'Page/EmailChangeForm.dart';
 import 'Page/FriendManagerPage.dart';
+import 'Page/MatchResultList.dart';
 import 'Page/ProfileReference.dart';
 import 'Page/SigninPage.dart';
 import 'Page/TalkRoom.dart';
@@ -23,12 +24,23 @@ class HeaderConfig {
   //ヘッダー部の中身
   static late Text appBarText;
 
+  //戻るボタンの中身
+  static late IconButton backIcon;
+
   void init(BuildContext context, String inputTitle) {
     backGroundColor = Colors.white;
 
     appBarText = Text(
       inputTitle,
       style: TextStyle(fontSize: 20, color: Colors.black),
+    );
+    backIcon = IconButton(
+      icon: const Icon(
+        Icons.reply,
+        color: Colors.black,
+        size: 40.0,
+      ),
+      onPressed: () => {Navigator.pop(context)},
     );
   }
 }
@@ -66,6 +78,23 @@ class DrawerConfig {
             },
             child: Container(
               child: Text('友人管理'),
+              alignment: Alignment.center,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const MatchResultList(),
+                ),
+              );
+            },
+            child: Container(
+              child: Text('対戦履歴'),
               alignment: Alignment.center,
             ),
           ),

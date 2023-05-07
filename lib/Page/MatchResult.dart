@@ -11,6 +11,7 @@ import '../FireBase/FireBase.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/ProfileImage.dart';
 import '../FireBase/TsMethod.dart';
+import '../PropSetCofig.dart';
 import 'MatchList.dart';
 
 class MatchResult extends StatefulWidget {
@@ -68,22 +69,17 @@ class _MatchResultState extends State<MatchResult> {
 
   @override
   Widget build(BuildContext context) {
+    HeaderConfig().init(context, "対戦結果入力");
     opponent_id = widget.yourProfile.USER_ID;
     return GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: MaterialApp(
           home: Scaffold(
               appBar: AppBar(
-                  title: Text('対戦結果入力'),
-                  backgroundColor: const Color(0xFF3CB371),
-                  leading: IconButton(
-                    icon: const Icon(
-                      Icons.reply,
-                      color: Colors.black,
-                      size: 40.0,
-                    ),
-                    onPressed: () => {Navigator.pop(context)},
-                  )),
+                  backgroundColor:HeaderConfig.backGroundColor,
+                  title: HeaderConfig.appBarText,
+                  iconTheme: IconThemeData(color: Colors.black),
+                  leading: HeaderConfig.backIcon),
               body: Scrollbar(
                 isAlwaysShown: false,
                 child: SingleChildScrollView(
