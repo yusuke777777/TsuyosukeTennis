@@ -11,6 +11,7 @@ import '../Common/CprofileSetting.dart';
 import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/NotificationMethod.dart';
+import '../PropSetCofig.dart';
 import '../UnderMenuMove.dart';
 import 'MatchResultSansho.dart';
 import 'TalkList.dart';

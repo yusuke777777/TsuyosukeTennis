@@ -38,13 +38,13 @@ class _QrScanViewState extends State<QrScanView> {
 
   @override
   Widget build(BuildContext context) {
-    HeaderConfig().init(context,"QR読み取り");
+    HeaderConfig().init(context, "QR読み取り");
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: HeaderConfig.backGroundColor,
-        title: HeaderConfig.appBarText,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
+          backgroundColor: HeaderConfig.backGroundColor,
+          title: HeaderConfig.appBarText,
+          iconTheme: IconThemeData(color: Colors.black),
+          leading: HeaderConfig.backIcon),
       body: _buildQrView(context),
     );
   }
@@ -52,7 +52,7 @@ class _QrScanViewState extends State<QrScanView> {
   Widget _buildQrView(BuildContext context) {
     // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
     var scanArea = (MediaQuery.of(context).size.width < 400 ||
-        MediaQuery.of(context).size.height < 400)
+            MediaQuery.of(context).size.height < 400)
         ? 150.0
         : 300.0;
     // To ensure the Scanner view is properly sizes after rotation
@@ -84,15 +84,14 @@ class _QrScanViewState extends State<QrScanView> {
     controller.scannedDataStream.listen((scanData) async {
       //読み込んだ相手のID
       String yourId = scanData.code;
-       if (!matchdList.contains(yourId)) {
+      if (!matchdList.contains(yourId)) {
         FirestoreMethod.makeMatchByQrScan(yourId);
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('マッチング完了！')),
+          SnackBar(content: Text('マッチング完了！')),
         );
         matchdList.add(yourId);
       }
-     }
-    );
+    });
   }
 
   void _onPermissionSet(BuildContext context, QRViewController ctrl, bool p) {
