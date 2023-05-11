@@ -13,6 +13,7 @@ import '../FireBase/FireBase.dart';
 import '../FireBase/NotificationMethod.dart';
 import '../PropSetCofig.dart';
 import '../UnderMenuMove.dart';
+import 'MatchResultFeedBack.dart';
 import 'MatchResultSansho.dart';
 import 'TalkList.dart';
 
@@ -291,8 +292,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                               CprofileSetting yourProfile = await FirestoreMethod.getYourProfile(widget.room.user.USER_ID);
                                                                               String matchTitle = await FirestoreMethod.getMatchTitle(messageList[index].dayKey, widget.room.user.USER_ID);
 
-
-                                                                              await Navigator.push(context, MaterialPageRoute(builder: (context) => MatchResultSansho(myProfile, yourProfile, matchResultList, feedBackComment, skillLevel,matchTitle)));
+                                                                              await Navigator.push(context, MaterialPageRoute(builder: (context) => MatchResultSansho(myProfile, yourProfile, matchResultList, feedBackComment, skillLevel, matchTitle)));
 
                                                                               // FirestoreMethod.makeMatch(widget.room);
                                                                             }
@@ -305,13 +305,17 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                           )),
                                                                       TextButton(
                                                                           onPressed:
-                                                                              () {
+                                                                              () async {
                                                                             if (messageList[index].isMe) {
                                                                               print("対戦結果メッセージ送信済み");
                                                                             } else {
-                                                                              FirestoreMethod.matchFeedAccept(widget.room, messageList[index].messageId);
-                                                                              //フィードバック更新処理
-                                                                              // FirestoreMethod.makeMatch(widget.room);
+                                                                              //レビュー・フィードバックを記入する
+                                                                              List<CmatchResult> matchResultList = await FirestoreMethod.getMatchResult(messageList[index].dayKey, widget.room.user.USER_ID);
+                                                                              CprofileSetting myProfile = await FirestoreMethod.getProfile();
+                                                                              CprofileSetting yourProfile = await FirestoreMethod.getYourProfile(widget.room.user.USER_ID);
+                                                                              String matchTitle = await FirestoreMethod.getMatchTitle(messageList[index].dayKey, widget.room.user.USER_ID);
+
+                                                                              await Navigator.push(context, MaterialPageRoute(builder: (context) => MatchResultFeedBack(myProfile, yourProfile, matchResultList, matchTitle,messageList[index].dayKey.toString(),messageList[index].messageId,widget.room)));
                                                                             }
                                                                           },
                                                                           child:
@@ -344,7 +348,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                                   CprofileSetting yourProfile = await FirestoreMethod.getYourProfile(widget.room.user.USER_ID);
                                                                                   String matchTitle = await FirestoreMethod.getMatchTitle(messageList[index].dayKey, widget.room.user.USER_ID);
 
-                                                                                  await Navigator.push(context, MaterialPageRoute(builder: (context) => MatchResultSansho(myProfile, yourProfile, matchResultList, feedBackComment, skillLevel,matchTitle)));
+                                                                                  await Navigator.push(context, MaterialPageRoute(builder: (context) => MatchResultSansho(myProfile, yourProfile, matchResultList, feedBackComment, skillLevel, matchTitle)));
                                                                                 }
                                                                               },
                                                                               child: Text(

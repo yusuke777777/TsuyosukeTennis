@@ -756,6 +756,40 @@ class FirestoreMethod {
     await NotificationMethod.unreadCount(room.user.USER_ID);
   }
 
+  //対戦結果入力メッセージ(フィードバック入力希望の場合)
+  static Future<void> sendMatchResultFeedMessageReturn(
+      String myUserId, String yourUserId, String dayKey) async {
+    TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
+    final messageRef = roomRef.doc(room.roomId).collection('message');
+    String? myUid = auth.currentUser!.uid;
+    await messageRef.add({
+      'message': "評価・フィードバックを入力しました！",
+      'sender_id': myUid,
+      'send_time': Timestamp.now(),
+      'matchStatusFlg': "3",
+      'friendStatusFlg': "0",
+      'isRead': false,
+      'dayKey': dayKey
+    }).then((value) {
+      messageRef.doc(value.id).update({'messageId': value.id});
+    });
+    roomRef.doc(room.roomId).update({
+      'last_message': "評価・フィードバックを入力しました！",
+      'updated_time': Timestamp.now()
+    });
+    CprofileSetting myProfile = await FirestoreMethod.getProfile();
+    String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
+    if (tokenId == "") {
+      //トークンIDが登録されていない場合
+    } else {
+      //トークンIDが登録されている場合
+      await NotificationMethod.sendMessage(tokenId!,
+          "評価・フィードバックを入力しました！", myProfile.NICK_NAME);
+    }
+    //未読メッセージ数の更新
+    await NotificationMethod.unreadCount(room.user.USER_ID);
+  }
+
   /**
    * 条件で検索時の入力値を参照して対象データの名前を取得するメソッドです
    * 都道府県

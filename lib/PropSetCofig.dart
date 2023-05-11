@@ -156,13 +156,13 @@ class DrawerConfig {
             onTap: () async {
               await FirebaseAuth.instance.signOut();
               // ログアウト後の画面に遷移
-              await Navigator.pushReplacement(
+              Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => SignInPage(),
-                ),
+                MaterialPageRoute(builder: (context) =>  SignInPage()),
+                    (Route<dynamic> route) => false,
               );
             },
+
             child: Container(
               child: Text('ログアウト'),
               alignment: Alignment.center,
