@@ -55,7 +55,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
 
   late String myUserId;
 
-  //市町村
+  //市区町村
   TextEditingController curShichoson = TextEditingController();
 
   //アクティビィリスト
@@ -353,7 +353,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                   ),
                                   Container(
                                     child: Text(
-                                      '市町村',
+                                      '市区町村',
                                       style: TextStyle(
                                           fontSize: 20, color: Colors.black),
                                     ),
@@ -870,7 +870,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
 //             ),
 //             Container(
 //               child: Text(
-//                 '市町村',
+//                 '市区町村',
 //                 style: TextStyle(fontSize: 20, color: Colors.black),
 //               ),
 //             ),
