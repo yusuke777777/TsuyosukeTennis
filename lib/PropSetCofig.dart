@@ -10,6 +10,7 @@ import 'Page/BlockList.dart';
 import 'Page/EmailChangeForm.dart';
 import 'Page/FriendManagerPage.dart';
 import 'Page/MatchResultList.dart';
+import 'Page/MySetting.dart';
 import 'Page/ProfileReference.dart';
 import 'Page/SigninPage.dart';
 import 'Page/TalkRoom.dart';
@@ -146,6 +147,23 @@ class DrawerConfig {
             },
             child: Container(
               child: Text('ブロックリスト確認'),
+              alignment: Alignment.center,
+            ),
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MySetting(),
+                ),
+              );
+            },
+            child: Container(
+              child: Text('設定'),
               alignment: Alignment.center,
             ),
           ),

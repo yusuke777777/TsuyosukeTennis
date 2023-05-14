@@ -40,6 +40,7 @@ class FirestoreMethod {
   static final skilLevelRef = _firestoreInstance.collection('SkilLevel');
   static final feedBackRef = _firestoreInstance.collection('feedBack');
   static final blockRef = _firestoreInstance.collection('blockList');
+  static final settingRef = _firestoreInstance.collection('MySetting');
 
   //ランキングリスト
   static final manSinglesRankRef =
@@ -783,8 +784,8 @@ class FirestoreMethod {
       //トークンIDが登録されていない場合
     } else {
       //トークンIDが登録されている場合
-      await NotificationMethod.sendMessage(tokenId!,
-          "評価・フィードバックを入力しました！", myProfile.NICK_NAME);
+      await NotificationMethod.sendMessage(
+          tokenId!, "評価・フィードバックを入力しました！", myProfile.NICK_NAME);
     }
     //未読メッセージ数の更新
     await NotificationMethod.unreadCount(room.user.USER_ID);
@@ -2997,7 +2998,7 @@ class FirestoreMethod {
     late List<CScoreRefHistory> historyList = [];
     late QuerySnapshot snapShot;
     late List<QuerySnapshot> queryList = [];
-    late List<String> titleList =[];
+    late List<String> titleList = [];
 
     //対戦結果を取得
     final doc = await matchResultRef
@@ -3032,12 +3033,9 @@ class FirestoreMethod {
       titleList.add(doc_date.data()['matchTitle'] ?? "");
     });
 
-
-
     QuerySnapshot snapShot_date_doc = await snapShot_daily.get();
 
     for (QueryDocumentSnapshot documentSnapshot in snapShot_date_doc.docs) {
-
       snapShot = await documentSnapshot.reference
           .collection('matchDetail')
           .orderBy('KOUSHIN_TIME')
@@ -3067,4 +3065,26 @@ class FirestoreMethod {
 
     return result;
   }
+
+  static Future<bool> getReviewFeatureEnabled() async {
+    final settingSnapshot = await settingRef.doc(auth.currentUser!.uid).get();
+
+    if (settingSnapshot == null || !settingSnapshot.exists) {
+      // データが存在しない場合、初期値を使用する
+      return true;
+    }
+
+    bool reviewFeatureEnabled = settingSnapshot.data()!["REVIEW_ENABLED"];
+
+    return reviewFeatureEnabled; // Firestoreのデータがnullの場合は初期値を使用する
+  }
+
+  static Future<void> putReviewFeatureEnabled(bool reviewFeatureEnabled) async {
+    final settingSnapshot = await settingRef.doc(auth.currentUser!.uid);
+
+    settingSnapshot.set({
+      "REVIEW_ENABLED":reviewFeatureEnabled
+    });
+  }
+
 }
