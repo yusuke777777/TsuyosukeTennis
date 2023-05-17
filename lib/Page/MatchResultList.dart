@@ -120,11 +120,11 @@ class _MatchResultListState extends State<MatchResultList> {
                                                   fontSize: 20,
                                                   fontWeight: FontWeight.bold)),
                                           Text(
-                                              "入力者：" +
+                                              "対戦相手：" +
                                                   matchResultList[index]
                                                       .YOUR_USER
                                                       .NICK_NAME +
-                                                  "\n入力日時：" +
+                                                  "\n対戦日時：" +
                                                   matchResultList[index]
                                                       .dayKey
                                                       .toString()

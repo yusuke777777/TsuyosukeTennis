@@ -3065,7 +3065,7 @@ class FirestoreMethod {
 
     return result;
   }
-
+static late bool reviewFeatureEnabled;
   static Future<bool> getReviewFeatureEnabled() async {
     final settingSnapshot = await settingRef.doc(auth.currentUser!.uid).get();
 
@@ -3074,7 +3074,7 @@ class FirestoreMethod {
       return true;
     }
 
-    bool reviewFeatureEnabled = settingSnapshot.data()!["REVIEW_ENABLED"];
+     reviewFeatureEnabled = settingSnapshot.data()!["REVIEW_ENABLED"];
 
     return reviewFeatureEnabled; // Firestoreのデータがnullの場合は初期値を使用する
   }
@@ -3085,6 +3085,18 @@ class FirestoreMethod {
     settingSnapshot.set({
       "REVIEW_ENABLED":reviewFeatureEnabled
     });
+  }
+  static Future<bool> getYourReviewFeatureEnabled(String userId) async {
+    final settingSnapshot = await settingRef.doc(userId).get();
+    bool yourReviewFeatureEnabled = true;
+
+    if (settingSnapshot == null || !settingSnapshot.exists) {
+      // データが存在しない場合、初期値を使用する
+      return true;
+    }
+    yourReviewFeatureEnabled = settingSnapshot.data()?["REVIEW_ENABLED"] ?? true;
+
+    return yourReviewFeatureEnabled; // Firestoreのデータがnullの場合は初期値を使用する
   }
 
 }

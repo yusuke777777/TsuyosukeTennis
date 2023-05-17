@@ -12,15 +12,13 @@ class MySetting extends StatefulWidget {
 }
 
 class _MySettingState extends State<MySetting> {
-  bool reviewFeatureEnabled = true; // レビュー機能ONOFFの初期値
-
 
   @override
   void initState() {
     super.initState();
     FirestoreMethod.getReviewFeatureEnabled().then((enabled) {
       setState(() {
-        reviewFeatureEnabled = enabled;
+        FirestoreMethod.reviewFeatureEnabled = enabled;
       });
     });
   }
@@ -73,11 +71,11 @@ class _MySettingState extends State<MySetting> {
             title: Text("レビュー機能（OFF/ON）",
                 style: TextStyle(fontSize: 20, color: Colors.black)),
             trailing: CupertinoSwitch(
-              value: reviewFeatureEnabled,
+              value: FirestoreMethod.reviewFeatureEnabled,
               onChanged: (bool? value) {
                 setState(() {
-                  reviewFeatureEnabled = value ?? true;
-                  FirestoreMethod.putReviewFeatureEnabled(reviewFeatureEnabled);
+                  FirestoreMethod.reviewFeatureEnabled = value ?? true;
+                  FirestoreMethod.putReviewFeatureEnabled(FirestoreMethod.reviewFeatureEnabled);
                 });
               },
             ),
