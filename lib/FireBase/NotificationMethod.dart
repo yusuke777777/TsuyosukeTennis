@@ -117,19 +117,36 @@ class NotificationMethod {
 
   //メッセージ通知_新規フラグ取得(SEND)
   static Future<String> newFlgSendNotification(String senderId) async {
-    final snapshot = await MyNotificationRef.get();
     String NEW_FLG = "1";
+    final snapshot = await _firestoreInstance.collection('myNotification').get();
+    List<QueryDocumentSnapshot> documents = snapshot.docs;
+    int documentCount = snapshot.size;
+    print("documentCount" + documentCount.toString());
+
+    if (snapshot.docs.isNotEmpty) {
+      print("bbbb");
+    }else{
+      print("cccc");
+    }
+
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      print("aaaaa");
+
       if (doc.id == senderId) {
         final mySnapshot = await MyNotificationRef
             .doc(senderId)
             .collection('talkNotification')
             .get();
-        await Future.forEach<dynamic>(mySnapshot.docs, (doc) async {
-          if (doc.id == auth.currentUser!.uid) {
+        print(doc.id);
+        await Future.forEach<dynamic>(mySnapshot.docs, (childDoc) async {
+          if (childDoc.id == auth.currentUser!.uid) {
             NEW_FLG = "0";
+            print("childDoc" + childDoc.id);
+            return;
           }
         });
+      }else{
+        return;
       }
     });
     return NEW_FLG;
@@ -140,8 +157,9 @@ class NotificationMethod {
   static Future<int> unreadCount(String recipientId) async {
     int unreadCount = 0;
     //新規フラグチェック
-    // String newFlg = await newFlgSendNotification(recipientId);
     String newFlg = "0";
+     newFlg = await newFlgSendNotification(recipientId);
+     print("newFlg" + newFlg);
     if (newFlg == "1") {
       unreadCount++;
     } else {
@@ -157,6 +175,7 @@ class NotificationMethod {
         print('未読数のカウント数取得に失敗しました --- $e');
       }
     }
+    print("unreadCount" + unreadCount.toString());
     //未読数を更新して登録する
     try {
       await MyNotificationRef
@@ -175,8 +194,8 @@ class NotificationMethod {
   static Future<int> unreadCountGet(String senderId) async {
     int unreadCount = 0;
     //新規フラグチェック
-    // String newFlg = await newFlgNotification(senderId);
     String newFlg = "0";
+    newFlg = await newFlgNotification(senderId);
 
     if (newFlg == "1") {
       unreadCount = 0;

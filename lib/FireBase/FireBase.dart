@@ -95,21 +95,39 @@ class FirestoreMethod {
       print('ユーザー登録に失敗しました --- $e');
     }
 
-    profile.activityList.forEach((a) async {
-      try {
-        await profileRef
-            .doc(auth.currentUser!.uid)
-            .collection("activityList")
-            .doc("ActivityNo" + a.No)
-            .set({
-          'No': a.No,
-          'TODOFUKEN': a.TODOFUKEN,
-          'SHICHOSON': a.SHICHOSON.text
-        });
-      } catch (e) {
-        print('ユーザー登録に失敗しました --- $e');
-      }
+    //アクティビティリスト削除
+    final snapshot = await profileRef
+        .doc(auth.currentUser!.uid)
+        .collection("activityList").get();
+
+    final snapshotActivity = await profileRef
+        .doc(auth.currentUser!.uid)
+        .collection("activityList");
+
+    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+      snapshotActivity.doc(doc.id).delete();
     });
+
+    int No = 0;
+
+    for (int index = 0; index < profile.activityList.length; index ++) {
+      if (profile.activityList[index].TODOFUKEN != "") {
+        try {
+          await profileRef
+              .doc(auth.currentUser!.uid)
+              .collection("activityList")
+              .doc("ActivityNo" + No.toString())
+              .set({
+            'No': No.toString(),
+            'TODOFUKEN': profile.activityList[index].TODOFUKEN,
+            'SHICHOSON': profile.activityList[index].SHICHOSON.text
+          });
+        } catch (e) {
+          print('ユーザー登録に失敗しました --- $e');
+        }
+        No = No + 1;
+      }
+    }
   }
 
   /**
@@ -618,6 +636,7 @@ class FirestoreMethod {
         .update({'last_message': message, 'updated_time': Timestamp.now()});
     CprofileSetting myProfile = await FirestoreMethod.getProfile();
     String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
+    print(tokenId);
     if (tokenId == "") {
       //トークンIDが登録されていない場合
     } else {
@@ -3070,11 +3089,12 @@ static late bool reviewFeatureEnabled;
     final settingSnapshot = await settingRef.doc(auth.currentUser!.uid).get();
 
     if (settingSnapshot == null || !settingSnapshot.exists) {
+      reviewFeatureEnabled = true;
       // データが存在しない場合、初期値を使用する
       return true;
     }
 
-     reviewFeatureEnabled = settingSnapshot.data()!["REVIEW_ENABLED"];
+     reviewFeatureEnabled = settingSnapshot.data()?["REVIEW_ENABLED"] ?? true;
 
     return reviewFeatureEnabled; // Firestoreのデータがnullの場合は初期値を使用する
   }
