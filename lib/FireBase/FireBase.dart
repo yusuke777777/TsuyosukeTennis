@@ -2625,35 +2625,36 @@ class FirestoreMethod {
     double serve_2nd_avg = 0;
     double count = 0;
     try {
-      await matchResultRef
+      final opponentListsnapShot = await matchResultRef
           .doc(auth.currentUser!.uid)
           .collection('opponentList')
-          .get()
-          .then(
-            (QuerySnapshot querySnapshot) => {
-              querySnapshot.docs.forEach(
-                (doc) {
-                  count++;
-                  stroke_fore_total =
-                      stroke_fore_total + doc.get('STROKE_FOREHAND');
-                  stroke_back_total =
-                      stroke_back_total + doc.get('STROKE_BACKHAND');
-                  volley_fore_total =
-                      volley_fore_total + doc.get('VOLLEY_FOREHAND');
-                  volley_back_total =
-                      volley_back_total + doc.get('VOLLEY_BACKHAND');
-                  serve_1st_total = serve_1st_total + doc.get('SERVE_1ST');
-                  serve_2nd_total = serve_2nd_total + doc.get('SERVE_2ND');
-                },
-              ),
-            },
-          );
-      stroke_fore_avg = stroke_fore_total / count;
-      stroke_back_avg = stroke_back_total / count;
-      volley_fore_avg = volley_fore_total / count;
-      volley_back_avg = volley_back_total / count;
-      serve_1st_avg = serve_1st_total / count;
-      serve_2nd_avg = serve_2nd_total / count;
+          .get();
+      await Future.forEach<dynamic>(opponentListsnapShot.docs, (doc) async {
+        //0~5以外は入り得ない
+        double fore = await doc.data()?['STROKE_FOREHAND']?? 10;
+        if(fore == 10){
+          return;
+        }
+        else {
+          count++;
+          stroke_fore_total =
+              stroke_fore_total + doc.get('STROKE_FOREHAND');
+          stroke_back_total =
+              stroke_back_total + doc.get('STROKE_BACKHAND');
+          volley_fore_total =
+              volley_fore_total + doc.get('VOLLEY_FOREHAND');
+          volley_back_total =
+              volley_back_total + doc.get('VOLLEY_BACKHAND');
+          serve_1st_total = serve_1st_total + doc.get('SERVE_1ST');
+          serve_2nd_total = serve_2nd_total + doc.get('SERVE_2ND');
+        }
+      });
+          stroke_fore_avg = stroke_fore_total / count;
+          stroke_back_avg = stroke_back_total / count;
+          volley_fore_avg = volley_fore_total / count;
+          volley_back_avg = volley_back_total / count;
+          serve_1st_avg = serve_1st_total / count;
+          serve_2nd_avg = serve_2nd_total / count;
     } catch (e) {
       print(e);
     }

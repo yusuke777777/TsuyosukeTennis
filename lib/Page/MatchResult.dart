@@ -56,6 +56,7 @@ class _MatchResultState extends State<MatchResult> {
   //対戦相手のレビュー機能ONOFF
   bool yourReviewFeatureEnabled = true;
 
+  //フィードバックを入力しないかどうかフラグ(true=入力しない)
   bool _flag = false;
   bool _feedbackFlg = false;
 
@@ -540,7 +541,7 @@ class _MatchResultState extends State<MatchResult> {
                                       builder: (context) {
                                         return AlertDialog(
                                           title: Text(
-                                              'フィードバックが未記入です。\nフィードバックをしない場合は「レビューを入力しない」にチェックをつけてください。'),
+                                              'フィードバックが未記入です。\nフィードバックをしない場合は「フィードバックを入力しない」にチェックをつけてください。'),
                                           actions: <Widget>[
                                             ElevatedButton(
                                               style: ElevatedButton.styleFrom(
@@ -561,7 +562,7 @@ class _MatchResultState extends State<MatchResult> {
                                       builder: (context) {
                                         return AlertDialog(
                                           title: Text(
-                                              'フィードバックが未記入です。\nフィードバックをしない場合は「レビューを入力しない」にチェックをつけてください。'),
+                                              'フィードバックが未記入です。\nフィードバックをしない場合は「フィードバックを入力しない」にチェックをつけてください。'),
                                           actions: <Widget>[
                                             ElevatedButton(
                                               style: ElevatedButton.styleFrom(
@@ -617,6 +618,7 @@ class _MatchResultState extends State<MatchResult> {
                                         STROKE_FOREHAND: stroke_fore,
                                         VOLLEY_BACKHAND: volley_back,
                                         VOLLEY_FOREHAND: volley_fore,
+
                                       );
                                       await FirestoreMethod.registSkillLevel(
                                           skill, dayKey);
