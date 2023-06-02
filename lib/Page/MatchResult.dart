@@ -81,6 +81,11 @@ class _MatchResultState extends State<MatchResult> {
         yourReviewFeatureEnabled = enabled;
       });
     });
+    FirestoreMethod.getReviewFeatureEnabled().then((enabled) {
+      setState(() {
+        FirestoreMethod.reviewFeatureEnabled = enabled;
+      });
+    });
   }
 
   @override

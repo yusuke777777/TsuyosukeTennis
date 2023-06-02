@@ -400,8 +400,30 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             todofukenTourokuNo = todofukenTourokuNo + 1;
                             //都道府県ウィジェット追加
                             // _makeWidgets(todofukenTourokuNo);
-                            activityListAdd(todofukenTourokuNo.toString());
-                            setState(() {});
+                            if(todofukenTourokuNo <=4 ) {
+                              activityListAdd(todofukenTourokuNo.toString());
+                              setState(() {});
+                            }else{
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('都道府県の設定は5つまで可能です'),
+                                      actions: <Widget>[
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary:
+                                              Colors.lightGreenAccent,
+                                              onPrimary: Colors.black),
+                                          child: Text('OK'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            }
                           },
                         ),
                         SizedBox(
@@ -579,6 +601,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               //   );
                               //   await FirestoreMethod.makeProfile(cprofileSet);
                               await FirestoreMethod.makeProfile(myProfile);
+                              await FirestoreMethod.putReviewFeatureEnabled(true);
 
                               Navigator.pushReplacement(
                                 context,
@@ -662,6 +685,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
   }
 
   final List<String> _Location = [
+    "",
     "北海道",
     "青森県",
     "岩手県",
@@ -813,7 +837,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
     activityList.add(
       CativityList(
         No: No,
-        TODOFUKEN: "東京都",
+        TODOFUKEN: "",
         SHICHOSON: TextEditingController(),
       ),
     );
