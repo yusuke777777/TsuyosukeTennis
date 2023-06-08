@@ -3085,7 +3085,7 @@ class FirestoreMethod {
 
     return result;
   }
-static late bool reviewFeatureEnabled;
+static bool reviewFeatureEnabled = true;
   static Future<bool> getReviewFeatureEnabled() async {
     final settingSnapshot = await settingRef.doc(auth.currentUser!.uid).get();
 

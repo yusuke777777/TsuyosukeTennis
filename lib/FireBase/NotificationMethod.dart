@@ -120,6 +120,8 @@ class NotificationMethod {
     String NEW_FLG = "1";
     final snapshot = await _firestoreInstance.collection('myNotification').get();
     List<QueryDocumentSnapshot> documents = snapshot.docs;
+
+
     int documentCount = snapshot.size;
     print("documentCount" + documentCount.toString());
 
@@ -184,6 +186,11 @@ class NotificationMethod {
           .doc(auth.currentUser!.uid)
           .set({
         'UNREAD_COUNT': unreadCount,
+      });
+      await MyNotificationRef
+          .doc(recipientId)
+          .set({
+        'USER_ID': recipientId
       });
     } catch (e) {
       print('未読数のカウント登録に失敗しました --- $e');

@@ -247,8 +247,9 @@ class _MatchResultState extends State<MatchResult> {
                               icon: Icon(Icons.add),
                               onPressed: () {
                                 //登録Noを更新
-                                curTourokuNo = curTourokuNo + 1;
-                                activityListAdd(curTourokuNo.toString());
+                                // curTourokuNo = curTourokuNo + 1;
+                                activityListAdd(matchResultList.length.toString());
+                                print(matchResultList.length);
                                 setState(() {});
                               },
                             ),
