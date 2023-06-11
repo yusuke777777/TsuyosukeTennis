@@ -55,7 +55,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
   String torokuRank = "中級";
 
   //性別
-  String gender = "男";
+  String gender = "男性";
 
   late String myUserId;
 
