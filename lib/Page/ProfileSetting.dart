@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import '../Common/CactivityList.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import '../Common/CprofileSetting.dart';
@@ -18,7 +19,7 @@ class ProfileSetting extends StatefulWidget {
     koushinFlg = '1';
   }
 
-  ProfileSetting.Make(String? myUserId) {
+  ProfileSetting.Make() {
     List<CativityList> activityList = [];
     myProfile = CprofileSetting(
       USER_ID: '',
@@ -29,7 +30,7 @@ class ProfileSetting extends StatefulWidget {
       AGE: '',
       GENDER: '',
       COMENT: '',
-      MY_USER_ID: myUserId!,
+      MY_USER_ID: '',
     );
   }
 
@@ -43,6 +44,9 @@ class _ProfileSettingState extends State<ProfileSetting> {
 
   //ニックネーム
   late TextEditingController nickName = TextEditingController();
+
+  //ユーザーID
+  late TextEditingController inputUserID = TextEditingController();
 
   //プロフィール画像  画像を登録できるようにする
   String profileImage = '';
@@ -95,6 +99,11 @@ class _ProfileSettingState extends State<ProfileSetting> {
       nickName = TextEditingController(text: widget.myProfile.NICK_NAME);
     }
 
+    //ニックネーム
+    if (koushinFlg == "1") {
+      inputUserID = TextEditingController(text: widget.myProfile.MY_USER_ID);
+    }
+
     //プロフィール画像  画像を登録できるようにする
     if (koushinFlg == "1") {
       profileImage = widget.myProfile.PROFILE_IMAGE;
@@ -133,6 +142,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
       myUserId = widget.myProfile.MY_USER_ID;
     }
   }
+
+  bool isDoubleUser = false;
 
   @override
   Widget build(BuildContext context) {
@@ -218,6 +229,31 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             style: TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
+
+                        //ユーザID登録
+                        Container(
+                          padding: const EdgeInsets.all(5.0),
+                          width: 300,
+                          height: 50,
+                          child: TextFormField(
+                            inputFormatters: [
+                              FilteringTextInputFormatter.deny(
+                                //日本語入力禁止
+                                  RegExp('[\u3040-\u309F]')),
+                            ],
+                            controller: inputUserID,
+                            decoration: InputDecoration(
+                                labelText: 'ユーザーID',
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(20)),
+                                contentPadding:
+                                EdgeInsets.symmetric(horizontal: 16),
+                                fillColor: Colors.white,
+                                filled: true),
+                            style: TextStyle(fontSize: 20, color: Colors.black),
+                          ),
+                        ),
+
                       ]),
                     ),
                     Column(
@@ -581,34 +617,67 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             myProfile.USER_ID = auth.currentUser!.uid;
                             myProfile.PROFILE_IMAGE = profileImage;
                             myProfile.NICK_NAME = nickName.text;
+                            myProfile.MY_USER_ID = inputUserID.text;
                             myProfile.TOROKU_RANK = torokuRank;
                             myProfile.activityList = activityList;
                             myProfile.AGE = age;
                             myProfile.GENDER = gender;
                             myProfile.COMENT = coment.text;
                             //必須入力項目のチェック
-                            if (nickName.text.isNotEmpty) {
-                              //   CprofileSetting cprofileSet = CprofileSetting(
-                              //     USER_ID: auth.currentUser!.uid,
-                              //     PROFILE_IMAGE: profileImage,
-                              //     NICK_NAME: nickName.text,
-                              //     TOROKU_RANK: torokuRank,
-                              //     activityList: activityList,
-                              //     AGE: age,
-                              //     GENDER: gender,
-                              //     COMENT: coment.text,
-                              //     MY_USER_ID:
-                              //   );
-                              //   await FirestoreMethod.makeProfile(cprofileSet);
-                              await FirestoreMethod.makeProfile(myProfile);
-                              await FirestoreMethod.putReviewFeatureEnabled(true);
+                            if (nickName.text.isNotEmpty && inputUserID.text.isNotEmpty) {
+                              bool isDoubleMyUserId = await FirestoreMethod.checkDoubleMyUserID(inputUserID.text, isDoubleUser);
+                              //ユーザーIDの重複確認
+                              if (isDoubleMyUserId) {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text('このユーザーIDは既に使用されています'),
+                                        actions: <Widget>[
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                primary: Colors.lightGreenAccent,
+                                                onPrimary: Colors.black),
+                                            child: Text('OK'),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    });
+                              }
+                              else if (inputUserID.text.length < 5 || inputUserID.text.length > 20) {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text('ユーザーIDは5文字以上20文字以内です'),
+                                        actions: <Widget>[
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                primary: Colors.lightGreenAccent,
+                                                onPrimary: Colors.black),
+                                            child: Text('OK'),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    });
+                              }
+                              else {
+                                await FirestoreMethod.makeProfile(myProfile);
+                                await FirestoreMethod.putReviewFeatureEnabled(true);
 
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => UnderMenuMove.make(0),
-                                ),
-                              );
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => UnderMenuMove.make(0),
+                                  ),
+                                );
+                              }
                             } else {
                               showDialog(
                                   context: context,
