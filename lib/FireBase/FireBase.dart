@@ -3120,4 +3120,13 @@ static bool reviewFeatureEnabled = true;
     return yourReviewFeatureEnabled; // Firestoreのデータがnullの場合は初期値を使用する
   }
 
+  //ログインするユーザーがプロフィール登録を完了しているか確認
+  static Future<bool> isProfile() async {
+    print("AAA");
+    DocumentReference docRef = await profileRef.doc(auth.currentUser!.uid);
+    DocumentSnapshot docSnapshot = await docRef.get();
+    print("XXX" + docSnapshot.exists.toString());
+    return docSnapshot.exists;
+  }
+
 }
