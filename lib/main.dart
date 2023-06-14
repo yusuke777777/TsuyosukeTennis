@@ -7,6 +7,7 @@ import 'package:tsuyosuke_tennis_ap/FireBase/Notification_badge.dart';
 import 'Common/CPushNotification.dart';
 import 'FireBase/FireBase.dart';
 import 'FireBase/NotificationMethod.dart';
+import 'Page/ProfileSetting.dart';
 import 'Page/SigninPage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'UnderMenuMove.dart';
@@ -34,9 +35,16 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+
+  static bool isprofile = false;
+
+  static void test() async {
+      isprofile = await FirestoreMethod.isProfile();
+  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    test();
     return MaterialApp(
       theme: ThemeData(
         // This is the theme of your application.
@@ -51,7 +59,10 @@ class _MyAppState extends State<MyApp> {
         primarySwatch: Colors.red,
       ),
       // home: TestHomePage(),
-      home: FirebaseAuth.instance.currentUser == null ? SignInPage() : UnderMenuMove.make(0),
+      home: FirebaseAuth.instance.currentUser == null
+          ? SignInPage()
+          :
+      isprofile == true ? UnderMenuMove.make(0) : ProfileSetting.Make(),
     );
   }
 }

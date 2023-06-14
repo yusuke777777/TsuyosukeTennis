@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../FireBase/FireBase.dart';
 import '../FireBase/SigninModel.dart';
 import '../FireBase/TextDaialog.dart';
 import '../FireBase/WillPopScope.dart';
@@ -8,11 +10,17 @@ import '../UnderMenuMove.dart';
 import 'ProfileSetting.dart';
 import 'SignupPage.dart';
 import 'PasswordForgetPage.dart';
+import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 
 
 class SignInPage extends StatelessWidget {
   final mailController = TextEditingController();
   final passwordController = TextEditingController();
+
+  static final Firebase_Auth.FirebaseAuth auth =
+      Firebase_Auth.FirebaseAuth.instance;
+  static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
+  static final profileRef = _firestoreInstance.collection('myProfile');
 
   @override
   Widget build(BuildContext context) {
@@ -98,13 +106,17 @@ class SignInPage extends StatelessWidget {
                                   model.startLoading();
                                   try {
                                     await model.login();
+                                    bool isprofile = await FirestoreMethod.isProfile();
                                     //ダウンロードテスト
                                     // await FirestoreMethod().downloadImage();
                                     await Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
-
-                                        builder: (context) => UnderMenuMove.make(0),
+                                        builder: (context) =>
+                                        isprofile == true
+                                            ?
+                                        UnderMenuMove.make(0)
+                                            : ProfileSetting.Make(),
                                       ),
                                     );
                                   } catch (e) {

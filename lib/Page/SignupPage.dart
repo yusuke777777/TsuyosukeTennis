@@ -98,31 +98,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                       SizedBox(
                                         height: 8,
                                       ),
-                                      TextFormField(
-                                        controller: useridController,
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter.deny(
-                                              //日本語入力禁止
-                                              RegExp('[\u3040-\u309F]')),
-                                        ],
-                                        onChanged: (text) {
-                                          model.changeMyUserID(text);
-                                          myUserId = text;
-                                        },
-                                        obscureText: false,
-                                        maxLines: 1,
-                                        style: TextStyle(fontSize: 16),
-                                        decoration: InputDecoration(
-                                          labelText: 'ユーザID',
-                                          errorText: model.errorMyUserId == ''
-                                              ? null
-                                              : model.errorMyUserId,
-                                          border: OutlineInputBorder(),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: 8,
-                                      ),
 
                                       TextFormField(
                                         controller: passwordController,
@@ -230,7 +205,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                                 label: Text('新規登録'),
                                                 backgroundColor:
                                                     const Color(0xFF4CAF50),
-                                                onPressed: model.agreeGuideline && model.isMyUserIdValid
+                                                onPressed: model.agreeGuideline
                                                     ? () async {
                                                         try {
                                                           await model.signUp();
@@ -240,7 +215,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                                             MaterialPageRoute(
                                                               builder: (context) =>
                                                                   ProfileSetting
-                                                                      .Make(myUserId),
+                                                                      .Make(),
                                                             ),
                                                           );
 
