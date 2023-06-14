@@ -1450,7 +1450,7 @@ class FirestoreMethod {
     late int YOUR_LOSE_SU_CUR;
     late int YOUR_MATCH_SU_CUR;
     late int YOUR_WIN_RATE_CUR;
-
+    int MATCH_NO = 0;
     matchResultList.forEach((a) async {
       try {
         if (a.myGamePoint > a.yourGamePoint) {
@@ -1487,50 +1487,54 @@ class FirestoreMethod {
           MY_TS_POINT_FUYO = 0;
           print(YOUR_TS_POINT_FUYO);
         }
-        matchResultRef
-            .doc(myProfile.USER_ID)
-            .collection('opponentList')
-            .doc(yourProfile.USER_ID)
-            .collection('daily')
-            .doc(dayKey)
-            .collection('matchDetail')
-            .add({
-          'No': a.No,
-          'MY_POINT': a.myGamePoint,
-          'YOUR_POINT': a.yourGamePoint,
-          'WIN_FLG': MY_WIN_FLG,
-          'TS_POINT': MY_TS_POINT_FUYO,
-          'YOUR_TOROKU_RANK': yourProfile.TOROKU_RANK,
-          'YOUR_RANK_NO': YOUR_RANK,
-          'MY_TOROKU_RANK': myProfile.TOROKU_RANK,
-          'MY_RANK_NO': MY_RANK,
-          'KOUSHIN_TIME': today,
-          'TSP_VALID_FLG': '1'
-        });
-        matchResultRef
-            .doc(yourProfile.USER_ID)
-            .collection('opponentList')
-            .doc(myProfile.USER_ID)
-            .collection('daily')
-            .doc(dayKey)
-            .collection('matchDetail')
-            .add({
-          'No': a.No,
-          'MY_POINT': a.yourGamePoint,
-          'YOUR_POINT': a.myGamePoint,
-          'WIN_FLG': YOUR_WIN_FLG,
-          'TS_POINT': YOUR_TS_POINT_FUYO,
-          'YOUR_TOROKU_RANK': myProfile.TOROKU_RANK,
-          'YOUR_RANK_NO': MY_RANK,
-          'MY_TOROKU_RANK': yourProfile.TOROKU_RANK,
-          'MY_RANK_NO': YOUR_RANK,
-          'KOUSHIN_TIME': today,
-          'TSP_VALID_FLG': '1'
-        });
+        if(a.myGamePoint != a.yourGamePoint) {
+          matchResultRef
+              .doc(myProfile.USER_ID)
+              .collection('opponentList')
+              .doc(yourProfile.USER_ID)
+              .collection('daily')
+              .doc(dayKey)
+              .collection('matchDetail')
+              .add({
+            'No': MATCH_NO.toString(),
+            'MY_POINT': a.myGamePoint,
+            'YOUR_POINT': a.yourGamePoint,
+            'WIN_FLG': MY_WIN_FLG,
+            'TS_POINT': MY_TS_POINT_FUYO,
+            'YOUR_TOROKU_RANK': yourProfile.TOROKU_RANK,
+            'YOUR_RANK_NO': YOUR_RANK,
+            'MY_TOROKU_RANK': myProfile.TOROKU_RANK,
+            'MY_RANK_NO': MY_RANK,
+            'KOUSHIN_TIME': today,
+            'TSP_VALID_FLG': '1'
+          });
+          matchResultRef
+              .doc(yourProfile.USER_ID)
+              .collection('opponentList')
+              .doc(myProfile.USER_ID)
+              .collection('daily')
+              .doc(dayKey)
+              .collection('matchDetail')
+              .add({
+            'No': MATCH_NO.toString(),
+            'MY_POINT': a.yourGamePoint,
+            'YOUR_POINT': a.myGamePoint,
+            'WIN_FLG': YOUR_WIN_FLG,
+            'TS_POINT': YOUR_TS_POINT_FUYO,
+            'YOUR_TOROKU_RANK': myProfile.TOROKU_RANK,
+            'YOUR_RANK_NO': MY_RANK,
+            'MY_TOROKU_RANK': yourProfile.TOROKU_RANK,
+            'MY_RANK_NO': YOUR_RANK,
+            'KOUSHIN_TIME': today,
+            'TSP_VALID_FLG': '1'
+          });
+          MATCH_NO = MATCH_NO + 1;
+        }
       } catch (e) {
         print('対戦結果入力に失敗しました --- $e');
       }
-    });
+    }
+    );
 
     //デイリー対戦結果更新
     try {
@@ -2826,6 +2830,7 @@ class FirestoreMethod {
             .collection('daily')
             .doc(dayKey)
             .collection('matchDetail')
+            .orderBy('No')
             .get();
         await Future.forEach<dynamic>(snapShot.docs, (document) async {
           matchResultList.add(CmatchResult(

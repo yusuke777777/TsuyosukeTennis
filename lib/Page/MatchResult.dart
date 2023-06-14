@@ -509,8 +509,11 @@ class _MatchResultState extends State<MatchResult> {
                               ),
                               onPressed: () async {
                                 String errorFlg = "0";
+                                String deleteFlg = "0";
                                 matchResultList.forEach((matchList) {
-                                  if (matchList.myGamePoint ==
+                                  if(matchResultList.length != 1 && matchList.myGamePoint == 0 && matchList.yourGamePoint == 0){
+                                    deleteFlg = "1";
+                                  }else if (matchList.myGamePoint ==
                                       matchList.yourGamePoint) {
                                     errorFlg = "1";
                                   }

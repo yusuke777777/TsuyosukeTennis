@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "tsuyosuketeniss"
-  }
+    "default": "tsuyosuketeniss",
+    "tsuyosuketenissProd": "tsuyosuketeniss"
+  },
+  "targets": {},
+  "etags": {}
 }

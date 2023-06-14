@@ -1,7 +1,7 @@
-import * as admin from "firebase-admin";
 import * as functions from "firebase-functions";
 import {format} from "date-fns";
 import {utcToZonedTime} from "date-fns-tz";
+import * as admin from "firebase-admin";
 
 admin.initializeApp();
 const manSinglesRankRef = admin.firestore().collection("manSinglesRank");
@@ -12,7 +12,7 @@ exports.updateMetaFunction = functions
     .region("asia-northeast1")
     .pubsub.schedule("* */1 * * *")
     .timeZone("Asia/Tokyo")
-    .onRun(async (context) => {
+    .onRun(async () => {
       console.log("ランキング作成開始");
       try {
         await getRankTable();
@@ -26,7 +26,7 @@ exports.tspRevocationFunction = functions
     .region("asia-northeast1")
     .pubsub.schedule("*/1 * * * *")
     .timeZone("Asia/Tokyo")
-    .onRun(async (context) => {
+    .onRun(async () => {
       console.log("失効TSPポイント再計算");
       try {
         await getTspRevocation();
@@ -94,60 +94,174 @@ async function getRankTable(): Promise<void> {
   }
   /** 初級ランキングテーブルを作成 */
   await shokyuRanks.sort((a, b) => b.TS_POINT - a.TS_POINT );
-  console.log("ソート");
+  let shokyuRankNo = 0;
   for (let index = 0; index < shokyuRanks.length; index++) {
-    try {
-      await manSinglesRankRef
-          .doc("ShokyuRank")
-          .collection("RankList")
-          .doc(shokyuRanks[index].USER_ID)
-          .set({
-            RANK_NO: index + 1,
-            USER_ID: shokyuRanks[index].USER_ID,
-            TS_POINT: shokyuRanks[index].TS_POINT,
-          });
-      console.log("初級追加");
-    } catch (e) {
-      console.log("ランキング作成に失敗しました --- $e");
+    if (index != 0) {
+      if (shokyuRanks[index].TS_POINT ==
+        shokyuRanks[index - 1].TS_POINT) {
+        try {
+          await manSinglesRankRef
+              .doc("ShokyuRank")
+              .collection("RankList")
+              .doc(shokyuRanks[index].USER_ID)
+              .set({
+                RANK_NO: shokyuRankNo,
+                USER_ID: shokyuRanks[index].USER_ID,
+                TS_POINT: shokyuRanks[index].TS_POINT,
+              });
+          console.log("初級追加");
+        } catch (e) {
+          console.log("ランキング作成に失敗しました --- $e");
+        }
+      } else {
+        shokyuRankNo = index + 1;
+        try {
+          await manSinglesRankRef
+              .doc("ShokyuRank")
+              .collection("RankList")
+              .doc(shokyuRanks[index].USER_ID)
+              .set({
+                RANK_NO: index + 1,
+                USER_ID: shokyuRanks[index].USER_ID,
+                TS_POINT: shokyuRanks[index].TS_POINT,
+              });
+          console.log("初級追加");
+        } catch (e) {
+          console.log("ランキング作成に失敗しました --- $e");
+        }
+      }
+    } else {
+      shokyuRankNo = index + 1;
+      try {
+        await manSinglesRankRef
+            .doc("ShokyuRank")
+            .collection("RankList")
+            .doc(shokyuRanks[index].USER_ID)
+            .set({
+              RANK_NO: index + 1,
+              USER_ID: shokyuRanks[index].USER_ID,
+              TS_POINT: shokyuRanks[index].TS_POINT,
+            });
+        console.log("初級追加");
+      } catch (e) {
+        console.log("ランキング作成に失敗しました --- $e");
+      }
     }
   }
   /** 中級ランキングテーブルを作成 */
   await chukyuRanks.sort((a, b) => b.TS_POINT - a.TS_POINT );
+  let chukyuRankNo = 0;
   for (let index = 0; index < chukyuRanks.length; index++) {
-    try {
-      await manSinglesRankRef
-          .doc("ChukyuRank")
-          .collection("RankList")
-          .doc(chukyuRanks[index].USER_ID)
-          .set({
-            RANK_NO: index + 1,
-            USER_ID: chukyuRanks[index].USER_ID,
-            TS_POINT: chukyuRanks[index].TS_POINT,
-          });
-      console.log("中級追加");
-    } catch (e) {
-      console.log("ランキング作成に失敗しました --- $e");
+    if (index != 0) {
+      if (chukyuRanks[index].TS_POINT ==
+        chukyuRanks[index - 1].TS_POINT) {
+        try {
+          await manSinglesRankRef
+              .doc("ChukyuRank")
+              .collection("RankList")
+              .doc(chukyuRanks[index].USER_ID)
+              .set({
+                RANK_NO: chukyuRankNo,
+                USER_ID: chukyuRanks[index].USER_ID,
+                TS_POINT: chukyuRanks[index].TS_POINT,
+              });
+          console.log("中級追加");
+        } catch (e) {
+          console.log("ランキング作成に失敗しました --- $e");
+        }
+      } else {
+        chukyuRankNo = index + 1;
+        try {
+          await manSinglesRankRef
+              .doc("ChukyuRank")
+              .collection("RankList")
+              .doc(chukyuRanks[index].USER_ID)
+              .set({
+                RANK_NO: index + 1,
+                USER_ID: chukyuRanks[index].USER_ID,
+                TS_POINT: chukyuRanks[index].TS_POINT,
+              });
+          console.log("中級追加");
+        } catch (e) {
+          console.log("ランキング作成に失敗しました --- $e");
+        }
+      }
+    } else {
+      chukyuRankNo = index + 1;
+      try {
+        await manSinglesRankRef
+            .doc("ChukyuRank")
+            .collection("RankList")
+            .doc(chukyuRanks[index].USER_ID)
+            .set({
+              RANK_NO: index + 1,
+              USER_ID: chukyuRanks[index].USER_ID,
+              TS_POINT: chukyuRanks[index].TS_POINT,
+            });
+        console.log("中級追加");
+      } catch (e) {
+        console.log("ランキング作成に失敗しました --- $e");
+      }
     }
   }
   /** 上級ランキングテーブルを作成 */
   await jyokyuRanks.sort((a, b) => b.TS_POINT - a.TS_POINT );
+  let jokyuRankNo = 0;
   for (let index = 0; index < jyokyuRanks.length; index++) {
-    try {
-      await manSinglesRankRef
-          .doc("JyokyuRank")
-          .collection("RankList")
-          .doc(jyokyuRanks[index].USER_ID)
-          .set({
-            RANK_NO: index + 1,
-            USER_ID: jyokyuRanks[index].USER_ID,
-            TS_POINT: jyokyuRanks[index].TS_POINT,
-          });
-      console.log("上級追加");
-    } catch (e) {
-      console.log("ランキング作成に失敗しました --- $e");
+    if (index != 0) {
+      if (jyokyuRanks[index].TS_POINT ==
+        jyokyuRanks[index - 1].TS_POINT) {
+        try {
+          await manSinglesRankRef
+              .doc("JyokyuRank")
+              .collection("RankList")
+              .doc(jyokyuRanks[index].USER_ID)
+              .set({
+                RANK_NO: jokyuRankNo,
+                USER_ID: jyokyuRanks[index].USER_ID,
+                TS_POINT: jyokyuRanks[index].TS_POINT,
+              });
+          console.log("上級追加");
+        } catch (e) {
+          console.log("ランキング作成に失敗しました --- $e");
+        }
+      } else {
+        jokyuRankNo = index + 1;
+        try {
+          await manSinglesRankRef
+              .doc("JyokyuRank")
+              .collection("RankList")
+              .doc(jyokyuRanks[index].USER_ID)
+              .set({
+                RANK_NO: index + 1,
+                USER_ID: jyokyuRanks[index].USER_ID,
+                TS_POINT: jyokyuRanks[index].TS_POINT,
+              });
+          console.log("上級追加");
+        } catch (e) {
+          console.log("ランキング作成に失敗しました --- $e");
+        }
+      }
+    } else {
+      jokyuRankNo = index + 1;
+      try {
+        await manSinglesRankRef
+            .doc("JyokyuRank")
+            .collection("RankList")
+            .doc(jyokyuRanks[index].USER_ID)
+            .set({
+              RANK_NO: index + 1,
+              USER_ID: jyokyuRanks[index].USER_ID,
+              TS_POINT: jyokyuRanks[index].TS_POINT,
+            });
+        console.log("上級追加");
+      } catch (e) {
+        console.log("ランキング作成に失敗しました --- $e");
+      }
     }
   }
 }
+
 type RankList = {
   USER_ID: string,
   TS_POINT: number,
