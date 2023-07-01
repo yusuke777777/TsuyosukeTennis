@@ -83,7 +83,7 @@ class _QrScanViewState extends State<QrScanView> {
     //読み込み時の処理
     controller.scannedDataStream.listen((scanData) async {
       //読み込んだ相手のID
-      String yourId = scanData.code;
+      String yourId = scanData.code!;
       if (!matchdList.contains(yourId)) {
         FirestoreMethod.makeMatchByQrScan(yourId);
         ScaffoldMessenger.of(context).showSnackBar(

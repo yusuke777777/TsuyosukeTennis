@@ -6,12 +6,16 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:tsuyosuke_tennis_ap/FireBase/Notification_badge.dart';
 import 'Common/CPushNotification.dart';
 import 'FireBase/FireBase.dart';
+import 'FireBase/GoogleAds.dart';
 import 'FireBase/NotificationMethod.dart';
 import 'Page/ProfileSetting.dart';
 import 'Page/SigninPage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'UnderMenuMove.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
+import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 
 
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -20,6 +24,7 @@ Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.initialize();
   await Firebase.initializeApp();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,

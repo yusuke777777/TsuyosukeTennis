@@ -290,7 +290,7 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.bold,
                               )),
                         ]),
-                    QrImage(
+                    QrImageView(
                       data: uid.toString(),
                       version: QrVersions.auto,
                       foregroundColor: Colors.green,

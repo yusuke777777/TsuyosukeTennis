@@ -1143,6 +1143,37 @@ class FirestoreMethod {
         });
   }
 
+  //マッチリザルト削除フラグ更新
+  static void delMatchResultList(String yourUserId, String delId, BuildContext context) async {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('本当に削除して宜しいですか'),
+            actions: <Widget>[
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+                child: Text('はい'),
+                onPressed: () {
+                  matchRef.doc(delId).delete();
+                  Navigator.pop(context);
+                },
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+                child: Text('いいえ'),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        });
+  }
+
+
   //対戦結果_新規フラグ取得
   static Future<String> newFlgMatchResult(String UserId) async {
     final snapshot = await matchResultRef.get();

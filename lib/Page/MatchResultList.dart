@@ -59,7 +59,8 @@ class _MatchResultListState extends State<MatchResultList> {
                               children: [
                                 SlidableAction(
                                   onPressed: (value) {
-                                    FirestoreMethod.delMatchList(
+                                    FirestoreMethod.delMatchResultList(
+                                        matchResultList[index].YOUR_USER.USER_ID,
                                         matchResultList[index].dayKey, context);
                                   },
                                   backgroundColor: Colors.red,

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
 import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
 import '../Common/CFeedBackCommentSetting.dart';
@@ -9,6 +10,7 @@ import '../Common/CmatchResult.dart';
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/FireBase.dart';
+import '../FireBase/GoogleAds.dart';
 import '../FireBase/ProfileImage.dart';
 import '../FireBase/TsMethod.dart';
 import '../PropSetCofig.dart';
@@ -27,6 +29,8 @@ class MatchResult extends StatefulWidget {
 class _MatchResultState extends State<MatchResult> {
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
+  InterstitialAd? _interstitialAd;
+  AdInterstitial adInterstitial = new AdInterstitial();
 
   //アクティビィリスト
   List<CmatchResult> matchResultList = [
@@ -75,6 +79,7 @@ class _MatchResultState extends State<MatchResult> {
   @override
   void initState() {
     super.initState();
+    adInterstitial.createAd();
     FirestoreMethod.getYourReviewFeatureEnabled(widget.yourProfile.USER_ID)
         .then((enabled) {
       setState(() {
@@ -86,6 +91,13 @@ class _MatchResultState extends State<MatchResult> {
         FirestoreMethod.reviewFeatureEnabled = enabled;
       });
     });
+
+    @override
+    void dispose() {
+      super.dispose();
+      _interstitialAd?.dispose();
+    }
+
   }
 
   @override
@@ -646,6 +658,10 @@ class _MatchResultState extends State<MatchResult> {
                                             dayKey);
                                       }
                                     }
+                                    //広告を表示する
+                                    await adInterstitial.showAd();
+                                    adInterstitial.createAd();
+
                                     Navigator.pop(context);
                                     //対戦結果のメッセージを送信する
                                     if (_feedbackFlg && FirestoreMethod.reviewFeatureEnabled) {
