@@ -29,7 +29,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  url_launcher: ^6.1.11
+  url_launcher: ^6.1.12
   overlay_support: ^2.1.0
   firebase_core: ^2.14.0
   firebase_auth: ^4.6.3

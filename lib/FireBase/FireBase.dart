@@ -558,7 +558,8 @@ class FirestoreMethod {
     final messageRef = roomRef
         .doc(roomId)
         .collection('message')
-        .orderBy('send_time', descending: true);
+        .orderBy('send_time', descending: true)
+        .limit(10); // 1ページあたりのメッセージ数;
     List<Message> messageList = [];
     final snapshot = await messageRef.get();
     Future.forEach<dynamic>(snapshot.docs, (doc) async {
@@ -575,24 +576,11 @@ class FirestoreMethod {
           sendTime: doc.data()['send_time'],
           matchStatusFlg: doc.data()['matchStatusFlg'],
           friendStatusFlg: doc.data()['friendStatusFlg'],
-          isRead: true,
           dayKey:
               doc.data().containsKey('dayKey') ? doc.data()['dayKey'] : null);
       messageList.add(message);
-      if (isMe == false) {
-        try {
-          roomRef
-              .doc(roomId)
-              .collection('message')
-              .doc(doc.id)
-              .update({'isRead': true});
-        } catch (e) {
-          print("未読メッセージの更新に失敗しました");
-          print(e);
-        }
-      }
     });
-    messageList.sort((a, b) => b.sendTime.compareTo(a.sendTime));
+    // messageList.sort((a, b) => b.sendTime.compareTo(a.sendTime));
 
     return messageList;
   }
@@ -627,7 +615,6 @@ class FirestoreMethod {
       'send_time': Timestamp.now(),
       'matchStatusFlg': "0",
       'friendStatusFlg': "0",
-      'isRead': false
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
@@ -662,7 +649,6 @@ class FirestoreMethod {
       'send_time': Timestamp.now(),
       'matchStatusFlg': "1",
       'friendStatusFlg': "0",
-      'isRead': false
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
@@ -694,7 +680,6 @@ class FirestoreMethod {
       'send_time': Timestamp.now(),
       'matchStatusFlg': "3",
       'friendStatusFlg': "0",
-      'isRead': false,
       'dayKey': dayKey
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
@@ -726,7 +711,6 @@ class FirestoreMethod {
       'send_time': Timestamp.now(),
       'matchStatusFlg': "4",
       'friendStatusFlg': "0",
-      'isRead': false,
       'dayKey': dayKey
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
@@ -757,7 +741,6 @@ class FirestoreMethod {
       'send_time': Timestamp.now(),
       'matchStatusFlg': "0",
       'friendStatusFlg': "1",
-      'isRead': false,
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
     });
@@ -788,7 +771,6 @@ class FirestoreMethod {
       'send_time': Timestamp.now(),
       'matchStatusFlg': "3",
       'friendStatusFlg': "0",
-      'isRead': false,
       'dayKey': dayKey
     }).then((value) {
       messageRef.doc(value.id).update({'messageId': value.id});
