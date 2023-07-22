@@ -554,36 +554,36 @@ class FirestoreMethod {
     return room;
   }
 
-  static Future<List<Message>> getMessages(String roomId) async {
-    final messageRef = roomRef
-        .doc(roomId)
-        .collection('message')
-        .orderBy('send_time', descending: true)
-        .limit(10); // 1ページあたりのメッセージ数;
-    List<Message> messageList = [];
-    final snapshot = await messageRef.get();
-    Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      bool isMe;
-      if (doc.data()['sender_id'] == auth.currentUser!.uid) {
-        isMe = true;
-      } else {
-        isMe = false;
-      }
-      Message message = Message(
-          messageId: doc.id,
-          message: doc.data()['message'],
-          isMe: isMe,
-          sendTime: doc.data()['send_time'],
-          matchStatusFlg: doc.data()['matchStatusFlg'],
-          friendStatusFlg: doc.data()['friendStatusFlg'],
-          dayKey:
-              doc.data().containsKey('dayKey') ? doc.data()['dayKey'] : null);
-      messageList.add(message);
-    });
-    // messageList.sort((a, b) => b.sendTime.compareTo(a.sendTime));
-
-    return messageList;
-  }
+  // static Future<List<Message>> getMessages(String roomId) async {
+  //   final messageRef = roomRef
+  //       .doc(roomId)
+  //       .collection('message')
+  //       .orderBy('send_time', descending: true)
+  //       .limit(10); // 1ページあたりのメッセージ数;
+  //   List<Message> messageList = [];
+  //   final snapshot = await messageRef.get();
+  //   Future.forEach<dynamic>(snapshot.docs, (doc) async {
+  //     bool isMe;
+  //     if (doc.data()['sender_id'] == auth.currentUser!.uid) {
+  //       isMe = true;
+  //     } else {
+  //       isMe = false;
+  //     }
+  //     Message message = Message(
+  //         messageId: doc.id,
+  //         message: doc.data()['message'],
+  //         isMe: isMe,
+  //         sendTime: doc.data()['send_time'],
+  //         matchStatusFlg: doc.data()['matchStatusFlg'],
+  //         friendStatusFlg: doc.data()['friendStatusFlg'],
+  //         dayKey:
+  //             doc.data().containsKey('dayKey') ? doc.data()['dayKey'] : null);
+  //     messageList.add(message);
+  //   });
+  //   // messageList.sort((a, b) => b.sendTime.compareTo(a.sendTime));
+  //
+  //   return messageList;
+  // }
 
   // Future<int> getUnreadMessageCount(String roomId) async {
   //   final messageRef = roomRef.doc(roomId).collection('message');
@@ -608,15 +608,15 @@ class FirestoreMethod {
 
   static Future<void> sendMessage(TalkRoomModel room, String message) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
+    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
     String? myUid = auth.currentUser!.uid;
-    await messageRef.add({
+    await newMessageRef.set({
+      'messageId':newMessageRef.id,
       'message': message,
       'sender_id': myUid,
       'send_time': Timestamp.now(),
       'matchStatusFlg': "0",
       'friendStatusFlg': "0",
-    }).then((value) {
-      messageRef.doc(value.id).update({'messageId': value.id});
     });
     roomRef
         .doc(room.roomId)
@@ -642,15 +642,15 @@ class FirestoreMethod {
   //試合申請メッセージ
   static Future<void> sendMatchMessage(TalkRoomModel room) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
+    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
     String? myUid = auth.currentUser!.uid;
-    await messageRef.add({
+    await newMessageRef.set({
+      'messageId':newMessageRef.id,
       'message': "対戦お願いします！",
       'sender_id': myUid,
       'send_time': Timestamp.now(),
       'matchStatusFlg': "1",
       'friendStatusFlg': "0",
-    }).then((value) {
-      messageRef.doc(value.id).update({'messageId': value.id});
     });
     roomRef
         .doc(room.roomId)
@@ -673,16 +673,16 @@ class FirestoreMethod {
       String myUserId, String yourUserId, String dayKey) async {
     TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
     final messageRef = roomRef.doc(room.roomId).collection('message');
+    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
     String? myUid = auth.currentUser!.uid;
-    await messageRef.add({
+    await newMessageRef.set({
+      'messageId':newMessageRef.id,
       'message': "対戦結果が入力されました！",
       'sender_id': myUid,
       'send_time': Timestamp.now(),
       'matchStatusFlg': "3",
       'friendStatusFlg': "0",
       'dayKey': dayKey
-    }).then((value) {
-      messageRef.doc(value.id).update({'messageId': value.id});
     });
     roomRef.doc(room.roomId).update(
         {'last_message': "対戦結果が入力されました！", 'updated_time': Timestamp.now()});
@@ -704,16 +704,16 @@ class FirestoreMethod {
       String myUserId, String yourUserId, String dayKey) async {
     TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
     final messageRef = roomRef.doc(room.roomId).collection('message');
+    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
     String? myUid = auth.currentUser!.uid;
-    await messageRef.add({
+    await newMessageRef.set({
+      'messageId':newMessageRef.id,
       'message': "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！",
       'sender_id': myUid,
       'send_time': Timestamp.now(),
       'matchStatusFlg': "4",
       'friendStatusFlg': "0",
       'dayKey': dayKey
-    }).then((value) {
-      messageRef.doc(value.id).update({'messageId': value.id});
     });
     roomRef.doc(room.roomId).update({
       'last_message': "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！",
@@ -734,15 +734,15 @@ class FirestoreMethod {
 
   static Future<void> sendFriendMessage(TalkRoomModel room) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
+    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
     String? myUid = auth.currentUser!.uid;
-    await messageRef.add({
+    await newMessageRef.set({
+      'messageId':newMessageRef.id,
       'message': "友達登録お願いします！",
       'sender_id': myUid,
       'send_time': Timestamp.now(),
       'matchStatusFlg': "0",
       'friendStatusFlg': "1",
-    }).then((value) {
-      messageRef.doc(value.id).update({'messageId': value.id});
     });
     roomRef.doc(room.roomId).update(
         {'last_message': "友達登録お願いします！", 'updated_time': Timestamp.now()});
@@ -764,16 +764,17 @@ class FirestoreMethod {
       String myUserId, String yourUserId, String dayKey) async {
     TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
     final messageRef = roomRef.doc(room.roomId).collection('message');
+    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+
     String? myUid = auth.currentUser!.uid;
-    await messageRef.add({
+    await newMessageRef.set({
+      'messageId':newMessageRef.id,
       'message': "評価・フィードバックを入力しました！",
       'sender_id': myUid,
       'send_time': Timestamp.now(),
       'matchStatusFlg': "3",
       'friendStatusFlg': "0",
       'dayKey': dayKey
-    }).then((value) {
-      messageRef.doc(value.id).update({'messageId': value.id});
     });
     roomRef.doc(room.roomId).update({
       'last_message': "評価・フィードバックを入力しました！",
@@ -916,18 +917,19 @@ class FirestoreMethod {
   //試合申請受け入れ
   static Future<void> matchAccept(TalkRoomModel room, String messageId) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
+    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+
     String? myUid = auth.currentUser!.uid;
 
     await messageRef.doc(messageId).update({'matchStatusFlg': "2"});
 
-    await messageRef.add({
+    await newMessageRef.set({
+      'messageId': newMessageRef.id, // ドキュメントのフィールドにIDを保存します
       'message': "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！",
       'sender_id': myUid,
       'send_time': Timestamp.now(),
       'matchStatusFlg': "0",
       'friendStatusFlg': "0"
-    }).then((value) {
-      messageRef.doc(value.id).update({'messageId': value.id});
     });
     ;
     roomRef.doc(room.roomId).update({
@@ -959,19 +961,21 @@ class FirestoreMethod {
   //友人申請受け入れ
   static Future<void> friendAccept(TalkRoomModel room, String messageId) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
+    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+
     String? myUid = auth.currentUser!.uid;
 
     await messageRef.doc(messageId).update({'friendStatusFlg': "2"});
 
-    await messageRef.add({
+    await newMessageRef.set({
+      'messageId': newMessageRef.id, // ドキュメントのフィールドにIDを保存します
       'message': "友人申請を受け入れました。\n友人一覧を確認してみよう！",
       'sender_id': myUid,
       'send_time': Timestamp.now(),
       'matchStatusFlg': "0",
       'friendStatusFlg': "0"
-    }).then((value) {
-      messageRef.doc(value.id).update({'messageId': value.id});
     });
+
     roomRef.doc(room.roomId).update({
       'last_message': "友人申請を受け入れました。\n友人一覧を確認してみよう！",
       'updated_time': Timestamp.now()
