@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import '../Common/CSinglesRankModel.dart';
 import '../FireBase/FireBase.dart';
+import 'package:intl/intl.dart';
 import 'TalkRoom.dart';
 
 class manSinglesRankList extends StatefulWidget {
@@ -39,6 +40,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                     children: [
                       Padding(padding: EdgeInsets.all(10)),
                       Container(
+                        width: 60,
                         child: Text("ランク",
                             style: TextStyle(fontSize: 20, color: Colors.black),
                             overflow: TextOverflow.ellipsis),
@@ -86,11 +88,16 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                       children: [
                                         Padding(padding: EdgeInsets.all(10)),
                                         Container(
-                                          child: Text(RankModelList[index].rankNo.toString(),
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  color: Colors.black),
-                                              overflow: TextOverflow.ellipsis),
+                                          width: 20 ,
+                                          child: FittedBox(
+                                            alignment:Alignment.bottomCenter,
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(RankModelList[index].rankNo.toString(),
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.black),
+                                                overflow: TextOverflow.ellipsis),
+                                          ),
                                         ),
                                         Padding(padding: EdgeInsets.fromLTRB(50,0,0,0)),
                                         Padding(
@@ -117,22 +124,30 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                         ),
                                         Container(
                                           width: 180,
-                                          child: Text(
-                                              RankModelList[index].user.NICK_NAME,
-                                              style: TextStyle(
-                                                  fontSize: 15,color: Colors.teal
-                                              )),
+                                          child: FittedBox(
+                                            alignment:Alignment.bottomLeft,
+                                            fit: BoxFit.scaleDown, // 子ウィジェットを親ウィジェットにフィットさせる
+                                            child: Text(
+                                                RankModelList[index].user.NICK_NAME,
+                                                style: TextStyle(
+                                                    fontSize: 15,color: Colors.teal
+                                                )),
+                                          ),
                                         ),
                                         Container(
                                           width: 50,
-                                          child: Text(
-                                              RankModelList[index]
-                                                  .tpPoint
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  color: Colors.black),
-                                              overflow: TextOverflow.ellipsis),
+                                          child: FittedBox(
+                                            alignment:Alignment.bottomRight,
+                                            fit: BoxFit.scaleDown, // 子ウィジェットを親ウィジェットにフィットさせる
+                                            child: Text(
+                                              NumberFormat('#,###').format(RankModelList[index]
+                                                    .tpPoint)
+                                                    .toString(),
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.black),
+                                                overflow: TextOverflow.ellipsis),
+                                          ),
                                         ),
                                       ],
                                     ),
