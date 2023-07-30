@@ -98,11 +98,11 @@ class FirestoreMethod {
     //アクティビティリスト削除
     final snapshot = await profileRef
         .doc(auth.currentUser!.uid)
-        .collection("activityList").get();
+        .collection("activityList")
+        .get();
 
-    final snapshotActivity = await profileRef
-        .doc(auth.currentUser!.uid)
-        .collection("activityList");
+    final snapshotActivity =
+        await profileRef.doc(auth.currentUser!.uid).collection("activityList");
 
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
       snapshotActivity.doc(doc.id).delete();
@@ -110,7 +110,7 @@ class FirestoreMethod {
 
     int No = 0;
 
-    for (int index = 0; index < profile.activityList.length; index ++) {
+    for (int index = 0; index < profile.activityList.length; index++) {
       if (profile.activityList[index].TODOFUKEN != "") {
         try {
           await profileRef
@@ -608,10 +608,11 @@ class FirestoreMethod {
 
   static Future<void> sendMessage(TalkRoomModel room, String message) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
-    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+    final DocumentReference newMessageRef =
+        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
     String? myUid = auth.currentUser!.uid;
     await newMessageRef.set({
-      'messageId':newMessageRef.id,
+      'messageId': newMessageRef.id,
       'message': message,
       'sender_id': myUid,
       'send_time': Timestamp.now(),
@@ -642,10 +643,11 @@ class FirestoreMethod {
   //試合申請メッセージ
   static Future<void> sendMatchMessage(TalkRoomModel room) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
-    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+    final DocumentReference newMessageRef =
+        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
     String? myUid = auth.currentUser!.uid;
     await newMessageRef.set({
-      'messageId':newMessageRef.id,
+      'messageId': newMessageRef.id,
       'message': "対戦お願いします！",
       'sender_id': myUid,
       'send_time': Timestamp.now(),
@@ -673,10 +675,11 @@ class FirestoreMethod {
       String myUserId, String yourUserId, String dayKey) async {
     TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
     final messageRef = roomRef.doc(room.roomId).collection('message');
-    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+    final DocumentReference newMessageRef =
+        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
     String? myUid = auth.currentUser!.uid;
     await newMessageRef.set({
-      'messageId':newMessageRef.id,
+      'messageId': newMessageRef.id,
       'message': "対戦結果が入力されました！",
       'sender_id': myUid,
       'send_time': Timestamp.now(),
@@ -704,10 +707,11 @@ class FirestoreMethod {
       String myUserId, String yourUserId, String dayKey) async {
     TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
     final messageRef = roomRef.doc(room.roomId).collection('message');
-    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+    final DocumentReference newMessageRef =
+        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
     String? myUid = auth.currentUser!.uid;
     await newMessageRef.set({
-      'messageId':newMessageRef.id,
+      'messageId': newMessageRef.id,
       'message': "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！",
       'sender_id': myUid,
       'send_time': Timestamp.now(),
@@ -734,10 +738,11 @@ class FirestoreMethod {
 
   static Future<void> sendFriendMessage(TalkRoomModel room) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
-    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+    final DocumentReference newMessageRef =
+        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
     String? myUid = auth.currentUser!.uid;
     await newMessageRef.set({
-      'messageId':newMessageRef.id,
+      'messageId': newMessageRef.id,
       'message': "友達登録お願いします！",
       'sender_id': myUid,
       'send_time': Timestamp.now(),
@@ -764,11 +769,12 @@ class FirestoreMethod {
       String myUserId, String yourUserId, String dayKey) async {
     TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
     final messageRef = roomRef.doc(room.roomId).collection('message');
-    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+    final DocumentReference newMessageRef =
+        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
 
     String? myUid = auth.currentUser!.uid;
     await newMessageRef.set({
-      'messageId':newMessageRef.id,
+      'messageId': newMessageRef.id,
       'message': "評価・フィードバックを入力しました！",
       'sender_id': myUid,
       'send_time': Timestamp.now(),
@@ -917,7 +923,8 @@ class FirestoreMethod {
   //試合申請受け入れ
   static Future<void> matchAccept(TalkRoomModel room, String messageId) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
-    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+    final DocumentReference newMessageRef =
+        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
 
     String? myUid = auth.currentUser!.uid;
 
@@ -961,7 +968,8 @@ class FirestoreMethod {
   //友人申請受け入れ
   static Future<void> friendAccept(TalkRoomModel room, String messageId) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
-    final DocumentReference newMessageRef = messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+    final DocumentReference newMessageRef =
+        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
 
     String? myUid = auth.currentUser!.uid;
 
@@ -1130,7 +1138,8 @@ class FirestoreMethod {
   }
 
   //マッチリザルト削除フラグ更新
-  static void delMatchResultList(String yourUserId, String delId, BuildContext context) async {
+  static void delMatchResultList(
+      String yourUserId, String delId, BuildContext context) async {
     showDialog(
         context: context,
         builder: (context) {
@@ -1158,7 +1167,6 @@ class FirestoreMethod {
           );
         });
   }
-
 
   //対戦結果_新規フラグ取得
   static Future<String> newFlgMatchResult(String UserId) async {
@@ -1504,7 +1512,7 @@ class FirestoreMethod {
           MY_TS_POINT_FUYO = 0;
           print(YOUR_TS_POINT_FUYO);
         }
-        if(a.myGamePoint != a.yourGamePoint) {
+        if (a.myGamePoint != a.yourGamePoint) {
           matchResultRef
               .doc(myProfile.USER_ID)
               .collection('opponentList')
@@ -1550,8 +1558,7 @@ class FirestoreMethod {
       } catch (e) {
         print('対戦結果入力に失敗しました --- $e');
       }
-    }
-    );
+    });
 
     //デイリー対戦結果更新
     try {
@@ -1563,6 +1570,9 @@ class FirestoreMethod {
           .doc(dayKey)
           .set({
         'matchTitle': matchTitle,
+        'dailyId':dayKey,
+        'userId':myProfile.USER_ID,
+        'opponentId':yourProfile.USER_ID
       });
     } catch (e) {
       print('日別タイトルの登録に失敗しました --- $e');
@@ -1576,6 +1586,9 @@ class FirestoreMethod {
           .doc(dayKey)
           .set({
         'matchTitle': matchTitle,
+        'dailyId':dayKey,
+        'userId':yourProfile.USER_ID,
+        'opponentId':myProfile.USER_ID
       });
     } catch (e) {
       print('日別タイトルの登録に失敗しました --- $e');
@@ -2671,30 +2684,25 @@ class FirestoreMethod {
           .get();
       await Future.forEach<dynamic>(opponentListsnapShot.docs, (doc) async {
         //0~5以外は入り得ない
-        double fore = await doc.data()?['STROKE_FOREHAND']?? 10;
-        if(fore == 10){
+        double fore = await doc.data()?['STROKE_FOREHAND'] ?? 10;
+        if (fore == 10) {
           return;
-        }
-        else {
+        } else {
           count++;
-          stroke_fore_total =
-              stroke_fore_total + doc.get('STROKE_FOREHAND');
-          stroke_back_total =
-              stroke_back_total + doc.get('STROKE_BACKHAND');
-          volley_fore_total =
-              volley_fore_total + doc.get('VOLLEY_FOREHAND');
-          volley_back_total =
-              volley_back_total + doc.get('VOLLEY_BACKHAND');
+          stroke_fore_total = stroke_fore_total + doc.get('STROKE_FOREHAND');
+          stroke_back_total = stroke_back_total + doc.get('STROKE_BACKHAND');
+          volley_fore_total = volley_fore_total + doc.get('VOLLEY_FOREHAND');
+          volley_back_total = volley_back_total + doc.get('VOLLEY_BACKHAND');
           serve_1st_total = serve_1st_total + doc.get('SERVE_1ST');
           serve_2nd_total = serve_2nd_total + doc.get('SERVE_2ND');
         }
       });
-          stroke_fore_avg = stroke_fore_total / count;
-          stroke_back_avg = stroke_back_total / count;
-          volley_fore_avg = volley_fore_total / count;
-          volley_back_avg = volley_back_total / count;
-          serve_1st_avg = serve_1st_total / count;
-          serve_2nd_avg = serve_2nd_total / count;
+      stroke_fore_avg = stroke_fore_total / count;
+      stroke_back_avg = stroke_back_total / count;
+      volley_fore_avg = volley_fore_total / count;
+      volley_back_avg = volley_back_total / count;
+      serve_1st_avg = serve_1st_total / count;
+      serve_2nd_avg = serve_2nd_total / count;
     } catch (e) {
       print(e);
     }
@@ -2869,25 +2877,20 @@ class FirestoreMethod {
   static Future<List<CmatchResultList>> getMatchResults() async {
     List<CmatchResultList> matchResultList = [];
     try {
-      final snapShot = await matchResultRef
-          .doc(auth.currentUser!.uid)
-          .collection('opponentList')
+      final snapShotWk = await FirebaseFirestore.instance
+          .collectionGroup('daily')
+          .where('userId', isEqualTo: auth.currentUser!.uid)
+          .orderBy('dailyId', descending: true)
+          .limit(5)
           .get();
-      await Future.forEach<dynamic>(snapShot.docs, (doc1) async {
-        final snapShotWk = await matchResultRef
-            .doc(auth.currentUser!.uid)
-            .collection('opponentList')
-            .doc(doc1.id)
-            .collection('daily')
-            .get();
-        await Future.forEach<dynamic>(snapShotWk.docs, (doc2) async {
-          CprofileSetting yourProfile =
-              await FirestoreMethod.getYourProfile(doc1.id);
-          matchResultList.add(CmatchResultList(
-              YOUR_USER: yourProfile,
-              dayKey: doc2.id,
-              matchTitle: doc2.data()?['matchTitle'] ?? ""));
-        });
+
+      await Future.forEach<dynamic>(snapShotWk.docs, (doc2) async {
+        CprofileSetting yourProfile =
+            await FirestoreMethod.getYourProfile(doc2.data()?['opponentId'] ?? "");
+        matchResultList.add(CmatchResultList(
+            YOUR_USER: yourProfile,
+            dayKey: doc2.id,
+            matchTitle: doc2.data()?['matchTitle'] ?? ""));
       });
     } catch (e) {
       print('対戦結果LIST取得に失敗しました --- $e');
@@ -2895,6 +2898,37 @@ class FirestoreMethod {
     matchResultList.sort((a, b) => b.dayKey.compareTo(a.dayKey));
     return matchResultList;
   }
+
+  // static Future<List<CmatchResultList>> getMatchResults() async {
+  //   List<CmatchResultList> matchResultList = [];
+  //   try {
+  //     final snapShot = await matchResultRef
+  //         .doc(auth.currentUser!.uid)
+  //         .collection('opponentList')
+  //         .get();
+  //     await Future.forEach<dynamic>(snapShot.docs, (doc1) async {
+  //       final snapShotWk = await matchResultRef
+  //           .doc(auth.currentUser!.uid)
+  //           .collection('opponentList')
+  //           .doc(doc1.id)
+  //           .collection('daily')
+  //           .limit(1)
+  //           .get();
+  //       await Future.forEach<dynamic>(snapShotWk.docs, (doc2) async {
+  //         CprofileSetting yourProfile =
+  //             await FirestoreMethod.getYourProfile(doc1.id);
+  //         matchResultList.add(CmatchResultList(
+  //             YOUR_USER: yourProfile,
+  //             dayKey: doc2.id,
+  //             matchTitle: doc2.data()?['matchTitle'] ?? ""));
+  //       });
+  //     });
+  //   } catch (e) {
+  //     print('対戦結果LIST取得に失敗しました --- $e');
+  //   }
+  //   matchResultList.sort((a, b) => b.dayKey.compareTo(a.dayKey));
+  //   return matchResultList;
+  // }
 
   static Future<String> getMatchTitle(String? dayKey, String yourUserId) async {
     //タイトル取得
@@ -3107,7 +3141,9 @@ class FirestoreMethod {
 
     return result;
   }
-static bool reviewFeatureEnabled = true;
+
+  static bool reviewFeatureEnabled = true;
+
   static Future<bool> getReviewFeatureEnabled() async {
     final settingSnapshot = await settingRef.doc(auth.currentUser!.uid).get();
 
@@ -3117,7 +3153,7 @@ static bool reviewFeatureEnabled = true;
       return true;
     }
 
-     reviewFeatureEnabled = settingSnapshot.data()?["REVIEW_ENABLED"] ?? true;
+    reviewFeatureEnabled = settingSnapshot.data()?["REVIEW_ENABLED"] ?? true;
 
     return reviewFeatureEnabled; // Firestoreのデータがnullの場合は初期値を使用する
   }
@@ -3125,10 +3161,9 @@ static bool reviewFeatureEnabled = true;
   static Future<void> putReviewFeatureEnabled(bool reviewFeatureEnabled) async {
     final settingSnapshot = await settingRef.doc(auth.currentUser!.uid);
 
-    settingSnapshot.set({
-      "REVIEW_ENABLED":reviewFeatureEnabled
-    });
+    settingSnapshot.set({"REVIEW_ENABLED": reviewFeatureEnabled});
   }
+
   static Future<bool> getYourReviewFeatureEnabled(String userId) async {
     final settingSnapshot = await settingRef.doc(userId).get();
     bool yourReviewFeatureEnabled = true;
@@ -3137,18 +3172,19 @@ static bool reviewFeatureEnabled = true;
       // データが存在しない場合、初期値を使用する
       return true;
     }
-    yourReviewFeatureEnabled = settingSnapshot.data()?["REVIEW_ENABLED"] ?? true;
+    yourReviewFeatureEnabled =
+        settingSnapshot.data()?["REVIEW_ENABLED"] ?? true;
 
     return yourReviewFeatureEnabled; // Firestoreのデータがnullの場合は初期値を使用する
   }
 
   //ログインするユーザーがプロフィール登録を完了しているか確認
-  static Future<bool> isProfile() async {
+static bool isprofile = false;
+  static Future<void> isProfile() async {
     print("AAA");
     DocumentReference docRef = await profileRef.doc(auth.currentUser!.uid);
     DocumentSnapshot docSnapshot = await docRef.get();
     print("XXX" + docSnapshot.exists.toString());
-    return docSnapshot.exists;
+    isprofile = docSnapshot.exists;
   }
-
 }

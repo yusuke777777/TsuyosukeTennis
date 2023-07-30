@@ -106,14 +106,14 @@ class SignInPage extends StatelessWidget {
                                   model.startLoading();
                                   try {
                                     await model.login();
-                                    bool isprofile = await FirestoreMethod.isProfile();
+                                    await FirestoreMethod.isProfile();
                                     //ダウンロードテスト
                                     // await FirestoreMethod().downloadImage();
                                     await Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                        isprofile == true
+                                        FirestoreMethod.isprofile == true
                                             ?
                                         UnderMenuMove.make(0)
                                             : ProfileSetting.Make(),

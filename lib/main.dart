@@ -26,6 +26,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
   await Firebase.initializeApp();
+  await FirestoreMethod.isProfile();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarBrightness: Brightness.light,
@@ -40,16 +41,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
-  static bool isprofile = false;
-
-  static void test() async {
-      isprofile = await FirestoreMethod.isProfile();
-  }
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    test();
     return MaterialApp(
       theme: ThemeData(
         // This is the theme of your application.
@@ -67,7 +61,7 @@ class _MyAppState extends State<MyApp> {
       home: FirebaseAuth.instance.currentUser == null
           ? SignInPage()
           :
-      isprofile == true ? UnderMenuMove.make(0) : ProfileSetting.Make(),
+      FirestoreMethod.isprofile == true ? UnderMenuMove.make(0) : ProfileSetting.Make(),
     );
   }
 }
