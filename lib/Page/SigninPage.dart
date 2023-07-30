@@ -113,7 +113,7 @@ class SignInPage extends StatelessWidget {
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                        FirestoreMethod.isprofile == true
+                                        FirestoreMethod.isprofile
                                             ?
                                         UnderMenuMove.make(0)
                                             : ProfileSetting.Make(),

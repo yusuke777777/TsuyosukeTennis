@@ -2954,9 +2954,18 @@ class FirestoreMethod {
   static Future<bool> checkDoubleMyUserID(
       String inputText, bool isDoubleMyUserId) async {
     final snapShot =
-        await profileRef.where('MY_USER_ID', isEqualTo: inputText).get();
+    await profileRef.where('MY_USER_ID', isEqualTo: inputText).get();
 
-    print("bb" + snapShot.docs.toString());
+    final snapShot_self = await profileRef
+        .where('USER_ID', isEqualTo: auth.currentUser!.uid)
+        .get();
+    String inputID = snapShot.docs.first.get('MY_USER_ID');
+    String selfID = snapShot_self.docs.first.get('MY_USER_ID');
+
+    if (inputID == selfID) {
+      return isDoubleMyUserId;
+    }
+
     if (snapShot.size != 0) {
       isDoubleMyUserId = true;
     }
@@ -3181,10 +3190,8 @@ class FirestoreMethod {
   //ログインするユーザーがプロフィール登録を完了しているか確認
 static bool isprofile = false;
   static Future<void> isProfile() async {
-    print("AAA");
     DocumentReference docRef = await profileRef.doc(auth.currentUser!.uid);
     DocumentSnapshot docSnapshot = await docRef.get();
-    print("XXX" + docSnapshot.exists.toString());
     isprofile = docSnapshot.exists;
   }
 }
