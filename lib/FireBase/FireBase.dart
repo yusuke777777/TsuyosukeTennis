@@ -1137,37 +1137,10 @@ class FirestoreMethod {
         });
   }
 
-  //マッチリザルト削除フラグ更新
-  static void delMatchResultList(
-      String yourUserId, String delId, BuildContext context) async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('本当に削除して宜しいですか'),
-            actions: <Widget>[
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    primary: Colors.lightGreenAccent, onPrimary: Colors.black),
-                child: Text('はい'),
-                onPressed: () {
-                  matchRef.doc(delId).delete();
-                  Navigator.pop(context);
-                },
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    primary: Colors.lightGreenAccent, onPrimary: Colors.black),
-                child: Text('いいえ'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        });
+  //マッチング一覧削除(対戦結果入力時削除)
+  static void delMatchListAuto(String delId) async {
+    await matchRef.doc(delId).delete();
   }
-
   //対戦結果_新規フラグ取得
   static Future<String> newFlgMatchResult(String UserId) async {
     final snapshot = await matchResultRef.get();
@@ -1570,9 +1543,11 @@ class FirestoreMethod {
           .doc(dayKey)
           .set({
         'matchTitle': matchTitle,
-        'dailyId':dayKey,
-        'userId':myProfile.USER_ID,
-        'opponentId':yourProfile.USER_ID
+        'dailyId': dayKey,
+        'userId': myProfile.USER_ID,
+        'opponentId': yourProfile.USER_ID,
+        'opponentProfileImage': yourProfile.PROFILE_IMAGE,
+        'opponentName': yourProfile.NICK_NAME
       });
     } catch (e) {
       print('日別タイトルの登録に失敗しました --- $e');
@@ -1586,9 +1561,11 @@ class FirestoreMethod {
           .doc(dayKey)
           .set({
         'matchTitle': matchTitle,
-        'dailyId':dayKey,
-        'userId':yourProfile.USER_ID,
-        'opponentId':myProfile.USER_ID
+        'dailyId': dayKey,
+        'userId': yourProfile.USER_ID,
+        'opponentId': myProfile.USER_ID,
+        'opponentProfileImage': myProfile.PROFILE_IMAGE,
+        'opponentName': myProfile.NICK_NAME
       });
     } catch (e) {
       print('日別タイトルの登録に失敗しました --- $e');
@@ -2818,12 +2795,12 @@ class FirestoreMethod {
             .doc(dayKey)
             .get();
         skillLevel = CSkilLevelSetting(
-            SERVE_1ST: snapShot.data()?['STROKE_FOREHAND'] ?? 0,
-            SERVE_2ND: snapShot.data()?['STROKE_BACKHAND'] ?? 0,
-            STROKE_BACKHAND: snapShot.data()?['VOLLEY_FOREHAND'] ?? 0,
-            STROKE_FOREHAND: snapShot.data()?['VOLLEY_BACKHAND'] ?? 0,
-            VOLLEY_BACKHAND: snapShot.data()?['SERVE_1ST'] ?? 0,
-            VOLLEY_FOREHAND: snapShot.data()?['SERVE_2ND'] ?? 0);
+            SERVE_1ST: snapShot.data()?['SERVE_1ST'] ?? 0,
+            SERVE_2ND: snapShot.data()?['SERVE_2ND'] ?? 0,
+            STROKE_BACKHAND: snapShot.data()?['STROKE_BACKHAND'] ?? 0,
+            STROKE_FOREHAND: snapShot.data()?['STROKE_FOREHAND'] ?? 0,
+            VOLLEY_BACKHAND: snapShot.data()?['VOLLEY_BACKHAND'] ?? 0,
+            VOLLEY_FOREHAND: snapShot.data()?['VOLLEY_FOREHAND'] ?? 0);
       } catch (e) {
         print('個別スキルレベル取得に失敗しました --- $e');
       }
@@ -2885,8 +2862,8 @@ class FirestoreMethod {
           .get();
 
       await Future.forEach<dynamic>(snapShotWk.docs, (doc2) async {
-        CprofileSetting yourProfile =
-            await FirestoreMethod.getYourProfile(doc2.data()?['opponentId'] ?? "");
+        CprofileSetting yourProfile = await FirestoreMethod.getYourProfile(
+            doc2.data()?['opponentId'] ?? "");
         matchResultList.add(CmatchResultList(
             YOUR_USER: yourProfile,
             dayKey: doc2.id,
@@ -3179,7 +3156,8 @@ class FirestoreMethod {
   }
 
   //ログインするユーザーがプロフィール登録を完了しているか確認
-static bool isprofile = false;
+  static bool isprofile = false;
+
   static Future<void> isProfile() async {
     print("AAA");
     DocumentReference docRef = await profileRef.doc(auth.currentUser!.uid);

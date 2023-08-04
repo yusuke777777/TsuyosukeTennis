@@ -124,416 +124,472 @@ class _TalkRoomState extends State<TalkRoom> {
                         );
                       }
                       _messages = snapshot.data ?? [];
-                      return ListView.builder(
-                          controller: _scrollController,
-                          physics: const RangeMaintainingScrollPhysics(),
-                          shrinkWrap: true,
-                          reverse: true,
-                          itemCount: _messages.length + 1,
-                          itemBuilder: (context, index) {
-                            if (index == _messages.length) {
-                              if (_isLoadingMore) {
-                                return Center(child: CircularProgressIndicator());
-                              } else {
-                                return SizedBox();
+                      if (snapshot.connectionState == ConnectionState.active) {
+                        return ListView.builder(
+                            controller: _scrollController,
+                            physics: const RangeMaintainingScrollPhysics(),
+                            shrinkWrap: true,
+                            reverse: true,
+                            itemCount: _messages.length + 1,
+                            itemBuilder: (context, index) {
+                              if (index == _messages.length) {
+                                if (_isLoadingMore) {
+                                  return Center(
+                                      child: CircularProgressIndicator());
+                                } else {
+                                  return SizedBox();
+                                }
                               }
-                            }
-                            Message _messageDetail = Message(
-                                messageId: (_messages[index].data() as Map<
-                                    String,
-                                    dynamic>)['messageId'] as String,
-                                message: (_messages[index].data() as Map<
-                                    String,
-                                    dynamic>)['message'] as String,
-                                isMe: (_messages[index].data() as Map<
-                                    String,
-                                    dynamic>)['sender_id'] as String ==
-                                    FirestoreMethod.auth.currentUser!.uid
-                                    ? true
-                                    : false,
-                                sendTime: (_messages[index].data() as Map<
-                                    String,
-                                    dynamic>)['send_time'] as Timestamp,
-                                matchStatusFlg: (_messages[index].data() as Map<
-                                    String,
-                                    dynamic>)['matchStatusFlg'] as String,
-                                friendStatusFlg: (_messages[index].data() as Map<
-                                    String,
-                                    dynamic>)['friendStatusFlg'] as String);
-                            DateTime sendtime = _messageDetail.sendTime.toDate();
+                              Message _messageDetail = Message(
+                                  messageId: (_messages[index].data() as Map<
+                                      String,
+                                      dynamic>)['messageId'] as String,
+                                  message: (_messages[index].data() as Map<
+                                      String,
+                                      dynamic>)['message'] as String,
+                                  isMe: (_messages[index].data() as Map<
+                                      String,
+                                      dynamic>)['sender_id'] as String ==
+                                      FirestoreMethod.auth.currentUser!.uid
+                                      ? true
+                                      : false,
+                                  sendTime: (_messages[index].data() as Map<
+                                      String,
+                                      dynamic>)['send_time'] as Timestamp,
+                                  matchStatusFlg: (_messages[index]
+                                      .data() as Map<
+                                      String,
+                                      dynamic>)['matchStatusFlg'] as String,
+                                  friendStatusFlg: (_messages[index]
+                                      .data() as Map<
+                                      String,
+                                      dynamic>)['friendStatusFlg'] as String);
+                              DateTime sendtime = _messageDetail.sendTime
+                                  .toDate();
 
-                            return Column(
-                              children: [
-                                (index == _messages.length - 1 ||
-                                    intl.DateFormat("yyyy年M月d日").format(
-                                        ((_messages[index].data() as Map<
-                                            String,
-                                            dynamic>)['send_time'] as Timestamp)
-                                            .toDate()) !=
-                                        intl.DateFormat("yyyy年M月d日")
-                                            .format(
-                                            ((_messages[index + 1].data() as Map<
-                                                String,
-                                                dynamic>)['send_time'] as Timestamp)
-                                                .toDate()))
-                                    ? Container(
-                                  child: Text(
-                                    intl.DateFormat("yyyy年M月d日")
-                                        .format(((_messages[index].data() as Map<
-                                        String,
-                                        dynamic>)['send_time'] as Timestamp)
-                                        .toDate()),
-                                    style: TextStyle(fontSize: 12),
+                              return Column(
+                                children: [
+                                  (index == _messages.length - 1 ||
+                                      intl.DateFormat("yyyy年M月d日").format(
+                                          ((_messages[index].data() as Map<
+                                              String,
+                                              dynamic>)['send_time'] as Timestamp)
+                                              .toDate()) !=
+                                          intl.DateFormat("yyyy年M月d日")
+                                              .format(
+                                              ((_messages[index + 1]
+                                                  .data() as Map<
+                                                  String,
+                                                  dynamic>)['send_time'] as Timestamp)
+                                                  .toDate()))
+                                      ? Container(
+                                    child: Text(
+                                      intl.DateFormat("yyyy年M月d日")
+                                          .format(
+                                          ((_messages[index].data() as Map<
+                                              String,
+                                              dynamic>)['send_time'] as Timestamp)
+                                              .toDate()),
+                                      style: TextStyle(fontSize: 12),
+                                    ),
+                                    constraints: BoxConstraints(
+                                        maxWidth: MediaQuery
+                                            .of(context)
+                                            .size
+                                            .width *
+                                            0.6),
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 10.0,
+                                        vertical: 6.0),
+                                    decoration: BoxDecoration(
+                                        color: Color(0xFFF1FFE4),
+                                        borderRadius:
+                                        BorderRadius.circular(20)),
+                                  )
+                                      : Container(),
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 10.0,
+                                        right: 10.0,
+                                        left: 10,
+                                        bottom: index == 0 ? 10.0 : 0.0),
+                                    child: Row(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.end,
+                                      textDirection: _messageDetail.isMe
+                                          ? TextDirection.rtl
+                                          : TextDirection.ltr,
+                                      children: [
+                                        Container(
+                                            constraints: BoxConstraints(
+                                                maxWidth: MediaQuery
+                                                    .of(context)
+                                                    .size
+                                                    .width *
+                                                    0.6),
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: 10.0,
+                                                vertical: 6.0),
+                                            decoration: BoxDecoration(
+                                                color: _messageDetail.isMe
+                                                    ? Color(0xFF3CB371)
+                                                    : Colors.white,
+                                                borderRadius:
+                                                BorderRadius.circular(
+                                                    20)),
+                                            child:
+                                            _messageDetail
+                                                .matchStatusFlg ==
+                                                "1"
+                                                ? Column(
+                                              children: [
+                                                Text(_messageDetail
+                                                    .message),
+                                                TextButton(
+                                                    onPressed: () {
+                                                      if (_messageDetail
+                                                          .isMe) {
+                                                        print(
+                                                            "試合の受け入れメッセージ送信済");
+                                                      } else {
+                                                        FirestoreMethod
+                                                            .matchAccept(
+                                                            widget
+                                                                .room,
+                                                            (_messages[index]
+                                                                .data() as Map<
+                                                                String,
+                                                                dynamic>)['messageId'] as String
+                                                        );
+                                                        //受け入れ処理を入れる
+                                                        FirestoreMethod
+                                                            .makeMatch(
+                                                            widget.room);
+                                                      }
+                                                    },
+                                                    child: Text(
+                                                      "受け入れる",
+                                                      style: TextStyle(
+                                                          color: Colors
+                                                              .purple),
+                                                    ))
+                                              ],
+                                            )
+                                                : _messageDetail
+                                                .friendStatusFlg ==
+                                                "1"
+                                                ? Column(
+                                              children: [
+                                                Text(_messageDetail
+                                                    .message),
+                                                TextButton(
+                                                    onPressed:
+                                                        () async {
+                                                      if (_messageDetail
+                                                          .isMe) {
+                                                        print(
+                                                            "自身の友人申請に自身で受け入れはできません");
+                                                      } else {
+                                                        bool friendflg = await FirestoreMethod
+                                                            .checkFriends(
+                                                            widget.room.roomId);
+                                                        friendflg ==
+                                                            true
+                                                            ? showDialog(
+                                                            context: context,
+                                                            builder: (_) =>
+                                                                AlertDialog(
+                                                                  content: Text(
+                                                                      "すでに友人登録済みです"),
+                                                                ))
+                                                            :
+                                                        //受け入れ処理を入れる
+                                                        FirestoreMethod
+                                                            .friendAccept(
+                                                            widget.room,
+                                                            (_messages[index]
+                                                                .data() as Map<
+                                                                String,
+                                                                dynamic>)['messageId'] as String
+                                                        );
+                                                        //友人一覧追記
+                                                        FirestoreMethod
+                                                            .makeFriends(
+                                                            widget.room);
+                                                      }
+                                                    },
+                                                    child: Text(
+                                                      "受け入れる",
+                                                      style: TextStyle(
+                                                          color:
+                                                          Colors.purple),
+                                                    ))
+                                              ],
+                                            )
+                                                : _messageDetail
+                                                .matchStatusFlg ==
+                                                "2" ||
+                                                _messageDetail
+                                                    .friendStatusFlg ==
+                                                    "2"
+                                                ? Column(
+                                              children: [
+                                                Text(_messageDetail
+                                                    .message),
+                                                TextButton(
+                                                    onPressed:
+                                                        () {
+                                                      //受け入れ済なこと伝えるダイアログ出す？
+                                                    },
+                                                    child:
+                                                    Text(
+                                                      "受け入れ済",
+                                                      style:
+                                                      TextStyle(
+                                                          color: Colors.purple),
+                                                    ))
+                                              ],
+                                            )
+                                                : _messageDetail
+                                                .matchStatusFlg ==
+                                                "4"
+                                                ? Column(
+                                              children: [
+                                                Text(_messageDetail
+                                                    .message),
+                                                TextButton(
+                                                    onPressed:
+                                                        () async {
+                                                      if (_messageDetail.isMe) {
+                                                        print(
+                                                            "対戦結果メッセージ送信済み");
+                                                      } else {
+                                                        //フィードバック確認する処理
+                                                        //フィードバック結果を取得する
+                                                        String feedBackComment = await FirestoreMethod
+                                                            .getFeedBack(
+                                                            (_messages[index]
+                                                                .data() as Map<
+                                                                String,
+                                                                dynamic>)['dayKey'] as String
+                                                            ,
+                                                            widget.room.user
+                                                                .USER_ID);
+                                                        //対戦結果リストを取得する
+                                                        List<
+                                                            CmatchResult> matchResultList = await FirestoreMethod
+                                                            .getMatchResult(
+                                                            (_messages[index]
+                                                                .data() as Map<
+                                                                String,
+                                                                dynamic>)['dayKey'] as String
+                                                            ,
+                                                            widget.room.user
+                                                                .USER_ID);
+                                                        //レビュー結果を取得する
+                                                        CSkilLevelSetting skillLevel = await FirestoreMethod
+                                                            .getSkillLevel(
+                                                            (_messages[index]
+                                                                .data() as Map<
+                                                                String,
+                                                                dynamic>)['dayKey'] as String
+                                                            ,
+                                                            widget.room.user
+                                                                .USER_ID);
+                                                        CprofileSetting myProfile = await FirestoreMethod
+                                                            .getProfile();
+                                                        CprofileSetting yourProfile = await FirestoreMethod
+                                                            .getYourProfile(
+                                                            widget.room.user
+                                                                .USER_ID);
+                                                        String matchTitle = await FirestoreMethod
+                                                            .getMatchTitle(
+                                                            (_messages[index]
+                                                                .data() as Map<
+                                                                String,
+                                                                dynamic>)['dayKey'] as String
+                                                            ,
+                                                            widget.room.user
+                                                                .USER_ID);
+
+                                                        await Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (
+                                                                    context) =>
+                                                                    MatchResultSansho(
+                                                                        myProfile,
+                                                                        yourProfile,
+                                                                        matchResultList,
+                                                                        feedBackComment,
+                                                                        skillLevel,
+                                                                        matchTitle)));
+
+                                                        // FirestoreMethod.makeMatch(widget.room);
+                                                      }
+                                                    },
+                                                    child:
+                                                    Text(
+                                                      "確認する",
+                                                      style: TextStyle(
+                                                          color: Colors.purple),
+                                                    )),
+                                                TextButton(
+                                                    onPressed:
+                                                        () async {
+                                                      if (_messageDetail.isMe) {
+                                                        print(
+                                                            "対戦結果メッセージ送信済み");
+                                                      } else {
+                                                        //レビュー・フィードバックを記入する
+                                                        List<
+                                                            CmatchResult> matchResultList = await FirestoreMethod
+                                                            .getMatchResult(
+                                                            (_messages[index]
+                                                                .data() as Map<
+                                                                String,
+                                                                dynamic>)['dayKey'] as String,
+                                                            widget.room.user
+                                                                .USER_ID);
+                                                        CprofileSetting myProfile = await FirestoreMethod
+                                                            .getProfile();
+                                                        CprofileSetting yourProfile = await FirestoreMethod
+                                                            .getYourProfile(
+                                                            widget.room.user
+                                                                .USER_ID);
+                                                        String matchTitle = await FirestoreMethod
+                                                            .getMatchTitle(
+                                                            (_messages[index]
+                                                                .data() as Map<
+                                                                String,
+                                                                dynamic>)['dayKey'] as String,
+                                                            widget.room.user
+                                                                .USER_ID);
+
+                                                        await Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (
+                                                                    context) =>
+                                                                    MatchResultFeedBack(
+                                                                        myProfile,
+                                                                        yourProfile,
+                                                                        matchResultList,
+                                                                        matchTitle,
+                                                                        (_messages[index]
+                                                                            .data() as Map<
+                                                                            String,
+                                                                            dynamic>)['dayKey'] as String
+                                                                        ,
+                                                                        (_messages[index]
+                                                                            .data() as Map<
+                                                                            String,
+                                                                            dynamic>)['messageId'] as String
+                                                                        ,
+                                                                        widget
+                                                                            .room)));
+                                                      }
+                                                    },
+                                                    child:
+                                                    Text(
+                                                      "フィードバックする",
+                                                      style: TextStyle(
+                                                          color: Colors.purple),
+                                                    ))
+                                              ],
+                                            )
+                                                : _messageDetail
+                                                .matchStatusFlg ==
+                                                "3"
+                                                ? Column(
+                                              children: [
+                                                Text(_messageDetail.message),
+                                                TextButton(
+                                                    onPressed: () async {
+                                                      if (_messageDetail.isMe) {
+                                                        print(
+                                                            "対戦結果メッセージ送信済み");
+                                                      } else {
+                                                        //フィードバック結果を取得する
+                                                        String feedBackComment = await FirestoreMethod
+                                                            .getFeedBack(
+                                                            (_messages[index]
+                                                                .data() as Map<
+                                                                String,
+                                                                dynamic>)['dayKey'] as String,
+                                                            widget.room.user
+                                                                .USER_ID);
+                                                        //対戦結果リストを取得する
+                                                        List<
+                                                            CmatchResult> matchResultList = await FirestoreMethod
+                                                            .getMatchResult(
+                                                            (_messages[index]
+                                                                .data() as Map<
+                                                                String,
+                                                                dynamic>)['dayKey'] as String,
+                                                            widget.room.user
+                                                                .USER_ID);
+                                                        //レビュー結果を取得する
+                                                        CSkilLevelSetting skillLevel = await FirestoreMethod
+                                                            .getSkillLevel(
+                                                            (_messages[index]
+                                                                .data() as Map<
+                                                                String,
+                                                                dynamic>)['dayKey'] as String,
+                                                            widget.room.user
+                                                                .USER_ID);
+                                                        CprofileSetting myProfile = await FirestoreMethod
+                                                            .getProfile();
+                                                        CprofileSetting yourProfile = await FirestoreMethod
+                                                            .getYourProfile(
+                                                            widget.room.user
+                                                                .USER_ID);
+                                                        String matchTitle = await FirestoreMethod
+                                                            .getMatchTitle(
+                                                            (_messages[index]
+                                                                .data() as Map<
+                                                                String,
+                                                                dynamic>)['dayKey'] as String,
+                                                            widget.room.user
+                                                                .USER_ID);
+
+                                                        await Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                                builder: (
+                                                                    context) =>
+                                                                    MatchResultSansho(
+                                                                        myProfile,
+                                                                        yourProfile,
+                                                                        matchResultList,
+                                                                        feedBackComment,
+                                                                        skillLevel,
+                                                                        matchTitle)));
+                                                      }
+                                                    },
+                                                    child: Text(
+                                                      "確認する",
+                                                      style: TextStyle(
+                                                          color: Colors.purple),
+                                                    )),
+                                              ],
+                                            )
+                                                : Text(_messageDetail
+                                                .message)),
+                                        Text(
+                                          intl.DateFormat('HH:mm')
+                                              .format(sendtime),
+                                          style: TextStyle(fontSize: 12),
+                                        )
+                                      ],
+                                    ),
                                   ),
-                                  constraints: BoxConstraints(
-                                      maxWidth: MediaQuery
-                                          .of(context)
-                                          .size
-                                          .width *
-                                          0.6),
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10.0,
-                                      vertical: 6.0),
-                                  decoration: BoxDecoration(
-                                      color: Color(0xFFF1FFE4),
-                                      borderRadius:
-                                      BorderRadius.circular(20)),
-                                )
-                                    : Container(),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 10.0,
-                                      right: 10.0,
-                                      left: 10,
-                                      bottom: index == 0 ? 10.0 : 0.0),
-                                  child: Row(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.end,
-                                    textDirection: _messageDetail.isMe
-                                        ? TextDirection.rtl
-                                        : TextDirection.ltr,
-                                    children: [
-                                      Container(
-                                          constraints: BoxConstraints(
-                                              maxWidth: MediaQuery
-                                                  .of(context)
-                                                  .size
-                                                  .width *
-                                                  0.6),
-                                          padding: EdgeInsets.symmetric(
-                                              horizontal: 10.0,
-                                              vertical: 6.0),
-                                          decoration: BoxDecoration(
-                                              color: _messageDetail.isMe
-                                                  ? Color(0xFF3CB371)
-                                                  : Colors.white,
-                                              borderRadius:
-                                              BorderRadius.circular(
-                                                  20)),
-                                          child:
-                                          _messageDetail
-                                              .matchStatusFlg ==
-                                              "1"
-                                              ? Column(
-                                            children: [
-                                              Text(_messageDetail
-                                                  .message),
-                                              TextButton(
-                                                  onPressed: () {
-                                                    if (_messageDetail
-                                                        .isMe) {
-                                                      print(
-                                                          "試合の受け入れメッセージ送信済");
-                                                    } else {
-                                                      FirestoreMethod.matchAccept(
-                                                          widget
-                                                              .room,
-                                                          (_messages[index].data() as Map<String,dynamic>)['messageId'] as String
-                                                              );
-                                                      //受け入れ処理を入れる
-                                                      FirestoreMethod
-                                                          .makeMatch(
-                                                          widget.room);
-                                                    }
-                                                  },
-                                                  child: Text(
-                                                    "受け入れる",
-                                                    style: TextStyle(
-                                                        color: Colors
-                                                            .purple),
-                                                  ))
-                                            ],
-                                          )
-                                              : _messageDetail
-                                              .friendStatusFlg ==
-                                              "1"
-                                              ? Column(
-                                            children: [
-                                              Text(_messageDetail
-                                                  .message),
-                                              TextButton(
-                                                  onPressed:
-                                                      () async{
-                                                    if (_messageDetail
-                                                        .isMe) {
-                                                      print(
-                                                          "自身の友人申請に自身で受け入れはできません");
-                                                    } else {
-                                                      bool friendflg = await FirestoreMethod.checkFriends(widget.room.roomId);
-                                                      friendflg ==
-                                                          true
-                                                          ? showDialog(
-                                                          context: context,
-                                                          builder: (_) =>
-                                                              AlertDialog(
-                                                                content: Text(
-                                                                    "すでに友人登録済みです"),
-                                                              ))
-                                                          :
-                                                      //受け入れ処理を入れる
-                                                      FirestoreMethod
-                                                          .friendAccept(
-                                                          widget.room,
-                                                          (_messages[index].data() as Map<String,dynamic>)['messageId'] as String
-                                                              );
-                                                      //友人一覧追記
-                                                      FirestoreMethod.makeFriends(
-                                                          widget.room);
-                                                    }
-                                                  },
-                                                  child: Text(
-                                                    "受け入れる",
-                                                    style: TextStyle(
-                                                        color:
-                                                        Colors.purple),
-                                                  ))
-                                            ],
-                                          )
-                                              : _messageDetail
-                                              .matchStatusFlg ==
-                                              "2" ||
-                                              _messageDetail
-                                                  .friendStatusFlg ==
-                                                  "2"
-                                              ? Column(
-                                            children: [
-                                              Text(_messageDetail
-                                                  .message),
-                                              TextButton(
-                                                  onPressed:
-                                                      () {
-                                                    //受け入れ済なこと伝えるダイアログ出す？
-                                                  },
-                                                  child:
-                                                  Text(
-                                                    "受け入れ済",
-                                                    style:
-                                                    TextStyle(
-                                                        color: Colors.purple),
-                                                  ))
-                                            ],
-                                          )
-                                              : _messageDetail
-                                              .matchStatusFlg ==
-                                              "4"
-                                              ? Column(
-                                            children: [
-                                              Text(_messageDetail
-                                                  .message),
-                                              TextButton(
-                                                  onPressed:
-                                                      () async {
-                                                    if (_messageDetail.isMe) {
-                                                      print(
-                                                          "対戦結果メッセージ送信済み");
-                                                    } else {
-                                                      //フィードバック確認する処理
-                                                      //フィードバック結果を取得する
-                                                      String feedBackComment = await FirestoreMethod
-                                                          .getFeedBack(
-                                                          (_messages[index].data() as Map<String,dynamic>)['dayKey'] as String
-                                                              ,
-                                                          widget.room.user
-                                                              .USER_ID);
-                                                      //対戦結果リストを取得する
-                                                      List<
-                                                          CmatchResult> matchResultList = await FirestoreMethod
-                                                          .getMatchResult(
-                                                          (_messages[index].data() as Map<String,dynamic>)['dayKey'] as String
-                                                              ,
-                                                          widget.room.user
-                                                              .USER_ID);
-                                                      //レビュー結果を取得する
-                                                      CSkilLevelSetting skillLevel = await FirestoreMethod
-                                                          .getSkillLevel(
-                                                          (_messages[index].data() as Map<String,dynamic>)['dayKey'] as String
-                                                              ,
-                                                          widget.room.user
-                                                              .USER_ID);
-                                                      CprofileSetting myProfile = await FirestoreMethod
-                                                          .getProfile();
-                                                      CprofileSetting yourProfile = await FirestoreMethod
-                                                          .getYourProfile(
-                                                          widget.room.user
-                                                              .USER_ID);
-                                                      String matchTitle = await FirestoreMethod
-                                                          .getMatchTitle(
-                                                          (_messages[index].data() as Map<String,dynamic>)['dayKey'] as String
-                                                             ,
-                                                          widget.room.user
-                                                              .USER_ID);
-
-                                                      await Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (
-                                                                  context) =>
-                                                                  MatchResultSansho(
-                                                                      myProfile,
-                                                                      yourProfile,
-                                                                      matchResultList,
-                                                                      feedBackComment,
-                                                                      skillLevel,
-                                                                      matchTitle)));
-
-                                                      // FirestoreMethod.makeMatch(widget.room);
-                                                    }
-                                                  },
-                                                  child:
-                                                  Text(
-                                                    "確認する",
-                                                    style: TextStyle(
-                                                        color: Colors.purple),
-                                                  )),
-                                              TextButton(
-                                                  onPressed:
-                                                      () async {
-                                                    if (_messageDetail.isMe) {
-                                                      print(
-                                                          "対戦結果メッセージ送信済み");
-                                                    } else {
-                                                      //レビュー・フィードバックを記入する
-                                                      List<
-                                                          CmatchResult> matchResultList = await FirestoreMethod
-                                                          .getMatchResult(
-                                                          (_messages[index].data() as Map<String,dynamic>)['dayKey'] as String,
-                                                          widget.room.user
-                                                              .USER_ID);
-                                                      CprofileSetting myProfile = await FirestoreMethod
-                                                          .getProfile();
-                                                      CprofileSetting yourProfile = await FirestoreMethod
-                                                          .getYourProfile(
-                                                          widget.room.user
-                                                              .USER_ID);
-                                                      String matchTitle = await FirestoreMethod
-                                                          .getMatchTitle(
-                                                          (_messages[index].data() as Map<String,dynamic>)['dayKey'] as String,
-                                                          widget.room.user
-                                                              .USER_ID);
-
-                                                      await Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (
-                                                                  context) =>
-                                                                  MatchResultFeedBack(
-                                                                      myProfile,
-                                                                      yourProfile,
-                                                                      matchResultList,
-                                                                      matchTitle,
-                                                                      (_messages[index].data() as Map<String,dynamic>)['dayKey'] as String
-                                                                         ,
-                                                                      (_messages[index].data() as Map<String,dynamic>)['messageId'] as String
-                                                                      ,
-                                                                      widget
-                                                                          .room)));
-                                                    }
-                                                  },
-                                                  child:
-                                                  Text(
-                                                    "フィードバックする",
-                                                    style: TextStyle(
-                                                        color: Colors.purple),
-                                                  ))
-                                            ],
-                                          )
-                                              : _messageDetail
-                                              .matchStatusFlg ==
-                                              "3"
-                                              ? Column(
-                                            children: [
-                                              Text(_messageDetail.message),
-                                              TextButton(
-                                                  onPressed: () async {
-                                                    if (_messageDetail.isMe) {
-                                                      print(
-                                                          "対戦結果メッセージ送信済み");
-                                                    } else {
-                                                      //フィードバック結果を取得する
-                                                      String feedBackComment = await FirestoreMethod
-                                                          .getFeedBack(
-                                                          (_messages[index].data() as Map<String,dynamic>)['dayKey'] as String,
-                                                          widget.room.user
-                                                              .USER_ID);
-                                                      //対戦結果リストを取得する
-                                                      List<
-                                                          CmatchResult> matchResultList = await FirestoreMethod
-                                                          .getMatchResult(
-                                                          (_messages[index].data() as Map<String,dynamic>)['dayKey'] as String,
-                                                          widget.room.user
-                                                              .USER_ID);
-                                                      //レビュー結果を取得する
-                                                      CSkilLevelSetting skillLevel = await FirestoreMethod
-                                                          .getSkillLevel(
-                                                          (_messages[index].data() as Map<String,dynamic>)['dayKey'] as String,
-                                                          widget.room.user
-                                                              .USER_ID);
-                                                      CprofileSetting myProfile = await FirestoreMethod
-                                                          .getProfile();
-                                                      CprofileSetting yourProfile = await FirestoreMethod
-                                                          .getYourProfile(
-                                                          widget.room.user
-                                                              .USER_ID);
-                                                      String matchTitle = await FirestoreMethod
-                                                          .getMatchTitle(
-                                                          (_messages[index].data() as Map<String,dynamic>)['dayKey'] as String,
-                                                          widget.room.user
-                                                              .USER_ID);
-
-                                                      await Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (
-                                                                  context) =>
-                                                                  MatchResultSansho(
-                                                                      myProfile,
-                                                                      yourProfile,
-                                                                      matchResultList,
-                                                                      feedBackComment,
-                                                                      skillLevel,
-                                                                      matchTitle)));
-                                                    }
-                                                  },
-                                                  child: Text(
-                                                    "確認する",
-                                                    style: TextStyle(
-                                                        color: Colors.purple),
-                                                  )),
-                                            ],
-                                          )
-                                              : Text(_messageDetail
-                                              .message)),
-                                      Text(
-                                        intl.DateFormat('HH:mm')
-                                            .format(sendtime),
-                                        style: TextStyle(fontSize: 12),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            );
-                          });
+                                ],
+                              );
+                            });
+                      }else {
+                        return Center(child: CircularProgressIndicator());
+                      }
                   }),
             ),
             Align(

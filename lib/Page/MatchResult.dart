@@ -19,8 +19,9 @@ import 'MatchList.dart';
 class MatchResult extends StatefulWidget {
   late CprofileSetting myProfile;
   late CprofileSetting yourProfile;
+  late String matchId;
 
-  MatchResult(this.myProfile, this.yourProfile);
+  MatchResult(this.myProfile, this.yourProfile,this.matchId);
 
   @override
   _MatchResultState createState() => _MatchResultState();
@@ -676,6 +677,9 @@ class _MatchResultState extends State<MatchResult> {
                                           widget.yourProfile.USER_ID,
                                           dayKey);
                                     }
+                                    //マッチリストを削除する
+                                    FirestoreMethod.delMatchListAuto(widget.matchId);
+
                                   }
                                 }
                               },
