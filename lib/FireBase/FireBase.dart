@@ -828,13 +828,23 @@ class FirestoreMethod {
       blockList.add(document.data()['BLOCK_USER']);
     });
 
-    //コレクション「myProfile」から該当データを絞る
-    final snapShot = await FirebaseFirestore.instance
-        .collection('myProfile')
-        .where('GENDER', isEqualTo: gender)
-        .where('TOROKU_RANK', isEqualTo: rank)
-        .where('AGE', isEqualTo: age)
-        .get();
+    // コレクション「myProfile」から該当データを絞る
+    Query<Map<String, dynamic>> query =
+        FirebaseFirestore.instance.collection('myProfile');
+
+    if (gender != "性別") {
+      query = query.where('GENDER', isEqualTo: gender);
+    }
+
+    if (rank != "登録ランク") {
+      query = query.where('TOROKU_RANK', isEqualTo: rank);
+    }
+
+    if (age != "年齢") {
+      query = query.where('AGE', isEqualTo: age);
+    }
+
+    final snapShot = await query.get();
 
     await Future.forEach<dynamic>(snapShot.docs, (document) async {
       if (blockList.contains(document.data()['USER_ID'])) {
@@ -849,7 +859,31 @@ class FirestoreMethod {
       //各ユーザーの表示回数を１回に制限
       int count = 0;
       await Future.forEach<dynamic>(snapShot_sub.docs, (doc) async {
-        if (doc.data()['TODOFUKEN'] == todofuken && count == 0) {
+        if (todofuken == "都道府県" && count == 0) {
+          if (shichoson == '') {
+            if (document.get('USER_ID') !=
+                snapShot_self.docs.first.get('USER_ID')) {
+              nameList.add(document.get('NICK_NAME'));
+              profileList.add(document.get('PROFILE_IMAGE'));
+              idList.add(document.get('USER_ID'));
+              resultList.add(nameList);
+              resultList.add(profileList);
+              resultList.add(idList);
+              count++;
+            }
+          } else if (doc.data()['SHICHOSON'] == shichoson) {
+            if (document.get('USER_ID') !=
+                snapShot_self.docs.first.get('USER_ID')) {
+              nameList.add(document.get('NICK_NAME'));
+              profileList.add(document.get('PROFILE_IMAGE'));
+              idList.add(document.get('USER_ID'));
+              resultList.add(nameList);
+              resultList.add(profileList);
+              resultList.add(idList);
+              count++;
+            }
+          }
+        } else if (doc.data()['TODOFUKEN'] == todofuken && count == 0) {
           if (shichoson == '') {
             if (document.get('USER_ID') !=
                 snapShot_self.docs.first.get('USER_ID')) {
@@ -1141,6 +1175,7 @@ class FirestoreMethod {
   static void delMatchListAuto(String delId) async {
     await matchRef.doc(delId).delete();
   }
+
   //対戦結果_新規フラグ取得
   static Future<String> newFlgMatchResult(String UserId) async {
     final snapshot = await matchResultRef.get();

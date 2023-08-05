@@ -178,7 +178,7 @@ class _FindPageState extends State<FindPage> {
                       child: TextFormField(
                         controller: inputShichouson,
                         decoration: InputDecoration(
-                            labelText: '市町村(任意)',
+                            labelText: '市町村',
                           border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(20)),
                           contentPadding: EdgeInsets.symmetric(horizontal: 16),
@@ -326,13 +326,13 @@ class _FindPageState extends State<FindPage> {
                   children: [
                     IconButton(icon: Icon(Icons.search),
                       onPressed: () {
-                        todofuken == "都道府県" || gender =="性別"
-                            || torokuRank =="登録ランク" || torokuAge == "年齢" ?
+                        todofuken == "都道府県" && gender =="性別"
+                            && torokuRank =="登録ランク" && torokuAge == "年齢" && inputShichouson.text == "市町村" ?
                         showDialog(
                             context: context,
                             builder: (_) => AlertDialog(
                               title :Text("入力エラー!"),
-                              content: Text("都道府県、性別、登録ランク、年齢は必須条件です"),
+                              content: Text("都道府県、性別、登録ランク、年齢、市町村のいずれかは入力してください"),
                             )
                         ):
                         Navigator.push(
@@ -509,6 +509,7 @@ class _FindPageState extends State<FindPage> {
     "60代",
     "70代",
     "80代",
+    "90代",
    ];
 
   void _onSelectedLocationChanged(int index) {
