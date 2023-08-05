@@ -23,6 +23,7 @@ import 'Page/manSinglesRankList.dart';
  */
 
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  await Firebase.initializeApp();
   print("Handling a background message: ${message.messageId}");
   // 通知を受信して行いたい処理
   //残メッセージ数を取得メソッドを作成する
@@ -90,6 +91,12 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
       provisional: false,
       sound: true,
     );
+    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+      alert: true,
+      badge: true,
+      sound: true,
+    );
+
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('User granted permission');
       String? myTokenId = await NotificationMethod.getMyTokenId();
@@ -113,9 +120,9 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
   }
 
   // 通知メッセージに応じて画面遷移
-  Future<void> notificationMove(BuildContext context, String senderId) async {
+  Future<void> notificationMove(BuildContext context, String? senderId) async {
     TalkRoomModel room = await FirestoreMethod.getRoomBySearchResult(
-        FirestoreMethod.auth.currentUser!.uid, senderId);
+        FirestoreMethod.auth.currentUser!.uid, senderId.toString());
     Navigator.push(
         context, MaterialPageRoute(builder: (context) => TalkRoom(room)));
   }
@@ -131,11 +138,15 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
       );
       setState(() {
         _notificationInfo = notification;
+        String? senderId = message.data['senderUid'];
+        print(senderId);
+        notificationMove(context,senderId);
         // _totalNotifications++;
         // FlutterAppBadger.updateBadgeCount(_totalNotifications);
       });
     });
     // _totalNotifications = 0;
+    //トラッキングチェック処理
     super.initState();
     WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_) => initPlugin());
   }
