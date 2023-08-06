@@ -134,7 +134,7 @@ class _MatchListState extends State<MatchList> {
                                                           matchList[index]
                                                               .MY_USER,
                                                           matchList[index]
-                                                              .YOUR_USER)));
+                                                              .YOUR_USER,matchList[index].MATCH_ID)));
                                         },
                                       ),
                                       SizedBox(

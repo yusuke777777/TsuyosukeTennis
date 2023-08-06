@@ -64,32 +64,35 @@ class NotificationMethod {
     return tokenCheck;
   }
 
-  static Future<void> sendMessage(
-      String recipientToken, String message, String name) async {
-    final FirebaseMessaging _fcm = FirebaseMessaging.instance;
-    String fcmUrl = 'https://fcm.googleapis.com/fcm/send';
-    String serverKey =
-        'AAAAsjXnpKQ:APA91bGhkNiydAXPg6rWfkGVXyOC7TQXuTJs0DrXJUXjTbuFvDf12cctlJb4lLh2BOeiJDBUu7zKe5VsVUDvnSsqU5O0b22OTJoJvdN6A-9LxNjXnXCnPAsda4kSI9aunT6dBlQ5az-e';
-    var headers = {
-      'Content-Type': 'application/json',
-      'Authorization': 'key=$serverKey',
-    };
-    var data = {
-      'notification': {
-        'title': name,
-        'body': message,
-      },
-      "to": recipientToken,
-      // 通知をタップしたときに開く画面の指定など、必要に応じてカスタマイズできるキーと値を指定することができます。
-      "key":auth.currentUser!.uid
-    };
+    static Future<void> sendMessage(
+        String recipientToken, String message, String name) async {
+      final FirebaseMessaging _fcm = FirebaseMessaging.instance;
+      String fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+      String serverKey =
+          'AAAAsjXnpKQ:APA91bGhkNiydAXPg6rWfkGVXyOC7TQXuTJs0DrXJUXjTbuFvDf12cctlJb4lLh2BOeiJDBUu7zKe5VsVUDvnSsqU5O0b22OTJoJvdN6A-9LxNjXnXCnPAsda4kSI9aunT6dBlQ5az-e';
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'key=$serverKey',
+      };
+      var data = {
+        'notification': {
+          'title': name,
+          'body': message,
+        },
+        'data': {
+          // auth.currentUser!.uidを受信者に送信
+          'senderUid': auth.currentUser!.uid,
+        },
+        "to": recipientToken,
+        // 通知をタップしたときに開く画面の指定など、必要に応じてカスタマイズできるキーと値を指定することができます。
+      };
 
-    var response = await http.post(Uri.parse(fcmUrl),
-        headers: headers, body: json.encode(data));
+      var response = await http.post(Uri.parse(fcmUrl),
+          headers: headers, body: json.encode(data));
 
-    print(response.statusCode);
-    print(response.body);
-  }
+      print(response.statusCode);
+      print(response.body);
+    }
 
   Future<void> setBadgeCount(int count) async {
     await FlutterAppBadger.updateBadgeCount(count);
