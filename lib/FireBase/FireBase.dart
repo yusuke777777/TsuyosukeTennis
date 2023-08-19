@@ -41,6 +41,7 @@ class FirestoreMethod {
   static final feedBackRef = _firestoreInstance.collection('feedBack');
   static final blockRef = _firestoreInstance.collection('blockList');
   static final settingRef = _firestoreInstance.collection('MySetting');
+  static final profileDetailRef = _firestoreInstance.collection('myProfileDetail');
 
   //ランキングリスト
   static final manSinglesRankRef =
@@ -128,6 +129,140 @@ class FirestoreMethod {
         No = No + 1;
       }
     }
+  }
+
+  //プロフィール情報設定
+  static Future<void> makeProfileDetail(CprofileSetting profile,String koushinFlg) async {
+    try{
+    DateTime now = DateTime.now();
+    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+    DateFormat outputFormat2 = DateFormat('yyyy/MM/dd HH:mm');
+    String todayTime = outputFormat2.format(now);
+
+    String today = outputFormat.format(now);
+
+
+    int No = 0;
+    List<String> todofukenList = [];
+    List<String> shichosonList = [];
+    for (int index = 0; index < profile.activityList.length; index++) {
+
+      if (profile.activityList[index].TODOFUKEN != "") {
+        todofukenList.add(profile.activityList[index].TODOFUKEN);
+        if (profile.activityList[index].SHICHOSON.text != "") {
+          shichosonList.add(profile.activityList[index].SHICHOSON.text);
+        }else{
+          shichosonList.add("");
+        }
+        No = No + 1;
+      }
+    }
+    if(koushinFlg == "1"){
+      // await profileDetailRef.doc(auth.currentUser!.uid).set({
+      //   'USER_ID': auth.currentUser!.uid,
+      //   'PROFILE_IMAGE': profile.PROFILE_IMAGE,
+      //   'NICK_NAME': profile.NICK_NAME,
+      //   'TOROKU_RANK': profile.TOROKU_RANK,
+      //   'AGE': profile.AGE,
+      //   'GENDER': profile.GENDER,
+      //   'COMENT': profile.COMENT,
+      //   'KOUSHIN_TIME': todayTime,
+      //   'MY_USER_ID': profile.MY_USER_ID,
+      //   'TODOFUKEN_LIST':todofukenList,
+      //   'SHICHOSON_LIST':shichosonList,
+      //   'FIRST_TODOFUKEN_SICHOSON':shichosonList[0] == "" ? todofukenList[0] : todofukenList[0] + '(' + shichosonList[0] + ')',
+      //   //マッチリザルト系の結果
+      //   'TS_POINT': 0,
+      //   'ALL_TS_POINT': 0,
+      //   'TOROKU_RANK': profile.TOROKU_RANK,
+      //   'SHOKYU_TS_POINT': 0,
+      //   'CHUKYU_TS_POINT': 0,
+      //   'JYOKYU_TS_POINT': 0,
+      //   'ALL_SHOKYU_TS_POINT': 0,
+      //   'ALL_CHUKYU_TS_POINT': 0,
+      //   'ALL_JYOKYU_TS_POINT': 0,
+      //   'SHOKYU_WIN_SU': 0,
+      //   'SHOKYU_LOSE_SU': 0,
+      //   'SHOKYU_MATCH_SU': 0,
+      //   'SHOKYU_WIN_RATE': 0,
+      //   'CHUKYU_WIN_SU': 0,
+      //   'CHUKYU_LOSE_SU': 0,
+      //   'CHUKYU_MATCH_SU': 0,
+      //   'CHUKYU_WIN_RATE': 0,
+      //   'JYOKYU_WIN_SU': 0,
+      //   'JYOKYU_LOSE_SU': 0,
+      //   'JYOKYU_MATCH_SU': 0,
+      //   'JYOKYU_WIN_RATE': 0,
+      //   'STROKE_FOREHAND_AVE': 0.0,
+      //   'STROKE_BACKHAND_AVE': 0.0,
+      //   'VOLLEY_FOREHAND_AVE': 0.0,
+      //   'VOLLEY_BACKHAND_AVE': 0.0,
+      //   'SERVE_1ST_AVE': 0.0,
+      //   'SERVE_2ND_AVE': 0.0
+      // });
+      //KOUSHIN_TIME更新なし
+      await profileDetailRef.doc(auth.currentUser!.uid).update({
+        'USER_ID': auth.currentUser!.uid,
+        'PROFILE_IMAGE': profile.PROFILE_IMAGE,
+        'NICK_NAME': profile.NICK_NAME,
+        'TOROKU_RANK': profile.TOROKU_RANK,
+        'AGE': profile.AGE,
+        'GENDER': profile.GENDER,
+        'COMENT': profile.COMENT,
+        // 'KOUSHIN_TIME': todayTime,
+        'MY_USER_ID': profile.MY_USER_ID,
+        'TODOFUKEN_LIST':todofukenList,
+        'SHICHOSON_LIST':shichosonList,
+        'FIRST_TODOFUKEN_SICHOSON':shichosonList[0] == "" ? todofukenList[0] : todofukenList[0] + '(' + shichosonList[0] + ')',
+      });
+    }else{
+      //KOUSHIN_TIME更新あり(初回)
+      await profileDetailRef.doc(auth.currentUser!.uid).set({
+        'USER_ID': auth.currentUser!.uid,
+        'PROFILE_IMAGE': profile.PROFILE_IMAGE,
+        'NICK_NAME': profile.NICK_NAME,
+        'TOROKU_RANK': profile.TOROKU_RANK,
+        'AGE': profile.AGE,
+        'GENDER': profile.GENDER,
+        'COMENT': profile.COMENT,
+        'KOUSHIN_TIME': todayTime,
+        'MY_USER_ID': profile.MY_USER_ID,
+        'TODOFUKEN_LIST':todofukenList,
+        'SHICHOSON_LIST':shichosonList,
+        'FIRST_TODOFUKEN_SICHOSON':shichosonList[0] == "" ? todofukenList[0] : todofukenList[0] + '(' + shichosonList[0] + ')',
+        //マッチリザルト系の結果
+        'TS_POINT': 0,
+        'ALL_TS_POINT': 0,
+        'TOROKU_RANK': profile.TOROKU_RANK,
+        'SHOKYU_TS_POINT': 0,
+        'CHUKYU_TS_POINT': 0,
+        'JYOKYU_TS_POINT': 0,
+        'ALL_SHOKYU_TS_POINT': 0,
+        'ALL_CHUKYU_TS_POINT': 0,
+        'ALL_JYOKYU_TS_POINT': 0,
+        'SHOKYU_WIN_SU': 0,
+        'SHOKYU_LOSE_SU': 0,
+        'SHOKYU_MATCH_SU': 0,
+        'SHOKYU_WIN_RATE': 0,
+        'CHUKYU_WIN_SU': 0,
+        'CHUKYU_LOSE_SU': 0,
+        'CHUKYU_MATCH_SU': 0,
+        'CHUKYU_WIN_RATE': 0,
+        'JYOKYU_WIN_SU': 0,
+        'JYOKYU_LOSE_SU': 0,
+        'JYOKYU_MATCH_SU': 0,
+        'JYOKYU_WIN_RATE': 0,
+        'STROKE_FOREHAND_AVE': 0.0,
+        'STROKE_BACKHAND_AVE': 0.0,
+        'VOLLEY_FOREHAND_AVE': 0.0,
+        'VOLLEY_BACKHAND_AVE': 0.0,
+        'SERVE_1ST_AVE': 0.0,
+        'SERVE_2ND_AVE': 0.0
+      });
+    }
+  } catch (e) {
+  print('ユーザー情報の詳細登録に失敗しました --- $e');
+  }
   }
 
   /**
@@ -1752,6 +1887,29 @@ class FirestoreMethod {
         'JYOKYU_MATCH_SU': MY_JYOKYU_MATCH_SU_CUR,
         'JYOKYU_WIN_RATE': MY_JYOKYU_WIN_RATE_CUR,
       });
+      await profileDetailRef.doc(myProfile.USER_ID).update({
+        'TS_POINT': MY_TS_POINT_CUR,
+        'ALL_TS_POINT': MY_ALL_TS_POINT_CUR,
+        'TOROKU_RANK': MY_TOROKU_RANK_CUR,
+        'SHOKYU_TS_POINT': MY_SHOKYU_TS_POINT_CUR,
+        'CHUKYU_TS_POINT': MY_CHUKYU_TS_POINT_CUR,
+        'JYOKYU_TS_POINT': MY_JYOKYU_TS_POINT_CUR,
+        'ALL_SHOKYU_TS_POINT': MY_ALL_SHOKYU_TS_POINT_CUR,
+        'ALL_CHUKYU_TS_POINT': MY_ALL_CHUKYU_TS_POINT_CUR,
+        'ALL_JYOKYU_TS_POINT': MY_ALL_JYOKYU_TS_POINT_CUR,
+        'SHOKYU_WIN_SU': MY_SHOKYU_WIN_SU_CUR,
+        'SHOKYU_LOSE_SU': MY_SHOKYU_LOSE_SU_CUR,
+        'SHOKYU_MATCH_SU': MY_SHOKYU_MATCH_SU_CUR,
+        'SHOKYU_WIN_RATE': MY_SHOKYU_WIN_RATE_CUR,
+        'CHUKYU_WIN_SU': MY_CHUKYU_WIN_SU_CUR,
+        'CHUKYU_LOSE_SU': MY_CHUKYU_LOSE_SU_CUR,
+        'CHUKYU_MATCH_SU': MY_CHUKYU_MATCH_SU_CUR,
+        'CHUKYU_WIN_RATE': MY_CHUKYU_WIN_RATE_CUR,
+        'JYOKYU_WIN_SU': MY_JYOKYU_WIN_SU_CUR,
+        'JYOKYU_LOSE_SU': MY_JYOKYU_LOSE_SU_CUR,
+        'JYOKYU_MATCH_SU': MY_JYOKYU_MATCH_SU_CUR,
+        'JYOKYU_WIN_RATE': MY_JYOKYU_WIN_RATE_CUR,
+      });
     } else {
       //現在の登録情報を取得
       try {
@@ -1842,6 +2000,29 @@ class FirestoreMethod {
         'JYOKYU_MATCH_SU': YOUR_JYOKYU_MATCH_SU_CUR,
         'JYOKYU_WIN_RATE': YOUR_JYOKYU_WIN_RATE_CUR,
       });
+      await profileDetailRef.doc(yourProfile.USER_ID).update({
+        'TS_POINT': MY_TS_POINT_CUR,
+        'ALL_TS_POINT': MY_ALL_TS_POINT_CUR,
+        'TOROKU_RANK': MY_TOROKU_RANK_CUR,
+        'SHOKYU_TS_POINT': MY_SHOKYU_TS_POINT_CUR,
+        'CHUKYU_TS_POINT': MY_CHUKYU_TS_POINT_CUR,
+        'JYOKYU_TS_POINT': MY_JYOKYU_TS_POINT_CUR,
+        'ALL_SHOKYU_TS_POINT': MY_ALL_SHOKYU_TS_POINT_CUR,
+        'ALL_CHUKYU_TS_POINT': MY_ALL_CHUKYU_TS_POINT_CUR,
+        'ALL_JYOKYU_TS_POINT': MY_ALL_JYOKYU_TS_POINT_CUR,
+        'SHOKYU_WIN_SU': MY_SHOKYU_WIN_SU_CUR,
+        'SHOKYU_LOSE_SU': MY_SHOKYU_LOSE_SU_CUR,
+        'SHOKYU_MATCH_SU': MY_SHOKYU_MATCH_SU_CUR,
+        'SHOKYU_WIN_RATE': MY_SHOKYU_WIN_RATE_CUR,
+        'CHUKYU_WIN_SU': MY_CHUKYU_WIN_SU_CUR,
+        'CHUKYU_LOSE_SU': MY_CHUKYU_LOSE_SU_CUR,
+        'CHUKYU_MATCH_SU': MY_CHUKYU_MATCH_SU_CUR,
+        'CHUKYU_WIN_RATE': MY_CHUKYU_WIN_RATE_CUR,
+        'JYOKYU_WIN_SU': MY_JYOKYU_WIN_SU_CUR,
+        'JYOKYU_LOSE_SU': MY_JYOKYU_LOSE_SU_CUR,
+        'JYOKYU_MATCH_SU': MY_JYOKYU_MATCH_SU_CUR,
+        'JYOKYU_WIN_RATE': MY_JYOKYU_WIN_RATE_CUR,
+      });
     } else {
       try {
         final yourSnapShot =
@@ -1894,6 +2075,9 @@ class FirestoreMethod {
         matchResultRef
             .doc(myProfile.USER_ID)
             .update({'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
+        profileDetailRef
+            .doc(myProfile.USER_ID)
+            .update({'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
       } catch (e) {
         print('TSPポイントの付与に失敗しました --- $e');
       }
@@ -1903,6 +2087,10 @@ class FirestoreMethod {
         case '初級':
           try {
             matchResultRef.doc(myProfile.USER_ID).update({
+              'SHOKYU_TS_POINT': MY_TS_POINT,
+              'ALL_SHOKYU_TS_POINT': MY_ALL_TS_POINT
+            });
+            profileDetailRef.doc(myProfile.USER_ID).update({
               'SHOKYU_TS_POINT': MY_TS_POINT,
               'ALL_SHOKYU_TS_POINT': MY_ALL_TS_POINT
             });
@@ -1916,6 +2104,10 @@ class FirestoreMethod {
               'CHUKYU_TS_POINT': MY_TS_POINT,
               'ALL_CHUKYU_TS_POINT': MY_ALL_TS_POINT
             });
+            profileDetailRef.doc(myProfile.USER_ID).update({
+              'CHUKYU_TS_POINT': MY_TS_POINT,
+              'ALL_CHUKYU_TS_POINT': MY_ALL_TS_POINT
+            });
           } catch (e) {
             print('中級TSPポイントの付与に失敗しました --- $e');
           }
@@ -1923,6 +2115,10 @@ class FirestoreMethod {
         case '上級':
           try {
             matchResultRef.doc(myProfile.USER_ID).update({
+              'JYOKYU_TS_POINT': MY_TS_POINT,
+              'ALL_JYOKYU_TS_POINT': MY_ALL_TS_POINT
+            });
+            profileDetailRef.doc(myProfile.USER_ID).update({
               'JYOKYU_TS_POINT': MY_TS_POINT,
               'ALL_JYOKYU_TS_POINT': MY_ALL_TS_POINT
             });
@@ -1940,13 +2136,26 @@ class FirestoreMethod {
             MY_ALL_TS_POINT = MY_ALL_SHOKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
             matchResultRef.doc(myProfile.USER_ID).update(
                 {'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
+            profileDetailRef.doc(myProfile.USER_ID).update(
+                {'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
+
             matchResultRef.doc(myProfile.USER_ID).update({
               'SHOKYU_TS_POINT': MY_TS_POINT,
               'ALL_SHOKYU_TS_POINT': MY_ALL_TS_POINT
             });
+            profileDetailRef.doc(myProfile.USER_ID).update({
+              'SHOKYU_TS_POINT': MY_TS_POINT,
+              'ALL_SHOKYU_TS_POINT': MY_ALL_TS_POINT
+            });
+
             matchResultRef
                 .doc(myProfile.USER_ID)
                 .update({'TOROKU_RANK': myProfile.TOROKU_RANK});
+
+            profileDetailRef
+                .doc(myProfile.USER_ID)
+                .update({'TOROKU_RANK': myProfile.TOROKU_RANK});
+
           } catch (e) {
             print('初級TSPポイントの付与に失敗しました --- $e');
           }
@@ -1957,13 +2166,28 @@ class FirestoreMethod {
             MY_ALL_TS_POINT = MY_ALL_CHUKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
             matchResultRef.doc(myProfile.USER_ID).update(
                 {'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
+
+            profileDetailRef.doc(myProfile.USER_ID).update(
+                {'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
+
             matchResultRef.doc(myProfile.USER_ID).update({
               'CHUKYU_TS_POINT': MY_TS_POINT,
               'ALL_CHUKYU_TS_POINT': MY_ALL_TS_POINT
             });
+
+            profileDetailRef.doc(myProfile.USER_ID).update({
+              'CHUKYU_TS_POINT': MY_TS_POINT,
+              'ALL_CHUKYU_TS_POINT': MY_ALL_TS_POINT
+            });
+
             matchResultRef
                 .doc(myProfile.USER_ID)
                 .update({'TOROKU_RANK': myProfile.TOROKU_RANK});
+
+            profileDetailRef
+                .doc(myProfile.USER_ID)
+                .update({'TOROKU_RANK': myProfile.TOROKU_RANK});
+
           } catch (e) {
             print('中級TSPポイントの付与に失敗しました --- $e');
           }
@@ -1974,13 +2198,29 @@ class FirestoreMethod {
             MY_ALL_TS_POINT = MY_ALL_JYOKYU_TS_POINT_CUR + MY_TS_POINT_FUYO_SUM;
             matchResultRef.doc(myProfile.USER_ID).update(
                 {'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
+
+            profileDetailRef.doc(myProfile.USER_ID).update(
+                {'TS_POINT': MY_TS_POINT, 'ALL_TS_POINT': MY_ALL_TS_POINT});
+
             matchResultRef.doc(myProfile.USER_ID).update({
               'JYOKYU_TS_POINT': MY_TS_POINT,
               'ALL_JYOKYU_TS_POINT': MY_ALL_TS_POINT
             });
+
+            profileDetailRef.doc(myProfile.USER_ID).update({
+              'JYOKYU_TS_POINT': MY_TS_POINT,
+              'ALL_JYOKYU_TS_POINT': MY_ALL_TS_POINT
+            });
+
+
             matchResultRef
                 .doc(myProfile.USER_ID)
                 .update({'TOROKU_RANK': myProfile.TOROKU_RANK});
+
+            profileDetailRef
+                .doc(myProfile.USER_ID)
+                .update({'TOROKU_RANK': myProfile.TOROKU_RANK});
+
           } catch (e) {
             print('上級TSPポイントの付与に失敗しました --- $e');
           }
@@ -1994,6 +2234,10 @@ class FirestoreMethod {
       try {
         matchResultRef.doc(yourProfile.USER_ID).update(
             {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
+
+        profileDetailRef.doc(yourProfile.USER_ID).update(
+            {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
+
       } catch (e) {
         print('TSPポイントの付与に失敗しました --- $e');
       }
@@ -2006,6 +2250,12 @@ class FirestoreMethod {
               'SHOKYU_TS_POINT': YOUR_TS_POINT,
               'ALL_SHOKYU_TS_POINT': YOUR_ALL_TS_POINT
             });
+
+            profileDetailRef.doc(yourProfile.USER_ID).update({
+              'SHOKYU_TS_POINT': YOUR_TS_POINT,
+              'ALL_SHOKYU_TS_POINT': YOUR_ALL_TS_POINT
+            });
+
           } catch (e) {
             print('初級TSPポイントの付与に失敗しました --- $e');
           }
@@ -2016,6 +2266,12 @@ class FirestoreMethod {
               'CHUKYU_TS_POINT': YOUR_TS_POINT,
               'ALL_CHUKYU_TS_POINT': YOUR_ALL_TS_POINT
             });
+
+            profileDetailRef.doc(yourProfile.USER_ID).update({
+              'CHUKYU_TS_POINT': YOUR_TS_POINT,
+              'ALL_CHUKYU_TS_POINT': YOUR_ALL_TS_POINT
+            });
+
           } catch (e) {
             print('中級TSPポイントの付与に失敗しました --- $e');
           }
@@ -2026,6 +2282,11 @@ class FirestoreMethod {
               'JYOKYU_TS_POINT': YOUR_TS_POINT,
               'ALL_JYOKYU_TS_POINT': YOUR_ALL_TS_POINT
             });
+            profileDetailRef.doc(yourProfile.USER_ID).update({
+              'JYOKYU_TS_POINT': YOUR_TS_POINT,
+              'ALL_JYOKYU_TS_POINT': YOUR_ALL_TS_POINT
+            });
+
           } catch (e) {
             print('上級TSPポイントの付与に失敗しました --- $e');
           }
@@ -2041,13 +2302,28 @@ class FirestoreMethod {
                 YOUR_ALL_SHOKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
             matchResultRef.doc(yourProfile.USER_ID).update(
                 {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
+
+            profileDetailRef.doc(yourProfile.USER_ID).update(
+                {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
+
             matchResultRef.doc(yourProfile.USER_ID).update({
               'SHOKYU_TS_POINT': YOUR_TS_POINT,
               'ALL_SHOKYU_TS_POINT': YOUR_ALL_TS_POINT
             });
+
+            profileDetailRef.doc(yourProfile.USER_ID).update({
+              'SHOKYU_TS_POINT': YOUR_TS_POINT,
+              'ALL_SHOKYU_TS_POINT': YOUR_ALL_TS_POINT
+            });
+
             matchResultRef
                 .doc(yourProfile.USER_ID)
                 .update({'TOROKU_RANK': yourProfile.TOROKU_RANK});
+
+            profileDetailRef
+                .doc(yourProfile.USER_ID)
+                .update({'TOROKU_RANK': yourProfile.TOROKU_RANK});
+
           } catch (e) {
             print('初級TSPポイントの付与に失敗しました --- $e');
           }
@@ -2059,13 +2335,28 @@ class FirestoreMethod {
                 YOUR_ALL_CHUKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
             matchResultRef.doc(yourProfile.USER_ID).update(
                 {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
+
+            profileDetailRef.doc(yourProfile.USER_ID).update(
+                {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
+
             matchResultRef.doc(yourProfile.USER_ID).update({
               'CHUKYU_TS_POINT': YOUR_TS_POINT,
               'ALL_CHUKYU_TS_POINT': YOUR_ALL_TS_POINT
             });
+
+            profileDetailRef.doc(yourProfile.USER_ID).update({
+              'CHUKYU_TS_POINT': YOUR_TS_POINT,
+              'ALL_CHUKYU_TS_POINT': YOUR_ALL_TS_POINT
+            });
+
             matchResultRef
                 .doc(yourProfile.USER_ID)
                 .update({'TOROKU_RANK': yourProfile.TOROKU_RANK});
+
+            profileDetailRef
+                .doc(yourProfile.USER_ID)
+                .update({'TOROKU_RANK': yourProfile.TOROKU_RANK});
+
           } catch (e) {
             print('中級TSPポイントの付与に失敗しました --- $e');
           }
@@ -2077,11 +2368,23 @@ class FirestoreMethod {
                 YOUR_ALL_JYOKYU_TS_POINT_CUR + YOUR_TS_POINT_FUYO_SUM;
             matchResultRef.doc(yourProfile.USER_ID).update(
                 {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
+
+            profileDetailRef.doc(yourProfile.USER_ID).update(
+                {'TS_POINT': YOUR_TS_POINT, 'ALL_TS_POINT': YOUR_ALL_TS_POINT});
+
             matchResultRef.doc(yourProfile.USER_ID).update({
               'JYOKYU_TS_POINT': YOUR_TS_POINT,
               'ALL_JYOKYU_TS_POINT': YOUR_ALL_TS_POINT
             });
+
+            profileDetailRef.doc(yourProfile.USER_ID).update({
+              'JYOKYU_TS_POINT': YOUR_TS_POINT,
+              'ALL_JYOKYU_TS_POINT': YOUR_ALL_TS_POINT
+            });
             matchResultRef
+                .doc(yourProfile.USER_ID)
+                .update({'TOROKU_RANK': yourProfile.TOROKU_RANK});
+            profileDetailRef
                 .doc(yourProfile.USER_ID)
                 .update({'TOROKU_RANK': yourProfile.TOROKU_RANK});
           } catch (e) {
@@ -2099,12 +2402,26 @@ class FirestoreMethod {
           matchResultRef
               .doc(myProfile.USER_ID)
               .update({'SHOKYU_WIN_SU': MY_SHOKYU_WIN_SU});
+
+          profileDetailRef
+              .doc(myProfile.USER_ID)
+              .update({'SHOKYU_WIN_SU': MY_SHOKYU_WIN_SU});
+
           MY_SHOKYU_LOSE_SU = MY_SHOKYU_LOSE_SU_CUR + MY_LOSE_SU;
           matchResultRef
               .doc(myProfile.USER_ID)
               .update({'SHOKYU_LOSE_SU': MY_SHOKYU_LOSE_SU});
+
+          profileDetailRef
+              .doc(myProfile.USER_ID)
+              .update({'SHOKYU_LOSE_SU': MY_SHOKYU_LOSE_SU});
+
           MY_SHOKYU_MATCH_SU = MY_SHOKYU_MATCH_SU_CUR + MY_MATCH_SU;
           matchResultRef
+              .doc(myProfile.USER_ID)
+              .update({'SHOKYU_MATCH_SU': MY_SHOKYU_MATCH_SU});
+
+          profileDetailRef
               .doc(myProfile.USER_ID)
               .update({'SHOKYU_MATCH_SU': MY_SHOKYU_MATCH_SU});
 
@@ -2114,6 +2431,11 @@ class FirestoreMethod {
           matchResultRef
               .doc(myProfile.USER_ID)
               .update({'SHOKYU_WIN_RATE': MY_SHOKYU_WIN_RATE});
+
+          profileDetailRef
+              .doc(myProfile.USER_ID)
+              .update({'SHOKYU_WIN_RATE': MY_SHOKYU_WIN_RATE});
+
         } catch (e) {
           print('初級の勝率の付与に失敗しました --- $e');
         }
@@ -2124,14 +2446,30 @@ class FirestoreMethod {
           matchResultRef
               .doc(myProfile.USER_ID)
               .update({'CHUKYU_WIN_SU': MY_CHUKYU_WIN_SU});
+
+          profileDetailRef
+              .doc(myProfile.USER_ID)
+              .update({'CHUKYU_WIN_SU': MY_CHUKYU_WIN_SU});
+
           MY_CHUKYU_LOSE_SU = MY_CHUKYU_LOSE_SU_CUR + MY_LOSE_SU;
           matchResultRef
               .doc(myProfile.USER_ID)
               .update({'CHUKYU_LOSE_SU': MY_CHUKYU_LOSE_SU});
+
+          profileDetailRef
+              .doc(myProfile.USER_ID)
+              .update({'CHUKYU_LOSE_SU': MY_CHUKYU_LOSE_SU});
+
+
           MY_CHUKYU_MATCH_SU = MY_CHUKYU_MATCH_SU_CUR + MY_MATCH_SU;
           matchResultRef
               .doc(myProfile.USER_ID)
               .update({'CHUKYU_MATCH_SU': MY_CHUKYU_MATCH_SU});
+
+          profileDetailRef
+              .doc(myProfile.USER_ID)
+              .update({'CHUKYU_MATCH_SU': MY_CHUKYU_MATCH_SU});
+
 
           MY_CHUKYU_WIN_RATE =
               ((MY_CHUKYU_WIN_SU / MY_CHUKYU_MATCH_SU) * 100).round();
@@ -2139,6 +2477,11 @@ class FirestoreMethod {
           matchResultRef
               .doc(myProfile.USER_ID)
               .update({'CHUKYU_WIN_RATE': MY_CHUKYU_WIN_RATE});
+
+          profileDetailRef
+              .doc(myProfile.USER_ID)
+              .update({'CHUKYU_WIN_RATE': MY_CHUKYU_WIN_RATE});
+
         } catch (e) {
           print('中級の勝率の付与に失敗しました --- $e');
         }
@@ -2149,14 +2492,31 @@ class FirestoreMethod {
           matchResultRef
               .doc(myProfile.USER_ID)
               .update({'JYOKYU_WIN_SU': MY_JYOKYU_WIN_SU});
+
+          profileDetailRef
+              .doc(myProfile.USER_ID)
+              .update({'JYOKYU_WIN_SU': MY_JYOKYU_WIN_SU});
+
+
           MY_JYOKYU_LOSE_SU = MY_JYOKYU_LOSE_SU_CUR + MY_LOSE_SU;
           matchResultRef
               .doc(myProfile.USER_ID)
               .update({'JYOKYU_LOSE_SU': MY_JYOKYU_LOSE_SU});
+
+          profileDetailRef
+              .doc(myProfile.USER_ID)
+              .update({'JYOKYU_LOSE_SU': MY_JYOKYU_LOSE_SU});
+
+
           MY_JYOKYU_MATCH_SU = MY_JYOKYU_MATCH_SU_CUR + MY_MATCH_SU;
           matchResultRef
               .doc(myProfile.USER_ID)
               .update({'JYOKYU_MATCH_SU': MY_JYOKYU_MATCH_SU});
+
+          profileDetailRef
+              .doc(myProfile.USER_ID)
+              .update({'JYOKYU_MATCH_SU': MY_JYOKYU_MATCH_SU});
+
 
           MY_JYOKYU_WIN_RATE =
               ((MY_JYOKYU_WIN_SU / MY_JYOKYU_MATCH_SU) * 100).round();
@@ -2164,6 +2524,12 @@ class FirestoreMethod {
           matchResultRef
               .doc(myProfile.USER_ID)
               .update({'JYOKYU_WIN_RATE': MY_JYOKYU_WIN_RATE});
+
+          profileDetailRef
+              .doc(myProfile.USER_ID)
+              .update({'JYOKYU_WIN_RATE': MY_JYOKYU_WIN_RATE});
+
+
         } catch (e) {
           print('上級の勝率の付与に失敗しました --- $e');
         }
@@ -2178,14 +2544,31 @@ class FirestoreMethod {
           matchResultRef
               .doc(yourProfile.USER_ID)
               .update({'SHOKYU_WIN_SU': YOUR_SHOKYU_WIN_SU});
+
+          profileDetailRef
+              .doc(yourProfile.USER_ID)
+              .update({'SHOKYU_WIN_SU': YOUR_SHOKYU_WIN_SU});
+
+
           YOUR_SHOKYU_LOSE_SU = YOUR_SHOKYU_LOSE_SU_CUR + YOUR_LOSE_SU;
           matchResultRef
               .doc(yourProfile.USER_ID)
               .update({'SHOKYU_LOSE_SU': YOUR_SHOKYU_LOSE_SU});
+
+          profileDetailRef
+              .doc(yourProfile.USER_ID)
+              .update({'SHOKYU_LOSE_SU': YOUR_SHOKYU_LOSE_SU});
+
+
           YOUR_SHOKYU_MATCH_SU = YOUR_SHOKYU_MATCH_SU_CUR + YOUR_MATCH_SU;
           matchResultRef
               .doc(yourProfile.USER_ID)
               .update({'SHOKYU_MATCH_SU': YOUR_SHOKYU_MATCH_SU});
+
+          profileDetailRef
+              .doc(yourProfile.USER_ID)
+              .update({'SHOKYU_MATCH_SU': YOUR_SHOKYU_MATCH_SU});
+
 
           YOUR_SHOKYU_WIN_RATE =
               ((YOUR_SHOKYU_WIN_SU / YOUR_SHOKYU_MATCH_SU) * 100).round();
@@ -2193,6 +2576,12 @@ class FirestoreMethod {
           matchResultRef
               .doc(yourProfile.USER_ID)
               .update({'SHOKYU_WIN_RATE': YOUR_SHOKYU_WIN_RATE});
+
+          profileDetailRef
+              .doc(yourProfile.USER_ID)
+              .update({'SHOKYU_WIN_RATE': YOUR_SHOKYU_WIN_RATE});
+
+
         } catch (e) {
           print('初級の勝率の付与に失敗しました --- $e');
         }
@@ -2203,14 +2592,31 @@ class FirestoreMethod {
           matchResultRef
               .doc(yourProfile.USER_ID)
               .update({'CHUKYU_WIN_SU': YOUR_CHUKYU_WIN_SU});
+
+          profileDetailRef
+              .doc(yourProfile.USER_ID)
+              .update({'CHUKYU_WIN_SU': YOUR_CHUKYU_WIN_SU});
+
+
           YOUR_CHUKYU_LOSE_SU = YOUR_CHUKYU_LOSE_SU_CUR + YOUR_LOSE_SU;
           matchResultRef
               .doc(yourProfile.USER_ID)
               .update({'CHUKYU_LOSE_SU': YOUR_CHUKYU_LOSE_SU});
+
+          profileDetailRef
+              .doc(yourProfile.USER_ID)
+              .update({'CHUKYU_LOSE_SU': YOUR_CHUKYU_LOSE_SU});
+
+
           YOUR_CHUKYU_MATCH_SU = YOUR_CHUKYU_MATCH_SU_CUR + YOUR_MATCH_SU;
           matchResultRef
               .doc(yourProfile.USER_ID)
               .update({'CHUKYU_MATCH_SU': YOUR_CHUKYU_MATCH_SU});
+
+          profileDetailRef
+              .doc(yourProfile.USER_ID)
+              .update({'CHUKYU_MATCH_SU': YOUR_CHUKYU_MATCH_SU});
+
 
           YOUR_CHUKYU_WIN_RATE =
               ((YOUR_CHUKYU_WIN_SU / YOUR_CHUKYU_MATCH_SU) * 100).round();
@@ -2218,6 +2624,11 @@ class FirestoreMethod {
           matchResultRef
               .doc(yourProfile.USER_ID)
               .update({'CHUKYU_WIN_RATE': YOUR_CHUKYU_WIN_RATE});
+
+          profileDetailRef
+              .doc(yourProfile.USER_ID)
+              .update({'CHUKYU_WIN_RATE': YOUR_CHUKYU_WIN_RATE});
+
         } catch (e) {
           print('中級の勝率の付与に失敗しました --- $e');
         }
@@ -2228,14 +2639,31 @@ class FirestoreMethod {
           matchResultRef
               .doc(yourProfile.USER_ID)
               .update({'JYOKYU_WIN_SU': YOUR_JYOKYU_WIN_SU});
+
+          profileDetailRef
+              .doc(yourProfile.USER_ID)
+              .update({'JYOKYU_WIN_SU': YOUR_JYOKYU_WIN_SU});
+
+
           YOUR_JYOKYU_LOSE_SU = YOUR_JYOKYU_LOSE_SU_CUR + YOUR_LOSE_SU;
           matchResultRef
               .doc(yourProfile.USER_ID)
               .update({'JYOKYU_LOSE_SU': YOUR_JYOKYU_LOSE_SU});
+
+          profileDetailRef
+              .doc(yourProfile.USER_ID)
+              .update({'JYOKYU_LOSE_SU': YOUR_JYOKYU_LOSE_SU});
+
+
           YOUR_JYOKYU_MATCH_SU = YOUR_JYOKYU_MATCH_SU_CUR + YOUR_MATCH_SU;
           matchResultRef
               .doc(yourProfile.USER_ID)
               .update({'JYOKYU_MATCH_SU': YOUR_JYOKYU_MATCH_SU});
+
+          profileDetailRef
+              .doc(yourProfile.USER_ID)
+              .update({'JYOKYU_MATCH_SU': YOUR_JYOKYU_MATCH_SU});
+
 
           YOUR_JYOKYU_WIN_RATE =
               ((YOUR_JYOKYU_WIN_SU / YOUR_JYOKYU_MATCH_SU) * 100).round();
@@ -2243,11 +2671,27 @@ class FirestoreMethod {
           matchResultRef
               .doc(yourProfile.USER_ID)
               .update({'JYOKYU_WIN_RATE': YOUR_JYOKYU_WIN_RATE});
+
+          profileDetailRef
+              .doc(yourProfile.USER_ID)
+              .update({'JYOKYU_WIN_RATE': YOUR_JYOKYU_WIN_RATE});
+
+
         } catch (e) {
           print('上級の勝率の付与に失敗しました --- $e');
         }
         break;
     }
+
+    //更新日時を登録
+    profileDetailRef
+        .doc(myProfile.USER_ID)
+        .update({'KOUSHIN_TIME': today});
+
+    profileDetailRef
+        .doc(yourProfile.USER_ID)
+        .update({'KOUSHIN_TIME': today});
+
     //フィードバックを
   }
 
@@ -2647,10 +3091,6 @@ class FirestoreMethod {
         'SERVE_1ST': skill.SERVE_1ST,
         'SERVE_2ND': skill.SERVE_2ND,
       });
-    } catch (e) {
-      print('スキルレベル登録に失敗しました --- $e');
-    }
-    try {
       matchResultRef
           .doc(skill.OPPONENT_ID)
           .collection('opponentList')
@@ -2666,8 +3106,77 @@ class FirestoreMethod {
         'SERVE_2ND': skill.SERVE_2ND,
       });
     } catch (e) {
-      print('日別スキルレベル登録に失敗しました --- $e');
+      print('スキルレベル登録に失敗しました --- $e');
     }
+  }
+
+  /**
+   * スキル評価の合計を算出入力するメソッドです
+   * skill.OPPONENT_ID 評価される側のユーザ
+   * auth.currentUser!.uid 評価している(入力中ユーザ)
+   */
+  static Future<void> registSkillSum(String OPPONENT_ID
+      ) async {
+    try {
+      //対戦相手の評価フィールドを持つドキュメントIDを全て取得
+      late CSkilLevelSetting skill;
+      double stroke_fore_total = 0;
+      double stroke_back_total = 0;
+      double volley_fore_total = 0;
+      double volley_back_total = 0;
+      double serve_1st_total = 0;
+      double serve_2nd_total = 0;
+      double stroke_fore_avg = 0;
+      double stroke_back_avg = 0;
+      double volley_fore_avg = 0;
+      double volley_back_avg = 0;
+      double serve_1st_avg = 0;
+      double serve_2nd_avg = 0;
+      double count = 0;
+        final opponentListsnapShot = await matchResultRef
+            .doc(OPPONENT_ID)
+            .collection('opponentList')
+            .get();
+        await Future.forEach<dynamic>(opponentListsnapShot.docs, (doc) async {
+          //0~5以外は入り得ない
+          double fore = await doc.data()?['STROKE_FOREHAND'] ?? 10;
+          if (fore == 10) {
+            return;
+          } else {
+            count++;
+            stroke_fore_total = stroke_fore_total + doc.data()!['STROKE_FOREHAND'];
+            stroke_back_total = stroke_back_total + doc.data()!['STROKE_BACKHAND'];
+            volley_fore_total = volley_fore_total + doc.data()!['VOLLEY_FOREHAND'];
+            volley_back_total = volley_back_total + doc.data()!['VOLLEY_BACKHAND'];
+            serve_1st_total = serve_1st_total + doc.data()!['SERVE_1ST'];
+            serve_2nd_total = serve_2nd_total + doc.data()!['SERVE_2ND'];
+          }
+        });
+        stroke_fore_avg = FirestoreMethod.roundToDecimal(stroke_fore_total / count, 1);
+        stroke_back_avg = FirestoreMethod.roundToDecimal(stroke_back_total / count, 1);
+        volley_fore_avg = FirestoreMethod.roundToDecimal(volley_fore_total / count, 1);
+        volley_back_avg = FirestoreMethod.roundToDecimal(volley_back_total / count, 1);
+        serve_1st_avg = FirestoreMethod.roundToDecimal(serve_1st_total / count, 1);
+        serve_2nd_avg = FirestoreMethod.roundToDecimal(serve_2nd_total / count, 1);
+
+      await profileDetailRef
+          .doc(OPPONENT_ID)
+          .update({
+        'STROKE_FOREHAND_AVE': stroke_fore_avg,
+        'STROKE_BACKHAND_AVE': stroke_back_avg,
+        'VOLLEY_FOREHAND_AVE': volley_fore_avg,
+        'VOLLEY_BACKHAND_AVE': volley_back_avg,
+        'SERVE_1ST_AVE': serve_1st_avg,
+        'SERVE_2ND_AVE': serve_2nd_avg,
+      });
+    } catch (e) {
+      print('スキルレベルの平均値算出に失敗しました --- $e');
+    }
+  }
+  //小数点計算
+  static double roundToDecimal(double value, int decimalPlaces) {
+    double shift = 10.0 * decimalPlaces;
+    return (value * shift).round() / shift;
   }
 
   /**
@@ -2971,15 +3480,24 @@ class FirestoreMethod {
     final snapShot_self = await profileRef
         .where('USER_ID', isEqualTo: auth.currentUser!.uid)
         .get();
-    String inputID = snapShot.docs.first.get('MY_USER_ID');
-    String selfID = snapShot_self.docs.first.get('MY_USER_ID');
 
-    if (inputID == selfID) {
-      return isDoubleMyUserId;
-    }
-
-    if (snapShot.size != 0) {
-      isDoubleMyUserId = true;
+    if(snapShot.docs.isNotEmpty){
+      //既存のMyUserIdが存在する場合
+      String inputID = snapShot.docs.first.get('MY_USER_ID');
+      if(snapShot_self.docs.isNotEmpty){
+        //既存のMyUserIdが存在する場合、自分自身のMyUserIdと同じ場合のみ重複を認める
+        String selfID = snapShot_self.docs.first.get('MY_USER_ID');
+        if (inputID == selfID) {
+          isDoubleMyUserId = false;
+        }else{
+          isDoubleMyUserId = true;
+        }
+      }else{
+        isDoubleMyUserId = true;
+      }
+    }else{
+      //既存のMyUserIdが存在しない場合
+      isDoubleMyUserId = false;
     }
     return isDoubleMyUserId;
   }

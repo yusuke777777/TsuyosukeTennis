@@ -415,6 +415,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                     );
                                     await FirestoreMethod.registSkillLevel(
                                         skill, widget.dayKey);
+                                    await FirestoreMethod.registSkillSum(opponent_id);
                                     CFeedBackCommentSetting feedBack =
                                         CFeedBackCommentSetting(
                                       OPPONENT_ID: opponent_id,

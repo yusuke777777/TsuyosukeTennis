@@ -644,6 +644,7 @@ class _MatchResultState extends State<MatchResult> {
                                       );
                                       await FirestoreMethod.registSkillLevel(
                                           skill, dayKey);
+                                      await FirestoreMethod.registSkillSum(opponent_id);
 
                                       if (yourReviewFeatureEnabled && !inputWord.text.isEmpty) {
                                         CFeedBackCommentSetting feedBack =

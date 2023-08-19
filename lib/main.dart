@@ -24,8 +24,8 @@ Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 void main() async {
-  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
   await Firebase.initializeApp();
@@ -45,10 +45,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  String _appBadgeSupported = 'Unknown';
   // This widget is the root of your application.
   @override
   void initState() {
     super.initState();
+    initPlatformState();
     initialization();
   }
   void initialization() async {
@@ -65,7 +67,27 @@ class _MyAppState extends State<MyApp> {
     print('go!');
     FlutterNativeSplash.remove();
   }
+  initPlatformState() async {
+    String appBadgeSupported;
+    try {
+      bool res = await FlutterAppBadger.isAppBadgeSupported();
+      if (res) {
+        appBadgeSupported = 'Supported';
+      } else {
+        appBadgeSupported = 'Not supported';
+      }
+    } on PlatformException {
+      appBadgeSupported = 'Failed to get badge support.';
+    }
+  }
 
+
+  // void _addBadge() {
+  //   FlutterAppBadger.updateBadgeCount(1);
+  // }
+  // void _removeBadge() {
+  //   FlutterAppBadger.removeBadge();
+  // }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

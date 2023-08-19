@@ -94,10 +94,6 @@ class NotificationMethod {
       print(response.body);
     }
 
-  Future<void> setBadgeCount(int count) async {
-    await FlutterAppBadger.updateBadgeCount(count);
-  }
-
   //メッセージ通知_新規フラグ取得(GET)
   static Future<String> newFlgNotification(String senderId) async {
     final snapshot = await MyNotificationRef.get();
@@ -195,6 +191,7 @@ class NotificationMethod {
           .set({
         'USER_ID': recipientId
       });
+      await FlutterAppBadger.updateBadgeCount(unreadCount);
     } catch (e) {
       print('未読数のカウント登録に失敗しました --- $e');
     }
@@ -235,6 +232,7 @@ class NotificationMethod {
           .set({
         'UNREAD_COUNT': unreadCount,
       });
+      await FlutterAppBadger.updateBadgeCount(unreadCount);
     } catch (e) {
       print('未読数のリセット登録に失敗しました --- $e');
     }

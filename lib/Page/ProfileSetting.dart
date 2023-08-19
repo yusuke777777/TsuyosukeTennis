@@ -625,6 +625,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             myProfile.COMENT = coment.text;
                             //必須入力項目のチェック
                             if (nickName.text.isNotEmpty && inputUserID.text.isNotEmpty) {
+                              print(nickName.text);
+                              print(inputUserID.text);
                               bool isDoubleMyUserId = await FirestoreMethod.checkDoubleMyUserID(inputUserID.text, isDoubleUser);
                               //ユーザーIDの重複確認
                               if (isDoubleMyUserId) {
@@ -669,6 +671,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               }
                               else {
                                 await FirestoreMethod.makeProfile(myProfile);
+                                await FirestoreMethod.makeProfileDetail(myProfile,widget.koushinFlg);
                                 await FirestoreMethod.putReviewFeatureEnabled(true);
 
                                 Navigator.pushReplacement(
