@@ -141,24 +141,6 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                                   builder: (context) =>
                                                       TalkRoom(room)));
                                         }),
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.scoreboard,
-                                        color: Colors.black,
-                                        size: 30.0,
-                                      ),
-                                      onPressed: () async {
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ScoreRefPage(
-                                                      friendsList[index]
-                                                          .YOUR_USER
-                                                          .USER_ID)),
-                                        );
-                                      },
-                                    ),
                                   ],
                                 ),
                               ),
