@@ -22,7 +22,7 @@ class MyTitlePage extends StatelessWidget {
     for (var item in yamlList) {
       String name = item['name'];
       String description = item['description'];
-      title = CTitle(name: name, description: description, status: map[name].toString());
+      title = CTitle(name: name, description: description, status: map[item['no'].toString()].toString());
       titles.add(title);
     }
     return titles;

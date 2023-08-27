@@ -1,7 +1,10 @@
-- name: 称号1
+- no: 1
+  name: 称号1
   description: 称号1の説明文です。
 
-- name: 称号2
+
+- no: 2
+  name: 称号2
   description: 称号2の説明文です。
 
 # 他の称号も同様に追加

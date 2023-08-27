@@ -88,8 +88,8 @@ class FirestoreMethod {
     final List<dynamic> yamlList = loadYaml(yamlString);
 
     for (var item in yamlList) {
-      String name = item['name'];
-      titleMap[name] = '0';
+      String no = item['no'];
+      titleMap[no] = '0';
     }
 
     try {
