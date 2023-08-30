@@ -1,5 +1,7 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../Common/CprofileDetail.dart';
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
@@ -24,8 +26,21 @@ class _ProfileReferenceState extends State<ProfileReference> {
   _ProfileReferenceState(this.user_id);
 
   //対象ユーザのプロフィールをユーザIDをキーに取得
-  late Future<CprofileSetting> yourProfile =
-      FirestoreMethod.getYourProfile(user_id);
+  late Future<CprofileDetail> yourProfileDetail =
+      FirestoreMethod.getYourDetailProfile(user_id);
+
+  double degreesToRadians(double degrees) {
+    return degrees * (3.141592653589793238 / 180); // 度数からラジアンに変換
+  }
+
+  double startAngleRadians = 0;
+  double startAngleDegrees = 0; // 0時を基準にした開始角度（度数）
+  @override
+  void initState() {
+    super.initState();
+    startAngleRadians = degreesToRadians(startAngleDegrees); // ラジアンに変換
+    print(startAngleRadians);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +48,12 @@ class _ProfileReferenceState extends State<ProfileReference> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          title: HeaderConfig.appBarText,
-          elevation: 0.0,
-          backgroundColor: Colors.white,
-            leading: HeaderConfig.backIcon
-          ),
+            title: HeaderConfig.appBarText,
+            elevation: 0.0,
+            backgroundColor: Colors.white,
+            leading: HeaderConfig.backIcon),
         body: FutureBuilder(
-            future: yourProfile,
+            future: yourProfileDetail,
             builder: (BuildContext context, AsyncSnapshot snapshot) {
               if (snapshot.connectionState != ConnectionState.done) {
                 return new Align(
@@ -49,283 +63,420 @@ class _ProfileReferenceState extends State<ProfileReference> {
               } else if (snapshot.hasError) {
                 return new Text('Error: ${snapshot.error!}');
               } else if (snapshot.hasData) {
-                CprofileSetting? profileList = snapshot.data;
+                CprofileDetail profileDetailList = snapshot.data;
                 return Scrollbar(
                     isAlwaysShown: false,
                     child: SingleChildScrollView(
-                      //画面の中身
                       //プロフィール画像
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(
-                            height: 30,
-                          ),
-                          Center(
-                            child: ClipOval(
-                                //プロフィール画像が設定されていなければデフォ画像
-                                child: profileList!.PROFILE_IMAGE == ""
-                                    ? Image.asset('images/upper_body-2.png',
-                                        width: 90,
-                                        height: 90,
-                                        fit: BoxFit.cover)
-                                    : Image.network(
-                                        profileList.PROFILE_IMAGE,
-                                        width: 90,
-                                        height: 90,
-                                        fit: BoxFit.fill,
-                                      )),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                child: Text(
-                                  profileList.NICK_NAME,
-                                  style: TextStyle(
-                                      fontSize: 25,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w900),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          //登録ランク
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                child: Text(
-                                  '登録ランク',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w900,
-                                      decoration: TextDecoration.underline),
-                                ),
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          //登録ランクの値
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                child: Text(
-                                  profileList.TOROKU_RANK,
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(
-                            height: 10,
-                          ),
-                          //主な活動場所
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                child: Text(
-                                  '主な活動場所',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w900,
-                                      decoration: TextDecoration.underline),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          //活動場所の値
-                          ListView.builder(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              padding: const EdgeInsets.all(8),
-                              // ②配列のデータ数分カード表示を行う
-                              itemCount: profileList.activityList.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return Column(
+                          Container(
+                              height: MediaQuery.of(context).size.height * 0.25,
+                              child: Column(children: [
+                                Row(
                                   children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          child: Text(
-                                            '都道府県',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w900,
-                                                decoration:
-                                                    TextDecoration.underline),
+                                    Container(
+                                      padding:
+                                          EdgeInsets.only(left: 40, top: 20),
+                                      alignment: Alignment.bottomCenter,
+                                      width: MediaQuery.of(context).size.width *
+                                          0.5,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            alignment: Alignment.bottomLeft,
+                                            child: Text(
+                                              profileDetailList.NICK_NAME,
+                                              style: TextStyle(fontSize: 40),
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          // padding: const EdgeInsets.all(5.0),
-                                          // width: 250,
-                                          // height: 50,
-                                          child: Text(
-                                            '${profileList.activityList[index].TODOFUKEN}',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.black),
+                                          Container(
+                                            alignment: Alignment.bottomLeft,
+                                            child: Text(
+                                              "   Age:" + profileDetailList.AGE,
+                                              style: TextStyle(fontSize: 12),
+                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-
-                                    SizedBox(
-                                      height: 10,
-                                    ),
-
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                          child: Text(
-                                            '市町村',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                color: Colors.black,
-                                                fontWeight: FontWeight.w900,
-                                                decoration:
-                                                    TextDecoration.underline),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                alignment: Alignment.bottomLeft,
+                                                child: Text(
+                                                  "1",
+                                                  style:
+                                                      TextStyle(fontSize: 40),
+                                                ),
+                                              ),
+                                              Container(
+                                                alignment: Alignment.bottomLeft,
+                                                child: Text(
+                                                  "TSP RANKING",
+                                                  style:
+                                                      TextStyle(fontSize: 20),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ),
-                                      ],
+                                        ],
+                                      ),
                                     ),
-
-                                    // SizedBox(
-                                    //   height: 10,
-                                    // ),
-
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Container(
-                                            padding: const EdgeInsets.all(8.0),
-                                            width: 400,
-                                            height: 50,
-                                            child: TextField(
-                                              textAlign: TextAlign.center,
-                                              decoration:
-                                                  InputDecoration.collapsed(
-                                                      border: InputBorder.none,
-                                                      hintText: ''),
-                                              controller: profileList
-                                                  .activityList[index]
-                                                  .SHICHOSON,
-                                              style: TextStyle(
-                                                  fontSize: 20,
-                                                  color: Colors.black),
-                                            ))
-                                      ],
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.4,
+                                      child:
+                                          profileDetailList.PROFILE_IMAGE == ''
+                                              ? CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: NetworkImage(
+                                                      "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                                  radius: 80,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: NetworkImage(
+                                                      profileDetailList
+                                                          .PROFILE_IMAGE),
+                                                  radius: 80,
+                                                ),
                                     ),
                                   ],
-                                );
-                              }),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                child: Text(
-                                  '年齢',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w900,
-                                      decoration: TextDecoration.underline),
                                 ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(
-                            height: 10,
-                          ),
-
-                          //登録ランクの値
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                child: Text(
-                                  profileList.AGE,
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
+                                Container(
+                                    alignment: Alignment.bottomRight,
+                                    padding: EdgeInsets.only(right: 30),
+                                    child: Text(
+                                      'Category:' +
+                                          profileDetailList.TOROKU_RANK,
+                                      style: TextStyle(fontSize: 25),
+                                    )),
+                              ])),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.12,
+                            width:
+                            MediaQuery.of(context).size.width * 0.8,
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Text(
+                                          '課金プレーヤー',
+                                          style: TextStyle(fontSize: 25),
+                                        )),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.read_more,
+                                        color: Colors.black,
+                                        size: 30.0,
+                                      ),
+                                      onPressed: () {
+                                        //称号を表示する画面へ
+                                      },
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            ],
+                                Row(
+                                  children: [
+                                    Container(
+                                        alignment: Alignment.bottomLeft,
+                                        child: Text(
+                                          '活動場所:' +
+                                              profileDetailList
+                                                  .FIRST_TODOFUKEN_SICHOSON,
+                                          style: TextStyle(fontSize: 15),
+                                        )),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.read_more,
+                                        color: Colors.black,
+                                        size: 20.0,
+                                      ),
+                                      onPressed: () {
+                                        //称号を表示する画面へ
+                                      },
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
                           ),
-
-                          SizedBox(
-                            height: 10,
-                          ),
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                child: Text(
-                                  'コメント',
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w900,
-                                      decoration: TextDecoration.underline),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.3,
+                            width:
+                            MediaQuery.of(context).size.width * 0.8,
+                            child: Column(
+                              children: [
+                                Container(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    '勝率',
+                                    style: TextStyle(fontSize: 30),
+                                  ),
                                 ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(
-                            height: 10,
-                          ),
-
-                          //コメントの値
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                constraints: BoxConstraints(
-                                  maxWidth: 400, // 最大幅を400に設定
-                                ),
-                                child: Text(
-                                  profileList.COMENT,
-                                  textAlign: TextAlign.center,
-                                  softWrap: true,
-                                  maxLines: 6,
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
-                                ),
-                              ),
-                            ],
-                          ),
+                                Container(
+                                  height:
+                                      MediaQuery.of(context).size.height * 0.12,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.8,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      SizedBox(width: MediaQuery.of(context).size.width * 0.05),
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            width:MediaQuery.of(context).size.width * 0.25,
+                                            padding: EdgeInsets.only(left: 20),
+                                            child: Text('初級'),
+                                          ),
+                                          SizedBox(
+                                            width:
+                                            MediaQuery.of(context).size.width * 0.25,
+                                            child: Stack(children: [
+                                              SizedBox(
+                                                width: 70,
+                                                height: 70,
+                                                child: Center(
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Text(
+                                                            profileDetailList.SHOKYU_WIN_RATE.toString(),
+                                                            style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight: FontWeight.bold),
+                                                          ),
+                                                          Text(
+                                                            '%',
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                          ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Text(
+                                                            profileDetailList.SHOKYU_WIN_SU
+                                                                .toString() +
+                                                                '勝',
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                                ),
+                                                          ),
+                                                          Text(
+                                                            profileDetailList.SHOKYU_LOSE_SU
+                                                                .toString() +
+                                                                '敗',
+                                                            style: TextStyle(
+                                                                fontSize: 12,
+                                                                ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 70,
+                                                height: 70,
+                                                child: Center(
+                                                  child: SizedBox(
+                                                    width: 70,
+                                                    height: 70,
+                                                    child: CircularProgressIndicator(
+                                                        value: profileDetailList
+                                                                .SHOKYU_WIN_RATE /
+                                                            100,
+                                                        color: Colors.greenAccent,
+                                                        backgroundColor: Colors.black12,
+                                                        strokeWidth: 4.0),
+                                                  ),
+                                                ),
+                                              ),
+                                            ]),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.only(left: 20),
+                                            width:MediaQuery.of(context).size.width * 0.25,
+                                            child: Text('中級'),
+                                          ),
+                                          SizedBox(
+                                            width:
+                                            MediaQuery.of(context).size.width * 0.25,
+                                            child: Stack(children: [
+                                              SizedBox(
+                                                width: 70,
+                                                height: 70,
+                                                child: Center(
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Text(
+                                                            profileDetailList.CHUKYU_WIN_RATE.toString(),
+                                                            style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight: FontWeight.bold),
+                                                          ),
+                                                          Text(
+                                                            '%',
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Text(
+                                                            profileDetailList.CHUKYU_WIN_SU
+                                                                .toString() +
+                                                                '勝',
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            profileDetailList.CHUKYU_LOSE_SU
+                                                                .toString() +
+                                                                '敗',
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 70,
+                                                height: 70,
+                                                child: Center(
+                                                  child: SizedBox(
+                                                    width: 70,
+                                                    height: 70,
+                                                    child: CircularProgressIndicator(
+                                                        value: profileDetailList
+                                                            .CHUKYU_WIN_RATE /
+                                                            100,
+                                                        color: Colors.greenAccent,
+                                                        backgroundColor: Colors.black12,
+                                                        strokeWidth: 4.0),
+                                                  ),
+                                                ),
+                                              ),
+                                            ]),
+                                          ),
+                                        ],
+                                      ),
+                                      Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            padding: EdgeInsets.only(left: 20),
+                                            width:MediaQuery.of(context).size.width * 0.25,
+                                            child: Text('上級'),
+                                          ),
+                                          SizedBox(
+                                            width:
+                                            MediaQuery.of(context).size.width * 0.25,
+                                            child: Stack(children: [
+                                              SizedBox(
+                                                width: 70,
+                                                height: 70,
+                                                child: Center(
+                                                  child: Column(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Text(
+                                                            profileDetailList.JYOKYU_WIN_RATE.toString(),
+                                                            style: TextStyle(
+                                                                fontSize: 16,
+                                                                fontWeight: FontWeight.bold),
+                                                          ),
+                                                          Text(
+                                                            '%',
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                            ),
+                                                          )
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Text(
+                                                            profileDetailList.JYOKYU_WIN_SU
+                                                                .toString() +
+                                                                '勝',
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                            ),
+                                                          ),
+                                                          Text(
+                                                            profileDetailList.JYOKYU_LOSE_SU
+                                                                .toString() +
+                                                                '敗',
+                                                            style: TextStyle(
+                                                              fontSize: 12,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: 70,
+                                                height: 70,
+                                                child: Center(
+                                                  child: SizedBox(
+                                                    width: 70,
+                                                    height: 70,
+                                                    child: CircularProgressIndicator(
+                                                        value: profileDetailList
+                                                            .JYOKYU_WIN_RATE /
+                                                            100,
+                                                        color: Colors.greenAccent,
+                                                        backgroundColor: Colors.black12,
+                                                        strokeWidth: 4.0),
+                                                  ),
+                                                ),
+                                              ),
+                                            ]),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          )
                         ],
                       ),
                     ));

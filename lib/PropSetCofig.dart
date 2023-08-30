@@ -31,6 +31,7 @@ class HeaderConfig {
   void init(BuildContext context, String inputTitle) {
     backGroundColor = Colors.white;
 
+
     appBarText = Text(
       inputTitle,
       style: TextStyle(fontSize: 20, color: Colors.black),

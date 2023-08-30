@@ -2,9 +2,11 @@ import 'package:bordered_text/bordered_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
 import 'FindMultiResultPage.dart';
 import 'FindResultPage.dart';
+import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 
 class FindPage extends StatefulWidget {
   const FindPage({Key? key}) : super(key: key);
@@ -14,6 +16,8 @@ class FindPage extends StatefulWidget {
 }
 
 class _FindPageState extends State<FindPage> {
+  static final Firebase_Auth.FirebaseAuth auth =
+      Firebase_Auth.FirebaseAuth.instance;
   //都道府県
   late String todofuken = '';
 
@@ -330,7 +334,8 @@ class _FindPageState extends State<FindPage> {
                       children: [
                         IconButton(
                           icon: Icon(Icons.search),
-                          onPressed: () {
+                          onPressed: () async{
+                            // List<String> blockList = await FirestoreMethod.getBlockUserList(auth.currentUser!.uid);
                             todofuken == "" &&
                                     gender == "" &&
                                     torokuRank == "" &&
