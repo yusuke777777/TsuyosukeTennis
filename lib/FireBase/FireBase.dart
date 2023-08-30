@@ -9,15 +9,18 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CScoreRef.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CScoreRefHistory.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
+import 'package:yaml/yaml.dart';
 
 import '../Common/CFeedBackCommentSetting.dart';
 import '../Common/CHomePageSetting.dart';
 import '../Common/CSinglesRankModel.dart';
+import '../Common/CTitle.dart';
 import '../Common/CblockList.dart';
 import '../Common/CfriendsList.dart';
 import '../Common/CmatchList.dart';
@@ -81,6 +84,15 @@ class FirestoreMethod {
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy-MM-dd');
     String today = outputFormat.format(now);
+    late Map<String, dynamic> titleMap = {};
+
+    final String yamlString = await rootBundle.loadString('assets/Title.yaml');
+    final List<dynamic> yamlList = loadYaml(yamlString);
+
+    for (var item in yamlList) {
+      String no = item['no'];
+      titleMap[no] = '0';
+    }
 
     try {
       await profileRef.doc(auth.currentUser!.uid).set({
@@ -92,7 +104,8 @@ class FirestoreMethod {
         'GENDER': profile.GENDER,
         'COMENT': profile.COMENT,
         'koushinYmd': today,
-        'MY_USER_ID': profile.MY_USER_ID
+        'MY_USER_ID': profile.MY_USER_ID,
+        'TITLE' : titleMap
       });
     } catch (e) {
       print('ユーザー登録に失敗しました --- $e');
@@ -3772,5 +3785,18 @@ class FirestoreMethod {
     DocumentReference docRef = await profileRef.doc(auth.currentUser!.uid);
     DocumentSnapshot docSnapshot = await docRef.get();
     isprofile = docSnapshot.exists;
+  }
+
+  /**
+   * 称号管理Mapの取得
+   */
+  static Future<Map<String, dynamic>> getMyTitle() async {
+    final snapShot = await FirebaseFirestore.instance
+        .collection('myProfile')
+        .doc(auth.currentUser!.uid)
+        .get();
+
+    Map<String, dynamic> title = snapShot.data()!['TITLE'];
+    return title;
   }
 }

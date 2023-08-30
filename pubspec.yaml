@@ -57,8 +57,12 @@ dependencies:
   flutter_app_badger: ^1.5.0
   google_mobile_ads: ^3.0.0
   app_tracking_transparency: ^2.0.4
+<<<<<<< HEAD
   fl_chart: ^0.63.0
   circular_chart_flutter: ^0.0.2
+=======
+  yaml: ^3.1.0
+>>>>>>> 80dc54cc34020c9f34155a332c1efebfc20130e1
 
 
 flutter_native_splash:
@@ -110,6 +114,7 @@ flutter:
 
   assets:
     - images/
+    - assets/Title.yaml
 
   # To add assets to your application, add an assets section, like this:
   # assets:
