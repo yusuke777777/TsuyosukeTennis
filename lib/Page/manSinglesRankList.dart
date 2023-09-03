@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../Common/CSinglesRankModel.dart';
 import '../FireBase/FireBase.dart';
 import 'package:intl/intl.dart';
+import 'ProfileReference.dart';
 import 'TalkRoom.dart';
 
 class manSinglesRankList extends StatefulWidget {
@@ -100,27 +101,37 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                           ),
                                         ),
                                         Padding(padding: EdgeInsets.fromLTRB(50,0,0,0)),
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0),
-                                          child: RankModelList[index]
-                                                      .user
-                                                      .PROFILE_IMAGE ==
-                                                  ''
-                                              ? CircleAvatar(
-                                                  backgroundColor: Colors.white,
-                                                  backgroundImage: NetworkImage(
-                                                      "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                                  radius: 20,
-                                                )
-                                              : CircleAvatar(
-                                                  backgroundColor: Colors.white,
-                                                  backgroundImage: NetworkImage(
-                                                      RankModelList[index]
-                                                          .user
-                                                          .PROFILE_IMAGE),
-                                                  radius: 20,
-                                                ),
+                                        InkWell(
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8.0),
+                                            child: RankModelList[index]
+                                                        .user
+                                                        .PROFILE_IMAGE ==
+                                                    ''
+                                                ? CircleAvatar(
+                                                    backgroundColor: Colors.white,
+                                                    backgroundImage: NetworkImage(
+                                                        "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                                    radius: 20,
+                                                  )
+                                                : CircleAvatar(
+                                                    backgroundColor: Colors.white,
+                                                    backgroundImage: NetworkImage(
+                                                        RankModelList[index]
+                                                            .user
+                                                            .PROFILE_IMAGE),
+                                                    radius: 20,
+                                                  ),
+                                          ),
+                                          onTap:(){
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProfileReference(
+                                                            RankModelList[index].user.USER_ID)));
+                                          },
                                         ),
                                         Container(
                                           width: 180,

@@ -30,8 +30,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
     HeaderConfig().init(context, "対戦結果参照");
     return GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: MaterialApp(
-          home: Scaffold(
+        child: Scaffold(
               appBar: AppBar(
                 backgroundColor: HeaderConfig.backGroundColor,
                 title: HeaderConfig.appBarText,
@@ -344,6 +343,6 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                       ]),
                 ),
               )),
-        ));
+        );
   }
 }

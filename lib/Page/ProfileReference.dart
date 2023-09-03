@@ -5,6 +5,7 @@ import '../Common/CprofileDetail.dart';
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /**
  * 他人のプロフィールを参照する用画面
@@ -45,8 +46,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
   @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "プロフィール参照");
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
         appBar: AppBar(
             title: HeaderConfig.appBarText,
             elevation: 0.0,
@@ -69,82 +69,91 @@ class _ProfileReferenceState extends State<ProfileReference> {
                     child: SingleChildScrollView(
                         //プロフィール画像
                         child: Column(children: [
-                      Container(
-                          height: MediaQuery.of(context).size.height * 0.25,
-                          child: Column(children: [
-                            Row(
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.only(left: 40, top: 20),
-                                  alignment: Alignment.bottomCenter,
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.5,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        alignment: Alignment.bottomLeft,
-                                        child: Text(
-                                          profileDetailList.NICK_NAME,
-                                          style: TextStyle(fontSize: 40),
-                                        ),
-                                      ),
-                                      Container(
-                                        alignment: Alignment.bottomLeft,
-                                        child: Text(
-                                          "   Age:" + profileDetailList.AGE,
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                      ),
-                                      Row(
+                          Container(
+                              height: MediaQuery.of(context).size.height * 0.25,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image:AssetImage('images/kori.jpg'),
+                                ),
+                              ),
+                              child: Column(children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.only(left: 40, top: 20),
+                                      alignment: Alignment.bottomCenter,
+                                      width:
+                                          MediaQuery.of(context).size.width * 0.5,
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Container(
                                             alignment: Alignment.bottomLeft,
-                                            child: Text(
-                                              "1",
-                                              style: TextStyle(fontSize: 40),
+                                            child: FittedBox(
+                                              alignment:Alignment.bottomLeft,
+                                              fit: BoxFit.scaleDown, // 子ウィジェットを親ウィジェットにフィットさせる
+                                              child: Text(
+                                                profileDetailList.NICK_NAME,
+                                                style: TextStyle(fontSize: 40),
+                                              ),
                                             ),
                                           ),
                                           Container(
                                             alignment: Alignment.bottomLeft,
                                             child: Text(
-                                              "TSP RANKING",
-                                              style: TextStyle(fontSize: 20),
+                                              "   Age:" + profileDetailList.AGE,
+                                              style: TextStyle(fontSize: 12),
                                             ),
+                                          ),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                alignment: Alignment.bottomLeft,
+                                                child: Text(
+                                                  "1",
+                                                  style: TextStyle(fontSize: 40),
+                                                ),
+                                              ),
+                                              Container(
+                                                alignment: Alignment.bottomLeft,
+                                                child: Text(
+                                                  "TSP RANKING",
+                                                  style: TextStyle(fontSize: 18),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                    Container(
+                                      width:
+                                          MediaQuery.of(context).size.width * 0.4,
+                                      child: profileDetailList.PROFILE_IMAGE == ''
+                                          ? CircleAvatar(
+                                              backgroundColor: Colors.white,
+                                              backgroundImage: NetworkImage(
+                                                  "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                              radius: 80,
+                                            )
+                                          : CircleAvatar(
+                                              backgroundColor: Colors.white,
+                                              backgroundImage: NetworkImage(
+                                                  profileDetailList.PROFILE_IMAGE),
+                                              radius: 80,
+                                            ),
+                                    ),
+                                  ],
                                 ),
                                 Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.4,
-                                  child: profileDetailList.PROFILE_IMAGE == ''
-                                      ? CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          backgroundImage: NetworkImage(
-                                              "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                          radius: 80,
-                                        )
-                                      : CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          backgroundImage: NetworkImage(
-                                              profileDetailList.PROFILE_IMAGE),
-                                          radius: 80,
-                                        ),
-                                ),
-                              ],
-                            ),
-                            Container(
-                                alignment: Alignment.bottomRight,
-                                padding: EdgeInsets.only(right: 30),
-                                child: Text(
-                                  'Category:' + profileDetailList.TOROKU_RANK,
-                                  style: TextStyle(fontSize: 25),
-                                )),
-                          ])),
+                                    alignment: Alignment.bottomRight,
+                                    padding: EdgeInsets.only(right: 30),
+                                    child: Text(
+                                      'Category:' + profileDetailList.TOROKU_RANK,
+                                      style: TextStyle(fontSize: 25),
+                                    )),
+                              ])),
                       Container(
                         height: MediaQuery.of(context).size.height * 0.12,
                         width: MediaQuery.of(context).size.width * 0.8,
@@ -174,22 +183,15 @@ class _ProfileReferenceState extends State<ProfileReference> {
                               children: [
                                 Container(
                                     alignment: Alignment.bottomLeft,
+                                    width: MediaQuery.of(context).size.width * 0.8,
                                     child: Text(
                                       '活動場所:' +
                                           profileDetailList
                                               .FIRST_TODOFUKEN_SICHOSON,
                                       style: TextStyle(fontSize: 15),
+                                      overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定
+                                      maxLines: 2, // 表示する行数を指定
                                     )),
-                                IconButton(
-                                  icon: const Icon(
-                                    Icons.read_more,
-                                    color: Colors.black,
-                                    size: 20.0,
-                                  ),
-                                  onPressed: () {
-                                    //称号を表示する画面へ
-                                  },
-                                ),
                               ],
                             )
                           ],
@@ -513,227 +515,227 @@ class _ProfileReferenceState extends State<ProfileReference> {
                           ],
                         ),
                       ),
-                      Container(
-                        height: MediaQuery.of(context).size.height * 0.43,
-                        width: MediaQuery.of(context).size.width * 0.8,
-                        child: Column(
-                          children: [
-                            Container(
-                              alignment: Alignment.bottomLeft,
-                              child: Text(
-                                'ストローク',
-                                style: TextStyle(fontSize: 25),
-                              ),
-                            ),
-                            Column(
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.43,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            child: Column(
                               children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                Container(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    'ストローク',
+                                    style: TextStyle(fontSize: 25),
+                                  ),
+                                ),
+                                Column(
                                   children: [
-                                    Container(
-                                        width: 60,
-                                        child: Text('フォア',
-                                            style: TextStyle(fontSize: 17))),
-                                    SizedBox(width: 20),
-                                    Text(
-                                        profileDetailList.STROKE_FOREHAND_AVE
-                                                .toString() +
-                                            ' ',
-                                        style: TextStyle(fontSize: 12)),
-                                    RatingBar.builder(
-                                      ignoreGestures: true,
-                                      allowHalfRating: true,
-                                      initialRating:
-                                          profileDetailList.STROKE_FOREHAND_AVE,
-                                      itemBuilder: (context, index) =>
-                                          const Icon(
-                                        Icons.star,
-                                        color: Colors.yellow,
-                                      ),
-                                      onRatingUpdate: (rating) {
-                                        //評価が更新されたときの処理を書く
-                                      },
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                            width: 60,
+                                            child: Text('フォア',
+                                                style: TextStyle(fontSize: 17))),
+                                        SizedBox(width: 20),
+                                        Text(
+                                            profileDetailList.STROKE_FOREHAND_AVE
+                                                    .toString() +
+                                                ' ',
+                                            style: TextStyle(fontSize: 12)),
+                                        RatingBar.builder(
+                                          ignoreGestures: true,
+                                          allowHalfRating: true,
+                                          initialRating:
+                                              profileDetailList.STROKE_FOREHAND_AVE,
+                                          itemBuilder: (context, index) =>
+                                              const Icon(
+                                            Icons.star,
+                                            color: Colors.yellow,
+                                          ),
+                                          onRatingUpdate: (rating) {
+                                            //評価が更新されたときの処理を書く
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                            width: 60,
+                                            child: Text('バック',
+                                                style: TextStyle(fontSize: 17))),
+                                        SizedBox(width: 20),
+                                        Text(
+                                            profileDetailList.STROKE_BACKHAND_AVE
+                                                    .toString() +
+                                                ' ',
+                                            style: TextStyle(fontSize: 12)),
+                                        RatingBar.builder(
+                                          ignoreGestures: true,
+                                          allowHalfRating: true,
+                                          initialRating:
+                                              profileDetailList.STROKE_BACKHAND_AVE,
+                                          itemBuilder: (context, index) =>
+                                              const Icon(
+                                            Icons.star,
+                                            color: Colors.yellow,
+                                          ),
+                                          onRatingUpdate: (rating) {
+                                            //評価が更新されたときの処理を書く
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                Container(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    'ボレー',
+                                    style: TextStyle(fontSize: 25),
+                                  ),
+                                ),
+                                Column(
                                   children: [
-                                    Container(
-                                        width: 60,
-                                        child: Text('バック',
-                                            style: TextStyle(fontSize: 17))),
-                                    SizedBox(width: 20),
-                                    Text(
-                                        profileDetailList.STROKE_BACKHAND_AVE
-                                                .toString() +
-                                            ' ',
-                                        style: TextStyle(fontSize: 12)),
-                                    RatingBar.builder(
-                                      ignoreGestures: true,
-                                      allowHalfRating: true,
-                                      initialRating:
-                                          profileDetailList.STROKE_BACKHAND_AVE,
-                                      itemBuilder: (context, index) =>
-                                          const Icon(
-                                        Icons.star,
-                                        color: Colors.yellow,
-                                      ),
-                                      onRatingUpdate: (rating) {
-                                        //評価が更新されたときの処理を書く
-                                      },
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                            width: 60,
+                                            child: Text('フォア',
+                                                style: TextStyle(fontSize: 17))),
+                                        SizedBox(width: 20),
+                                        Text(
+                                            profileDetailList.VOLLEY_FOREHAND_AVE
+                                                    .toString() +
+                                                ' ',
+                                            style: TextStyle(fontSize: 12)),
+                                        RatingBar.builder(
+                                          ignoreGestures: true,
+                                          allowHalfRating: true,
+                                          initialRating:
+                                              profileDetailList.VOLLEY_FOREHAND_AVE,
+                                          itemBuilder: (context, index) =>
+                                              const Icon(
+                                            Icons.star,
+                                            color: Colors.yellow,
+                                          ),
+                                          onRatingUpdate: (rating) {
+                                            //評価が更新されたときの処理を書く
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                            width: 60,
+                                            child: Text('バック',
+                                                style: TextStyle(fontSize: 17))),
+                                        SizedBox(width: 20),
+                                        Text(
+                                            profileDetailList.VOLLEY_BACKHAND_AVE
+                                                    .toString() +
+                                                ' ',
+                                            style: TextStyle(fontSize: 12)),
+                                        RatingBar.builder(
+                                          ignoreGestures: true,
+                                          allowHalfRating: true,
+                                          initialRating:
+                                              profileDetailList.VOLLEY_BACKHAND_AVE,
+                                          itemBuilder: (context, index) =>
+                                              const Icon(
+                                            Icons.star,
+                                            color: Colors.yellow,
+                                          ),
+                                          onRatingUpdate: (rating) {
+                                            //評価が更新されたときの処理を書く
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    'サーブ',
+                                    style: TextStyle(fontSize: 25,),
+                                  ),
+                                ),
+                                Column(
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                            width: 60,
+                                            child: Text('１st',
+                                                style: TextStyle(fontSize: 17))),
+                                        SizedBox(width: 20),
+                                        Text(
+                                            profileDetailList.SERVE_1ST_AVE
+                                                    .toString() +
+                                                ' ',
+                                            style: TextStyle(fontSize: 12)),
+                                        RatingBar.builder(
+                                          ignoreGestures: true,
+                                          allowHalfRating: true,
+                                          initialRating:
+                                              profileDetailList.SERVE_1ST_AVE,
+                                          itemBuilder: (context, index) =>
+                                              const Icon(
+                                            Icons.star,
+                                            color: Colors.yellow,
+                                          ),
+                                          onRatingUpdate: (rating) {
+                                            //評価が更新されたときの処理を書く
+                                          },
+                                        ),
+                                      ],
+                                    ),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                            width: 60,
+                                            child: Text('２nd',
+                                                style: TextStyle(fontSize: 17))),
+                                        SizedBox(width: 20),
+                                        Text(
+                                            profileDetailList.SERVE_2ND_AVE
+                                                    .toString() +
+                                                ' ',
+                                            style: TextStyle(fontSize: 12)),
+                                        RatingBar.builder(
+                                          ignoreGestures: true,
+                                          allowHalfRating: true,
+                                          initialRating:
+                                              profileDetailList.SERVE_2ND_AVE,
+                                          itemBuilder: (context, index) =>
+                                              const Icon(
+                                            Icons.star,
+                                            color: Colors.yellow,
+                                          ),
+                                          onRatingUpdate: (rating) {
+                                            //評価が更新されたときの処理を書く
+                                          },
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
                               ],
                             ),
-                            Container(
-                              alignment: Alignment.bottomLeft,
-                              child: Text(
-                                'ボレー',
-                                style: TextStyle(fontSize: 25),
-                              ),
-                            ),
-                            Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                        width: 60,
-                                        child: Text('フォア',
-                                            style: TextStyle(fontSize: 17))),
-                                    SizedBox(width: 20),
-                                    Text(
-                                        profileDetailList.VOLLEY_FOREHAND_AVE
-                                                .toString() +
-                                            ' ',
-                                        style: TextStyle(fontSize: 12)),
-                                    RatingBar.builder(
-                                      ignoreGestures: true,
-                                      allowHalfRating: true,
-                                      initialRating:
-                                          profileDetailList.VOLLEY_FOREHAND_AVE,
-                                      itemBuilder: (context, index) =>
-                                          const Icon(
-                                        Icons.star,
-                                        color: Colors.yellow,
-                                      ),
-                                      onRatingUpdate: (rating) {
-                                        //評価が更新されたときの処理を書く
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                        width: 60,
-                                        child: Text('バック',
-                                            style: TextStyle(fontSize: 17))),
-                                    SizedBox(width: 20),
-                                    Text(
-                                        profileDetailList.VOLLEY_BACKHAND_AVE
-                                                .toString() +
-                                            ' ',
-                                        style: TextStyle(fontSize: 12)),
-                                    RatingBar.builder(
-                                      ignoreGestures: true,
-                                      allowHalfRating: true,
-                                      initialRating:
-                                          profileDetailList.VOLLEY_BACKHAND_AVE,
-                                      itemBuilder: (context, index) =>
-                                          const Icon(
-                                        Icons.star,
-                                        color: Colors.yellow,
-                                      ),
-                                      onRatingUpdate: (rating) {
-                                        //評価が更新されたときの処理を書く
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            Container(
-                              alignment: Alignment.bottomLeft,
-                              child: Text(
-                                'サーブ',
-                                style: TextStyle(fontSize: 25),
-                              ),
-                            ),
-                            Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                        width: 60,
-                                        child: Text('１st',
-                                            style: TextStyle(fontSize: 17))),
-                                    SizedBox(width: 20),
-                                    Text(
-                                        profileDetailList.SERVE_1ST_AVE
-                                                .toString() +
-                                            ' ',
-                                        style: TextStyle(fontSize: 12)),
-                                    RatingBar.builder(
-                                      ignoreGestures: true,
-                                      allowHalfRating: true,
-                                      initialRating:
-                                          profileDetailList.SERVE_1ST_AVE,
-                                      itemBuilder: (context, index) =>
-                                          const Icon(
-                                        Icons.star,
-                                        color: Colors.yellow,
-                                      ),
-                                      onRatingUpdate: (rating) {
-                                        //評価が更新されたときの処理を書く
-                                      },
-                                    ),
-                                  ],
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                        width: 60,
-                                        child: Text('２nd',
-                                            style: TextStyle(fontSize: 17))),
-                                    SizedBox(width: 20),
-                                    Text(
-                                        profileDetailList.SERVE_2ND_AVE
-                                                .toString() +
-                                            ' ',
-                                        style: TextStyle(fontSize: 12)),
-                                    RatingBar.builder(
-                                      ignoreGestures: true,
-                                      allowHalfRating: true,
-                                      initialRating:
-                                          profileDetailList.SERVE_2ND_AVE,
-                                      itemBuilder: (context, index) =>
-                                          const Icon(
-                                        Icons.star,
-                                        color: Colors.yellow,
-                                      ),
-                                      onRatingUpdate: (rating) {
-                                        //評価が更新されたときの処理を書く
-                                      },
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
+                          ),
                       Container(
                         height: MediaQuery.of(context).size.height * 0.3,
                         width: MediaQuery.of(context).size.width * 0.8,
@@ -745,9 +747,6 @@ class _ProfileReferenceState extends State<ProfileReference> {
                               style: TextStyle(fontSize: 30),
                             ),
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
                               Container(
                                 padding: const EdgeInsets.all(5.0),
                                 width: MediaQuery.of(context).size.width * 0.8,
@@ -760,21 +759,20 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                   profileDetailList.COMENT,
                                   textAlign: TextAlign.start,
                                   softWrap: true,
-                                  maxLines: 6,
+                                  overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定
+                                  maxLines: 7,
                                   style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
+                                      fontSize: 14, color: Colors.black),
                                 ),
                               ),
                             ],
                           ),
-                        ]),
                       )
                     ])));
               } else {
                 return Text("データが存在しません");
               }
             }),
-      ),
-    );
+      );
   }
 }

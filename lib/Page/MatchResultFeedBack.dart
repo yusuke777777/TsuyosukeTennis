@@ -46,8 +46,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
     opponent_id = widget.yourProfile.USER_ID;
     return GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: MaterialApp(
-          home: Scaffold(
+        child: Scaffold(
               appBar: AppBar(
                   backgroundColor: HeaderConfig.backGroundColor,
                   title: HeaderConfig.appBarText,
@@ -438,6 +437,6 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                       ]),
                 ),
               )),
-        ));
+        );
   }
 }

@@ -90,7 +90,7 @@ class FirestoreMethod {
     final List<dynamic> yamlList = loadYaml(yamlString);
 
     for (var item in yamlList) {
-      String no = item['no'];
+      String no = item['no'].toString();
       titleMap[no] = '0';
     }
 
@@ -161,6 +161,7 @@ class FirestoreMethod {
       List<String> todofukenList = [];
       List<String> shichosonList = [];
       List<String> todofukenShichosonList = [];
+      String todofukenShichoson = "";
       for (int index = 0; index < profile.activityList.length; index++) {
         if (profile.activityList[index].TODOFUKEN != "") {
           todofukenList.add(profile.activityList[index].TODOFUKEN);
@@ -170,8 +171,24 @@ class FirestoreMethod {
                 "(" +
                 profile.activityList[index].SHICHOSON.text +
                 ")");
+            if(profile.activityList.length -1 != index) {
+              todofukenShichoson =
+                  todofukenShichoson + profile.activityList[index].TODOFUKEN +
+                      "(" + profile.activityList[index].SHICHOSON.text + ")" + "、";
+            }else{
+              todofukenShichoson =
+                  todofukenShichoson + profile.activityList[index].TODOFUKEN +
+                      "(" + profile.activityList[index].SHICHOSON.text + ")";
+            }
           } else {
             todofukenShichosonList.add(profile.activityList[index].TODOFUKEN);
+            if(profile.activityList.length -1 != index) {
+              todofukenShichoson =
+                  todofukenShichoson + profile.activityList[index].TODOFUKEN + "、";
+            }else{
+              todofukenShichoson =
+                  todofukenShichoson + profile.activityList[index].TODOFUKEN;
+            }
             shichosonList.add("");
           }
           No = No + 1;
@@ -234,9 +251,7 @@ class FirestoreMethod {
           'TODOFUKEN_LIST': todofukenList,
           'SHICHOSON_LIST': shichosonList,
           'TODOFUKEN_SHICHOSON_LIST': todofukenShichosonList,
-          'FIRST_TODOFUKEN_SICHOSON': shichosonList[0] == ""
-              ? todofukenList[0]
-              : todofukenList[0] + '(' + shichosonList[0] + ')',
+          'FIRST_TODOFUKEN_SICHOSON': todofukenShichoson,
         });
       } else {
         //KOUSHIN_TIME更新あり(初回)
@@ -253,9 +268,7 @@ class FirestoreMethod {
           'TODOFUKEN_LIST': todofukenList,
           'SHICHOSON_LIST': shichosonList,
           'TODOFUKEN_SHICHOSON_LIST': todofukenShichosonList,
-          'FIRST_TODOFUKEN_SICHOSON': shichosonList[0] == ""
-              ? todofukenList[0]
-              : todofukenList[0] + '(' + shichosonList[0] + ')',
+          'FIRST_TODOFUKEN_SICHOSON': todofukenShichoson,
           //マッチリザルト系の結果
           'TS_POINT': 0,
           'ALL_TS_POINT': 0,

@@ -148,8 +148,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
   @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "プロフィール設定");
-    return MaterialApp(
-      home: Scaffold(
+    return Scaffold(
           appBar: AppBar(
             title: HeaderConfig.appBarText,
             leading: widget.koushinFlg == '1'
@@ -584,11 +583,11 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20)),
                           child: TextField(
-                            maxLines: 6,
+                            maxLines: 7,
                             decoration: InputDecoration.collapsed(
                                 border: InputBorder.none, hintText: ''),
                             controller: coment,
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                            style: TextStyle(fontSize: 14, color: Colors.black),
                           ),
                         ),
                       ],
@@ -707,8 +706,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     )
                   ]),
             ),
-          )),
-    );
+          ));
   }
 
   void _showModalRankPicker(BuildContext context) {
