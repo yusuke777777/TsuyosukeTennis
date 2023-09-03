@@ -87,14 +87,6 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                               ),
                                             ),
                                           ),
-                                          Container(
-                                            width: MediaQuery.of(context).size.width * 0.5,
-                                            alignment: Alignment.bottomLeft,
-                                            child: Text(
-                                              "   Age:" + profileDetailList.AGE,
-                                              style: TextStyle(fontSize: 12),
-                                            ),
-                                          ),
                                           profileDetailList.RANK_NO == 0 ?
                                           Row(
                                             children: [
@@ -116,34 +108,50 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                               ),
                                             ],
                                           )
-                                              :profileDetailList.RANK_NO < 100 ? Row(
+                                              :profileDetailList.RANK_NO < 100 ? Column(
+                                                children: [
+                                                  Row(
                                             children: [
-                                              Container(
-                                                width: MediaQuery.of(context).size.width * 0.12,
-                                                alignment: Alignment.bottomCenter,
-                                                child: FittedBox(
-                                                  alignment:Alignment.bottomLeft,
-                                                  fit: BoxFit.scaleDown,
-                                                  child: Text(
-                                                    NumberFormat('#,###').format(profileDetailList.RANK_NO).toString(),
-                                                    style: TextStyle(fontSize: 40),
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width * 0.12,
+                                                    alignment: Alignment.bottomCenter,
+                                                    child: FittedBox(
+                                                      alignment:Alignment.bottomLeft,
+                                                      fit: BoxFit.scaleDown,
+                                                      child: Text(
+                                                        NumberFormat('#,###').format(profileDetailList.RANK_NO).toString(),
+                                                        style: TextStyle(fontSize: 40),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: MediaQuery.of(context).size.width * 0.32,
-                                                alignment: Alignment.bottomLeft,
-                                                child: FittedBox(
-                                                  alignment:Alignment.bottomLeft,
-                                                  fit: BoxFit.scaleDown,
-                                                  child: Text(
-                                                    "TSP RANKING",
-                                                    style: TextStyle(fontSize: 30),
+                                                  Container(
+                                                    width: MediaQuery.of(context).size.width * 0.32,
+                                                    alignment: Alignment.bottomLeft,
+                                                    child: FittedBox(
+                                                      alignment:Alignment.bottomLeft,
+                                                      fit: BoxFit.scaleDown,
+                                                      child: Text(
+                                                        "TSP RANKING",
+                                                        style: TextStyle(fontSize: 30),
+                                                      ),
+                                                    ),
                                                   ),
-                                                ),
-                                              ),
                                             ],
-                                          ):
+                                          ),
+                                                      Container(
+                                                        width: MediaQuery.of(context).size.width * 0.44,
+                                                        alignment: Alignment.bottomRight,
+                                                        child: FittedBox(
+                                                          alignment:Alignment.bottomRight,
+                                                          fit: BoxFit.scaleDown,
+                                                          child: Text(
+                                                            "(" + NumberFormat('#,###').format(profileDetailList.TS_POINT).toString() + " point)",
+                                                            style: TextStyle(fontSize: 15),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                ],
+                                              ):
                                           Row(
                                             children: [
                                               Container(
@@ -202,7 +210,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                     )),
                               ])),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.12,
+                        height: MediaQuery.of(context).size.height * 0.15,
                         width: MediaQuery.of(context).size.width * 0.8,
                         child: Column(
                           children: [
@@ -226,21 +234,45 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                 ),
                               ],
                             ),
-                            Row(
-                              children: [
                                 Container(
                                     alignment: Alignment.bottomLeft,
                                     width: MediaQuery.of(context).size.width * 0.8,
-                                    child: Text(
-                                      '活動場所:' +
-                                          profileDetailList
-                                              .FIRST_TODOFUKEN_SICHOSON,
-                                      style: TextStyle(fontSize: 15),
-                                      overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定
-                                      maxLines: 2, // 表示する行数を指定
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            Container(
+                                              alignment: Alignment.bottomLeft,
+                                              child: Text(
+                                                "年齢：" + profileDetailList.AGE,
+                                                style: TextStyle(fontSize: 15),
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              width: 10,
+                                            ),
+                                            Container(
+                                              alignment: Alignment.bottomRight,
+                                              child: Text(
+                                                "性別：" + profileDetailList.GENDER,
+                                                style: TextStyle(fontSize: 15),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Container(
+                                          alignment: Alignment.bottomLeft,
+                                          child: Text(
+                                            '活動場所：' +
+                                                profileDetailList
+                                                    .FIRST_TODOFUKEN_SICHOSON,
+                                            style: TextStyle(fontSize: 15),
+                                            overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定
+                                            maxLines: 2, // 表示する行数を指定
+                                          ),
+                                        ),
+                                      ],
                                     )),
-                              ],
-                            )
                           ],
                         ),
                       ),

@@ -242,7 +242,6 @@ class FirestoreMethod {
           'GENDER': profile.GENDER,
           'COMENT': profile.COMENT,
           // 'KOUSHIN_TIME': todayTime,
-          'MY_USER_ID': profile.MY_USER_ID,
           'TODOFUKEN_LIST': todofukenList,
           'SHICHOSON_LIST': shichosonList,
           'TODOFUKEN_SHICHOSON_LIST': todofukenShichosonList,
@@ -259,7 +258,6 @@ class FirestoreMethod {
           'GENDER': profile.GENDER,
           'COMENT': profile.COMENT,
           'KOUSHIN_TIME': todayTime,
-          'MY_USER_ID': profile.MY_USER_ID,
           'TODOFUKEN_LIST': todofukenList,
           'SHICHOSON_LIST': shichosonList,
           'TODOFUKEN_SHICHOSON_LIST': todofukenShichosonList,
@@ -433,6 +431,15 @@ class FirestoreMethod {
     return CHomePageSetting(NICK_NAME: name, TOROKU_RANK: rank);
   }
 
+  static Future<String> getMyuserId(String UserId) async {
+    final snapShot = await FirebaseFirestore.instance
+        .collection('myProfile')
+        .doc(UserId)
+        .get();
+    String MY_USER_ID = snapShot.data()!['MY_USER_ID'];
+    return MY_USER_ID;
+  }
+
   static Future<CprofileSetting> getProfile() async {
     final snapShot = await FirebaseFirestore.instance
         .collection('myProfile')
@@ -534,6 +541,7 @@ class FirestoreMethod {
         .collection('myProfileDetail')
         .doc(userId)
         .get();
+
     CprofileDetail cprofileDetail = CprofileDetail(
         USER_ID: snapShot.data()!['USER_ID'],
         PROFILE_IMAGE: snapShot.data()!['PROFILE_IMAGE'],
@@ -542,7 +550,54 @@ class FirestoreMethod {
         AGE: snapShot.data()!['AGE'],
         GENDER: snapShot.data()!['GENDER'],
         COMENT: snapShot.data()!['COMENT'],
-        MY_USER_ID: snapShot.data()!['MY_USER_ID'],
+        TODOFUKEN_LIST: snapShot.data()!['TODOFUKEN_LIST'],
+        SHICHOSON_LIST: snapShot.data()!['SHICHOSON_LIST'],
+        TODOFUKEN_SHICHOSON_LIST: snapShot.data()!['TODOFUKEN_SHICHOSON_LIST'],
+        TS_POINT: snapShot.data()!['TS_POINT'],
+        SHOKYU_WIN_SU: snapShot.data()!['SHOKYU_WIN_SU'],
+        SHOKYU_LOSE_SU: snapShot.data()!['SHOKYU_LOSE_SU'],
+        SHOKYU_MATCH_SU: snapShot.data()!['SHOKYU_MATCH_SU'],
+        SHOKYU_WIN_RATE: snapShot.data()!['SHOKYU_WIN_RATE'],
+        CHUKYU_WIN_SU: snapShot.data()!['CHUKYU_WIN_SU'],
+        CHUKYU_LOSE_SU: snapShot.data()!['CHUKYU_LOSE_SU'],
+        CHUKYU_MATCH_SU: snapShot.data()!['CHUKYU_MATCH_SU'],
+        CHUKYU_WIN_RATE: snapShot.data()!['CHUKYU_WIN_RATE'],
+        JYOKYU_WIN_SU: snapShot.data()!['JYOKYU_WIN_SU'],
+        JYOKYU_LOSE_SU: snapShot.data()!['JYOKYU_LOSE_SU'],
+        JYOKYU_MATCH_SU: snapShot.data()!['JYOKYU_MATCH_SU'],
+        JYOKYU_WIN_RATE: snapShot.data()!['JYOKYU_WIN_RATE'],
+        STROKE_FOREHAND_AVE: snapShot.data()!['STROKE_FOREHAND_AVE'],
+        STROKE_BACKHAND_AVE: snapShot.data()!['STROKE_BACKHAND_AVE'],
+        VOLLEY_FOREHAND_AVE: snapShot.data()!['VOLLEY_FOREHAND_AVE'],
+        VOLLEY_BACKHAND_AVE: snapShot.data()!['VOLLEY_BACKHAND_AVE'],
+        SERVE_1ST_AVE: snapShot.data()!['SERVE_1ST_AVE'],
+        SERVE_2ND_AVE: snapShot.data()!['SERVE_2ND_AVE'],
+        FIRST_TODOFUKEN_SICHOSON: snapShot.data()!['FIRST_TODOFUKEN_SICHOSON'],
+        KOUSHIN_TIME: snapShot.data()!['KOUSHIN_TIME'],
+        RANK_NO: snapShot.data()!['RANK_NO']);
+
+    return cprofileDetail;
+  }
+
+  static Future<CprofileDetail> getMyDetailProfile(String userId) async {
+    final snapShot = await FirebaseFirestore.instance
+        .collection('myProfileDetail')
+        .doc(userId)
+        .get();
+    final snapShotMyProfile = await FirebaseFirestore.instance
+        .collection('myProfile')
+        .doc(auth.currentUser!.uid)
+        .get();
+
+    CprofileDetail cprofileDetail = CprofileDetail(
+        USER_ID: snapShot.data()!['USER_ID'],
+        PROFILE_IMAGE: snapShot.data()!['PROFILE_IMAGE'],
+        NICK_NAME: snapShot.data()!['NICK_NAME'],
+        TOROKU_RANK: snapShot.data()!['TOROKU_RANK'],
+        AGE: snapShot.data()!['AGE'],
+        GENDER: snapShot.data()!['GENDER'],
+        COMENT: snapShot.data()!['COMENT'],
+        MY_USER_ID: snapShotMyProfile.data()!['MY_USER_ID'],
         TODOFUKEN_LIST: snapShot.data()!['TODOFUKEN_LIST'],
         SHICHOSON_LIST: snapShot.data()!['SHICHOSON_LIST'],
         TODOFUKEN_SHICHOSON_LIST: snapShot.data()!['TODOFUKEN_SHICHOSON_LIST'],

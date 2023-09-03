@@ -9,7 +9,7 @@ class CprofileDetail {
   late String GENDER;
   late String COMENT;
   late String KOUSHIN_TIME;
-  late String MY_USER_ID;
+  late String? MY_USER_ID;
   late List<dynamic> TODOFUKEN_LIST;
   late List<dynamic> SHICHOSON_LIST;
   late List<dynamic> TODOFUKEN_SHICHOSON_LIST;
@@ -43,7 +43,7 @@ class CprofileDetail {
       required this.AGE,
       required this.GENDER,
       required this.COMENT,
-      required this.MY_USER_ID,
+      this.MY_USER_ID,
       required this.TODOFUKEN_LIST,
       required this.SHICHOSON_LIST,
       required this.TODOFUKEN_SHICHOSON_LIST,
