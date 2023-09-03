@@ -227,6 +227,8 @@ class FirestoreMethod {
         //   'VOLLEY_BACKHAND_AVE': 0.0,
         //   'SERVE_1ST_AVE': 0.0,
         //   'SERVE_2ND_AVE': 0.0
+        ////ランクNoの結果
+        //'RANK_NO':0.0,
         // });
         //KOUSHIN_TIME更新なし
         await profileDetailRef.doc(auth.currentUser!.uid).update({
@@ -286,7 +288,9 @@ class FirestoreMethod {
           'VOLLEY_FOREHAND_AVE': 0.0,
           'VOLLEY_BACKHAND_AVE': 0.0,
           'SERVE_1ST_AVE': 0.0,
-          'SERVE_2ND_AVE': 0.0
+          'SERVE_2ND_AVE': 0.0,
+          //ランクNoの結果
+          'RANK_NO':0,
         });
       }
     } catch (e) {
@@ -559,7 +563,8 @@ class FirestoreMethod {
         SERVE_1ST_AVE: snapShot.data()!['SERVE_1ST_AVE'],
         SERVE_2ND_AVE: snapShot.data()!['SERVE_2ND_AVE'],
         FIRST_TODOFUKEN_SICHOSON: snapShot.data()!['FIRST_TODOFUKEN_SICHOSON'],
-        KOUSHIN_TIME: snapShot.data()!['KOUSHIN_TIME']);
+        KOUSHIN_TIME: snapShot.data()!['KOUSHIN_TIME'],
+        RANK_NO: snapShot.data()!['RANK_NO']);
 
     return cprofileDetail;
   }

@@ -5,6 +5,7 @@ import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
 import 'package:tsuyosuke_tennis_ap/Page/CheckFeedBack.dart';
 import 'package:tsuyosuke_tennis_ap/Page/MyTitlePage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/QrScanView.dart';
+import '../Common/CprofileDetail.dart';
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
@@ -12,6 +13,8 @@ import 'FriendManagerPage.dart';
 import 'ProfileSetting.dart';
 import 'package:marquee/marquee.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -21,21 +24,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String? uid = '';
-
-  void viewHomePage() {
-    setState(() {});
-  }
+  static final Firebase_Auth.FirebaseAuth auth =
+      Firebase_Auth.FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "ホーム");
     DrawerConfig().init(context);
 
-    uid = FirestoreMethod.getUid();
-
-    Future<CHomePageVal>? futureList =
-        FirestoreMethod.getNickNameAndTorokuRank(uid);
+    late Future<CprofileDetail> myProfileDetail =
+        FirestoreMethod.getYourDetailProfile(auth.currentUser!.uid);
 
     return Scaffold(
       appBar: AppBar(
@@ -63,508 +61,813 @@ class _HomePageState extends State<HomePage> {
       ),
       //ドロアー画面の処理
       drawer: DrawerConfig.drawer,
-      body: SingleChildScrollView(
-        child: FutureBuilder(
-          future: futureList,
-          builder:
-              (BuildContext context, AsyncSnapshot<CHomePageVal> snapshot) {
-            {
-              if (snapshot.connectionState != ConnectionState.done) {
-                return new Align(
-                    child: Center(
-                  child: new CircularProgressIndicator(),
-                ));
-              } else if (snapshot.hasError) {
-                return new Text('Error!!: ${snapshot.error!}');
-              } else if (snapshot.hasData) {
-                //取得したい値をリスト型で格納
-                CHomePageVal? homePageVal = snapshot.data;
-                return Center(
-                  //全体をカラムとして表示させる。
-                  child: Column(children: <Widget>[
-                    const SizedBox(
-                      height: 30,
+      body: FutureBuilder(
+          future: myProfileDetail,
+          builder: (BuildContext context, AsyncSnapshot snapshot) {
+            if (snapshot.connectionState != ConnectionState.done) {
+              return new Align(
+                  child: Center(
+                child: new CircularProgressIndicator(),
+              ));
+            } else if (snapshot.hasError) {
+              return new Text('Error: ${snapshot.error!}');
+            } else if (snapshot.hasData) {
+              CprofileDetail profileDetailList = snapshot.data;
+              return Scrollbar(
+                  isAlwaysShown: false,
+                  child: SingleChildScrollView(
+                      //プロフィール画像
+                      child: Column(children: [
+                    Container(
+                        height: MediaQuery.of(context).size.height * 0.25,
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                            image: AssetImage('images/kori.jpg'),
+                          ),
+                        ),
+                        child: Column(children: [
+                          Row(
+                            children: [
+                              Container(
+                                padding: EdgeInsets.only(left: 40, top: 20),
+                                alignment: Alignment.bottomCenter,
+                                width: MediaQuery.of(context).size.width * 0.55,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width * 0.5,
+                                      alignment: Alignment.bottomLeft,
+                                      child: FittedBox(
+                                        alignment: Alignment.bottomLeft,
+                                        fit: BoxFit.scaleDown,
+                                        // 子ウィジェットを親ウィジェットにフィットさせる
+                                        child: Text(
+                                          profileDetailList.NICK_NAME,
+                                          style: TextStyle(fontSize: 40),
+                                        ),
+                                      ),
+                                    ),
+                                    Container(
+                                      width: MediaQuery.of(context).size.width * 0.5,
+                                      alignment: Alignment.bottomLeft,
+                                      child: Text(
+                                        "   Age:" + profileDetailList.AGE,
+                                        style: TextStyle(fontSize: 12),
+                                      ),
+                                    ),
+                                    profileDetailList.RANK_NO == 0 ?
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: MediaQuery.of(context).size.width * 0.15,
+                                          alignment: Alignment.bottomLeft,
+                                          child: Text(
+                                            "NO ",
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: MediaQuery.of(context).size.width * 0.25,
+                                          alignment: Alignment.bottomLeft,
+                                          child: Text(
+                                            "TSP RANKING",
+                                            style: TextStyle(fontSize: 18),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                    :profileDetailList.RANK_NO < 100 ? Row(
+                                      children: [
+                                        Container(
+                                          width: MediaQuery.of(context).size.width * 0.12,
+                                          alignment: Alignment.bottomCenter,
+                                          child: FittedBox(
+                                            alignment:Alignment.bottomLeft,
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                              NumberFormat('#,###').format(profileDetailList.RANK_NO).toString(),
+                                              style: TextStyle(fontSize: 40),
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: MediaQuery.of(context).size.width * 0.32,
+                                          alignment: Alignment.bottomLeft,
+                                          child: FittedBox(
+                                            alignment:Alignment.bottomLeft,
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                              "TSP RANKING",
+                                              style: TextStyle(fontSize: 30),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ):
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: MediaQuery.of(context).size.width * 0.15,
+                                          alignment: Alignment.bottomCenter,
+                                          child: FittedBox(
+                                            alignment:Alignment.bottomLeft,
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                              NumberFormat('#,###').format(profileDetailList.RANK_NO).toString(),
+                                              style: TextStyle(fontSize: 40),
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: MediaQuery.of(context).size.width * 0.25,
+                                          alignment: Alignment.bottomLeft,
+                                          child: FittedBox(
+                                            alignment:Alignment.bottomLeft,
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                              "TSP RANKING",
+                                              style: TextStyle(fontSize: 30),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    )
+                                  ],
+                                ),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                child: profileDetailList.PROFILE_IMAGE == ''
+                                    ? CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                        backgroundImage: NetworkImage(
+                                            "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                        radius: 80,
+                                      )
+                                    : CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                        backgroundImage: NetworkImage(
+                                            profileDetailList.PROFILE_IMAGE),
+                                        radius: 80,
+                                      ),
+                              ),
+                            ],
+                          ),
+                          Container(
+                              alignment: Alignment.bottomRight,
+                              padding: EdgeInsets.only(right: 23),
+                              child: Text(
+                                'Category:' + profileDetailList.TOROKU_RANK,
+                                style: TextStyle(fontSize: 25),
+                              )),
+                        ])),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.12,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: Column(
+                        children: [
+                          Row(
+                            children: [
+                              Container(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text(
+                                    '課金プレーヤー',
+                                    style: TextStyle(fontSize: 25),
+                                  )),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.read_more,
+                                  color: Colors.black,
+                                  size: 30.0,
+                                ),
+                                onPressed: () {
+                                  //称号を表示する画面へ
+                                },
+                              ),
+                            ],
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                  alignment: Alignment.bottomLeft,
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.8,
+                                  child: Text(
+                                    '活動場所:' +
+                                        profileDetailList
+                                            .FIRST_TODOFUKEN_SICHOSON,
+                                    style: TextStyle(fontSize: 15),
+                                    overflow: TextOverflow.ellipsis,
+                                    // テキストが指定領域を超えた場合の挙動を設定
+                                    maxLines: 2, // 表示する行数を指定
+                                  )),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                    Expanded(
-                        flex: 0,
-                        child: SizedBox(
-                          height: 30,
-                          child: Marquee(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            text: homePageVal!.TOUSERMESSAGE,
-                            style: TextStyle(
-                              backgroundColor: Colors.green[50],
-                              color: Colors.white24,
-                              shadows: [
-                                Shadow(
-                                  blurRadius: 1 /*影の大きさ*/,
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.2,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              '勝率',
+                              style: TextStyle(fontSize: 30),
+                            ),
+                          ),
+                          Container(
+                            height: MediaQuery.of(context).size.height * 0.12,
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                    width: MediaQuery.of(context).size.width *
+                                        0.05),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.25,
+                                      padding: EdgeInsets.only(left: 20),
+                                      child: Text('初級'),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.25,
+                                      child: Stack(children: [
+                                        SizedBox(
+                                          width: 70,
+                                          height: 70,
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      profileDetailList
+                                                          .SHOKYU_WIN_RATE
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Text(
+                                                      '%',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      profileDetailList
+                                                              .SHOKYU_WIN_SU
+                                                              .toString() +
+                                                          '勝',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      profileDetailList
+                                                              .SHOKYU_LOSE_SU
+                                                              .toString() +
+                                                          '敗',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 70,
+                                          height: 70,
+                                          child: Center(
+                                            child: SizedBox(
+                                              width: 70,
+                                              height: 70,
+                                              child: CircularProgressIndicator(
+                                                  value: profileDetailList
+                                                          .SHOKYU_WIN_RATE /
+                                                      100,
+                                                  color: Colors.greenAccent,
+                                                  backgroundColor:
+                                                      Colors.black12,
+                                                  strokeWidth: 4.0),
+                                            ),
+                                          ),
+                                        ),
+                                      ]),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.only(left: 20),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.25,
+                                      child: Text('中級'),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.25,
+                                      child: Stack(children: [
+                                        SizedBox(
+                                          width: 70,
+                                          height: 70,
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      profileDetailList
+                                                          .CHUKYU_WIN_RATE
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Text(
+                                                      '%',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      profileDetailList
+                                                              .CHUKYU_WIN_SU
+                                                              .toString() +
+                                                          '勝',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      profileDetailList
+                                                              .CHUKYU_LOSE_SU
+                                                              .toString() +
+                                                          '敗',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 70,
+                                          height: 70,
+                                          child: Center(
+                                            child: SizedBox(
+                                              width: 70,
+                                              height: 70,
+                                              child: CircularProgressIndicator(
+                                                  value: profileDetailList
+                                                          .CHUKYU_WIN_RATE /
+                                                      100,
+                                                  color: Colors.greenAccent,
+                                                  backgroundColor:
+                                                      Colors.black12,
+                                                  strokeWidth: 4.0),
+                                            ),
+                                          ),
+                                        ),
+                                      ]),
+                                    ),
+                                  ],
+                                ),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Container(
+                                      padding: EdgeInsets.only(left: 20),
+                                      width: MediaQuery.of(context).size.width *
+                                          0.25,
+                                      child: Text('上級'),
+                                    ),
+                                    SizedBox(
+                                      width: MediaQuery.of(context).size.width *
+                                          0.25,
+                                      child: Stack(children: [
+                                        SizedBox(
+                                          width: 70,
+                                          height: 70,
+                                          child: Center(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      profileDetailList
+                                                          .JYOKYU_WIN_RATE
+                                                          .toString(),
+                                                      style: TextStyle(
+                                                          fontSize: 16,
+                                                          fontWeight:
+                                                              FontWeight.bold),
+                                                    ),
+                                                    Text(
+                                                      '%',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                      ),
+                                                    )
+                                                  ],
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                      profileDetailList
+                                                              .JYOKYU_WIN_SU
+                                                              .toString() +
+                                                          '勝',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                    Text(
+                                                      profileDetailList
+                                                              .JYOKYU_LOSE_SU
+                                                              .toString() +
+                                                          '敗',
+                                                      style: TextStyle(
+                                                        fontSize: 12,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        SizedBox(
+                                          width: 70,
+                                          height: 70,
+                                          child: Center(
+                                            child: SizedBox(
+                                              width: 70,
+                                              height: 70,
+                                              child: CircularProgressIndicator(
+                                                  value: profileDetailList
+                                                          .JYOKYU_WIN_RATE /
+                                                      100,
+                                                  color: Colors.greenAccent,
+                                                  backgroundColor:
+                                                      Colors.black12,
+                                                  strokeWidth: 4.0),
+                                            ),
+                                          ),
+                                        ),
+                                      ]),
+                                    ),
+                                  ],
                                 ),
                               ],
-                            ), //表示するテキスト
-                            velocity: 20,
-                          ),
-                        )),
-
-                    //profile画像
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          const SizedBox(
-                            height: 120,
-                          ),
-                          ClipOval(
-                            child: GestureDetector(
-                              //アイコン押下時の挙動
-                              child: homePageVal?.PROFILEIMAGE == ""
-                                  ? Image.asset(
-                                      'images/upper_body-2.png',
-                                      height: 100,
-                                      width: 100,
-                                    )
-                                  : Image.network(
-                                      homePageVal!.PROFILEIMAGE,
-                                      width: 100,
-                                      height: 100,
-                                      fit: BoxFit.fill,
-                                    ),
                             ),
-                            // This trailing comma makes auto-formatting nicer for build methods.
                           )
-                        ]),
-
-                    //名前
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            homePageVal!.NAME,
-                            style: TextStyle(
-                                fontSize: 25, fontWeight: FontWeight.bold),
-                          ),
-                        ]),
-
-                    //ID
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 30,
-                          ),
-                          homePageVal.MYUSERID == null
-                              ? Text(
-                                  "ID is not difine",
-                                  style: TextStyle(fontSize: 15),
-                                )
-                              : Text(
-                                  "ID:" + homePageVal.MYUSERID,
-                                  style: TextStyle(fontSize: 15),
-                                ),
-                        ]),
-
-                    //登録ランクタイトル
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 50,
-                          ),
-                          Text('登録ランク',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                              )),
-                          // This trailing comma makes auto-formatting nicer for build methods.
-                        ]),
-
-                    //登録ランク値
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(homePageVal.TOROKURANK,
-                              style: TextStyle(fontSize: 20)),
-                          // This trailing comma makes auto-formatting nicer for build methods.
-                        ]),
-
-                    //シングルスランキングタイトル
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const <Widget>[
-                          SizedBox(
-                            height: 50,
-                          ),
-                          Text('Sランキング',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                              )),
-                          // This trailing comma makes auto-formatting nicer for build methods.
-                        ]),
-
-                    //Sランキング値
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          homePageVal?.SRANK == null
-                              ? Text('-位', style: TextStyle(fontSize: 20))
-                              : Text(homePageVal.SRANK.toString() + '位',
-                                  style: TextStyle(fontSize: 20)),
-                          // This trailing comma makes auto-formatting nicer for build methods.
-                        ]),
-
-                    //TODO バージョンアップで対応
-                    //ダブルスランキング表示
-                    // Row(mainAxisAlignment: MainAxisAlignment.center, children: const <Widget>[
-                    //   SizedBox(
-                    //     height: 50,
-                    //   ),
-                    //   Text('Dランキング:XX位', style: TextStyle(fontSize: 30)), // This trailing comma makes auto-formatting nicer for build methods.
-                    // ]
-                    // ),
-                    // //ミックスランキング表示
-                    // Row(mainAxisAlignment: MainAxisAlignment.center, children: const <Widget>[
-                    //   SizedBox(
-                    //     height: 50,
-                    //   ),
-                    //   Text('Mランキング:XX位', style: TextStyle(fontSize: 30)), // This trailing comma makes auto-formatting nicer for build methods.
-                    // ]
-                    // ),
-
-                    //勝率タイトル
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const <Widget>[
-                          SizedBox(
-                            height: 50,
-                          ),
-                          Text('勝率',
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                              )),
-                        ]),
-
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          SizedBox(
-                            height: 50,
-                          ),
-                          homePageVal.ADVANCEDWINRATE == null
-                              ? Text('上級: -', style: TextStyle(fontSize: 20))
-                              : Text(
-                                  '上級:' +
-                                      homePageVal.ADVANCEDWINRATE.toString() +
-                                      '%/',
-                                  style: TextStyle(fontSize: 20)),
-                          homePageVal.MEDIUMWINRATE == null
-                              ? Text('中級: -', style: TextStyle(fontSize: 20))
-                              : Text(
-                                  '中級:' +
-                                      homePageVal.MEDIUMWINRATE.toString() +
-                                      '%/',
-                                  style: TextStyle(fontSize: 20)),
-                          homePageVal.BEGINWINRATE == null
-                              ? Text('初級: -', style: TextStyle(fontSize: 20))
-                              : Text(
-                                  '初級:' +
-                                      homePageVal.BEGINWINRATE.toString() +
-                                      '%',
-                                  style: TextStyle(fontSize: 20)),
-                        ]),
-
-                    Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: const <Widget>[
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Text('↓↓今すぐ試合をするならこちら！↓↓',
-                              style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.bold,
-                              )),
-                        ]),
-                    QrImageView(
-                      data: uid.toString(),
-                      version: QrVersions.auto,
-                      foregroundColor: Colors.green,
-                      embeddedImage:
-                          Image.network('https://illustimage.com/photo/463.png')
-                              .image,
-                      //QRコードの真ん中に表示する画像
-                      size: 90.0,
+                        ],
+                      ),
                     ),
-
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        IconButton(
-                          icon: Icon(Icons.camera_alt),
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => QrScanView(),
-                                ));
-                          },
-                        ),
-                      ],
-                    ),
-
-                    //レビュー集計機能
-                    Column(
-                      children: [
-                        Text('------------------------',
-                            style: TextStyle(fontSize: 20)),
-                        Text('スキルレベル',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              decoration: TextDecoration.underline,
-                            )),
-                        //ストローク
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('ストローク', style: TextStyle(fontSize: 20)),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('フォア：', style: TextStyle(fontSize: 20)),
-                            RatingBar.builder(
-                              ignoreGestures: true,
-                              allowHalfRating: true,
-                              initialRating:
-                                  homePageVal.SKILL.STROKE_FOREHAND.isNaN
-                                      ? 0
-                                      : homePageVal.SKILL.STROKE_FOREHAND,
-                              itemBuilder: (context, index) => const Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                              ),
-                              onRatingUpdate: (rating) {
-                                //評価が更新されたときの処理を書く
-                              },
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.42,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              'ストローク',
+                              style: TextStyle(fontSize: 25),
                             ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('バック：', style: TextStyle(fontSize: 20)),
-                            RatingBar.builder(
-                              ignoreGestures: true,
-                              allowHalfRating: true,
-                              initialRating:
-                                  homePageVal.SKILL.STROKE_BACKHAND.isNaN
-                                      ? 0
-                                      : homePageVal.SKILL.STROKE_BACKHAND,
-                              itemBuilder: (context, index) => const Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                              ),
-                              onRatingUpdate: (rating) {
-                                //評価が更新されたときの処理を書く
-                              },
-                            ),
-                          ],
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        //ボレー
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('ボレー', style: TextStyle(fontSize: 20)),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('フォア：', style: TextStyle(fontSize: 20)),
-                            RatingBar.builder(
-                              ignoreGestures: true,
-                              allowHalfRating: true,
-                              initialRating:
-                                  homePageVal.SKILL.VOLLEY_FOREHAND.isNaN
-                                      ? 0
-                                      : homePageVal.SKILL.VOLLEY_FOREHAND,
-                              itemBuilder: (context, index) => const Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                              ),
-                              onRatingUpdate: (rating) {
-                                //評価が更新されたときの処理を書く
-                              },
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('バック：', style: TextStyle(fontSize: 20)),
-                            RatingBar.builder(
-                              ignoreGestures: true,
-                              allowHalfRating: true,
-                              initialRating:
-                                  homePageVal.SKILL.VOLLEY_BACKHAND.isNaN
-                                      ? 0
-                                      : homePageVal.SKILL.VOLLEY_BACKHAND,
-                              itemBuilder: (context, index) => const Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                              ),
-                              onRatingUpdate: (rating) {
-                                //評価が更新されたときの処理を書く
-                              },
-                            ),
-                          ],
-                        ),
-
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        //サーブ
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('サーブ', style: TextStyle(fontSize: 20)),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('１ｓｔ：', style: TextStyle(fontSize: 20)),
-                            RatingBar.builder(
-                              ignoreGestures: true,
-                              allowHalfRating: true,
-                              initialRating: homePageVal.SKILL.SERVE_1ST.isNaN
-                                  ? 0
-                                  : homePageVal.SKILL.SERVE_1ST,
-                              itemBuilder: (context, index) => const Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                              ),
-                              onRatingUpdate: (rating) {
-                                //評価が更新されたときの処理を書く
-                              },
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('２ｎｄ：', style: TextStyle(fontSize: 20)),
-                            RatingBar.builder(
-                              ignoreGestures: true,
-                              allowHalfRating: true,
-                              initialRating: homePageVal.SKILL.SERVE_2ND.isNaN
-                                  ? 0
-                                  : homePageVal.SKILL.SERVE_2ND,
-                              itemBuilder: (context, index) => const Icon(
-                                Icons.star,
-                                color: Colors.yellow,
-                              ),
-                              onRatingUpdate: (rating) {
-                                //評価が更新されたときの処理を書く
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-
-                    const SizedBox(
-                      height: 20,
-                    ),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: Container(
-                            width: 300,
-                            child: TextButton(
-                                style: TextButton.styleFrom(
-                                  backgroundColor: Colors.lightGreenAccent,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(80)),
+                          ),
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                      width: 60,
+                                      child: Text('フォア',
+                                          style: TextStyle(fontSize: 17))),
+                                  SizedBox(width: 20),
+                                  Text(
+                                      profileDetailList.STROKE_FOREHAND_AVE
+                                              .toString() +
+                                          ' ',
+                                      style: TextStyle(fontSize: 12)),
+                                  RatingBar.builder(
+                                    ignoreGestures: true,
+                                    allowHalfRating: true,
+                                    initialRating:
+                                        profileDetailList.STROKE_FOREHAND_AVE,
+                                    itemBuilder: (context, index) => const Icon(
+                                      Icons.star,
+                                      color: Colors.yellow,
+                                    ),
+                                    onRatingUpdate: (rating) {
+                                      //評価が更新されたときの処理を書く
+                                    },
                                   ),
-                                ),
-                                child: Center(
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                      width: 60,
+                                      child: Text('バック',
+                                          style: TextStyle(fontSize: 17))),
+                                  SizedBox(width: 20),
+                                  Text(
+                                      profileDetailList.STROKE_BACKHAND_AVE
+                                              .toString() +
+                                          ' ',
+                                      style: TextStyle(fontSize: 12)),
+                                  RatingBar.builder(
+                                    ignoreGestures: true,
+                                    allowHalfRating: true,
+                                    initialRating:
+                                        profileDetailList.STROKE_BACKHAND_AVE,
+                                    itemBuilder: (context, index) => const Icon(
+                                      Icons.star,
+                                      color: Colors.yellow,
+                                    ),
+                                    onRatingUpdate: (rating) {
+                                      //評価が更新されたときの処理を書く
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Container(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              'ボレー',
+                              style: TextStyle(fontSize: 25),
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                      width: 60,
+                                      child: Text('フォア',
+                                          style: TextStyle(fontSize: 17))),
+                                  SizedBox(width: 20),
+                                  Text(
+                                      profileDetailList.VOLLEY_FOREHAND_AVE
+                                              .toString() +
+                                          ' ',
+                                      style: TextStyle(fontSize: 12)),
+                                  RatingBar.builder(
+                                    ignoreGestures: true,
+                                    allowHalfRating: true,
+                                    initialRating:
+                                        profileDetailList.VOLLEY_FOREHAND_AVE,
+                                    itemBuilder: (context, index) => const Icon(
+                                      Icons.star,
+                                      color: Colors.yellow,
+                                    ),
+                                    onRatingUpdate: (rating) {
+                                      //評価が更新されたときの処理を書く
+                                    },
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                      width: 60,
+                                      child: Text('バック',
+                                          style: TextStyle(fontSize: 17))),
+                                  SizedBox(width: 20),
+                                  Text(
+                                      profileDetailList.VOLLEY_BACKHAND_AVE
+                                              .toString() +
+                                          ' ',
+                                      style: TextStyle(fontSize: 12)),
+                                  RatingBar.builder(
+                                    ignoreGestures: true,
+                                    allowHalfRating: true,
+                                    initialRating:
+                                        profileDetailList.VOLLEY_BACKHAND_AVE,
+                                    itemBuilder: (context, index) => const Icon(
+                                      Icons.star,
+                                      color: Colors.yellow,
+                                    ),
+                                    onRatingUpdate: (rating) {
+                                      //評価が更新されたときの処理を書く
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Container(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              'サーブ',
+                              style: TextStyle(
+                                fontSize: 25,
+                              ),
+                            ),
+                          ),
+                          Column(
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                      width: 60,
+                                      child: Text('１st',
+                                          style: TextStyle(fontSize: 17))),
+                                  SizedBox(width: 20),
+                                  Text(
+                                      profileDetailList.SERVE_1ST_AVE
+                                              .toString() +
+                                          ' ',
+                                      style: TextStyle(fontSize: 12)),
+                                  RatingBar.builder(
+                                    ignoreGestures: true,
+                                    allowHalfRating: true,
+                                    initialRating:
+                                        profileDetailList.SERVE_1ST_AVE,
+                                    itemBuilder: (context, index) => const Icon(
+                                      Icons.star,
+                                      color: Colors.yellow,
+                                    ),
+                                    onRatingUpdate: (rating) {
+                                      //評価が更新されたときの処理を書く
+                                    },
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Container(
+                                      width: 60,
+                                      child: Text('２nd',
+                                          style: TextStyle(fontSize: 17))),
+                                  SizedBox(width: 20),
+                                  Text(
+                                      profileDetailList.SERVE_2ND_AVE
+                                              .toString() +
+                                          ' ',
+                                      style: TextStyle(fontSize: 12)),
+                                  RatingBar.builder(
+                                    ignoreGestures: true,
+                                    allowHalfRating: true,
+                                    initialRating:
+                                        profileDetailList.SERVE_2ND_AVE,
+                                    itemBuilder: (context, index) => const Icon(
+                                      Icons.star,
+                                      color: Colors.yellow,
+                                    ),
+                                    onRatingUpdate: (rating) {
+                                      //評価が更新されたときの処理を書く
+                                    },
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.15,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: Column(
+                        children: [
+                          Container(
+                            width: MediaQuery.of(context).size.width * 0.8,
+                            child: Text('-----------------------------',
+                                style: TextStyle(fontSize: 30,color: Colors.black26)),
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              const Icon(
+                                Icons.feed,
+                                color: Colors.black38,
+                                size:80
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.5,
+                                alignment: Alignment.center,
+                                child: TextButton(
                                   child: Text(
-                                    'フィードバックを確認',
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.black),
+                                    '過去の対戦相手の\nフィードバックを確認',
+                                    style:
+                                        TextStyle(fontSize: 18, color: Colors.black),
                                   ),
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => CheckFeedBack(),
+                                          ));
+                                    }
                                 ),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => CheckFeedBack(),
-                                      ));
-                                }),
+                              ),
+                            ],
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: Container(
-                            width: 300,
-                            child: TextButton(
-                                style: TextButton.styleFrom(
-                                  backgroundColor: Colors.lightGreenAccent,
-                                  shape: const RoundedRectangleBorder(
-                                    borderRadius:
-                                    BorderRadius.all(Radius.circular(80)),
-                                  ),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    '称号一覧',
-                                    style: TextStyle(
-                                        fontSize: 20, color: Colors.black),
-                                  ),
-                                ),
-                                onPressed: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => MyTitlePage(),
-                                      ));
-                                }),
+                    Container(
+                      height: MediaQuery.of(context).size.height * 0.2,
+                      width: MediaQuery.of(context).size.width * 0.8,
+                      child: Column(
+                        children: [
+                          Container(
+                            alignment: Alignment.bottomCenter,
+                            child: Text(
+                              '↓↓今すぐ試合をするならこちら！↓↓',
+                              style: TextStyle(fontSize: 17),
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                  ]),
-                );
-              } else {
-                return Text("データが存在しません");
-              }
+                          QrImageView(
+                            data: auth.currentUser!.uid,
+                            version: QrVersions.auto,
+                            foregroundColor: Colors.green,
+                            embeddedImage: Image.network(
+                                    'https://illustimage.com/photo/463.png')
+                                .image,
+                            //QRコードの真ん中に表示する画像
+                            size: 90.0,
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.camera_alt),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => QrScanView(),
+                                  ));
+                            },
+                          ),
+                        ],
+                      ),
+                    )
+                  ])));
+            } else {
+              return Text("データが存在しません");
             }
-          },
-        ),
-      ),
+          }),
     );
   }
 }

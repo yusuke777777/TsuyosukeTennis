@@ -129,18 +129,6 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  fonts:
-    - family: Kaisei_Decol
-      fonts:
-        - asset: fonts/Kaisei_Decol/KaiseiDecol-Bold.ttf
-        - asset: fonts/Kaisei_Decol/KaiseiDecol-Medium.ttf
-        - asset: fonts/Kaisei_Decol/KaiseiDecol-Regular.ttf
-    - family: Yomogi
-      fonts:
-        - asset: fonts/Yomogi/Yomogi-Regular.ttf
-    - family: nicomoji
-      fonts:
-        - asset: fonts/nicomoji/nicomoji_1.00.ttf
   # fonts:
   #   - family: Schyler
   #     fonts:

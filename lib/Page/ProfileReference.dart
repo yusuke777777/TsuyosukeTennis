@@ -6,6 +6,7 @@ import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 /**
  * 他人のプロフィールを参照する用画面
@@ -29,19 +30,6 @@ class _ProfileReferenceState extends State<ProfileReference> {
   //対象ユーザのプロフィールをユーザIDをキーに取得
   late Future<CprofileDetail> yourProfileDetail =
       FirestoreMethod.getYourDetailProfile(user_id);
-
-  double degreesToRadians(double degrees) {
-    return degrees * (3.141592653589793238 / 180); // 度数からラジアンに変換
-  }
-
-  double startAngleRadians = 0;
-  double startAngleDegrees = 0; // 0時を基準にした開始角度（度数）
-  @override
-  void initState() {
-    super.initState();
-    startAngleRadians = degreesToRadians(startAngleDegrees); // ラジアンに変換
-    print(startAngleRadians);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +61,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                               height: MediaQuery.of(context).size.height * 0.25,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  image:AssetImage('images/kori.jpg'),
+                                  image: AssetImage('images/kori.jpg'),
                                 ),
                               ),
                               child: Column(children: [
@@ -82,17 +70,17 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                     Container(
                                       padding: EdgeInsets.only(left: 40, top: 20),
                                       alignment: Alignment.bottomCenter,
-                                      width:
-                                          MediaQuery.of(context).size.width * 0.5,
+                                      width: MediaQuery.of(context).size.width * 0.55,
                                       child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Container(
+                                            width: MediaQuery.of(context).size.width * 0.5,
                                             alignment: Alignment.bottomLeft,
                                             child: FittedBox(
-                                              alignment:Alignment.bottomLeft,
-                                              fit: BoxFit.scaleDown, // 子ウィジェットを親ウィジェットにフィットさせる
+                                              alignment: Alignment.bottomLeft,
+                                              fit: BoxFit.scaleDown,
+                                              // 子ウィジェットを親ウィジェットにフィットさせる
                                               child: Text(
                                                 profileDetailList.NICK_NAME,
                                                 style: TextStyle(fontSize: 40),
@@ -100,22 +88,26 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                             ),
                                           ),
                                           Container(
+                                            width: MediaQuery.of(context).size.width * 0.5,
                                             alignment: Alignment.bottomLeft,
                                             child: Text(
                                               "   Age:" + profileDetailList.AGE,
                                               style: TextStyle(fontSize: 12),
                                             ),
                                           ),
+                                          profileDetailList.RANK_NO == 0 ?
                                           Row(
                                             children: [
                                               Container(
+                                                width: MediaQuery.of(context).size.width * 0.15,
                                                 alignment: Alignment.bottomLeft,
                                                 child: Text(
-                                                  "1",
-                                                  style: TextStyle(fontSize: 40),
+                                                  "NO ",
+                                                  style: TextStyle(fontSize: 18),
                                                 ),
                                               ),
                                               Container(
+                                                width: MediaQuery.of(context).size.width * 0.25,
                                                 alignment: Alignment.bottomLeft,
                                                 child: Text(
                                                   "TSP RANKING",
@@ -123,32 +115,87 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                 ),
                                               ),
                                             ],
-                                          ),
+                                          )
+                                              :profileDetailList.RANK_NO < 100 ? Row(
+                                            children: [
+                                              Container(
+                                                width: MediaQuery.of(context).size.width * 0.12,
+                                                alignment: Alignment.bottomCenter,
+                                                child: FittedBox(
+                                                  alignment:Alignment.bottomLeft,
+                                                  fit: BoxFit.scaleDown,
+                                                  child: Text(
+                                                    NumberFormat('#,###').format(profileDetailList.RANK_NO).toString(),
+                                                    style: TextStyle(fontSize: 40),
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                width: MediaQuery.of(context).size.width * 0.32,
+                                                alignment: Alignment.bottomLeft,
+                                                child: FittedBox(
+                                                  alignment:Alignment.bottomLeft,
+                                                  fit: BoxFit.scaleDown,
+                                                  child: Text(
+                                                    "TSP RANKING",
+                                                    style: TextStyle(fontSize: 30),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ):
+                                          Row(
+                                            children: [
+                                              Container(
+                                                width: MediaQuery.of(context).size.width * 0.15,
+                                                alignment: Alignment.bottomCenter,
+                                                child: FittedBox(
+                                                  alignment:Alignment.bottomLeft,
+                                                  fit: BoxFit.scaleDown,
+                                                  child: Text(
+                                                    NumberFormat('#,###').format(profileDetailList.RANK_NO).toString(),
+                                                    style: TextStyle(fontSize: 40),
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                width: MediaQuery.of(context).size.width * 0.25,
+                                                alignment: Alignment.bottomLeft,
+                                                child: FittedBox(
+                                                  alignment:Alignment.bottomLeft,
+                                                  fit: BoxFit.scaleDown,
+                                                  child: Text(
+                                                    "TSP RANKING",
+                                                    style: TextStyle(fontSize: 30),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          )
                                         ],
                                       ),
                                     ),
                                     Container(
-                                      width:
-                                          MediaQuery.of(context).size.width * 0.4,
+                                      width: MediaQuery.of(context).size.width * 0.4,
                                       child: profileDetailList.PROFILE_IMAGE == ''
                                           ? CircleAvatar(
-                                              backgroundColor: Colors.white,
-                                              backgroundImage: NetworkImage(
-                                                  "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                              radius: 80,
-                                            )
+                                        backgroundColor: Colors.white,
+                                        backgroundImage: NetworkImage(
+                                            "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                        radius: 80,
+                                      )
                                           : CircleAvatar(
-                                              backgroundColor: Colors.white,
-                                              backgroundImage: NetworkImage(
-                                                  profileDetailList.PROFILE_IMAGE),
-                                              radius: 80,
-                                            ),
+                                        backgroundColor: Colors.white,
+                                        backgroundImage: NetworkImage(
+                                            profileDetailList.PROFILE_IMAGE),
+                                        radius: 80,
+                                      ),
                                     ),
                                   ],
                                 ),
                                 Container(
                                     alignment: Alignment.bottomRight,
-                                    padding: EdgeInsets.only(right: 30),
+                                    padding: EdgeInsets.only(right: 23),
                                     child: Text(
                                       'Category:' + profileDetailList.TOROKU_RANK,
                                       style: TextStyle(fontSize: 25),

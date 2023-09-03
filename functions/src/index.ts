@@ -6,6 +6,7 @@ import * as admin from "firebase-admin";
 admin.initializeApp();
 const manSinglesRankRef = admin.firestore().collection("manSinglesRank");
 const matchResultRef = admin.firestore().collection("matchResult");
+const profileDetailRef = admin.firestore().collection("myProfileDetail");
 
 /** 定期的にメタ情報を更新する関数。 */
 exports.updateMetaFunction = functions
@@ -109,6 +110,11 @@ async function getRankTable(): Promise<void> {
                 USER_ID: shokyuRanks[index].USER_ID,
                 TS_POINT: shokyuRanks[index].TS_POINT,
               });
+          await profileDetailRef
+              .doc(shokyuRanks[index].USER_ID)
+              .update({
+                RANK_NO: shokyuRankNo,
+              });
           console.log("初級追加");
         } catch (e) {
           console.log("ランキング作成に失敗しました --- $e");
@@ -124,6 +130,11 @@ async function getRankTable(): Promise<void> {
                 RANK_NO: index + 1,
                 USER_ID: shokyuRanks[index].USER_ID,
                 TS_POINT: shokyuRanks[index].TS_POINT,
+              });
+          await profileDetailRef
+              .doc(shokyuRanks[index].USER_ID)
+              .update({
+                RANK_NO: index + 1,
               });
           console.log("初級追加");
         } catch (e) {
@@ -141,6 +152,11 @@ async function getRankTable(): Promise<void> {
               RANK_NO: index + 1,
               USER_ID: shokyuRanks[index].USER_ID,
               TS_POINT: shokyuRanks[index].TS_POINT,
+            });
+        await profileDetailRef
+            .doc(shokyuRanks[index].USER_ID)
+            .update({
+              RANK_NO: index + 1,
             });
         console.log("初級追加");
       } catch (e) {
@@ -165,6 +181,11 @@ async function getRankTable(): Promise<void> {
                 USER_ID: chukyuRanks[index].USER_ID,
                 TS_POINT: chukyuRanks[index].TS_POINT,
               });
+          await profileDetailRef
+              .doc(chukyuRanks[index].USER_ID)
+              .update({
+                RANK_NO: chukyuRankNo,
+              });
           console.log("中級追加");
         } catch (e) {
           console.log("ランキング作成に失敗しました --- $e");
@@ -180,6 +201,11 @@ async function getRankTable(): Promise<void> {
                 RANK_NO: index + 1,
                 USER_ID: chukyuRanks[index].USER_ID,
                 TS_POINT: chukyuRanks[index].TS_POINT,
+              });
+          await profileDetailRef
+              .doc(chukyuRanks[index].USER_ID)
+              .update({
+                RANK_NO: index + 1,
               });
           console.log("中級追加");
         } catch (e) {
@@ -197,6 +223,11 @@ async function getRankTable(): Promise<void> {
               RANK_NO: index + 1,
               USER_ID: chukyuRanks[index].USER_ID,
               TS_POINT: chukyuRanks[index].TS_POINT,
+            });
+        await profileDetailRef
+            .doc(chukyuRanks[index].USER_ID)
+            .update({
+              RANK_NO: index + 1,
             });
         console.log("中級追加");
       } catch (e) {
@@ -221,6 +252,11 @@ async function getRankTable(): Promise<void> {
                 USER_ID: jyokyuRanks[index].USER_ID,
                 TS_POINT: jyokyuRanks[index].TS_POINT,
               });
+          await profileDetailRef
+              .doc(jyokyuRanks[index].USER_ID)
+              .update({
+                RANK_NO: jokyuRankNo,
+              });
           console.log("上級追加");
         } catch (e) {
           console.log("ランキング作成に失敗しました --- $e");
@@ -236,6 +272,11 @@ async function getRankTable(): Promise<void> {
                 RANK_NO: index + 1,
                 USER_ID: jyokyuRanks[index].USER_ID,
                 TS_POINT: jyokyuRanks[index].TS_POINT,
+              });
+          await profileDetailRef
+              .doc(jyokyuRanks[index].USER_ID)
+              .update({
+                RANK_NO: index + 1,
               });
           console.log("上級追加");
         } catch (e) {
@@ -253,6 +294,11 @@ async function getRankTable(): Promise<void> {
               RANK_NO: index + 1,
               USER_ID: jyokyuRanks[index].USER_ID,
               TS_POINT: jyokyuRanks[index].TS_POINT,
+            });
+        await profileDetailRef
+            .doc(jyokyuRanks[index].USER_ID)
+            .update({
+              RANK_NO: index + 1,
             });
         console.log("上級追加");
       } catch (e) {
