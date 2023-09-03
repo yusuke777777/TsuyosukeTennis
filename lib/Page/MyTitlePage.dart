@@ -22,7 +22,10 @@ class MyTitlePage extends StatelessWidget {
     for (var item in yamlList) {
       String name = item['name'];
       String description = item['description'];
-      title = CTitle(name: name, description: description, status: map[item['no'].toString()].toString());
+      title = CTitle(
+          name: name,
+          description: description,
+          status: map[item['no'].toString()].toString());
       titles.add(title);
     }
     return titles;
@@ -35,11 +38,10 @@ class MyTitlePage extends StatelessWidget {
     DrawerConfig().init(context);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: HeaderConfig.backGroundColor,
-        title: HeaderConfig.appBarText,
+          backgroundColor: HeaderConfig.backGroundColor,
+          title: HeaderConfig.appBarText,
           iconTheme: IconThemeData(color: Colors.black),
-          leading: HeaderConfig.backIcon
-      ),
+          leading: HeaderConfig.backIcon),
       body: FutureBuilder(
           future: futureList,
           builder:
@@ -58,12 +60,36 @@ class MyTitlePage extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final title = titles[index];
                   return ListTile(
-                    title: Text(title.name),
-                    subtitle: Text(title.description),
-                    tileColor:
-                    title.status == "1" ?
-                    Colors.white : Colors.grey
-                  );
+                      title: Text(title.name),
+                      subtitle: Text(title.description),
+                      tileColor:
+                          title.status == "1" ? Colors.white : Colors.grey,
+                      trailing: title.status == "1"
+                          ? ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.green,
+                              ),
+                              onPressed: () {
+                                // ボタンが押されたときの処理
+                                // ここに任意の処理を記述
+                              },
+                              child: Text('設定'),
+                            )
+                          : ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.grey,
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      title: Text("エラー"),
+                                      content: Text(
+                                          "取得していない称号は設定できません"),
+                                    ));
+                              },
+                              child: Text('設定'),
+                            ));
                 },
               );
             } else {

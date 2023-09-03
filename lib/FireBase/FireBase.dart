@@ -84,29 +84,20 @@ class FirestoreMethod {
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy-MM-dd');
     String today = outputFormat.format(now);
-    late Map<String, dynamic> titleMap = {};
-
-    final String yamlString = await rootBundle.loadString('assets/Title.yaml');
-    final List<dynamic> yamlList = loadYaml(yamlString);
-
-    for (var item in yamlList) {
-      String no = item['no'].toString();
-      titleMap[no] = '0';
-    }
-
     try {
-      await profileRef.doc(auth.currentUser!.uid).set({
-        'USER_ID': auth.currentUser!.uid,
-        'PROFILE_IMAGE': profile.PROFILE_IMAGE,
-        'NICK_NAME': profile.NICK_NAME,
-        'TOROKU_RANK': profile.TOROKU_RANK,
-        'AGE': profile.AGE,
-        'GENDER': profile.GENDER,
-        'COMENT': profile.COMENT,
-        'koushinYmd': today,
-        'MY_USER_ID': profile.MY_USER_ID,
-        'TITLE' : titleMap
-      });
+          await profileRef.doc(auth.currentUser!.uid).set({
+            'USER_ID': auth.currentUser!.uid,
+            'PROFILE_IMAGE': profile.PROFILE_IMAGE,
+            'NICK_NAME': profile.NICK_NAME,
+            'TOROKU_RANK': profile.TOROKU_RANK,
+            'AGE': profile.AGE,
+            'GENDER': profile.GENDER,
+            'COMENT': profile.COMENT,
+            'koushinYmd': today,
+            'MY_USER_ID': profile.MY_USER_ID,
+            'TITLE' : profile.TITLE
+          });
+
     } catch (e) {
       print('ユーザー登録に失敗しました --- $e');
     }
@@ -449,6 +440,7 @@ class FirestoreMethod {
     String GENDER = snapShot.data()!['GENDER'];
     String COMENT = snapShot.data()!['COMENT'];
     String MY_USER_ID = snapShot.data()!['MY_USER_ID'];
+    Map<String, dynamic>? TITLE = snapShot.data()!['TITLE'];
 
     final snapShotActivity = await FirebaseFirestore.instance
         .collection('myProfile')
@@ -475,7 +467,9 @@ class FirestoreMethod {
         AGE: AGE,
         GENDER: GENDER,
         COMENT: COMENT,
-        MY_USER_ID: MY_USER_ID);
+        MY_USER_ID: MY_USER_ID,
+        TITLE: TITLE
+    );
 
     return cprofileSet;
   }

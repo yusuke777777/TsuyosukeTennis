@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:yaml/yaml.dart';
+import '../Common/CTitle.dart';
 import '../Common/CactivityList.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import '../Common/CprofileSetting.dart';
@@ -31,11 +33,25 @@ class ProfileSetting extends StatefulWidget {
       GENDER: '',
       COMENT: '',
       MY_USER_ID: '',
+      TITLE: {},
     );
   }
 
   @override
   _ProfileSettingState createState() => _ProfileSettingState(myProfile);
+}
+
+/**
+ * Title.yamlに記載されている称号を全て取得
+ */
+Future<void> getMyInitTitle(Map<String, dynamic> myTitleMap) async {
+  final String yamlString = await rootBundle.loadString('assets/Title.yaml');
+  final List<dynamic> yamlList = loadYaml(yamlString);
+
+    for (var item in yamlList) {
+      String no = item['no'].toString();
+      myTitleMap?[no] = '0';
+    }
 }
 
 class _ProfileSettingState extends State<ProfileSetting> {
@@ -58,6 +74,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
   String gender = "男性";
 
   late String myUserId;
+
+  Map<String, dynamic> myTitleMap = {};
 
   //市区町村
   TextEditingController curShichoson = TextEditingController();
@@ -141,6 +159,10 @@ class _ProfileSettingState extends State<ProfileSetting> {
     if (koushinFlg == "1") {
       myUserId = widget.myProfile.MY_USER_ID;
     }
+
+    if (koushinFlg == "1") {
+      myTitleMap = widget.myProfile.TITLE!;
+    }
   }
 
   bool isDoubleUser = false;
@@ -148,6 +170,9 @@ class _ProfileSettingState extends State<ProfileSetting> {
   @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "プロフィール設定");
+    if (widget.koushinFlg == '0') {
+      getMyInitTitle(myTitleMap);
+    }
     return Scaffold(
           appBar: AppBar(
             title: HeaderConfig.appBarText,
@@ -622,6 +647,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             myProfile.AGE = age;
                             myProfile.GENDER = gender;
                             myProfile.COMENT = coment.text;
+                            myProfile.TITLE = myTitleMap;
                             //必須入力項目のチェック
                             if (nickName.text.isNotEmpty && inputUserID.text.isNotEmpty) {
                               print(nickName.text);
