@@ -229,8 +229,10 @@ class FirestoreMethod {
         //   'SERVE_2ND_AVE': 0.0
         ////ランクNoの結果
         //'RANK_NO':0.0,
+        //'TITLE':profile.TITLE
         // });
         //KOUSHIN_TIME更新なし
+
         await profileDetailRef.doc(auth.currentUser!.uid).update({
           'USER_ID': auth.currentUser!.uid,
           'PROFILE_IMAGE': profile.PROFILE_IMAGE,
@@ -291,6 +293,7 @@ class FirestoreMethod {
           'SERVE_2ND_AVE': 0.0,
           //ランクNoの結果
           'RANK_NO':0,
+          'TITLE':profile.TITLE
         });
       }
     } catch (e) {
@@ -3302,7 +3305,6 @@ class FirestoreMethod {
       CprofileSetting myProfile,
       CprofileSetting yourProfile,
       String dayKey) async {
-    print(feedBack.FEED_BACK);
     try {
       await matchResultRef
           .doc(yourProfile.USER_ID)
@@ -3810,5 +3812,60 @@ class FirestoreMethod {
 
     Map<String, dynamic> title = snapShot.data()!['TITLE'];
     return title;
+  }
+
+  /**
+   * 称号取得状況を更新するメソッドです
+   *
+   */
+  static Future<void> updateTitle(
+      CprofileSetting myProfile,
+      CprofileSetting yourProfile) async {
+    try {
+      //現在の称号一覧表の項目を全件取得
+      final String yamlString = await rootBundle.loadString('assets/Title.yaml');
+      final List<dynamic> yamlList = loadYaml(yamlString);
+
+      //myProfileDetailの項目を取得(更新判定に使用)
+      final snapShot = await FirebaseFirestore.instance
+          .collection('myProfileDetail')
+          .doc(auth.currentUser!.uid)
+          .get();
+
+      //自身の称号の取得状況を取得
+      Map<String, dynamic>? myTitleMap = snapShot.data()!['TITLE'];
+
+      int win_su = snapShot.data()!['SHOKYU_WIN_SU'];
+
+      if (win_su >=8) {
+        myTitleMap?["1"] = "1";
+      }
+
+      await profileDetailRef.doc(auth.currentUser!.uid).update({
+        'TITLE': myTitleMap
+      });
+
+      //myProfileDetailの項目を取得(更新判定に使用)
+      final snapShot_your = await FirebaseFirestore.instance
+          .collection('myProfileDetail')
+          .doc(yourProfile.USER_ID)
+          .get();
+
+      //対戦相手の称号の取得状況を取得
+      Map<String, dynamic>? yourTitleMap = snapShot_your.data()!['TITLE'];
+
+      int your_win_su = snapShot_your.data()!['SHOKYU_WIN_SU'];
+
+      if (your_win_su <4) {
+        yourTitleMap?["1"] = "1";
+      }
+
+      await profileDetailRef.doc(yourProfile.USER_ID).update({
+        'TITLE': yourTitleMap
+      });
+
+    } catch (e) {
+      print('称号更新に失敗しました --- $e');
+    }
   }
 }

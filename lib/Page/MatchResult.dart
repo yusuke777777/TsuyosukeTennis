@@ -677,6 +677,8 @@ class _MatchResultState extends State<MatchResult> {
                                           widget.yourProfile.USER_ID,
                                           dayKey);
                                     }
+                                    //称号の更新
+                                    FirestoreMethod.updateTitle(widget.myProfile, widget.yourProfile);
                                     //マッチリストを削除する
                                     FirestoreMethod.delMatchListAuto(widget.matchId);
 
@@ -781,6 +783,4 @@ class _MatchResultState extends State<MatchResult> {
     myGamePoint = 0;
     yourGamePoint = 0;
   }
-
-  void regi() {}
 }
