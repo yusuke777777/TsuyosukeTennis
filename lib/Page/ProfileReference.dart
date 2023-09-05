@@ -145,7 +145,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                           alignment:Alignment.bottomRight,
                                                           fit: BoxFit.scaleDown,
                                                           child: Text(
-                                                            "(" + NumberFormat('#,###').format(profileDetailList.TS_POINT).toString() + " point)",
+                                                            "(Total:" + NumberFormat('#,###').format(profileDetailList.TS_POINT).toString() + " p)",
                                                             style: TextStyle(fontSize: 15),
                                                           ),
                                                         ),
