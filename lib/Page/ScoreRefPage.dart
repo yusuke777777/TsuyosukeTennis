@@ -26,96 +26,8 @@ class ScoreRefPageState extends State<ScoreRefPage> {
     DrawerConfig().init(context);
     List<TextSpan> textSpans = [];
 
-    Future<CScoreRef>? futureList = FirestoreMethod.getMatchResultScore(opponent_id);
-
-    /**
-     * score 6
-     * index 0~5
-     */
-    List<TextSpan> makeHistoryList(CScoreRef? scoreRef) {
-      bool isFirst = true;
-      //日付毎に表示するスコアをもつ変数
-      String dispScore = '';
-      String time = '';
-      int scoreRefCnt = 0;
-      int roopCount = 0;
-
-
-      scoreRef!.HISTORYLIST.forEach((scoreRefHistoryElement) {
-        roopCount ++;
-        if(isFirst){
-          dispScore = scoreRefHistoryElement.MY_POINT.toString() + "-" + scoreRefHistoryElement.YOUR_POINT.toString();
-          time = scoreRefHistoryElement.KOUSHIN_TIME;
-          isFirst = false;
-        }
-        else {
-          if (scoreRefHistoryElement.KOUSHIN_TIME == time) {
-            dispScore = dispScore + "," + scoreRefHistoryElement.MY_POINT.toString() + "-" + scoreRefHistoryElement.YOUR_POINT.toString();
-            time = scoreRefHistoryElement.KOUSHIN_TIME;
-
-            if (roopCount == scoreRef!.HISTORYLIST.length) {
-              textSpans.add(
-                TextSpan(
-                  children: [
-                    TextSpan(text: scoreRefHistoryElement.KOUSHIN_TIME),
-                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
-                    TextSpan(text: scoreRef.TITLE[scoreRefCnt].isEmpty ? 'NoTitle' : scoreRef.TITLE[scoreRefCnt+1]),
-                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
-                    TextSpan(text:dispScore),
-                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
-
-                  ],
-                  style: TextStyle(fontSize: 20, color: Colors.black),
-                ),
-              );
-            }
-
-          }
-
-          else {
-
-            if (roopCount == scoreRef!.HISTORYLIST.length) {
-              textSpans.add(
-                TextSpan(
-                  children: [
-                    TextSpan(text: scoreRefHistoryElement.KOUSHIN_TIME),
-                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
-                    TextSpan(text: scoreRef.TITLE[scoreRefCnt].isEmpty ? 'NoTitle' : scoreRef.TITLE[scoreRefCnt+1]),
-                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
-                    TextSpan(text:scoreRefHistoryElement.MY_POINT.toString() + "-" + scoreRefHistoryElement.YOUR_POINT.toString()),
-                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
-
-                  ],
-                  style: TextStyle(fontSize: 20, color: Colors.black),
-                ),
-              );
-            }
-
-            else {
-              textSpans.add(
-                TextSpan(
-                  children: [
-                    TextSpan(text: time),
-                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
-                    TextSpan(text: scoreRef.TITLE[scoreRefCnt].isEmpty ? 'NoTitle' : scoreRef.TITLE[scoreRefCnt]),
-                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
-                    TextSpan(text:dispScore),
-                    TextSpan(text: '\n', style: TextStyle(height: 0.0)),
-
-                  ],
-                  style: TextStyle(fontSize: 20, color: Colors.black),
-                ),
-              );
-
-            }
-            scoreRefCnt++;
-            time = scoreRefHistoryElement.KOUSHIN_TIME;
-            dispScore = scoreRefHistoryElement.MY_POINT.toString() + "-" + scoreRefHistoryElement.YOUR_POINT.toString();
-          }
-        }
-      });
-      return textSpans;
-    }
+    Future<CScoreRef>? futureList =
+        FirestoreMethod.getMatchResultScore(opponent_id);
 
     return Scaffold(
       appBar: AppBar(
@@ -143,88 +55,273 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  //試合数
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "試合数 : " + scoreRef!.MATCH_COUNT.toString(),
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
-                        ),
-                      ]),
-
-                  const SizedBox(
-                    height: 10,
-                  ),
-
-                  //試合数
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "勝利数 : " + scoreRef!.WIN_COUNT.toString(),
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
-                        ),
-                      ]),
-
-                  const SizedBox(
-                    height: 10,
-                  ),
-
-                  //試合数
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "敗北数 : " + scoreRef!.LOSE_COUNT.toString(),
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
-                        ),
-                      ]),
-
-                  const SizedBox(
-                    height: 10,
-                  ),
-
-                  //試合数
                   Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: <Widget>[
                         Text(
                           "勝率 : " + scoreRef!.WIN_LATE.toString() + "%",
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
+                          style: TextStyle(fontSize: 30),
                         ),
                       ]),
-
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  //試合数
+                  Container(
+                    width: 140,
+                    height: 140,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.teal, //色
+                          spreadRadius: 5,
+                          blurRadius: 5,
+                          offset: Offset(1, 1),
+                        ),
+                      ],
+                      border: Border.all(
+                          color: Colors.greenAccent,
+                          style: BorderStyle.solid,
+                          width: 3),
+                    ),
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          Text(
+                            "試合数",
+                            style: TextStyle(
+                                fontSize: 25,
+                                color: Colors.white70,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          FittedBox(
+                            fit: BoxFit.scaleDown,
+                            child: Text(
+                              scoreRef!.MATCH_COUNT.toString(),
+                              style: TextStyle(
+                                  fontSize: 25,
+                                  color: Colors.white70,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                        ]),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              color: Colors.orangeAccent,
+                              style: BorderStyle.solid,
+                              width: 3),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.red, //色
+                              spreadRadius: 5,
+                              blurRadius: 5,
+                              offset: Offset(1, 1),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "勝利数",
+                                style: TextStyle(
+                                    fontSize: 25,
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  scoreRef!.WIN_COUNT.toString(),
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      color: Colors.white70,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ]),
+                      ),
+                      SizedBox(
+                        width: 20,
+                      ),
+                      Container(
+                        width: 120,
+                        height: 120,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                              color: Colors.lightBlueAccent,
+                              style: BorderStyle.solid,
+                              width: 3),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.blueAccent, //色
+                              spreadRadius: 5,
+                              blurRadius: 5,
+                              offset: Offset(1, 1),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Text(
+                                "敗北数",
+                                style: TextStyle(
+                                    fontSize: 25,
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                child: Text(
+                                  scoreRef!.LOSE_COUNT.toString(),
+                                  style: TextStyle(
+                                      fontSize: 25,
+                                      color: Colors.white70,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ]),
+                      ),
+                    ],
+                  ),
                   const SizedBox(
                     height: 30,
                   ),
 
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        Text(
-                          "対戦履歴",
-                          style: TextStyle(
-                              fontSize: 25, fontWeight: FontWeight.bold),
+                  scoreRef.HISTORYLIST.length == 0
+                      ? Container()
+                      : Container(
+                          child: Column(
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "直近対戦結果",
+                                  style: TextStyle(fontSize: 25),
+                                ),
+                              ),
+                              Container(
+                                width: MediaQuery.of(context).size.width * 0.95,
+                                child: Column(
+                                  children: scoreRef.HISTORYLIST
+                                      .map((historyItem) => Column(
+                                            children: [
+                                              Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                children: [
+                                                  Container(
+                                                    padding: EdgeInsets.only(
+                                                        right: 5),
+                                                    child: Text(
+                                                      historyItem.KOUSHIN_TIME,
+                                                      style: TextStyle(
+                                                          fontSize: 18),
+                                                    ),
+                                                  ),
+                                                  Container(
+                                                    child: FittedBox(
+                                                      fit: BoxFit.scaleDown,
+                                                      child: Text(
+                                                          historyItem.TITLE,
+                                                          style: TextStyle(
+                                                              fontSize: 18)),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              // SCORE_POINTを繰り返し表示
+                                              Container(
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: Colors.black26),
+                                                    color: Colors.white70),
+                                                child: Row(
+                                                  children: historyItem
+                                                      .SCORE_POINT
+                                                      .map((score) => Container(
+                                                            padding:
+                                                                EdgeInsets.all(
+                                                                    3),
+                                                            child: Text(score,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        18)),
+                                                          ))
+                                                      .toList(),
+                                                ),
+                                              ),
+                                              historyItem.FEEDBACK_COMMENT != ''
+                                                  ? Column(
+                                                      children: [
+                                                        Container(
+                                                          alignment: Alignment
+                                                              .bottomLeft,
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 5),
+                                                          child: Text(
+                                                            "レビューコメント",
+                                                            style: TextStyle(
+                                                                fontSize: 18),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width *
+                                                              0.95,
+                                                          alignment:
+                                                              Alignment.topLeft,
+                                                          height: 70,
+                                                          decoration: BoxDecoration(
+                                                              border: Border.all(
+                                                                  color: Colors
+                                                                      .black26),
+                                                              color: Colors
+                                                                  .white70),
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                  left: 5),
+                                                          child: Text(
+                                                            historyItem
+                                                                .FEEDBACK_COMMENT
+                                                                .toString(),
+                                                            style: TextStyle(
+                                                                fontSize: 18),
+                                                            maxLines: 3,
+                                                            textAlign:
+                                                                TextAlign.start,
+                                                            softWrap: true,
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                          ),
+                                                        )
+                                                      ],
+                                                    )
+                                                  : Container()
+                                              // 他の要素も必要に応じて表示できます
+                                            ],
+                                          ))
+                                      .toList(),
+                                ),
+                              )
+                            ],
+                          ),
                         ),
-                      ]),
-
-                  Container(
-                    height: 500,
-                    child: ListView(
-                        children: [
-                          RichText(
-                            text: TextSpan(
-                              children: makeHistoryList(scoreRef),
-                            ),
-                          )
-                        ]
-                    ),
-                  ),
                 ]),
               );
             } else {
