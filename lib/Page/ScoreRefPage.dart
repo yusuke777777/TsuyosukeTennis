@@ -212,6 +212,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                                 ),
                               ),
                               Container(
+                                padding: EdgeInsets.only(bottom: 20),
                                 width: MediaQuery.of(context).size.width * 0.95,
                                 child: Column(
                                   children: scoreRef.HISTORYLIST
@@ -285,7 +286,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                                                               0.95,
                                                           alignment:
                                                               Alignment.topLeft,
-                                                          height: 70,
+                                                          height: 80,
                                                           decoration: BoxDecoration(
                                                               border: Border.all(
                                                                   color: Colors
