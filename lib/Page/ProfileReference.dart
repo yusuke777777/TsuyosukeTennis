@@ -91,7 +91,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                           Row(
                                             children: [
                                               Container(
-                                                width: MediaQuery.of(context).size.width * 0.15,
+                                                width: MediaQuery.of(context).size.width * 0.1,
                                                 alignment: Alignment.bottomLeft,
                                                 child: Text(
                                                   "NO ",
@@ -99,7 +99,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                 ),
                                               ),
                                               Container(
-                                                width: MediaQuery.of(context).size.width * 0.25,
+                                                width: MediaQuery.of(context).size.width * 0.3,
                                                 alignment: Alignment.bottomLeft,
                                                 child: Text(
                                                   "TSP RANKING",

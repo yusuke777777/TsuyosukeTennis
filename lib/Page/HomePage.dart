@@ -121,7 +121,7 @@ class _HomePageState extends State<HomePage> {
                                     Row(
                                       children: [
                                         Container(
-                                          width: MediaQuery.of(context).size.width * 0.15,
+                                          width: MediaQuery.of(context).size.width * 0.1,
                                           alignment: Alignment.bottomLeft,
                                           child: Text(
                                             "NO ",
@@ -129,7 +129,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                         Container(
-                                          width: MediaQuery.of(context).size.width * 0.25,
+                                          width: MediaQuery.of(context).size.width * 0.3,
                                           alignment: Alignment.bottomLeft,
                                           child: Text(
                                             "TSP RANKING",

@@ -1870,6 +1870,7 @@ class FirestoreMethod {
         'opponentName': yourProfile.NICK_NAME,
         'scorePoint': MyScorePoint,
         'koushinTime': today,
+        'FEEDBACK_FLG':false
       });
     } catch (e) {
       print('日別タイトルの登録に失敗しました --- $e');
@@ -1890,6 +1891,7 @@ class FirestoreMethod {
         'opponentName': myProfile.NICK_NAME,
         'scorePoint': YourScorePoint,
         'koushinTime': today,
+        'FEEDBACK_FLG':false
       });
     } catch (e) {
       print('日別タイトルの登録に失敗しました --- $e');
@@ -2926,28 +2928,29 @@ class FirestoreMethod {
   }
 
   //男性シングルス・ランキングテーブルGET
-  static Future<List<RankModel>> getManSinglesRank(String RankLevel) async {
-    final snapshot =
-        await manSinglesRankRef.doc(RankLevel).collection('RankList').get();
-    List<RankModel> rankList = [];
-    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      String userId = doc.data()['USER_ID'];
-      CprofileSetting yourProfile = await getYourProfile(userId);
+  // static Future<List<RankModel>> getManSinglesRank(String RankLevel) async {
+  //   final snapshot =
+  //       await manSinglesRankRef.doc(RankLevel).collection('RankList').orderBy('RANK_NO').limit(10).get();
+  //   List<RankModel> rankList = [];
+  //   await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+  //     String userId = doc.data()['USER_ID'];
+  //     CprofileSetting yourProfile = await getYourProfile(userId);
+  //
+  //     try {
+  //       RankModel rankListWork = RankModel(
+  //         rankNo: doc.data()['RANK_NO'],
+  //         user: yourProfile,
+  //         tpPoint: doc.data()['TS_POINT'],
+  //       );
+  //       rankList.add(rankListWork);
+  //       rankList.sort((a, b) => b.rankNo.compareTo(a.rankNo));
+  //     } catch (e) {
+  //       print(e.toString());
+  //     }
+  //   });
+  //   return rankList;
+  // }
 
-      try {
-        RankModel rankListWork = RankModel(
-          rankNo: doc.data()['RANK_NO'],
-          user: yourProfile,
-          tpPoint: doc.data()['TS_POINT'],
-        );
-        rankList.add(rankListWork);
-        rankList.sort((a, b) => b.rankNo.compareTo(a.rankNo));
-      } catch (e) {
-        print(e.toString());
-      }
-    });
-    return rankList;
-  }
 
 // static Future<void> downloadImage(String PresentValueWk) async {
 //   FirebaseStorage storage = FirebaseStorage.instance;
@@ -3380,6 +3383,7 @@ class FirestoreMethod {
           .doc(dayKey)
           .update({
         'FEEDBACK_COMMENT': feedBack.FEED_BACK,
+        'FEEDBACK_FLG':true,
       });
     } catch (e) {
       print('フィードバックの登録に失敗しました --- $e');
@@ -3389,39 +3393,39 @@ class FirestoreMethod {
   /**
    * ログインユーザに対してのフィードバックのリストを取得
    */
-  static Future<List<CFeedBackCommentSetting>> getFeedBacks() async {
-    List<CFeedBackCommentSetting> feedBackList = [];
-    try {
-      final matchResultSnap = await matchResultRef
-          .doc(auth.currentUser!.uid)
-          .collection('opponentList')
-          .get();
-      await Future.forEach<dynamic>(matchResultSnap.docs, (doc) async {
-        final matchResultSnapWk = await matchResultRef
-            .doc(auth.currentUser!.uid)
-            .collection('opponentList')
-            .doc(doc.id)
-            .collection('daily')
-            .get();
-        await Future.forEach<dynamic>(matchResultSnapWk.docs, (doc2) async {
-          CHomePageVal home = await getNickNameAndTorokuRank(doc.id);
-          String feedBackComment = await doc2.data()?['FEEDBACK_COMMENT'] ?? "";
-          String matchTitle = await doc2.data()?['matchTitle'] ?? "";
-          if (feedBackComment != "") {
-            feedBackList.add(CFeedBackCommentSetting(
-                OPPONENT_ID: doc.id,
-                FEED_BACK: feedBackComment,
-                DATE_TIME: doc2.id,
-                MATCH_TITLE: matchTitle,
-                HOME: home));
-          }
-        });
-      });
-    } catch (e) {
-      print('フィードバックリスト取得に失敗しました --- $e');
-    }
-    return feedBackList;
-  }
+  // static Future<List<CFeedBackCommentSetting>> getFeedBacks() async {
+  //   List<CFeedBackCommentSetting> feedBackList = [];
+  //   try {
+  //     final matchResultSnap = await matchResultRef
+  //         .doc(auth.currentUser!.uid)
+  //         .collection('opponentList')
+  //         .get();
+  //     await Future.forEach<dynamic>(matchResultSnap.docs, (doc) async {
+  //       final matchResultSnapWk = await matchResultRef
+  //           .doc(auth.currentUser!.uid)
+  //           .collection('opponentList')
+  //           .doc(doc.id)
+  //           .collection('daily')
+  //           .get();
+  //       await Future.forEach<dynamic>(matchResultSnapWk.docs, (doc2) async {
+  //         CHomePageVal home = await getNickNameAndTorokuRank(doc.id);
+  //         String feedBackComment = await doc2.data()?['FEEDBACK_COMMENT'] ?? "";
+  //         String matchTitle = await doc2.data()?['matchTitle'] ?? "";
+  //         if (feedBackComment != "") {
+  //           feedBackList.add(CFeedBackCommentSetting(
+  //               OPPONENT_ID: doc.id,
+  //               FEED_BACK: feedBackComment,
+  //               DATE_TIME: doc2.id,
+  //               MATCH_TITLE: matchTitle,
+  //               HOME: home));
+  //         }
+  //       });
+  //     });
+  //   } catch (e) {
+  //     print('フィードバックリスト取得に失敗しました --- $e');
+  //   }
+  //   return feedBackList;
+  // }
 
   /**
    * 特定のフィードバックの取得

@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
 import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
 import '../Common/CFeedBackCommentSetting.dart';
@@ -9,6 +10,7 @@ import '../Common/CmatchResult.dart';
 import '../Common/CprofileSetting.dart';
 import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
+import '../FireBase/GoogleAds.dart';
 import '../PropSetCofig.dart';
 
 class MatchResultFeedBack extends StatefulWidget {
@@ -28,6 +30,8 @@ class MatchResultFeedBack extends StatefulWidget {
 }
 
 class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
+  InterstitialAd? _interstitialAd;
+  AdInterstitial adInterstitial = new AdInterstitial();
   //評価数を格納
   late String opponent_id;
   double stroke_fore = 0;
@@ -39,6 +43,19 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
 
   //フィードバックBOXに入力された値
   final inputWord = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    adInterstitial.createAd();
+
+    @override
+    void dispose() {
+      super.dispose();
+      _interstitialAd?.dispose();
+    }
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -426,6 +443,9 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                         widget.myProfile,
                                         widget.yourProfile,
                                         widget.dayKey);
+                                    //広告を表示する
+                                    await adInterstitial.showAd();
+                                    adInterstitial.createAd();
                                     Navigator.pop(context);
                                     //フィードバックを返したことを示すメッセージを記入する
                                     await FirestoreMethod.sendMatchResultFeedMessageReturn(widget.myProfile.USER_ID, widget.yourProfile.USER_ID, widget.dayKey);
