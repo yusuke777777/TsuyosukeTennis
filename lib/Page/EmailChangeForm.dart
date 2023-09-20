@@ -18,7 +18,7 @@ class _EmailChangeFormState extends State<EmailChangeForm> {
   @override
   Widget build(BuildContext context) {
     //必要コンフィグの初期化
-    HeaderConfig().init(context, "パスワード変更");
+    HeaderConfig().init(context, "メールアドレス変更");
     final FocusNode _focusNode = FocusNode();
     final FocusNode _focusNode_now = FocusNode();
     return GestureDetector(

@@ -75,7 +75,7 @@ class _MatchResultListState extends State<MatchResultList> {
   @override
   Widget build(BuildContext context) {
     //必要コンフィグの初期化
-    HeaderConfig().init(context, "マッチング結果一覧");
+    HeaderConfig().init(context, "対戦履歴");
     return Scaffold(
         appBar: AppBar(
             backgroundColor: HeaderConfig.backGroundColor,
