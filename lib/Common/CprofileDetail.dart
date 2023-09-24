@@ -34,6 +34,7 @@ class CprofileDetail {
   late double SERVE_1ST_AVE;
   late double SERVE_2ND_AVE;
   late int RANK_NO;
+  late String TITLE;
 
   CprofileDetail(
       {required this.USER_ID,
@@ -67,5 +68,6 @@ class CprofileDetail {
       required this.SERVE_1ST_AVE,
       required this.SERVE_2ND_AVE,
       required this.FIRST_TODOFUKEN_SICHOSON,
-      required this.KOUSHIN_TIME,required this.RANK_NO});
+      required this.KOUSHIN_TIME,required this.RANK_NO,
+      required this.TITLE});
 }

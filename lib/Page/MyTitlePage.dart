@@ -63,15 +63,15 @@ class MyTitlePage extends StatelessWidget {
                       title: Text(title.name),
                       subtitle: Text(title.description),
                       tileColor:
-                          title.status == "1" ? Colors.white : Colors.grey,
-                      trailing: title.status == "1"
+                          title.status == "1" || title.status == "2"? Colors.white : Colors.grey,
+                      trailing: title.status == "1" || title.status == "2"
                           ? ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.green,
                               ),
                               onPressed: () {
                                 // ボタンが押されたときの処理
-                                // ここに任意の処理を記述
+
                               },
                               child: Text('設定'),
                             )
