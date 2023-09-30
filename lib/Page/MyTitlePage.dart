@@ -8,6 +8,8 @@ import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
 import 'package:yaml/yaml.dart';
 
+import '../UnderMenuMove.dart';
+
 class MyTitlePage extends StatelessWidget {
   // Title.yamlに記載されている全ての称号を取得
   late List<CTitle> titles = [];
@@ -88,7 +90,7 @@ class MyTitlePage extends StatelessWidget {
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                  builder: (context) => HomePage(),
+                                                  builder: (context) => UnderMenuMove.make(0),
                                                 ));// ダイアログを閉じる
                                           },
                                         ),
