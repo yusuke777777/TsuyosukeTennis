@@ -251,7 +251,7 @@ class _HomePageState extends State<HomePage> {
                                       child: Text(
                                         profileDetailList.TITLE == ''? '称号設定なし':
                                         profileDetailList.TITLE,
-                                        style: TextStyle(fontSize: 25),
+                                        style: TextStyle(fontSize: 20),
                                       )),
                                   IconButton(
                                     icon: const Icon(

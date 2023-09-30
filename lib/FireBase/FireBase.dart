@@ -3897,12 +3897,32 @@ class FirestoreMethod {
    */
   static Future<Map<String, dynamic>> getMyTitle() async {
     final snapShot = await FirebaseFirestore.instance
-        .collection('myProfile')
+        .collection('myProfileDetail')
         .doc(auth.currentUser!.uid)
         .get();
 
     Map<String, dynamic> title = snapShot.data()!['TITLE'];
     return title;
+  }
+
+  /**
+   * ホーム画面に表示している称号を変更する
+   */
+  static Future<void> changeTitle(int no) async {
+    Map<String, dynamic> map = await getMyTitle();
+    String changedKey = '';
+    for(dynamic entry in map.entries) {
+      if(entry.value.toString() == "2"){
+        changedKey = entry.key;
+      }
+    }
+    if(changedKey != ''){
+      map[changedKey] = '1';
+    }
+    map[no.toString()] = '2';
+    await profileDetailRef.doc(auth.currentUser!.uid).update({
+      'TITLE': map
+    });
   }
 
   /**
