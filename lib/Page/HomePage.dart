@@ -249,8 +249,9 @@ class _HomePageState extends State<HomePage> {
                                   Container(
                                       alignment: Alignment.bottomLeft,
                                       child: Text(
-                                        '課金プレーヤー',
-                                        style: TextStyle(fontSize: 25),
+                                        profileDetailList.TITLE == ''? '称号設定なし':
+                                        profileDetailList.TITLE,
+                                        style: TextStyle(fontSize: 20),
                                       )),
                                   IconButton(
                                     icon: const Icon(
@@ -260,6 +261,11 @@ class _HomePageState extends State<HomePage> {
                                     ),
                                     onPressed: () {
                                       //称号を表示する画面へ
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => MyTitlePage(),
+                                          ));
                                     },
                                   ),
                                 ],

@@ -1,11 +1,14 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:tsuyosuke_tennis_ap/Page/HomePage.dart';
 
 import '../Common/CTitle.dart';
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
 import 'package:yaml/yaml.dart';
+
+import '../UnderMenuMove.dart';
 
 class MyTitlePage extends StatelessWidget {
   // Title.yamlに記載されている全ての称号を取得
@@ -20,9 +23,11 @@ class MyTitlePage extends StatelessWidget {
     final List<dynamic> yamlList = loadYaml(yamlString);
     Map<String, dynamic> map = await FirestoreMethod.getMyTitle();
     for (var item in yamlList) {
+      int no = item['no'];
       String name = item['name'];
       String description = item['description'];
       title = CTitle(
+          no:no,
           name: name,
           description: description,
           status: map[item['no'].toString()].toString());
@@ -63,15 +68,35 @@ class MyTitlePage extends StatelessWidget {
                       title: Text(title.name),
                       subtitle: Text(title.description),
                       tileColor:
-                          title.status == "1" ? Colors.white : Colors.grey,
-                      trailing: title.status == "1"
+                          title.status == "1" || title.status == "2"? Colors.white : Colors.grey,
+                      trailing: title.status == "1" || title.status == "2"
                           ? ElevatedButton(
                               style: ElevatedButton.styleFrom(
                                 primary: Colors.green,
                               ),
                               onPressed: () {
                                 // ボタンが押されたときの処理
-                                // ここに任意の処理を記述
+                                FirestoreMethod.changeTitle(title.no);
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => AlertDialog(
+                                      content: Text(
+                                          "称号を設定しました"),
+                                      actions: <Widget>[
+                                        // OKボタン
+                                        TextButton(
+                                          child: Text('OK'),
+                                          onPressed: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) => UnderMenuMove.make(0),
+                                                ));// ダイアログを閉じる
+                                          },
+                                        ),
+                                      ],
+                                    )
+                                );
                               },
                               child: Text('設定'),
                             )
