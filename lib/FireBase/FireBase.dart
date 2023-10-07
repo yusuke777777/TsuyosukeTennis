@@ -664,6 +664,7 @@ class FirestoreMethod {
     bool roomCheck = false;
     late TalkRoomModel room;
     roomCheck = await checkRoom(myuserId, youruserID, roomCheck);
+    print("roomCheck" + roomCheck.toString());
     if (roomCheck) {
       room = await getRoomBySearchResult(myuserId, youruserID);
       return room;
@@ -716,16 +717,17 @@ class FirestoreMethod {
    */
   static Future<bool> checkRoom(
       String myUserId, String yourUserID, bool roomCheck) async {
-    final snapshot = await roomRef.get();
-    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      if (doc.data()['joined_user_ids'].contains(myUserId)) {
-        doc.data()['joined_user_ids'].forEach((id) {
-          if (id == yourUserID) {
-            roomCheck = true;
-          }
-        });
+    final snapshot =
+        await roomRef.where('joined_user_ids', arrayContains: myUserId).get();
+    bool roomCheck = false;
+
+    for (var doc in snapshot.docs) {
+      var joinedUserIds = doc.data()['joined_user_ids'] as List<dynamic>;
+      if (joinedUserIds.contains(yourUserID)) {
+        roomCheck = true;
+        break; // マッチした場合はループを抜ける
       }
-    });
+    }
     return roomCheck;
   }
 
@@ -738,12 +740,13 @@ class FirestoreMethod {
    */
   static Future<TalkRoomModel> getRoomBySearchResult(
       String myUserId, String yourUserId) async {
-    final snapshot = await roomRef.get();
+    final snapshot =
+        await roomRef.where('joined_user_ids', arrayContains: myUserId).get();
+
     late TalkRoomModel room;
     late int count;
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      if (doc.data()['joined_user_ids'].contains(myUserId) &&
-          doc.data()['joined_user_ids'].contains(yourUserId)) {
+      if (doc.data()['joined_user_ids'].contains(yourUserId)) {
         CprofileSetting yourProfile = await getYourProfile(yourUserId);
         try {
           count = await NotificationMethod.unreadCountGet(yourUserId);
@@ -762,39 +765,38 @@ class FirestoreMethod {
   }
 
   static Future<List<TalkRoomModel>> getRooms(String myUserId) async {
-    final snapshot = await roomRef.get();
+    final snapshot =
+        await roomRef.where('joined_user_ids', arrayContains: myUserId).get();
     List<TalkRoomModel> roomList = [];
     late int count;
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      if (doc.data()['joined_user_ids'].contains(myUserId)) {
-        late String yourUserId;
-        doc.data()['joined_user_ids'].forEach((id) {
-          if (id != myUserId) {
-            yourUserId = id;
-            return;
-          }
-        });
-        try {
-          count = await NotificationMethod.unreadCountGet(yourUserId);
-        } catch (e) {
-          print("未読メッセージ数を正しく取得できませんでした");
+      late String yourUserId;
+      doc.data()['joined_user_ids'].forEach((id) {
+        if (id != myUserId) {
+          yourUserId = id;
+          return;
         }
-        //ブロックリストに存在しない場合に表示する
-        String blockUserChk = await getBlockListChk(yourUserId);
-        if (blockUserChk == "0") {
-          try {
-            CprofileSetting yourProfile = await getYourProfile(yourUserId);
-            TalkRoomModel room = await TalkRoomModel(
-                roomId: doc.id,
-                user: yourProfile,
-                lastMessage: doc.data()['last_message'] ?? '',
-                unReadCnt: count,
-                updated_time: doc.data()['updated_time'] ?? '');
-            roomList.add(room);
-          } catch (e) {
-            print("トークルームの取得に失敗しました");
-            print(e);
-          }
+      });
+      try {
+        count = await NotificationMethod.unreadCountGet(yourUserId);
+      } catch (e) {
+        print("未読メッセージ数を正しく取得できませんでした");
+      }
+      //ブロックリストに存在しない場合に表示する
+      String blockUserChk = await getBlockListChk(yourUserId);
+      if (blockUserChk == "0") {
+        try {
+          CprofileSetting yourProfile = await getYourProfile(yourUserId);
+          TalkRoomModel room = await TalkRoomModel(
+              roomId: doc.id,
+              user: yourProfile,
+              lastMessage: doc.data()['last_message'] ?? '',
+              unReadCnt: count,
+              updated_time: doc.data()['updated_time'] ?? '');
+          roomList.add(room);
+        } catch (e) {
+          print("トークルームの取得に失敗しました");
+          print(e);
         }
       }
     });
@@ -804,27 +806,26 @@ class FirestoreMethod {
 
   static Future<TalkRoomModel> getRoom(String RECIPIENT_ID, String SENDER_ID,
       CprofileSetting yourProfile) async {
-    final snapshot = await roomRef.get();
+    final snapshot = await roomRef
+        .where('joined_user_ids', arrayContains: RECIPIENT_ID)
+        .get();
     late TalkRoomModel room;
     late int count;
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
       late String yourUserId;
-      if (doc.data()['joined_user_ids'].contains(RECIPIENT_ID)) {
-        if (doc.data()['joined_user_ids'].contains(SENDER_ID)) {
-          try {
-            count =
-                await NotificationMethod.unreadCountGet(yourProfile.USER_ID);
-          } catch (e) {
-            print("未読メッセージ数を正しく取得できませんでした");
-            print(e);
-          }
-          room = TalkRoomModel(
-              roomId: doc.id,
-              user: yourProfile,
-              lastMessage: doc.data()['last_message'] ?? '',
-              unReadCnt: count,
-              updated_time: doc.data()['updated_time'] ?? '');
+      if (doc.data()['joined_user_ids'].contains(SENDER_ID)) {
+        try {
+          count = await NotificationMethod.unreadCountGet(yourProfile.USER_ID);
+        } catch (e) {
+          print("未読メッセージ数を正しく取得できませんでした");
+          print(e);
         }
+        room = TalkRoomModel(
+            roomId: doc.id,
+            user: yourProfile,
+            lastMessage: doc.data()['last_message'] ?? '',
+            unReadCnt: count,
+            updated_time: doc.data()['updated_time'] ?? '');
       }
     });
     return room;
@@ -1345,6 +1346,7 @@ class FirestoreMethod {
       await matchRef.add({
         'RECIPIENT_ID': auth.currentUser!.uid,
         'SENDER_ID': talkRoom.user.USER_ID,
+        'MATCH_USER_LIST': [auth.currentUser!.uid, talkRoom.user.USER_ID],
         'SAKUSEI_TIME': today,
         'MATCH_FLG': '1',
       }).then((value) {
@@ -1365,6 +1367,7 @@ class FirestoreMethod {
       await matchRef.add({
         'RECIPIENT_ID': auth.currentUser!.uid,
         'SENDER_ID': yourUserId,
+        'MATCH_USER_LIST': [auth.currentUser!.uid, yourUserId],
         'SAKUSEI_TIME': today,
         'MATCH_FLG': '1',
       }).then((value) {
@@ -1375,47 +1378,47 @@ class FirestoreMethod {
     }
   }
 
-  static Future<List<MatchListModel>> getMatchList(String myUserId) async {
-    final snapshot = await matchRef.get();
-    List<MatchListModel> matchList = [];
-    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      if (doc.data()['RECIPIENT_ID'].contains(myUserId)) {
-        CprofileSetting yourProfile =
-            await getYourProfile(doc.data()['SENDER_ID']);
-        CprofileSetting myProfile =
-            await getYourProfile(doc.data()['RECIPIENT_ID']);
-
-        MatchListModel match = MatchListModel(
-          MATCH_ID: doc.data()['MATCH_ID'],
-          RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
-          SENDER_ID: doc.data()['SENDER_ID'],
-          SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
-          MATCH_FLG: doc.data()['MATCH_FLG'],
-          MY_USER: myProfile,
-          YOUR_USER: yourProfile,
-        );
-        matchList.add(match);
-      } else if (doc.data()['SENDER_ID'].contains(myUserId)) {
-        CprofileSetting yourProfile =
-            await getYourProfile(doc.data()['RECIPIENT_ID']);
-        CprofileSetting myProfile =
-            await getYourProfile(doc.data()['SENDER_ID']);
-        MatchListModel match = MatchListModel(
-          MATCH_ID: doc.data()['MATCH_ID'],
-          RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
-          SENDER_ID: doc.data()['SENDER_ID'],
-          SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
-          MATCH_FLG: doc.data()['MATCH_FLG'],
-          MY_USER: myProfile,
-          YOUR_USER: yourProfile,
-        );
-        matchList.add(match);
-      }
-      print(matchList.length);
-    });
-    matchList.sort((a, b) => b.SAKUSEI_TIME.compareTo(a.SAKUSEI_TIME));
-    return matchList;
-  }
+  // static Future<List<MatchListModel>> getMatchList(String myUserId) async {
+  //   final snapshot = await matchRef.get();
+  //   List<MatchListModel> matchList = [];
+  //   await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+  //     if (doc.data()['RECIPIENT_ID'].contains(myUserId)) {
+  //       CprofileSetting yourProfile =
+  //           await getYourProfile(doc.data()['SENDER_ID']);
+  //       CprofileSetting myProfile =
+  //           await getYourProfile(doc.data()['RECIPIENT_ID']);
+  //
+  //       MatchListModel match = MatchListModel(
+  //         MATCH_ID: doc.data()['MATCH_ID'],
+  //         RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
+  //         SENDER_ID: doc.data()['SENDER_ID'],
+  //         SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
+  //         MATCH_FLG: doc.data()['MATCH_FLG'],
+  //         MY_USER: myProfile,
+  //         YOUR_USER: yourProfile,
+  //       );
+  //       matchList.add(match);
+  //     } else if (doc.data()['SENDER_ID'].contains(myUserId)) {
+  //       CprofileSetting yourProfile =
+  //           await getYourProfile(doc.data()['RECIPIENT_ID']);
+  //       CprofileSetting myProfile =
+  //           await getYourProfile(doc.data()['SENDER_ID']);
+  //       MatchListModel match = MatchListModel(
+  //         MATCH_ID: doc.data()['MATCH_ID'],
+  //         RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
+  //         SENDER_ID: doc.data()['SENDER_ID'],
+  //         SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
+  //         MATCH_FLG: doc.data()['MATCH_FLG'],
+  //         MY_USER: myProfile,
+  //         YOUR_USER: yourProfile,
+  //       );
+  //       matchList.add(match);
+  //     }
+  //     print(matchList.length);
+  //   });
+  //   matchList.sort((a, b) => b.SAKUSEI_TIME.compareTo(a.SAKUSEI_TIME));
+  //   return matchList;
+  // }
 
   //マッチング一覧削除
   static void delMatchList(String delId, BuildContext context) async {
@@ -1535,62 +1538,62 @@ class FirestoreMethod {
   }
 
   //各レベルの勝率算出メソッド
-  static Future<void> winRateUpdate(
-      CprofileSetting myProfile, CprofileSetting yourProfile) async {
-    final snapshotDetail = await matchResultRef
-        .doc(myProfile.USER_ID)
-        .collection('opponentList')
-        .doc(yourProfile.USER_ID)
-        .collection('matchDetail')
-        .get();
-    int winSu = 0;
-    int matchSu = 0;
-    await Future.forEach<dynamic>(snapshotDetail.docs, (doc) async {
-      if (doc.data()['TOROKU_RANK'].contains(yourProfile.TOROKU_RANK)) {
-        winSu = doc.data()['WIN_FLG'] + winSu;
-        matchSu = matchSu + 1;
-      } else {
-        matchSu = matchSu + 1;
-      }
-    });
-    final snapshotResult = await matchResultRef.doc(myProfile.USER_ID);
-
-    int loseSu = matchSu - winSu;
-    int winRate = ((winSu / matchSu) * 100).round();
-
-    switch (yourProfile.TOROKU_RANK) {
-      case '初級':
-        try {
-          snapshotResult.update({'SHOKYU_WIN_SU': winSu});
-          snapshotResult.update({'SHOKYU_LOSE_SU': loseSu});
-          snapshotResult.update({'SHOKYU_MATCH_SU': matchSu});
-          snapshotResult.update({'SHOKYU_WIN_RATE': winRate});
-        } catch (e) {
-          print('初級TSPポイントの付与に失敗しました --- $e');
-        }
-        break;
-      case '中級':
-        try {
-          snapshotResult.update({'CHUKYU_WIN_SU': winSu});
-          snapshotResult.update({'CHUKYU_LOSE_SU': loseSu});
-          snapshotResult.update({'CHUKYU_MATCH_SU': matchSu});
-          snapshotResult.update({'CHUKYU_WIN_RATE': winRate});
-        } catch (e) {
-          print('中級TSPポイントの付与に失敗しました --- $e');
-        }
-        break;
-      case '上級':
-        try {
-          snapshotResult.update({'JYOKYU_WIN_SU': winSu});
-          snapshotResult.update({'JYOKYU_LOSE_SU': loseSu});
-          snapshotResult.update({'JYOKYU_MATCH_SU': matchSu});
-          snapshotResult.update({'JYOKYU_WIN_RATE': winRate});
-        } catch (e) {
-          print('上級TSPポイントの付与に失敗しました --- $e');
-        }
-        break;
-    }
-  }
+  // static Future<void> winRateUpdate(
+  //     CprofileSetting myProfile, CprofileSetting yourProfile) async {
+  //   final snapshotDetail = await matchResultRef
+  //       .doc(myProfile.USER_ID)
+  //       .collection('opponentList')
+  //       .doc(yourProfile.USER_ID)
+  //       .collection('matchDetail')
+  //       .get();
+  //   int winSu = 0;
+  //   int matchSu = 0;
+  //   await Future.forEach<dynamic>(snapshotDetail.docs, (doc) async {
+  //     if (doc.data()['TOROKU_RANK'].contains(yourProfile.TOROKU_RANK)) {
+  //       winSu = doc.data()['WIN_FLG'] + winSu;
+  //       matchSu = matchSu + 1;
+  //     } else {
+  //       matchSu = matchSu + 1;
+  //     }
+  //   });
+  //   final snapshotResult = await matchResultRef.doc(myProfile.USER_ID);
+  //
+  //   int loseSu = matchSu - winSu;
+  //   int winRate = ((winSu / matchSu) * 100).round();
+  //
+  //   switch (yourProfile.TOROKU_RANK) {
+  //     case '初級':
+  //       try {
+  //         snapshotResult.update({'SHOKYU_WIN_SU': winSu});
+  //         snapshotResult.update({'SHOKYU_LOSE_SU': loseSu});
+  //         snapshotResult.update({'SHOKYU_MATCH_SU': matchSu});
+  //         snapshotResult.update({'SHOKYU_WIN_RATE': winRate});
+  //       } catch (e) {
+  //         print('初級TSPポイントの付与に失敗しました --- $e');
+  //       }
+  //       break;
+  //     case '中級':
+  //       try {
+  //         snapshotResult.update({'CHUKYU_WIN_SU': winSu});
+  //         snapshotResult.update({'CHUKYU_LOSE_SU': loseSu});
+  //         snapshotResult.update({'CHUKYU_MATCH_SU': matchSu});
+  //         snapshotResult.update({'CHUKYU_WIN_RATE': winRate});
+  //       } catch (e) {
+  //         print('中級TSPポイントの付与に失敗しました --- $e');
+  //       }
+  //       break;
+  //     case '上級':
+  //       try {
+  //         snapshotResult.update({'JYOKYU_WIN_SU': winSu});
+  //         snapshotResult.update({'JYOKYU_LOSE_SU': loseSu});
+  //         snapshotResult.update({'JYOKYU_MATCH_SU': matchSu});
+  //         snapshotResult.update({'JYOKYU_WIN_RATE': winRate});
+  //       } catch (e) {
+  //         print('上級TSPポイントの付与に失敗しました --- $e');
+  //       }
+  //       break;
+  //   }
+  // }
 
   //対戦結果作成
   static Future<void> makeMatchResult(
@@ -1870,7 +1873,7 @@ class FirestoreMethod {
         'opponentName': yourProfile.NICK_NAME,
         'scorePoint': MyScorePoint,
         'koushinTime': today,
-        'FEEDBACK_FLG':false
+        'FEEDBACK_FLG': false
       });
     } catch (e) {
       print('日別タイトルの登録に失敗しました --- $e');
@@ -1891,7 +1894,7 @@ class FirestoreMethod {
         'opponentName': myProfile.NICK_NAME,
         'scorePoint': YourScorePoint,
         'koushinTime': today,
-        'FEEDBACK_FLG':false
+        'FEEDBACK_FLG': false
       });
     } catch (e) {
       print('日別タイトルの登録に失敗しました --- $e');
@@ -2951,7 +2954,6 @@ class FirestoreMethod {
   //   return rankList;
   // }
 
-
 // static Future<void> downloadImage(String PresentValueWk) async {
 //   FirebaseStorage storage = FirebaseStorage.instance;
 //   // Reference imageRef = storage.ref().child("picture").child(PresentValueWk).child("que_004.jpg");
@@ -3383,7 +3385,7 @@ class FirestoreMethod {
           .doc(dayKey)
           .update({
         'FEEDBACK_COMMENT': feedBack.FEED_BACK,
-        'FEEDBACK_FLG':true,
+        'FEEDBACK_FLG': true,
       });
     } catch (e) {
       print('フィードバックの登録に失敗しました --- $e');
@@ -3774,7 +3776,7 @@ class FirestoreMethod {
         .orderBy('dailyId', descending: true)
         .limit(5)
         .get();
-    if(snapShot_daily.docs.isNotEmpty) {
+    if (snapShot_daily.docs.isNotEmpty) {
       await Future.forEach<dynamic>(snapShot_daily.docs, (docHis) async {
         history = CScoreRefHistory(
             TITLE: docHis.data()["matchTitle"],
@@ -3783,30 +3785,26 @@ class FirestoreMethod {
             FEEDBACK_COMMENT: docHis.data()?["FEEDBACK_COMMENT"] ?? "");
         historyList.add(history);
       });
-    }else{
+    } else {
       history = CScoreRefHistory(
-          TITLE: "",
-          KOUSHIN_TIME: "",
-          SCORE_POINT: [],
-          FEEDBACK_COMMENT: "");
+          TITLE: "", KOUSHIN_TIME: "", SCORE_POINT: [], FEEDBACK_COMMENT: "");
     }
-    if(doc.exists) {
-        result = new CScoreRef(
+    if (doc.exists) {
+      result = new CScoreRef(
         MATCH_COUNT: doc!['MATCH_SU'],
         WIN_COUNT: doc!['WIN_SU'],
         LOSE_COUNT: doc!['LOSE_SU'],
         WIN_LATE: doc!['WIN_RATE'],
         HISTORYLIST: historyList,
       );
-    }else{
-       result = new CScoreRef(
+    } else {
+      result = new CScoreRef(
         MATCH_COUNT: 0,
         WIN_COUNT: 0,
         LOSE_COUNT: 0,
         WIN_LATE: 0,
         HISTORYLIST: historyList,
       );
-
     }
     return result;
   }
