@@ -2,6 +2,7 @@ import 'package:bordered_text/bordered_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
 import 'FindMultiResultPage.dart';
@@ -37,6 +38,22 @@ class _FindPageState extends State<FindPage> {
   final inputShichouson = TextEditingController();
 
   MaterialColor colorstate = Colors.green;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadProfile();
+  }
+
+  Future<void> _loadProfile() async {
+    CprofileSetting profile = await FirestoreMethod.getProfile();
+    setState(() {
+      todofuken = profile.activityList[0].TODOFUKEN;
+      torokuRank = profile.TOROKU_RANK;
+      gender = profile.GENDER;
+      torokuAge = profile.AGE;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -335,7 +352,7 @@ class _FindPageState extends State<FindPage> {
                         IconButton(
                           icon: Icon(Icons.search),
                           onPressed: () async{
-                            // List<String> blockList = await FirestoreMethod.getBlockUserList(auth.currentUser!.uid);
+                            List<String> blockList = await FirestoreMethod.getBlockUserList(auth.currentUser!.uid);
                             todofuken == "" &&
                                     gender == "" &&
                                     torokuRank == "" &&
@@ -356,7 +373,7 @@ class _FindPageState extends State<FindPage> {
                                           inputShichouson.text,
                                           gender,
                                           torokuRank,
-                                          torokuAge),
+                                          torokuAge,blockList),
                                     ));
                           },
                         ),

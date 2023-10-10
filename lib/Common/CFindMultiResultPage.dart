@@ -1,14 +1,15 @@
 class CFindMultiResultPage {
-  late String? TODOFUKEN;
-  late String? SHICHOUSON;
-  late String GENDER;
-  late String RANK;
-  late String? AGE;
+  late String USER_ID;
+  late String NICK_NAME;
+  late String PROFILE_IMAGE;
+  late String COMENT;
+  late double COMENT_HEIGHT;
 
   CFindMultiResultPage(
-      {this.TODOFUKEN,
-      this.SHICHOUSON,
-      required this.GENDER,
-      required this.RANK,
-      this.AGE});
+      {required this.USER_ID,
+      required this.NICK_NAME,
+      required this.PROFILE_IMAGE,
+      required this.COMENT,
+        required this.COMENT_HEIGHT
+     });
 }

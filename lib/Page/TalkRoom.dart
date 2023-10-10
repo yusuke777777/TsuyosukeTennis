@@ -631,13 +631,13 @@ class _TalkRoomState extends State<TalkRoom> {
                             color: Colors.white,
                             icon: Icon(Icons.send),
                             onPressed: () async {
-                              print("送信");
+                              String sendMessage = controller.text;
+                              controller.clear();
                               CprofileSetting myProfile =
                               await FirestoreMethod.getProfile();
-                              if (controller.text.isNotEmpty) {
+                              if (sendMessage.isNotEmpty) {
                                 await FirestoreMethod.sendMessage(
-                                    widget.room, controller.text);
-                                controller.clear();
+                                    widget.room, sendMessage);
                               }
                             },
                           ),

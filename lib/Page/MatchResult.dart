@@ -622,6 +622,16 @@ class _MatchResultState extends State<MatchResult> {
                                   } else {
                                     //対戦結果を登録する
                                     String dayKey = DateTime.now().toString();
+                                    //広告を表示する
+                                    await adInterstitial.showAd();
+                                    adInterstitial.createAd();
+                                    //マッチリストを削除する
+                                    FirestoreMethod.delMatchListAuto(widget.matchId);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                UnderMenuMove.make(2)));
                                     await FirestoreMethod.makeMatchResult(
                                         widget.myProfile,
                                         widget.yourProfile,
@@ -659,11 +669,7 @@ class _MatchResultState extends State<MatchResult> {
                                             dayKey);
                                       }
                                     }
-                                    //広告を表示する
-                                    await adInterstitial.showAd();
-                                    adInterstitial.createAd();
 
-                                    Navigator.pop(context);
                                     //対戦結果のメッセージを送信する
                                     if (_feedbackFlg && FirestoreMethod.reviewFeatureEnabled) {
                                       FirestoreMethod
@@ -679,8 +685,6 @@ class _MatchResultState extends State<MatchResult> {
                                     }
                                     //称号の更新
                                     FirestoreMethod.updateTitle(widget.myProfile, widget.yourProfile);
-                                    //マッチリストを削除する
-                                    FirestoreMethod.delMatchListAuto(widget.matchId);
 
                                   }
                                 }

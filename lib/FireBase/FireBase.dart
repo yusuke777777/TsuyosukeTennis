@@ -1260,9 +1260,11 @@ class FirestoreMethod {
 
     String name = snapShot.docs.first!['NICK_NAME'];
     String profile = snapShot.docs.first!['PROFILE_IMAGE'];
+    String coment  = snapShot.docs.first!['COMENT'];
     resultList.add(name);
     resultList.add(profile);
     resultList.add(id);
+    resultList.add(coment);
 
     return resultList;
   }

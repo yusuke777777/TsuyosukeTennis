@@ -419,6 +419,10 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                           );
                                         });
                                   } else {
+                                    //広告を表示する
+                                    await adInterstitial.showAd();
+                                    adInterstitial.createAd();
+                                    Navigator.pop(context);
                                     //星数を登録する
                                     CSkilLevelSetting skill = CSkilLevelSetting(
                                       OPPONENT_ID: opponent_id,
@@ -443,10 +447,6 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                         widget.myProfile,
                                         widget.yourProfile,
                                         widget.dayKey);
-                                    //広告を表示する
-                                    await adInterstitial.showAd();
-                                    adInterstitial.createAd();
-                                    Navigator.pop(context);
                                     //フィードバックを返したことを示すメッセージを記入する
                                     await FirestoreMethod.sendMatchResultFeedMessageReturn(widget.myProfile.USER_ID, widget.yourProfile.USER_ID, widget.dayKey);
                                     await FirestoreMethod.matchFeedAccept(widget.room, widget.messageId);

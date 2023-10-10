@@ -838,7 +838,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                   profileDetailList.COMENT,
                                   textAlign: TextAlign.start,
                                   softWrap: true,
-                                  overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定
+                                  overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
                                   maxLines: 7,
                                   style: TextStyle(
                                       fontSize: 14, color: Colors.black),
