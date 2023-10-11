@@ -108,7 +108,7 @@ class _FindResultPageState extends State<FindResultPage> {
                           double textHeight = snapshot.data as double;
                           print(textHeight);
                           return Container(
-                            height: textHeight + 30,
+                            height: profileList[3] == '' ? 60 : textHeight + 45,
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [

@@ -269,8 +269,8 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                     },
                     child: Card(
                       color: Colors.white,
-                      child: Container(
-                        height: searchResultListAll[index].COMENT_HEIGHT + 30,
+                      child:Container(
+                        height: searchResultListAll[index].COMENT == '' ? 60 : searchResultListAll[index].COMENT_HEIGHT + 45,
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [

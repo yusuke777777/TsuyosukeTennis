@@ -549,52 +549,51 @@ class FirestoreMethod {
     Map<String, String> titleMap = snapShot.data()!['TITLE'];
 
     //現在の称号一覧表の項目を全件取得
-    final String yamlString =
-    await rootBundle.loadString('assets/Title.yaml');
+    final String yamlString = await rootBundle.loadString('assets/Title.yaml');
     final List<dynamic> yamlList = loadYaml(yamlString);
 
     String homeViewTitle = '0';
     titleMap.forEach((key, value) {
-      if(value == '2') {
+      if (value == '2') {
         homeViewTitle = key;
       }
     });
 
     CprofileDetail cprofileDetail = CprofileDetail(
-        USER_ID: snapShot.data()!['USER_ID'],
-        PROFILE_IMAGE: snapShot.data()!['PROFILE_IMAGE'],
-        NICK_NAME: snapShot.data()!['NICK_NAME'],
-        TOROKU_RANK: snapShot.data()!['TOROKU_RANK'],
-        AGE: snapShot.data()!['AGE'],
-        GENDER: snapShot.data()!['GENDER'],
-        COMENT: snapShot.data()!['COMENT'],
-        TODOFUKEN_LIST: snapShot.data()!['TODOFUKEN_LIST'],
-        SHICHOSON_LIST: snapShot.data()!['SHICHOSON_LIST'],
-        TODOFUKEN_SHICHOSON_LIST: snapShot.data()!['TODOFUKEN_SHICHOSON_LIST'],
-        TS_POINT: snapShot.data()!['TS_POINT'],
-        SHOKYU_WIN_SU: snapShot.data()!['SHOKYU_WIN_SU'],
-        SHOKYU_LOSE_SU: snapShot.data()!['SHOKYU_LOSE_SU'],
-        SHOKYU_MATCH_SU: snapShot.data()!['SHOKYU_MATCH_SU'],
-        SHOKYU_WIN_RATE: snapShot.data()!['SHOKYU_WIN_RATE'],
-        CHUKYU_WIN_SU: snapShot.data()!['CHUKYU_WIN_SU'],
-        CHUKYU_LOSE_SU: snapShot.data()!['CHUKYU_LOSE_SU'],
-        CHUKYU_MATCH_SU: snapShot.data()!['CHUKYU_MATCH_SU'],
-        CHUKYU_WIN_RATE: snapShot.data()!['CHUKYU_WIN_RATE'],
-        JYOKYU_WIN_SU: snapShot.data()!['JYOKYU_WIN_SU'],
-        JYOKYU_LOSE_SU: snapShot.data()!['JYOKYU_LOSE_SU'],
-        JYOKYU_MATCH_SU: snapShot.data()!['JYOKYU_MATCH_SU'],
-        JYOKYU_WIN_RATE: snapShot.data()!['JYOKYU_WIN_RATE'],
-        STROKE_FOREHAND_AVE: snapShot.data()!['STROKE_FOREHAND_AVE'],
-        STROKE_BACKHAND_AVE: snapShot.data()!['STROKE_BACKHAND_AVE'],
-        VOLLEY_FOREHAND_AVE: snapShot.data()!['VOLLEY_FOREHAND_AVE'],
-        VOLLEY_BACKHAND_AVE: snapShot.data()!['VOLLEY_BACKHAND_AVE'],
-        SERVE_1ST_AVE: snapShot.data()!['SERVE_1ST_AVE'],
-        SERVE_2ND_AVE: snapShot.data()!['SERVE_2ND_AVE'],
-        FIRST_TODOFUKEN_SICHOSON: snapShot.data()!['FIRST_TODOFUKEN_SICHOSON'],
-        KOUSHIN_TIME: snapShot.data()!['KOUSHIN_TIME'],
-        RANK_NO: snapShot.data()!['RANK_NO'],
-        TITLE: yamlList[int.parse(homeViewTitle)],
-        );
+      USER_ID: snapShot.data()!['USER_ID'],
+      PROFILE_IMAGE: snapShot.data()!['PROFILE_IMAGE'],
+      NICK_NAME: snapShot.data()!['NICK_NAME'],
+      TOROKU_RANK: snapShot.data()!['TOROKU_RANK'],
+      AGE: snapShot.data()!['AGE'],
+      GENDER: snapShot.data()!['GENDER'],
+      COMENT: snapShot.data()!['COMENT'],
+      TODOFUKEN_LIST: snapShot.data()!['TODOFUKEN_LIST'],
+      SHICHOSON_LIST: snapShot.data()!['SHICHOSON_LIST'],
+      TODOFUKEN_SHICHOSON_LIST: snapShot.data()!['TODOFUKEN_SHICHOSON_LIST'],
+      TS_POINT: snapShot.data()!['TS_POINT'],
+      SHOKYU_WIN_SU: snapShot.data()!['SHOKYU_WIN_SU'],
+      SHOKYU_LOSE_SU: snapShot.data()!['SHOKYU_LOSE_SU'],
+      SHOKYU_MATCH_SU: snapShot.data()!['SHOKYU_MATCH_SU'],
+      SHOKYU_WIN_RATE: snapShot.data()!['SHOKYU_WIN_RATE'],
+      CHUKYU_WIN_SU: snapShot.data()!['CHUKYU_WIN_SU'],
+      CHUKYU_LOSE_SU: snapShot.data()!['CHUKYU_LOSE_SU'],
+      CHUKYU_MATCH_SU: snapShot.data()!['CHUKYU_MATCH_SU'],
+      CHUKYU_WIN_RATE: snapShot.data()!['CHUKYU_WIN_RATE'],
+      JYOKYU_WIN_SU: snapShot.data()!['JYOKYU_WIN_SU'],
+      JYOKYU_LOSE_SU: snapShot.data()!['JYOKYU_LOSE_SU'],
+      JYOKYU_MATCH_SU: snapShot.data()!['JYOKYU_MATCH_SU'],
+      JYOKYU_WIN_RATE: snapShot.data()!['JYOKYU_WIN_RATE'],
+      STROKE_FOREHAND_AVE: snapShot.data()!['STROKE_FOREHAND_AVE'],
+      STROKE_BACKHAND_AVE: snapShot.data()!['STROKE_BACKHAND_AVE'],
+      VOLLEY_FOREHAND_AVE: snapShot.data()!['VOLLEY_FOREHAND_AVE'],
+      VOLLEY_BACKHAND_AVE: snapShot.data()!['VOLLEY_BACKHAND_AVE'],
+      SERVE_1ST_AVE: snapShot.data()!['SERVE_1ST_AVE'],
+      SERVE_2ND_AVE: snapShot.data()!['SERVE_2ND_AVE'],
+      FIRST_TODOFUKEN_SICHOSON: snapShot.data()!['FIRST_TODOFUKEN_SICHOSON'],
+      KOUSHIN_TIME: snapShot.data()!['KOUSHIN_TIME'],
+      RANK_NO: snapShot.data()!['RANK_NO'],
+      TITLE: yamlList[int.parse(homeViewTitle)],
+    );
 
     return cprofileDetail;
   }
@@ -614,17 +613,17 @@ class FirestoreMethod {
     //現在の称号一覧表の項目を全件取得
     final String yamlString = await rootBundle.loadString('assets/Title.yaml');
     final List<dynamic> yamlList = loadYaml(yamlString);
-    String returnTitle ='';
-    
+    String returnTitle = '';
+
     String homeViewTitleKeyNo = '0';
     titleMap.forEach((key, value) {
-      if(value == '2') {
+      if (value == '2') {
         homeViewTitleKeyNo = key;
       }
     });
     for (var item in yamlList) {
-      if(item['no'].toString() == homeViewTitleKeyNo){
-        returnTitle= item['name'];
+      if (item['no'].toString() == homeViewTitleKeyNo) {
+        returnTitle = item['name'];
       }
     }
 
@@ -1260,7 +1259,7 @@ class FirestoreMethod {
 
     String name = snapShot.docs.first!['NICK_NAME'];
     String profile = snapShot.docs.first!['PROFILE_IMAGE'];
-    String coment  = snapShot.docs.first!['COMENT'];
+    String coment = snapShot.docs.first!['COMENT'];
     resultList.add(name);
     resultList.add(profile);
     resultList.add(id);
@@ -1495,27 +1494,33 @@ class FirestoreMethod {
 
   //対戦結果_新規フラグ取得
   static Future<String> newFlgMatchResult(String UserId) async {
-    final snapshot = await matchResultRef.get();
-    String NEW_FLG = "1";
-    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      if (doc.id == UserId) {
-        NEW_FLG = "0";
-      }
-    });
+    final snapshot = await matchResultRef.doc(UserId).get();
+    late String NEW_FLG;
+
+    if (snapshot.exists) {
+      NEW_FLG = "0";
+    } else {
+      NEW_FLG = "1";
+    }
     return NEW_FLG;
   }
 
   //個人対戦結果_新規フラグ取得
   static Future<String> individualNewFlgMatch(
       String myUserId, String yourUserId) async {
-    final snapshot =
-        await matchResultRef.doc(myUserId).collection('opponentList').get();
-    String NEW_FLG = "1";
-    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      if (doc.id == yourUserId) {
-        NEW_FLG = "0";
-      }
-    });
+    late String NEW_FLG;
+
+    final snapshot = await matchResultRef
+        .doc(myUserId)
+        .collection('opponentList')
+        .doc(yourUserId)
+        .get();
+    if (snapshot.exists) {
+      NEW_FLG = "0";
+    } else {
+      NEW_FLG = "1";
+    }
+
     return NEW_FLG;
   }
 
@@ -1765,7 +1770,9 @@ class FirestoreMethod {
 
     //新規フラグ取得メソッド結果を取得
     MY_NEW_FLG = await newFlgMatchResult(myProfile.USER_ID);
+    print("MY_NEW_FLG" + MY_NEW_FLG);
     YOUR_NEW_FLG = await newFlgMatchResult(yourProfile.USER_ID);
+    print("YOUR_NEW_FLG" + YOUR_NEW_FLG);
 
     //ランキング取得メソッド
     MY_RANK = await rankingGet(myProfile.USER_ID);
@@ -1954,6 +1961,9 @@ class FirestoreMethod {
         await individualNewFlgMatch(myProfile.USER_ID, yourProfile.USER_ID);
     YOUR_NEW_MATCH_FLG =
         await individualNewFlgMatch(yourProfile.USER_ID, myProfile.USER_ID);
+    print("MY_NEW_MATCH_FLG" + MY_NEW_MATCH_FLG);
+    print("YOUR_NEW_MATCH_FLG" + YOUR_NEW_MATCH_FLG);
+    
     MY_LOSE_SU = MY_MATCH_SU - MY_WIN_SU;
     if (MY_NEW_MATCH_FLG == "1") {
       MY_WIN_SU_SUM = 0 + MY_WIN_SU;
@@ -3911,18 +3921,16 @@ class FirestoreMethod {
   static Future<void> changeTitle(int no) async {
     Map<String, dynamic> map = await getMyTitle();
     String changedKey = '';
-    for(dynamic entry in map.entries) {
-      if(entry.value.toString() == "2"){
+    for (dynamic entry in map.entries) {
+      if (entry.value.toString() == "2") {
         changedKey = entry.key;
       }
     }
-    if(changedKey != ''){
+    if (changedKey != '') {
       map[changedKey] = '1';
     }
     map[no.toString()] = '2';
-    await profileDetailRef.doc(auth.currentUser!.uid).update({
-      'TITLE': map
-    });
+    await profileDetailRef.doc(auth.currentUser!.uid).update({'TITLE': map});
   }
 
   /**
