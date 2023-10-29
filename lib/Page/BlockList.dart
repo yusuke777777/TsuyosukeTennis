@@ -113,19 +113,17 @@ class _BlockListState extends State<BlockList> {
                                         },
                                       ),
                                     ),
-                                   Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
+                                   Container(
+
+                             child:
                                             Text(
                                                 blockList[index]
                                                     .YOUR_USER
                                                     .NICK_NAME,
                                                 style: TextStyle(
-                                                    fontSize: 18,
+                                                    fontSize: 20,
                                                     fontWeight:
                                                     FontWeight.bold)),
-                                          ],
                                         )
                                   ],
                                 ),

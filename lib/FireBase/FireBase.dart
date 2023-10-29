@@ -1534,17 +1534,18 @@ class FirestoreMethod {
     } else if (rank == "上級") {
       manSingleRank = "JoukyuRank";
     }
+    late String NEW_FLG;
     final rankSnap = await FirebaseFirestore.instance
         .collection('manSinglesRank')
         .doc(manSingleRank)
         .collection('RankList')
+        .doc(myUserId)
         .get();
-    String NEW_FLG = "1";
-    await Future.forEach<dynamic>(rankSnap.docs, (doc) async {
-      if (doc.id == myUserId) {
-        NEW_FLG = "0";
-      }
-    });
+    if (rankSnap.exists) {
+      NEW_FLG = "0";
+    } else {
+      NEW_FLG = "1";
+    }
     return NEW_FLG;
   }
 
@@ -1778,6 +1779,7 @@ class FirestoreMethod {
     MY_RANK = await rankingGet(myProfile.USER_ID);
     print('MY_RANK' + MY_RANK.toString());
     YOUR_RANK = await rankingGet(yourProfile.USER_ID);
+    print('YOUR_RANK' + YOUR_RANK.toString());
 
     //個人対戦結果勝率
     late int MY_WIN_SU = 0;
@@ -1963,7 +1965,7 @@ class FirestoreMethod {
         await individualNewFlgMatch(yourProfile.USER_ID, myProfile.USER_ID);
     print("MY_NEW_MATCH_FLG" + MY_NEW_MATCH_FLG);
     print("YOUR_NEW_MATCH_FLG" + YOUR_NEW_MATCH_FLG);
-    
+
     MY_LOSE_SU = MY_MATCH_SU - MY_WIN_SU;
     if (MY_NEW_MATCH_FLG == "1") {
       MY_WIN_SU_SUM = 0 + MY_WIN_SU;
@@ -2890,60 +2892,69 @@ class FirestoreMethod {
    */
   static Future<bool> checkFriends(String roomID) async {
     final doc = await roomRef.doc(roomID).get();
-    bool alreadyFriendflg = false;
+    late bool alreadyFriendflg;
     List<String> checkList = [];
     checkList.add(doc.data()!['joined_user_ids'][0]);
     checkList.add(doc.data()!['joined_user_ids'][1]);
 
-    final snapshot = await friendsListRef.get();
-    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      if ((doc.data()['RECIPIENT_ID'].contains(checkList[0]) &&
-              doc.data()['SENDER_ID'].contains(checkList[1])) ||
-          (doc.data()['RECIPIENT_ID'].contains(checkList[1]) &&
-              doc.data()['SENDER_ID'].contains(checkList[0]))) {
-        alreadyFriendflg = true;
-      }
-    });
+    final snapshotRECIP = await friendsListRef
+        .where('RECIPIENT_ID', isEqualTo: doc.data()!['joined_user_ids'][0])
+        .where('SENDER_ID', isEqualTo: doc.data()!['joined_user_ids'][1])
+        .get();
+
+    final snapshotSENDER = await friendsListRef
+        .where('RECIPIENT_ID', isEqualTo: doc.data()!['joined_user_ids'][1])
+        .where('SENDER_ID', isEqualTo: doc.data()!['joined_user_ids'][0])
+        .get();
+
+    if (snapshotRECIP.docs.isNotEmpty || snapshotSENDER.docs.isNotEmpty) {
+      alreadyFriendflg = true;
+      print("alreadyFriendflg" + alreadyFriendflg.toString());
+    } else {
+      alreadyFriendflg = false;
+    }
     return alreadyFriendflg;
   }
 
   //友人リスト取得
   static Future<List<FriendsListModel>> getFriendsList(String myUserId) async {
-    final snapshot = await friendsListRef.get();
+    final snapshot1 =
+        await friendsListRef.where('RECIPIENT_ID', isEqualTo: myUserId).get();
+    final snapshot2 =
+        await friendsListRef.where('SENDER_ID', isEqualTo: myUserId).get();
     List<FriendsListModel> friendsList = [];
-    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      if (doc.data()['RECIPIENT_ID'].contains(myUserId)) {
-        CprofileSetting yourProfile =
-            await getYourProfile(doc.data()['SENDER_ID']);
-        CprofileSetting myProfile =
-            await getYourProfile(doc.data()['RECIPIENT_ID']);
+    await Future.forEach<dynamic>(snapshot1.docs, (doc) async {
+      CprofileSetting yourProfile =
+          await getYourProfile(doc.data()['SENDER_ID']);
+      CprofileSetting myProfile =
+          await getYourProfile(doc.data()['RECIPIENT_ID']);
 
-        FriendsListModel friends = FriendsListModel(
-          FRIENDS_ID: doc.data()['FRIENDS_ID'],
-          RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
-          SENDER_ID: doc.data()['SENDER_ID'],
-          SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
-          FRIENDS_FLG: doc.data()['FRIENDS_FLG'],
-          MY_USER: myProfile,
-          YOUR_USER: yourProfile,
-        );
-        friendsList.add(friends);
-      } else if (doc.data()['SENDER_ID'].contains(myUserId)) {
-        CprofileSetting yourProfile =
-            await getYourProfile(doc.data()['RECIPIENT_ID']);
-        CprofileSetting myProfile =
-            await getYourProfile(doc.data()['SENDER_ID']);
-        FriendsListModel friends = FriendsListModel(
-          FRIENDS_ID: doc.data()['FRIENDS_ID'],
-          RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
-          SENDER_ID: doc.data()['SENDER_ID'],
-          SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
-          FRIENDS_FLG: doc.data()['FRIENDS_FLG'],
-          MY_USER: myProfile,
-          YOUR_USER: yourProfile,
-        );
-        friendsList.add(friends);
-      }
+      FriendsListModel friends = FriendsListModel(
+        FRIENDS_ID: doc.data()['FRIENDS_ID'],
+        RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
+        SENDER_ID: doc.data()['SENDER_ID'],
+        SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
+        FRIENDS_FLG: doc.data()['FRIENDS_FLG'],
+        MY_USER: myProfile,
+        YOUR_USER: yourProfile,
+      );
+      friendsList.add(friends);
+    });
+    await Future.forEach<dynamic>(snapshot2.docs, (doc) async {
+      CprofileSetting yourProfile =
+          await getYourProfile(doc.data()['RECIPIENT_ID']);
+      CprofileSetting myProfile = await getYourProfile(doc.data()['SENDER_ID']);
+
+      FriendsListModel friends = FriendsListModel(
+        FRIENDS_ID: doc.data()['FRIENDS_ID'],
+        RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
+        SENDER_ID: doc.data()['SENDER_ID'],
+        SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
+        FRIENDS_FLG: doc.data()['FRIENDS_FLG'],
+        MY_USER: myProfile,
+        YOUR_USER: yourProfile,
+      );
+      friendsList.add(friends);
     });
     return friendsList;
   }
@@ -3685,22 +3696,22 @@ class FirestoreMethod {
 //ブロックリストチェック
     String newFlg =
         await FirestoreMethod.newFlgBlockList(auth.currentUser!.uid);
+    print("newFlg" + newFlg.toString());
 
     if (newFlg == "0") {
       final snapshot = await blockListRef
           .doc(auth.currentUser!.uid)
           .collection('blockUserList')
+          .where('BLOCK_USER', isEqualTo: userId)
           .get();
-      await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-        if (doc.data()['blockUser'].contains(userId)) {
-          print("既にブロック済みです");
-        } else {
-          await blockListRef
-              .doc(auth.currentUser!.uid)
-              .collection('blockUserList')
-              .add({'BLOCK_USER': userId});
-        }
-      });
+      if (snapshot.docs.isNotEmpty) {
+        print("既にブロック済みです");
+      } else {
+        await blockListRef
+            .doc(auth.currentUser!.uid)
+            .collection('blockUserList')
+            .add({'BLOCK_USER': userId});
+      }
     } else {
       await blockListRef
           .doc(auth.currentUser!.uid)
@@ -3728,13 +3739,14 @@ class FirestoreMethod {
 
 //ブロックリスト_新規フラグ取得
   static Future<String> newFlgBlockList(String userId) async {
-    final snapshot = await blockListRef.get();
-    String newFlg = "1";
-    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      if (doc.id == userId) {
-        newFlg = "0";
-      }
-    });
+    final snapshot =
+        await blockListRef.doc(userId).collection('blockUserList').get();
+    late String newFlg;
+    if (snapshot.docs.isNotEmpty) {
+      newFlg = "0";
+    } else {
+      newFlg = "1";
+    }
     return newFlg;
   }
 
