@@ -60,6 +60,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
   @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "対戦結果参照");
+    final deviceWidth = MediaQuery.of(context).size.width;
     opponent_id = widget.yourProfile.USER_ID;
     return GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
@@ -91,65 +92,71 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                           ),
                         ),
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            SizedBox(
-                              width: 80,
-                            ),
                             Container(
-                              child: Text(
-                                widget.myProfile.NICK_NAME,
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.black),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 80,
-                            ),
-                            Container(
-                              child: Text(
-                                widget.yourProfile.NICK_NAME,
-                                style: TextStyle(
-                                    fontSize: 20, color: Colors.black),
-                              ),
-                            ),
-                          ],
-                        ),
-                        ListView.builder(
-                            shrinkWrap: true,
-                            physics: NeverScrollableScrollPhysics(),
-                            padding: const EdgeInsets.all(8),
-                            // ②配列のデータ数分カード表示を行う
-                            itemCount: widget.matchResultList.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Column(
+                              padding: EdgeInsets.only(right: 10),
+                              width: deviceWidth * 0.3,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  SizedBox(
-                                    width: 80,
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: deviceWidth * 0.3,
+                                    child: widget.myProfile.PROFILE_IMAGE == ''
+                                        ? CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: NetworkImage(
+                                          "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                      radius: 30,
+                                    )
+                                        : CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: NetworkImage(
+                                          widget.myProfile.PROFILE_IMAGE),
+                                      radius: 30,
+                                    ),
                                   ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: deviceWidth * 0.3,
+                                    child: FittedBox(
+                                      alignment: Alignment.bottomCenter,
+                                      fit:BoxFit.scaleDown,
+                                      child: Text(
+                                        widget.myProfile.NICK_NAME,
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.black),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ) ,
+                            Column(
+                              children: widget.matchResultList
+                                  .map((matchResult) => Column(
+                                children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: [
-                                      SizedBox(
-                                        width: 80,
-                                      ),
                                       Container(
                                         alignment: Alignment.center,
-                                        padding: const EdgeInsets.all(5.0),
-                                        width: 50,
+                                        width: deviceWidth * 0.12,
                                         height: 50,
                                         decoration: BoxDecoration(
                                           border:
-                                              Border.all(color: Colors.grey),
+                                          Border.all(color: Colors.grey),
                                         ),
                                         child: Text(
-                                          '${widget.matchResultList[index].myGamePoint}',
+                                          '${matchResult.myGamePoint}',
                                           style: TextStyle(
                                               fontSize: 20,
                                               color: Colors.black),
                                         ),
                                       ),
                                       Container(
-                                        width: 80,
+                                        width: deviceWidth * 0.1,
                                         child: Center(
                                           child: Text(
                                             "-",
@@ -161,28 +168,65 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                       ),
                                       Container(
                                         alignment: Alignment.center,
-                                        padding: const EdgeInsets.all(5.0),
-                                        width: 50,
+                                        width: deviceWidth * 0.12,
                                         height: 50,
                                         decoration: BoxDecoration(
                                           border:
-                                              Border.all(color: Colors.grey),
+                                          Border.all(color: Colors.grey),
                                         ),
                                         child: Text(
-                                          '${widget.matchResultList[index].yourGamePoint}',
+                                          '${matchResult.yourGamePoint}',
                                           style: TextStyle(
                                               fontSize: 20,
                                               color: Colors.black),
                                         ),
                                       ),
-                                      SizedBox(
-                                        width: 80,
-                                      ),
                                     ],
                                   ),
                                 ],
-                              );
-                            }),
+                              )).toList(),
+                            ),
+                            Container(
+                              padding: EdgeInsets.only(left: 10),
+                              width: deviceWidth * 0.3,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: deviceWidth * 0.3,
+                                    child: widget.yourProfile.PROFILE_IMAGE == ''
+                                        ? CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: NetworkImage(
+                                          "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                      radius: 30,
+                                    )
+                                        : CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: NetworkImage(
+                                          widget.yourProfile.PROFILE_IMAGE),
+                                      radius: 30,
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: deviceWidth * 0.3,
+                                    child: FittedBox(
+                                      alignment: Alignment.bottomCenter,
+                                      fit:BoxFit.scaleDown,
+                                      child: Text(
+                                        widget.yourProfile.NICK_NAME,
+                                        style: TextStyle(
+                                            fontSize: 20, color: Colors.black),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
 
                         //レビュー集計機能
                         Column(

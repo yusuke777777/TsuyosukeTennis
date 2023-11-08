@@ -133,6 +133,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
 
   @override
   Widget build(BuildContext context) {
+    final deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         // appBar: AppBar(
         //   backgroundColor: const Color(0xFF3CB371),
@@ -153,18 +154,21 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                 children: [
                   Padding(padding: EdgeInsets.all(10)),
                   Container(
-                    width: 60,
+                    width: deviceWidth * 0.17,
+                    alignment: Alignment.center,
                     child: Text("ランク",
                         style: TextStyle(fontSize: 20, color: Colors.black),
                         overflow: TextOverflow.ellipsis),
                   ),
                   Padding(padding: EdgeInsets.fromLTRB(50, 0, 0, 0)),
                   Container(
-                    width: 150,
+                    alignment: Alignment.center,
+                    width: deviceWidth * 0.25,
                     child: Text("選手名", style: TextStyle(fontSize: 20)),
                   ),
                   Container(
-                    width: 100,
+                    alignment: Alignment.center,
+                    width: deviceWidth * 0.38  ,
                     child: Text("ポイント",
                         style: TextStyle(fontSize: 20, color: Colors.black),
                         overflow: TextOverflow.ellipsis),
@@ -201,9 +205,9 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Padding(padding: EdgeInsets.all(10)),
                           Container(
-                            width: 20,
+                            width: deviceWidth * 0.17,
+                            alignment: Alignment.center,
                             child: FittedBox(
                               alignment: Alignment.bottomCenter,
                               fit: BoxFit.scaleDown,
@@ -214,39 +218,46 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                   overflow: TextOverflow.ellipsis),
                             ),
                           ),
-                          Padding(padding: EdgeInsets.fromLTRB(50, 0, 0, 0)),
-                          InkWell(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              child:
-                                  RankModelList[index].user.PROFILE_IMAGE == ''
-                                      ? CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          backgroundImage: NetworkImage(
-                                              "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                          radius: 20,
-                                        )
-                                      : CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          backgroundImage: NetworkImage(
-                                              RankModelList[index]
-                                                  .user
-                                                  .PROFILE_IMAGE),
-                                          radius: 20,
-                                        ),
-                            ),
-                            onTap: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ProfileReference(
-                                          RankModelList[index].user.USER_ID)));
-                            },
-                          ),
+                          Container(
+                            padding: EdgeInsets.only(right: 3),
+                            alignment: Alignment.center,
+                            width: deviceWidth * 0.46,
+                            child: Row(
+                              children: [
+                                InkWell(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    width: deviceWidth * 0.15,
+                                    padding:
+                                        const EdgeInsets.symmetric(horizontal: 4.0),
+                                    child:
+                                        RankModelList[index].user.PROFILE_IMAGE == ''
+                                            ? CircleAvatar(
+                                                backgroundColor: Colors.white,
+                                                backgroundImage: NetworkImage(
+                                                    "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                                radius: 20,
+                                              )
+                                            : CircleAvatar(
+                                                backgroundColor: Colors.white,
+                                                backgroundImage: NetworkImage(
+                                                    RankModelList[index]
+                                                        .user
+                                                        .PROFILE_IMAGE),
+                                                radius: 20,
+                                              ),
+                                  ),
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ProfileReference(
+                                                RankModelList[index].user.USER_ID)));
+                                  },
+                                ),
                           InkWell(
                             child: Container(
-                              width: 180,
+                              width: deviceWidth * 0.3,
                               child: FittedBox(
                                 alignment: Alignment.bottomLeft,
                                 fit: BoxFit.scaleDown,
@@ -297,8 +308,13 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                   });
                             },
                           ),
+                              ],
+                            ),
+                          ),
                           Container(
-                            width: 50,
+                            alignment: Alignment.centerRight,
+                            padding: EdgeInsets.only(right: 3),
+                            width: deviceWidth * 0.3,
                             child: FittedBox(
                               alignment: Alignment.bottomRight,
                               fit: BoxFit.scaleDown,

@@ -31,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "ホーム");
     DrawerConfig().init(context);
+    final deviceWidth = MediaQuery.of(context).size.width;
 
     late Future<CprofileDetail> myProfileDetail =
         FirestoreMethod.getMyDetailProfile(auth.currentUser!.uid);
@@ -80,7 +81,8 @@ class _HomePageState extends State<HomePage> {
                       //プロフィール画像
                       child: Column(children: [
                     Container(
-                        height: MediaQuery.of(context).size.height * 0.25,
+                        height: 230,
+                        width: deviceWidth,
                         decoration: BoxDecoration(
                           image: DecorationImage(
                             image: AssetImage('images/kori.jpg'),
@@ -92,12 +94,12 @@ class _HomePageState extends State<HomePage> {
                               Container(
                                 padding: EdgeInsets.only(left: 40, top: 20),
                                 alignment: Alignment.bottomCenter,
-                                width: MediaQuery.of(context).size.width * 0.55,
+                                width: deviceWidth * 0.55,
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      width: MediaQuery.of(context).size.width * 0.5,
+                                      width: deviceWidth * 0.5,
                                       alignment: Alignment.bottomLeft,
                                       child: FittedBox(
                                         alignment: Alignment.bottomLeft,
@@ -110,7 +112,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                     Container(
-                                      width: MediaQuery.of(context).size.width * 0.5,
+                                      width: deviceWidth * 0.5,
                                       alignment: Alignment.bottomLeft,
                                       child: Text(
                                         "   ID: " + profileDetailList.MY_USER_ID.toString(),
@@ -121,7 +123,7 @@ class _HomePageState extends State<HomePage> {
                                     Row(
                                       children: [
                                         Container(
-                                          width: MediaQuery.of(context).size.width * 0.1,
+                                          width: deviceWidth * 0.1,
                                           alignment: Alignment.bottomLeft,
                                           child: Text(
                                             "NO ",
@@ -129,7 +131,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                         Container(
-                                          width: MediaQuery.of(context).size.width * 0.3,
+                                          width: deviceWidth * 0.3,
                                           alignment: Alignment.bottomLeft,
                                           child: Text(
                                             "TSP RANKING",
@@ -143,7 +145,7 @@ class _HomePageState extends State<HomePage> {
                                         Row(
                                           children: [
                                             Container(
-                                              width: MediaQuery.of(context).size.width * 0.12,
+                                              width: deviceWidth * 0.12,
                                               alignment: Alignment.bottomCenter,
                                               child: FittedBox(
                                                 alignment:Alignment.bottomLeft,
@@ -155,7 +157,7 @@ class _HomePageState extends State<HomePage> {
                                               ),
                                             ),
                                             Container(
-                                              width: MediaQuery.of(context).size.width * 0.32,
+                                              width: deviceWidth * 0.32,
                                               alignment: Alignment.bottomLeft,
                                               child: FittedBox(
                                                 alignment:Alignment.bottomLeft,
@@ -169,7 +171,7 @@ class _HomePageState extends State<HomePage> {
                                           ],
                                         ),
                                         Container(
-                                          width: MediaQuery.of(context).size.width * 0.44,
+                                          width: deviceWidth * 0.44,
                                           alignment: Alignment.bottomRight,
                                           child: FittedBox(
                                             alignment:Alignment.bottomRight,
@@ -185,7 +187,7 @@ class _HomePageState extends State<HomePage> {
                                     Row(
                                       children: [
                                         Container(
-                                          width: MediaQuery.of(context).size.width * 0.15,
+                                          width: deviceWidth * 0.15,
                                           alignment: Alignment.bottomCenter,
                                           child: FittedBox(
                                             alignment:Alignment.bottomLeft,
@@ -197,7 +199,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                         Container(
-                                          width: MediaQuery.of(context).size.width * 0.25,
+                                          width: deviceWidth * 0.25,
                                           alignment: Alignment.bottomLeft,
                                           child: FittedBox(
                                             alignment:Alignment.bottomLeft,
@@ -214,7 +216,7 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ),
                               Container(
-                                width: MediaQuery.of(context).size.width * 0.4,
+                                width: deviceWidth * 0.4,
                                 child: profileDetailList.PROFILE_IMAGE == ''
                                     ? CircleAvatar(
                                         backgroundColor: Colors.white,
@@ -240,8 +242,8 @@ class _HomePageState extends State<HomePage> {
                               )),
                         ])),
                         Container(
-                          height: MediaQuery.of(context).size.height * 0.15,
-                          width: MediaQuery.of(context).size.width * 0.8,
+                          height: 120,
+                          width: deviceWidth * 0.8,
                           child: Column(
                             children: [
                               Row(
@@ -272,7 +274,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               Container(
                                   alignment: Alignment.bottomLeft,
-                                  width: MediaQuery.of(context).size.width * 0.8,
+                                  width: deviceWidth * 0.8,
                                   child: Column(
                                     children: [
                                       Row(
@@ -313,8 +315,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.2,
-                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: 180,
+                      width: deviceWidth * 0.8,
                       child: Column(
                         children: [
                           Container(
@@ -325,25 +327,25 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Container(
-                            height: MediaQuery.of(context).size.height * 0.12,
-                            width: MediaQuery.of(context).size.width * 0.8,
+                            height: 100,
+                            width: deviceWidth * 0.8,
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 SizedBox(
-                                    width: MediaQuery.of(context).size.width *
+                                    width: deviceWidth *
                                         0.05),
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Container(
-                                      width: MediaQuery.of(context).size.width *
+                                      width: deviceWidth *
                                           0.25,
                                       padding: EdgeInsets.only(left: 20),
                                       child: Text('初級'),
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width *
+                                      width: deviceWidth *
                                           0.25,
                                       child: Stack(children: [
                                         SizedBox(
@@ -375,30 +377,27 @@ class _HomePageState extends State<HomePage> {
                                                     )
                                                   ],
                                                 ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      profileDetailList
-                                                              .SHOKYU_WIN_SU
+
+                                                    Container(
+                                                      width: 70,
+                                                      child: FittedBox(
+                                                        fit: BoxFit.scaleDown,
+                                                        child: Text(
+                                                          NumberFormat('#,###')
+                                                              .format(profileDetailList
+                                                                  .SHOKYU_WIN_SU)
+                                                                  .toString() +
+                                                              '勝 ' +  NumberFormat('#,###')
+                                                              .format(profileDetailList
+                                                              .SHOKYU_LOSE_SU)
                                                               .toString() +
-                                                          '勝',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
+                                                              '敗',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                    Text(
-                                                      profileDetailList
-                                                              .SHOKYU_LOSE_SU
-                                                              .toString() +
-                                                          '敗',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
                                               ],
                                             ),
                                           ),
@@ -430,12 +429,12 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     Container(
                                       padding: EdgeInsets.only(left: 20),
-                                      width: MediaQuery.of(context).size.width *
+                                      width: deviceWidth *
                                           0.25,
                                       child: Text('中級'),
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width *
+                                      width: deviceWidth *
                                           0.25,
                                       child: Stack(children: [
                                         SizedBox(
@@ -467,30 +466,26 @@ class _HomePageState extends State<HomePage> {
                                                     )
                                                   ],
                                                 ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      profileDetailList
-                                                              .CHUKYU_WIN_SU
-                                                              .toString() +
-                                                          '勝',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
+                                                    Container(
+                                                      width: 70,
+                                                      child: FittedBox(
+                                                        fit: BoxFit.scaleDown,
+                                                        child: Text(
+                                                          NumberFormat('#,###')
+                                                              .format(profileDetailList
+                                                                  .CHUKYU_WIN_SU)
+                                                                  .toString() +
+                                                              '勝 ' +  NumberFormat('#,###')
+                                                              .format(profileDetailList
+                                                            .CHUKYU_LOSE_SU)
+                                                            .toString() +
+                                                            '敗',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                    Text(
-                                                      profileDetailList
-                                                              .CHUKYU_LOSE_SU
-                                                              .toString() +
-                                                          '敗',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
                                               ],
                                             ),
                                           ),
@@ -522,12 +517,12 @@ class _HomePageState extends State<HomePage> {
                                   children: [
                                     Container(
                                       padding: EdgeInsets.only(left: 20),
-                                      width: MediaQuery.of(context).size.width *
+                                      width: deviceWidth *
                                           0.25,
                                       child: Text('上級'),
                                     ),
                                     SizedBox(
-                                      width: MediaQuery.of(context).size.width *
+                                      width: deviceWidth *
                                           0.25,
                                       child: Stack(children: [
                                         SizedBox(
@@ -559,30 +554,27 @@ class _HomePageState extends State<HomePage> {
                                                     )
                                                   ],
                                                 ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      profileDetailList
-                                                              .JYOKYU_WIN_SU
-                                                              .toString() +
-                                                          '勝',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
+                                                    Container(
+                                                      width: 70,
+                                                      child: FittedBox(
+                                                        fit: BoxFit.scaleDown,
+                                                        child: Text(
+                                                          NumberFormat('#,###')
+                                                              .format(profileDetailList
+                                                                  .JYOKYU_WIN_SU)
+                                                                  .toString() +
+                                                              '勝 '
+                                                            +  NumberFormat('#,###')
+                                                              .format(profileDetailList
+                                                            .JYOKYU_LOSE_SU)
+                                                            .toString() +
+                                                            '敗',
+                                                          style: TextStyle(
+                                                            fontSize: 12,
+                                                          ),
+                                                        ),
                                                       ),
                                                     ),
-                                                    Text(
-                                                      profileDetailList
-                                                              .JYOKYU_LOSE_SU
-                                                              .toString() +
-                                                          '敗',
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
                                               ],
                                             ),
                                           ),
@@ -616,8 +608,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.42,
-                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: 380,
+                      width: deviceWidth * 0.8,
                       child: Column(
                         children: [
                           Container(
@@ -833,14 +825,18 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.15,
-                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: 130,
+                      width: deviceWidth * 0.8,
                       child: Column(
                         children: [
                           Container(
-                            width: MediaQuery.of(context).size.width * 0.8,
-                            child: Text('-----------------------------',
-                                style: TextStyle(fontSize: 30,color: Colors.black26)),
+                            width: deviceWidth * 0.8,
+                            child: FittedBox(
+                              alignment: Alignment.bottomLeft,
+                              fit: BoxFit.scaleDown,
+                              child: Text('-----------------------------',
+                                  style: TextStyle(fontSize: 30,color: Colors.black26)),
+                            ),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -851,13 +847,17 @@ class _HomePageState extends State<HomePage> {
                                 size:80
                               ),
                               Container(
-                                width: MediaQuery.of(context).size.width * 0.5,
+                                width: deviceWidth * 0.5,
                                 alignment: Alignment.center,
                                 child: TextButton(
-                                  child: Text(
-                                    '過去の対戦相手の\nフィードバックを確認',
-                                    style:
-                                        TextStyle(fontSize: 18, color: Colors.black),
+                                  child: FittedBox(
+                                    alignment: Alignment.bottomLeft,
+                                    fit: BoxFit.scaleDown,
+                                    child: Text(
+                                      '過去の対戦相手の\nフィードバックを確認',
+                                      style:
+                                          TextStyle(fontSize: 18, color: Colors.black),
+                                    ),
                                   ),
                                     onPressed: () {
                                       Navigator.push(
@@ -874,15 +874,19 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ),
                     Container(
-                      height: MediaQuery.of(context).size.height * 0.2,
-                      width: MediaQuery.of(context).size.width * 0.8,
+                      height: 180,
+                      width: deviceWidth * 0.8,
                       child: Column(
                         children: [
                           Container(
                             alignment: Alignment.bottomCenter,
-                            child: Text(
-                              '↓↓今すぐ試合をするならこちら！↓↓',
-                              style: TextStyle(fontSize: 17),
+                            child: FittedBox(
+                              alignment: Alignment.bottomLeft,
+                              fit:BoxFit.scaleDown,
+                              child: Text(
+                                '↓↓今すぐ試合をするならこちら！↓↓',
+                                style: TextStyle(fontSize: 17),
+                              ),
                             ),
                           ),
                           QrImageView(

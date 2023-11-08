@@ -546,18 +546,23 @@ class FirestoreMethod {
         .doc(userId)
         .get();
 
-    Map<String, String> titleMap = snapShot.data()!['TITLE'];
+    Map<String,dynamic> titleMap = snapShot.data()!['TITLE'];
 
     //現在の称号一覧表の項目を全件取得
     final String yamlString = await rootBundle.loadString('assets/Title.yaml');
     final List<dynamic> yamlList = loadYaml(yamlString);
-
+    String returnTitle = '';
     String homeViewTitle = '0';
     titleMap.forEach((key, value) {
       if (value == '2') {
         homeViewTitle = key;
       }
     });
+    for (var item in yamlList) {
+      if (item['no'].toString() == homeViewTitle) {
+        returnTitle = item['name'];
+      }
+    }
 
     CprofileDetail cprofileDetail = CprofileDetail(
       USER_ID: snapShot.data()!['USER_ID'],
@@ -592,7 +597,7 @@ class FirestoreMethod {
       FIRST_TODOFUKEN_SICHOSON: snapShot.data()!['FIRST_TODOFUKEN_SICHOSON'],
       KOUSHIN_TIME: snapShot.data()!['KOUSHIN_TIME'],
       RANK_NO: snapShot.data()!['RANK_NO'],
-      TITLE: yamlList[int.parse(homeViewTitle)],
+      TITLE: returnTitle,
     );
 
     return cprofileDetail;

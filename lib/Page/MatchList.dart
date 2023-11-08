@@ -31,7 +31,7 @@ class _MatchListState extends State<MatchList> {
           .collection('matchList')
           .where('MATCH_USER_LIST',
               arrayContains: FirestoreMethod.auth.currentUser!.uid)
-          .orderBy('SAKUSEI_TIME',descending: true)
+          .orderBy('SAKUSEI_TIME', descending: true)
           .limit(10)
           .get();
 
@@ -118,7 +118,7 @@ class _MatchListState extends State<MatchList> {
           .collection('matchList')
           .where('MATCH_USER_LIST',
               arrayContains: FirestoreMethod.auth.currentUser!.uid)
-          .orderBy('SAKUSEI_TIME',descending: true)
+          .orderBy('SAKUSEI_TIME', descending: true)
           .startAfterDocument(lastDocument!)
           .limit(10)
           .get();
@@ -181,6 +181,7 @@ class _MatchListState extends State<MatchList> {
 
   @override
   Widget build(BuildContext context) {
+    final deviceWidth = MediaQuery.of(context).size.width;
     //必要コンフィグの初期化
     HeaderConfig().init(context, "マッチング一覧");
     DrawerConfig().init(context);
@@ -230,94 +231,110 @@ class _MatchListState extends State<MatchList> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
-                              child: InkWell(
-                                child: matchListAll[index]
-                                            .YOUR_USER
-                                            .PROFILE_IMAGE ==
-                                        ''
-                                    ? CircleAvatar(
-                                        backgroundColor: Colors.white,
-                                        backgroundImage: NetworkImage(
-                                            "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                        radius: 30,
-                                      )
-                                    : CircleAvatar(
-                                        backgroundColor: Colors.white,
-                                        backgroundImage: NetworkImage(
-                                            matchListAll[index]
-                                                .YOUR_USER
-                                                .PROFILE_IMAGE),
-                                        radius: 30),
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              ProfileReference(
+                            Container(
+                              width: deviceWidth * 0.8,
+                              child: Row(
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
+                                    child: InkWell(
+                                      child: matchListAll[index]
+                                                  .YOUR_USER
+                                                  .PROFILE_IMAGE ==
+                                              ''
+                                          ? CircleAvatar(
+                                              backgroundColor: Colors.white,
+                                              backgroundImage: NetworkImage(
+                                                  "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                              radius: 30,
+                                            )
+                                          : CircleAvatar(
+                                              backgroundColor: Colors.white,
+                                              backgroundImage: NetworkImage(
                                                   matchListAll[index]
                                                       .YOUR_USER
-                                                      .USER_ID)));
-                                },
-                              ),
-                            ),
-                            InkWell(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(matchListAll[index].YOUR_USER.NICK_NAME,
-                                      style: TextStyle(
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold)),
-                                  Text(matchListAll[index].SAKUSEI_TIME,
-                                      style: TextStyle(color: Colors.grey),
-                                      overflow: TextOverflow.ellipsis)
+                                                      .PROFILE_IMAGE),
+                                              radius: 30),
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProfileReference(
+                                                        matchListAll[index]
+                                                            .YOUR_USER
+                                                            .USER_ID)));
+                                      },
+                                    ),
+                                  ),
+                                  InkWell(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                            matchListAll[index]
+                                                .YOUR_USER
+                                                .NICK_NAME,
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold)),
+                                        Text(matchListAll[index].SAKUSEI_TIME,
+                                            style:
+                                                TextStyle(color: Colors.grey),
+                                            overflow: TextOverflow.ellipsis)
+                                      ],
+                                    ),
+                                    onTap: () {
+                                      //対戦結果入力画面へ遷移
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => MatchResult(
+                                                  matchListAll[index].MY_USER,
+                                                  matchListAll[index].YOUR_USER,
+                                                  matchListAll[index]
+                                                      .MATCH_ID)));
+                                    },
+                                  ),
                                 ],
                               ),
-                              onTap: () {
-                                //対戦結果入力画面へ遷移
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MatchResult(
-                                            matchListAll[index].MY_USER,
-                                            matchListAll[index].YOUR_USER,
-                                            matchListAll[index].MATCH_ID)));
-                              },
-                            ),
-                            SizedBox(
-                              width: 120,
                             ),
                             //トーク画面へ遷移
-                            IconButton(
-                                icon: const Icon(
-                                  Icons.message,
-                                  color: Colors.black,
-                                  size: 30.0,
-                                ),
-                                onPressed: () async {
-                                  TalkRoomModel room =
-                                      await FirestoreMethod.makeRoom(
-                                          matchListAll[index].MY_USER.USER_ID,
-                                          matchListAll[index]
-                                              .YOUR_USER
-                                              .USER_ID);
+                            Container(
+                              width: deviceWidth * 0.1,
+                              alignment: Alignment.centerRight,
+                              child: IconButton(
+                                  icon: const Icon(
+                                    Icons.message,
+                                    color: Colors.black,
+                                    size: 30.0,
+                                  ),
+                                  onPressed: () async {
+                                    TalkRoomModel room =
+                                        await FirestoreMethod.makeRoom(
+                                            matchListAll[index].MY_USER.USER_ID,
+                                            matchListAll[index]
+                                                .YOUR_USER
+                                                .USER_ID);
 
-                                  // TalkRoomModel room =
-                                  //     await FirestoreMethod.getRoom(
-                                  //         matchList[index]
-                                  //             .RECIPIENT_ID,
-                                  //         matchList[index].SENDER_ID,
-                                  //         matchList[index].YOUR_USER);
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              TalkRoom(room)));
-                                })
+                                    // TalkRoomModel room =
+                                    //     await FirestoreMethod.getRoom(
+                                    //         matchList[index]
+                                    //             .RECIPIENT_ID,
+                                    //         matchList[index].SENDER_ID,
+                                    //         matchList[index].YOUR_USER);
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                TalkRoom(room)));
+                                  }),
+                            )
                           ],
                         ),
                       ),

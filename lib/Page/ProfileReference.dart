@@ -33,6 +33,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
 
   @override
   Widget build(BuildContext context) {
+    final deviceWidth = MediaQuery.of(context).size.width;
     HeaderConfig().init(context, "プロフィール参照");
     return Scaffold(
         appBar: AppBar(
@@ -58,7 +59,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                         //プロフィール画像
                         child: Column(children: [
                           Container(
-                              height: MediaQuery.of(context).size.height * 0.25,
+                              height: 230,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
                                   image: AssetImage('images/kori.jpg'),
@@ -70,12 +71,12 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                     Container(
                                       padding: EdgeInsets.only(left: 40, top: 20),
                                       alignment: Alignment.bottomCenter,
-                                      width: MediaQuery.of(context).size.width * 0.55,
+                                      width: deviceWidth * 0.55,
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           Container(
-                                            width: MediaQuery.of(context).size.width * 0.5,
+                                            width: deviceWidth * 0.5,
                                             alignment: Alignment.bottomLeft,
                                             child: FittedBox(
                                               alignment: Alignment.bottomLeft,
@@ -91,7 +92,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                           Row(
                                             children: [
                                               Container(
-                                                width: MediaQuery.of(context).size.width * 0.1,
+                                                width: deviceWidth * 0.1,
                                                 alignment: Alignment.bottomLeft,
                                                 child: Text(
                                                   "NO ",
@@ -99,7 +100,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                 ),
                                               ),
                                               Container(
-                                                width: MediaQuery.of(context).size.width * 0.3,
+                                                width: deviceWidth * 0.3,
                                                 alignment: Alignment.bottomLeft,
                                                 child: Text(
                                                   "TSP RANKING",
@@ -113,7 +114,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                   Row(
                                             children: [
                                                   Container(
-                                                    width: MediaQuery.of(context).size.width * 0.12,
+                                                    width: deviceWidth * 0.12,
                                                     alignment: Alignment.bottomCenter,
                                                     child: FittedBox(
                                                       alignment:Alignment.bottomLeft,
@@ -125,7 +126,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                     ),
                                                   ),
                                                   Container(
-                                                    width: MediaQuery.of(context).size.width * 0.32,
+                                                    width: deviceWidth * 0.32,
                                                     alignment: Alignment.bottomLeft,
                                                     child: FittedBox(
                                                       alignment:Alignment.bottomLeft,
@@ -139,7 +140,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                             ],
                                           ),
                                                       Container(
-                                                        width: MediaQuery.of(context).size.width * 0.44,
+                                                        width: deviceWidth * 0.44,
                                                         alignment: Alignment.bottomRight,
                                                         child: FittedBox(
                                                           alignment:Alignment.bottomRight,
@@ -155,7 +156,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                           Row(
                                             children: [
                                               Container(
-                                                width: MediaQuery.of(context).size.width * 0.15,
+                                                width: deviceWidth * 0.15,
                                                 alignment: Alignment.bottomCenter,
                                                 child: FittedBox(
                                                   alignment:Alignment.bottomLeft,
@@ -167,7 +168,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                 ),
                                               ),
                                               Container(
-                                                width: MediaQuery.of(context).size.width * 0.25,
+                                                width: deviceWidth * 0.25,
                                                 alignment: Alignment.bottomLeft,
                                                 child: FittedBox(
                                                   alignment:Alignment.bottomLeft,
@@ -184,7 +185,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                       ),
                                     ),
                                     Container(
-                                      width: MediaQuery.of(context).size.width * 0.4,
+                                      width: deviceWidth * 0.4,
                                       child: profileDetailList.PROFILE_IMAGE == ''
                                           ? CircleAvatar(
                                         backgroundColor: Colors.white,
@@ -210,8 +211,8 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                     )),
                               ])),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.15,
-                        width: MediaQuery.of(context).size.width * 0.8,
+                        height: 120,
+                        width: deviceWidth * 0.8,
                         child: Column(
                           children: [
                             Row(
@@ -236,7 +237,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                             ),
                                 Container(
                                     alignment: Alignment.bottomLeft,
-                                    width: MediaQuery.of(context).size.width * 0.8,
+                                    width: deviceWidth * 0.8,
                                     child: Column(
                                       children: [
                                         Row(
@@ -277,8 +278,8 @@ class _ProfileReferenceState extends State<ProfileReference> {
                         ),
                       ),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.2,
-                        width: MediaQuery.of(context).size.width * 0.8,
+                        height: 180,
+                        width: deviceWidth * 0.8,
                         child: Column(
                           children: [
                             Container(
@@ -289,28 +290,26 @@ class _ProfileReferenceState extends State<ProfileReference> {
                               ),
                             ),
                             Container(
-                              height: MediaQuery.of(context).size.height * 0.12,
-                              width: MediaQuery.of(context).size.width * 0.8,
+                              height: 100,
+                              width: deviceWidth * 0.8,
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
                                   SizedBox(
-                                      width: MediaQuery.of(context).size.width *
+                                      width: deviceWidth *
                                           0.05),
                                   Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: [
                                       Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.25,
+                                        width: deviceWidth *
+                                            0.25,
                                         padding: EdgeInsets.only(left: 20),
                                         child: Text('初級'),
                                       ),
                                       SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.25,
+                                        width: deviceWidth *
+                                            0.25,
                                         child: Stack(children: [
                                           SizedBox(
                                             width: 70,
@@ -318,12 +317,11 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                             child: Center(
                                               child: Column(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                MainAxisAlignment.center,
                                                 children: [
                                                   Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                    MainAxisAlignment.center,
                                                     children: [
                                                       Text(
                                                         profileDetailList
@@ -332,8 +330,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                         style: TextStyle(
                                                             fontSize: 16,
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .bold),
+                                                            FontWeight.bold),
                                                       ),
                                                       Text(
                                                         '%',
@@ -343,30 +340,26 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                       )
                                                     ],
                                                   ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(
-                                                        profileDetailList
-                                                                .SHOKYU_WIN_SU
-                                                                .toString() +
-                                                            '勝',
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        profileDetailList
-                                                                .SHOKYU_LOSE_SU
-                                                                .toString() +
+
+                                                  Container(
+                                                    width: 70,
+                                                    child: FittedBox(
+                                                      fit: BoxFit.scaleDown,
+                                                      child: Text(
+                                                        NumberFormat('#,###')
+                                                            .format(profileDetailList
+                                                            .SHOKYU_WIN_SU)
+                                                            .toString() +
+                                                            '勝 ' +  NumberFormat('#,###')
+                                                            .format(profileDetailList
+                                                            .SHOKYU_LOSE_SU)
+                                                            .toString() +
                                                             '敗',
                                                         style: TextStyle(
                                                           fontSize: 12,
                                                         ),
                                                       ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -381,11 +374,11 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                 height: 70,
                                                 child: CircularProgressIndicator(
                                                     value: profileDetailList
-                                                            .SHOKYU_WIN_RATE /
+                                                        .SHOKYU_WIN_RATE /
                                                         100,
                                                     color: Colors.greenAccent,
                                                     backgroundColor:
-                                                        Colors.black12,
+                                                    Colors.black12,
                                                     strokeWidth: 4.0),
                                               ),
                                             ),
@@ -399,15 +392,13 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                     children: [
                                       Container(
                                         padding: EdgeInsets.only(left: 20),
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.25,
+                                        width: deviceWidth *
+                                            0.25,
                                         child: Text('中級'),
                                       ),
                                       SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.25,
+                                        width: deviceWidth *
+                                            0.25,
                                         child: Stack(children: [
                                           SizedBox(
                                             width: 70,
@@ -415,12 +406,11 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                             child: Center(
                                               child: Column(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                MainAxisAlignment.center,
                                                 children: [
                                                   Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                    MainAxisAlignment.center,
                                                     children: [
                                                       Text(
                                                         profileDetailList
@@ -429,8 +419,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                         style: TextStyle(
                                                             fontSize: 16,
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .bold),
+                                                            FontWeight.bold),
                                                       ),
                                                       Text(
                                                         '%',
@@ -440,30 +429,25 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                       )
                                                     ],
                                                   ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(
-                                                        profileDetailList
-                                                                .CHUKYU_WIN_SU
-                                                                .toString() +
-                                                            '勝',
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        profileDetailList
-                                                                .CHUKYU_LOSE_SU
-                                                                .toString() +
+                                                  Container(
+                                                    width: 70,
+                                                    child: FittedBox(
+                                                      fit: BoxFit.scaleDown,
+                                                      child: Text(
+                                                        NumberFormat('#,###')
+                                                            .format(profileDetailList
+                                                            .CHUKYU_WIN_SU)
+                                                            .toString() +
+                                                            '勝 ' +  NumberFormat('#,###')
+                                                            .format(profileDetailList
+                                                            .CHUKYU_LOSE_SU)
+                                                            .toString() +
                                                             '敗',
                                                         style: TextStyle(
                                                           fontSize: 12,
                                                         ),
                                                       ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -478,11 +462,11 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                 height: 70,
                                                 child: CircularProgressIndicator(
                                                     value: profileDetailList
-                                                            .CHUKYU_WIN_RATE /
+                                                        .CHUKYU_WIN_RATE /
                                                         100,
                                                     color: Colors.greenAccent,
                                                     backgroundColor:
-                                                        Colors.black12,
+                                                    Colors.black12,
                                                     strokeWidth: 4.0),
                                               ),
                                             ),
@@ -496,15 +480,13 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                     children: [
                                       Container(
                                         padding: EdgeInsets.only(left: 20),
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.25,
+                                        width: deviceWidth *
+                                            0.25,
                                         child: Text('上級'),
                                       ),
                                       SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.25,
+                                        width: deviceWidth *
+                                            0.25,
                                         child: Stack(children: [
                                           SizedBox(
                                             width: 70,
@@ -512,12 +494,11 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                             child: Center(
                                               child: Column(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                MainAxisAlignment.center,
                                                 children: [
                                                   Row(
                                                     mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
+                                                    MainAxisAlignment.center,
                                                     children: [
                                                       Text(
                                                         profileDetailList
@@ -526,8 +507,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                         style: TextStyle(
                                                             fontSize: 16,
                                                             fontWeight:
-                                                                FontWeight
-                                                                    .bold),
+                                                            FontWeight.bold),
                                                       ),
                                                       Text(
                                                         '%',
@@ -537,30 +517,26 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                       )
                                                     ],
                                                   ),
-                                                  Row(
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .center,
-                                                    children: [
-                                                      Text(
-                                                        profileDetailList
-                                                                .JYOKYU_WIN_SU
-                                                                .toString() +
-                                                            '勝',
-                                                        style: TextStyle(
-                                                          fontSize: 12,
-                                                        ),
-                                                      ),
-                                                      Text(
-                                                        profileDetailList
-                                                                .JYOKYU_LOSE_SU
-                                                                .toString() +
+                                                  Container(
+                                                    width: 70,
+                                                    child: FittedBox(
+                                                      fit: BoxFit.scaleDown,
+                                                      child: Text(
+                                                        NumberFormat('#,###')
+                                                            .format(profileDetailList
+                                                            .JYOKYU_WIN_SU)
+                                                            .toString() +
+                                                            '勝 '
+                                                            +  NumberFormat('#,###')
+                                                            .format(profileDetailList
+                                                            .JYOKYU_LOSE_SU)
+                                                            .toString() +
                                                             '敗',
                                                         style: TextStyle(
                                                           fontSize: 12,
                                                         ),
                                                       ),
-                                                    ],
+                                                    ),
                                                   ),
                                                 ],
                                               ),
@@ -575,11 +551,11 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                 height: 70,
                                                 child: CircularProgressIndicator(
                                                     value: profileDetailList
-                                                            .JYOKYU_WIN_RATE /
+                                                        .JYOKYU_WIN_RATE /
                                                         100,
                                                     color: Colors.greenAccent,
                                                     backgroundColor:
-                                                        Colors.black12,
+                                                    Colors.black12,
                                                     strokeWidth: 4.0),
                                               ),
                                             ),
@@ -595,8 +571,8 @@ class _ProfileReferenceState extends State<ProfileReference> {
                         ),
                       ),
                           Container(
-                            height: MediaQuery.of(context).size.height * 0.43,
-                            width: MediaQuery.of(context).size.width * 0.8,
+                            height: 380,
+                            width: deviceWidth * 0.8,
                             child: Column(
                               children: [
                                 Container(
@@ -816,8 +792,8 @@ class _ProfileReferenceState extends State<ProfileReference> {
                             ),
                           ),
                       Container(
-                        height: MediaQuery.of(context).size.height * 0.3,
-                        width: MediaQuery.of(context).size.width * 0.8,
+                        height: 250,
+                        width: deviceWidth * 0.8,
                         child: Column(children: [
                           Container(
                             alignment: Alignment.bottomLeft,
@@ -828,7 +804,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                           ),
                               Container(
                                 padding: const EdgeInsets.all(5.0),
-                                width: MediaQuery.of(context).size.width * 0.8,
+                                width: deviceWidth * 0.8,
                                 height: MediaQuery.of(context).size.height * 0.2,
                                 decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey),

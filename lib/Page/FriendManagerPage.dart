@@ -33,8 +33,8 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
 
   @override
   Widget build(BuildContext context) {
+    final deviceWidth = MediaQuery.of(context).size.width;
     HeaderConfig().init(context, "友人管理");
-
     return Scaffold(
       appBar: AppBar(
           backgroundColor: HeaderConfig.backGroundColor,
@@ -73,40 +73,53 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.center,
                                   children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
-                                      child: InkWell(
-                                        child: friendsList[index]
-                                                    .YOUR_USER
-                                                    .PROFILE_IMAGE ==
-                                                ''
-                                            ? CircleAvatar(
-                                                backgroundColor: Colors.white,
-                                                backgroundImage: NetworkImage(
-                                                    "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                                radius: 30,
-                                              )
-                                            : CircleAvatar(
-                                                backgroundColor: Colors.white,
-                                                backgroundImage: NetworkImage(
-                                                    friendsList[index]
-                                                        .YOUR_USER
-                                                        .PROFILE_IMAGE),
-                                                radius: 30),
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ProfileReference(
-                                                          friendsList[index]
-                                                              .YOUR_USER
-                                                              .USER_ID)));
-                                        },
-                                      ),
-                                    ),
+                                    Container(
+                                        width: deviceWidth * 0.8,
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 8.0),
+                                              //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
+                                              child: InkWell(
+                                                child: friendsList[index]
+                                                            .YOUR_USER
+                                                            .PROFILE_IMAGE ==
+                                                        ''
+                                                    ? CircleAvatar(
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        backgroundImage:
+                                                            NetworkImage(
+                                                                "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                                        radius: 30,
+                                                      )
+                                                    : CircleAvatar(
+                                                        backgroundColor:
+                                                            Colors.white,
+                                                        backgroundImage:
+                                                            NetworkImage(
+                                                                friendsList[
+                                                                        index]
+                                                                    .YOUR_USER
+                                                                    .PROFILE_IMAGE),
+                                                        radius: 30),
+                                                onTap: () {
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              ProfileReference(
+                                                                  friendsList[
+                                                                          index]
+                                                                      .YOUR_USER
+                                                                      .USER_ID)));
+                                                },
+                                              ),
+                                            ),
                                     InkWell(
                                         child: Column(
                                           crossAxisAlignment:
@@ -140,24 +153,30 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       TalkRoom(room)));
-                                        }),
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.scoreboard,
-                                        color: Colors.black,
-                                        size: 30.0,
+                                        })
+                                          ],
+                                        )),
+                                    Container(
+                                      width: deviceWidth * 0.1,
+                                      alignment: Alignment.centerRight,
+                                      child: IconButton(
+                                        icon: const Icon(
+                                          Icons.scoreboard,
+                                          color: Colors.black,
+                                          size: 30.0,
+                                        ),
+                                        onPressed: () async {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ScoreRefPage(
+                                                        friendsList[index]
+                                                            .YOUR_USER
+                                                            .USER_ID)),
+                                          );
+                                        },
                                       ),
-                                      onPressed: () async {
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  ScoreRefPage(
-                                                      friendsList[index]
-                                                          .YOUR_USER
-                                                          .USER_ID)),
-                                        );
-                                      },
                                     ),
                                   ],
                                 ),

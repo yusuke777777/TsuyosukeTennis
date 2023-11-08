@@ -74,6 +74,7 @@ class _MatchResultListState extends State<MatchResultList> {
 
   @override
   Widget build(BuildContext context) {
+    final deviceWidth = MediaQuery.of(context).size.width;
     //必要コンフィグの初期化
     HeaderConfig().init(context, "対戦履歴");
     return Scaffold(
@@ -118,134 +119,148 @@ class _MatchResultListState extends State<MatchResultList> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8.0),
-                                //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
+                              Container(
+                                width:deviceWidth * 0.2,
+                                child: Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 8.0),
+                                  //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
+                                  child: InkWell(
+                                    child: (_matchResultDocList[index].data()
+                                                        as Map<String, dynamic>)[
+                                                    'opponentProfileImage']
+                                                as String ==
+                                            ''
+                                        ? CircleAvatar(
+                                            backgroundColor: Colors.white,
+                                            backgroundImage: NetworkImage(
+                                                "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                            radius: 30,
+                                          )
+                                        : CircleAvatar(
+                                            backgroundColor: Colors.white,
+                                            backgroundImage: NetworkImage(
+                                                (_matchResultDocList[index].data()
+                                                        as Map<String, dynamic>)[
+                                                    'opponentProfileImage']),
+                                            radius: 30),
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProfileReference(
+                                                      (_matchResultDocList[index]
+                                                                      .data()
+                                                                  as Map<String,
+                                                                      dynamic>)[
+                                                              'opponentId']
+                                                          as String)));
+                                    },
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width:deviceWidth * 0.7,
                                 child: InkWell(
-                                  child: (_matchResultDocList[index].data()
-                                                      as Map<String, dynamic>)[
-                                                  'opponentProfileImage']
-                                              as String ==
-                                          ''
-                                      ? CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          backgroundImage: NetworkImage(
-                                              "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                          radius: 30,
-                                        )
-                                      : CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          backgroundImage: NetworkImage(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        width:deviceWidth * 0.7,
+                                        alignment: Alignment.centerLeft,
+                                          child: Text(
                                               (_matchResultDocList[index].data()
                                                       as Map<String, dynamic>)[
-                                                  'opponentProfileImage']),
-                                          radius: 30),
-                                  onTap: () {
-                                    Navigator.push(
+                                                  'matchTitle'] as String,
+                                              overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold)
+                                          ),
+
+                                      ),
+                                      Container(
+                                        width:deviceWidth * 0.7,
+                                        alignment: Alignment.centerLeft,
+                                        child: Text(
+                                            "対戦相手：" +
+                                                (_matchResultDocList[index].data()
+                                                        as Map<String, dynamic>)[
+                                                    'opponentName'] +
+                                                "\n対戦日時：" +
+                                                ((_matchResultDocList[index].data()
+                                                            as Map<String,
+                                                                dynamic>)['dailyId']
+                                                        as String)
+                                                    .substring(0, 16),
+                                            style: TextStyle(
+                                                fontSize: 12,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.grey)),
+                                      ),
+                                    ],
+                                  ),
+                                  onTap: () async {
+                                    //対戦結果入力画面へ遷移
+                                    //フィードバック結果を取得する
+                                    String feedBackComment =
+                                        await FirestoreMethod.getFeedBack(
+                                            (_matchResultDocList[index].data()
+                                                    as Map<String, dynamic>)[
+                                                'dailyId'] as String,
+                                            (_matchResultDocList[index].data()
+                                                    as Map<String, dynamic>)[
+                                                'opponentId'] as String);
+                                    //対戦結果を取得する
+                                    List<CmatchResult> matchResult =
+                                        await FirestoreMethod.getMatchResult(
+                                            (_matchResultDocList[index].data()
+                                                    as Map<String, dynamic>)[
+                                                'dailyId'] as String,
+                                            (_matchResultDocList[index].data()
+                                                    as Map<String, dynamic>)[
+                                                'opponentId'] as String);
+                                    //レビュー結果を取得する
+                                    CSkilLevelSetting skillLevel =
+                                        await FirestoreMethod.getSkillLevel(
+                                            (_matchResultDocList[index].data()
+                                                    as Map<String, dynamic>)[
+                                                'dailyId'] as String,
+                                            (_matchResultDocList[index].data()
+                                                    as Map<String, dynamic>)[
+                                                'opponentId'] as String);
+                                    CprofileSetting myProfile =
+                                        await FirestoreMethod.getProfile();
+
+                                    CprofileSetting yourProfile =
+                                        await FirestoreMethod.getYourProfile(
+                                            (_matchResultDocList[index].data()
+                                                    as Map<String, dynamic>)[
+                                                'opponentId'] as String);
+                                    String matchTitle =
+                                        await FirestoreMethod.getMatchTitle(
+                                            (_matchResultDocList[index].data()
+                                                    as Map<String, dynamic>)[
+                                                'dailyId'] as String,
+                                            (_matchResultDocList[index].data()
+                                                    as Map<String, dynamic>)[
+                                                'opponentId'] as String);
+
+                                    await Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
-                                                ProfileReference(
-                                                    (_matchResultDocList[index]
-                                                                    .data()
-                                                                as Map<String,
-                                                                    dynamic>)[
-                                                            'opponentId']
-                                                        as String)));
+                                                MatchResultSansho(
+                                                    myProfile,
+                                                    yourProfile,
+                                                    matchResult,
+                                                    feedBackComment,
+                                                    skillLevel,
+                                                    matchTitle)));
                                   },
                                 ),
-                              ),
-                              InkWell(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                        (_matchResultDocList[index].data()
-                                                as Map<String, dynamic>)[
-                                            'matchTitle'] as String,
-                                        style: TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold)),
-                                    Text(
-                                        "対戦相手：" +
-                                            (_matchResultDocList[index].data()
-                                                    as Map<String, dynamic>)[
-                                                'opponentName'] +
-                                            "\n対戦日時：" +
-                                            ((_matchResultDocList[index].data()
-                                                        as Map<String,
-                                                            dynamic>)['dailyId']
-                                                    as String)
-                                                .substring(0, 16),
-                                        style: TextStyle(
-                                            fontSize: 12,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.grey)),
-                                  ],
-                                ),
-                                onTap: () async {
-                                  //対戦結果入力画面へ遷移
-                                  //フィードバック結果を取得する
-                                  String feedBackComment =
-                                      await FirestoreMethod.getFeedBack(
-                                          (_matchResultDocList[index].data()
-                                                  as Map<String, dynamic>)[
-                                              'dailyId'] as String,
-                                          (_matchResultDocList[index].data()
-                                                  as Map<String, dynamic>)[
-                                              'opponentId'] as String);
-                                  //対戦結果を取得する
-                                  List<CmatchResult> matchResult =
-                                      await FirestoreMethod.getMatchResult(
-                                          (_matchResultDocList[index].data()
-                                                  as Map<String, dynamic>)[
-                                              'dailyId'] as String,
-                                          (_matchResultDocList[index].data()
-                                                  as Map<String, dynamic>)[
-                                              'opponentId'] as String);
-                                  //レビュー結果を取得する
-                                  CSkilLevelSetting skillLevel =
-                                      await FirestoreMethod.getSkillLevel(
-                                          (_matchResultDocList[index].data()
-                                                  as Map<String, dynamic>)[
-                                              'dailyId'] as String,
-                                          (_matchResultDocList[index].data()
-                                                  as Map<String, dynamic>)[
-                                              'opponentId'] as String);
-                                  CprofileSetting myProfile =
-                                      await FirestoreMethod.getProfile();
-
-                                  CprofileSetting yourProfile =
-                                      await FirestoreMethod.getYourProfile(
-                                          (_matchResultDocList[index].data()
-                                                  as Map<String, dynamic>)[
-                                              'opponentId'] as String);
-                                  String matchTitle =
-                                      await FirestoreMethod.getMatchTitle(
-                                          (_matchResultDocList[index].data()
-                                                  as Map<String, dynamic>)[
-                                              'dailyId'] as String,
-                                          (_matchResultDocList[index].data()
-                                                  as Map<String, dynamic>)[
-                                              'opponentId'] as String);
-
-                                  await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              MatchResultSansho(
-                                                  myProfile,
-                                                  yourProfile,
-                                                  matchResult,
-                                                  feedBackComment,
-                                                  skillLevel,
-                                                  matchTitle)));
-                                },
-                              ),
-                              SizedBox(
-                                width: 120,
-                              ),
+                              )
                             ],
                           ),
                         ),

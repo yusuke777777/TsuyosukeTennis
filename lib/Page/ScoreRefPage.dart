@@ -4,6 +4,7 @@ import 'package:tsuyosuke_tennis_ap/Common/CScoreRef.dart';
 
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
+import 'FriendManagerPage.dart';
 
 class ScoreRefPage extends StatefulWidget {
   ScoreRefPage(this.opponent_id);
@@ -31,10 +32,10 @@ class ScoreRefPageState extends State<ScoreRefPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: HeaderConfig.backGroundColor,
-        title: HeaderConfig.appBarText,
-        iconTheme: IconThemeData(color: Colors.black),
-      ),
+          backgroundColor: HeaderConfig.backGroundColor,
+          title: HeaderConfig.appBarText,
+          iconTheme: IconThemeData(color: Colors.black),
+          leading: HeaderConfig.backIcon),
       body: SingleChildScrollView(
         child: FutureBuilder(
           future: futureList,
