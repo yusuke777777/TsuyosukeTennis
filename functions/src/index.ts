@@ -37,6 +37,20 @@ exports.tspRevocationFunction = functions
       return null;
     });
 
+exports.updateTitleFunction = functions
+    .region("asia-northeast1")
+    .pubsub.schedule("0 0 * * *")
+    .timeZone("Asia/Tokyo")
+    .onRun(async () => {
+      console.log("取得称号状況更新");
+      try {
+        await checkTitleState();
+      } catch (e) {
+        console.log(e + "取得称号状況更新に失敗しました ----$e");
+      }
+      return null;
+    });
+
 /** ランキングテーブルから情報を取得する */
 async function getRankTable(): Promise<void> {
   const matchResultSnapshot = await matchResultRef.get();
@@ -444,3 +458,95 @@ async function getTspRevocation(): Promise<void> {
     }
   }
 }
+/** 称号の取得状況確認 */
+async function checkTitleState(): Promise<void> {
+  console.log("称号更新start");
+  // DB更新用Map
+  const myObjectData: Map<string, string> = new Map<string, string>();
+  const profileDetailSnapshot = await profileDetailRef.get();
+  for (const docs of profileDetailSnapshot.docs) {
+    console.log("通過点１");
+    const titleData: Map<string, string> = objectToMap(docs.data()?.TITLE);
+    const feedbackCount: number = Number(docs.data()["FEEDBACK_COUNT"]);
+    const strokeForeAve: number = Number(docs.data()["STROKE_FOREHAND_AVE"]);
+    console.log(typeof titleData);
+    // 更新確認(No1の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal1: string = "0";
+    if (titleData.get("1") !== undefined) {
+      console.log("No1存在します");
+      mapVal1 = titleData.get("1") as string;
+      console.log(mapVal1);
+    } else {
+      console.log("No1存在しません");
+    }
+    if (mapVal1 == "0") {
+      console.log("No1が0");
+      console.log(feedbackCount);
+      // myObjectDataの1キーを更新
+      if (feedbackCount >= 10 && strokeForeAve >= 1.0) {
+        console.log("No1条件達成！");
+        myObjectData.set("1", "1");
+      } else {
+        myObjectData.set("1", "0");
+      }
+    } else {
+      myObjectData.set("1", mapVal1);
+    }
+    // No1の確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No2の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal2: string = "0";
+    if (titleData.get("2") !== undefined) {
+      console.log("No2存在します");
+      mapVal2 = titleData.get("2") as string;
+      console.log(mapVal2);
+    } else {
+      console.log("No2存在しません");
+    }
+    // myObjectDataの2キーを更新
+    if (mapVal2 == "0") {
+      console.log("No2が0");
+      if (feedbackCount >= 15 && strokeForeAve >= 2.0) {
+        console.log("No2条件達成！");
+        myObjectData.set("2", "1");
+      } else {
+        myObjectData.set("2", "0");
+      }
+    } else {
+      myObjectData.set("2", mapVal2);
+    }
+    // No2確認終了＝＝＝＝＝＝＝＝＝＝
+    // Map3以降
+    myObjectData.set("3", "0");
+    myObjectData.set("4", "0");
+    myObjectData.set("5", "0");
+    myObjectData.set("6", "0");
+    myObjectData.set("7", "0");
+    myObjectData.set("8", "0");
+    myObjectData.set("9", "0");
+    myObjectData.set("10", "0");
+    // 結果をマップに詰める
+    const updateMap = {
+      "1": myObjectData.get("1"),
+      "2": myObjectData.get("2"),
+      "3": myObjectData.get("3"),
+      "4": myObjectData.get("4"),
+      "5": myObjectData.get("5"),
+      "6": myObjectData.get("6"),
+      "7": myObjectData.get("7"),
+      "8": myObjectData.get("8"),
+      "9": myObjectData.get("9"),
+      "10": myObjectData.get("10"),
+    };
+    await profileDetailRef.doc(docs.id).update({"TITLE": updateMap});
+    console.log("称号更新を行う");
+  }
+}
+/**
+ * Object
+ * @param {object} obj - The first number.
+ * @return {Map<string, string>} The Map.
+ */
+function objectToMap(obj: { [key: string]: string }): Map<string, string> {
+  return new Map(Object.entries(obj));
+}
+
