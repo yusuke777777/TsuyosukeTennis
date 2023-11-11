@@ -3451,6 +3451,15 @@ class FirestoreMethod {
         'FEEDBACK_COMMENT': feedBack.FEED_BACK,
         'FEEDBACK_FLG': true,
       });
+      //profileDetail内のフィードバックカウントを加算
+      final profileDetailVal = await profileDetailRef.doc(yourProfile.USER_ID).get();
+      int feedbackCount = profileDetailVal.data()!['FEEDBACK_COUNT'];
+      feedbackCount = feedbackCount + 1;
+      await profileDetailRef
+          .doc(yourProfile.USER_ID)
+          .update({
+        'FEEDBACK_COUNT': feedbackCount,
+      });
     } catch (e) {
       print('フィードバックの登録に失敗しました --- $e');
     }
