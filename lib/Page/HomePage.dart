@@ -114,9 +114,12 @@ class _HomePageState extends State<HomePage> {
                                     Container(
                                       width: deviceWidth * 0.5,
                                       alignment: Alignment.bottomLeft,
-                                      child: Text(
-                                        "   ID: " + profileDetailList.MY_USER_ID.toString(),
-                                        style: TextStyle(fontSize: 15),
+                                      child: FittedBox(
+                                        fit: BoxFit.scaleDown,
+                                        child: Text(
+                                          "   ID: " + profileDetailList.MY_USER_ID.toString(),
+                                          style: TextStyle(fontSize: 15),
+                                        ),
                                       ),
                                     ),
                                     profileDetailList.RANK_NO == 0 ?
@@ -131,7 +134,7 @@ class _HomePageState extends State<HomePage> {
                                           ),
                                         ),
                                         Container(
-                                          width: deviceWidth * 0.3,
+                                          width: deviceWidth * 0.32,
                                           alignment: Alignment.bottomLeft,
                                           child: Text(
                                             "TSP RANKING",

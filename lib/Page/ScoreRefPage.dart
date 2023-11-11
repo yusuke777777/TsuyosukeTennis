@@ -23,6 +23,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
 
   @override
   Widget build(BuildContext context) {
+    final deviceWidth = MediaQuery.of(context).size.width;
     HeaderConfig().init(context, "対戦成績");
     DrawerConfig().init(context);
     List<TextSpan> textSpans = [];
@@ -214,35 +215,22 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                               ),
                               Container(
                                 padding: EdgeInsets.only(bottom: 20),
-                                width: MediaQuery.of(context).size.width * 0.95,
+                                width: deviceWidth * 0.95,
                                 child: Column(
                                   children: scoreRef.HISTORYLIST
                                       .map((historyItem) => Column(
                                             children: [
-                                              Row(
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.start,
-                                                children: [
                                                   Container(
-                                                    padding: EdgeInsets.only(
-                                                        right: 5),
-                                                    child: Text(
-                                                      historyItem.KOUSHIN_TIME,
-                                                      style: TextStyle(
-                                                          fontSize: 18),
-                                                    ),
-                                                  ),
-                                                  Container(
+                                                    alignment: Alignment.bottomLeft,
+                                                    width: deviceWidth * 0.95,
                                                     child: FittedBox(
                                                       fit: BoxFit.scaleDown,
                                                       child: Text(
-                                                          historyItem.TITLE,
+                                                          historyItem.TITLE + "(" + historyItem.KOUSHIN_TIME + ")",
                                                           style: TextStyle(
-                                                              fontSize: 18)),
+                                                              fontSize: 14)),
                                                     ),
                                                   ),
-                                                ],
-                                              ),
                                               // SCORE_POINTを繰り返し表示
                                               Container(
                                                 decoration: BoxDecoration(
@@ -259,7 +247,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                                                             child: Text(score,
                                                                 style: TextStyle(
                                                                     fontSize:
-                                                                        18)),
+                                                                        14)),
                                                           ))
                                                       .toList(),
                                                 ),
@@ -270,13 +258,10 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                                                         Container(
                                                           alignment: Alignment
                                                               .bottomLeft,
-                                                          padding:
-                                                              EdgeInsets.only(
-                                                                  left: 5),
                                                           child: Text(
                                                             "レビューコメント",
                                                             style: TextStyle(
-                                                                fontSize: 18),
+                                                                fontSize: 14),
                                                           ),
                                                         ),
                                                         Container(
@@ -297,19 +282,17 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                                                           padding:
                                                               EdgeInsets.only(
                                                                   left: 5),
-                                                          child: Text(
-                                                            historyItem
-                                                                .FEEDBACK_COMMENT
-                                                                .toString(),
-                                                            style: TextStyle(
-                                                                fontSize: 18),
-                                                            maxLines: 3,
-                                                            textAlign:
-                                                                TextAlign.start,
-                                                            softWrap: true,
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
+                                                          child: SingleChildScrollView(
+                                                            child: Text(
+                                                              historyItem
+                                                                  .FEEDBACK_COMMENT
+                                                                  .toString(),
+                                                              style: TextStyle(
+                                                                  fontSize: 12),
+                                                              textAlign:
+                                                                  TextAlign.start,
+                                                              softWrap: true,
+                                                            ),
                                                           ),
                                                         )
                                                       ],

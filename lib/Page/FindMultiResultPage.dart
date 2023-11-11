@@ -54,7 +54,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: TextDirection.ltr,
-      maxLines: 1000,
+      maxLines: 5,
     );
     textPainter.layout(maxWidth: MediaQuery.of(context).size.width * 0.7);
     return textPainter.height;
@@ -229,6 +229,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
     //必要コンフィグの初期化
     HeaderConfig().init(context, "検索結果");
     DrawerConfig().init(context);
+    final deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: AppBar(
             backgroundColor: HeaderConfig.backGroundColor,
@@ -308,7 +309,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
 
                               children: [
                                 Container(
-                                  width: MediaQuery.of(context).size.width * 0.7,
+                                  width: deviceWidth * 0.7,
                                   height: 30,
                                   child: Text(searchResultListAll[index].NICK_NAME,
                                       textAlign: TextAlign.start,
@@ -319,12 +320,12 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                                           fontSize: 20, fontWeight: FontWeight.bold)),
                                 ),
                                 Container(
-                                  width: MediaQuery.of(context).size.width * 0.7,
+                                  width: deviceWidth * 0.7,
                                   child: Text(searchResultListAll[index].COMENT,
                                       textAlign: TextAlign.start,
                                       softWrap: true,
                                       overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
-                                      maxLines: (searchResultListAll[index].COMENT_HEIGHT/12).floor(),
+                                      maxLines: (searchResultListAll[index].COMENT_HEIGHT/12).floor() > 5 ? 5 :(searchResultListAll[index].COMENT_HEIGHT/12).floor()  ,
                                       style: TextStyle(
                                           fontSize: 12)),
                                 ),

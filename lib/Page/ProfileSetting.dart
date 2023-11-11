@@ -169,6 +169,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
 
   @override
   Widget build(BuildContext context) {
+    final deviceWidth = MediaQuery.of(context).size.width;
     HeaderConfig().init(context, "プロフィール設定");
     if (widget.koushinFlg == '0') {
       getMyInitTitle(myTitleMap);
@@ -238,7 +239,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         ),
                         Container(
                           padding: const EdgeInsets.all(5.0),
-                          width: 300,
+                          width: deviceWidth * 0.8,
                           height: 50,
                           child: TextFormField(
                             controller: nickName,
@@ -251,19 +252,23 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                 fillColor: Colors.white,
                                 filled: true),
                             style: TextStyle(fontSize: 20, color: Colors.black),
+                            inputFormatters: [
+                              LengthLimitingTextInputFormatter(10)
+                            ],
                           ),
                         ),
 
                         //ユーザID登録
                         Container(
                           padding: const EdgeInsets.all(5.0),
-                          width: 300,
+                          width: deviceWidth * 0.8,
                           height: 50,
                           child: TextFormField(
                             inputFormatters: [
                               FilteringTextInputFormatter.deny(
                                 //日本語入力禁止
                                   RegExp('[\u3040-\u309F]')),
+                              LengthLimitingTextInputFormatter(20)
                             ],
                             controller: inputUserID,
                             decoration: InputDecoration(
@@ -286,29 +291,21 @@ class _ProfileSettingState extends State<ProfileSetting> {
                           SizedBox(
                             height: 30,
                           ),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: 30,
-                              ),
                               Container(
+                                padding: const EdgeInsets.all(5.0),
+                                width: deviceWidth * 0.8,
                                 child: Text(
                                   '●登録ランク',
                                   style: TextStyle(
                                       fontSize: 20, color: Colors.black),
                                 ),
                               ),
-                            ],
-                          ),
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              SizedBox(
-                                width: 60,
-                              ),
                               Container(
                                 padding: const EdgeInsets.all(5.0),
-                                width: 250,
+                                width: deviceWidth * 0.65,
                                 height: 40,
                                 decoration: BoxDecoration(
                                     border: Border.all(color: Colors.grey),
@@ -320,12 +317,15 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                       fontSize: 20, color: Colors.black),
                                 ),
                               ),
-                              IconButton(
-                                icon:
-                                    Icon(Icons.arrow_drop_down_circle_rounded),
-                                onPressed: () {
-                                  _showModalRankPicker(context);
-                                },
+                              Container(
+                                width: deviceWidth * 0.1,
+                                child: IconButton(
+                                  icon:
+                                      Icon(Icons.arrow_drop_down_circle_rounded),
+                                  onPressed: () {
+                                    _showModalRankPicker(context);
+                                  },
+                                ),
                               ),
                             ],
                           ),
@@ -336,19 +336,14 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     SizedBox(
                       height: 30,
                     ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 30,
-                        ),
                         Container(
+                          padding: const EdgeInsets.all(5.0),
+                          width: deviceWidth * 0.8,
                           child: Text(
                             '●主な活動場所',
                             style: TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
-                      ],
-                    ),
                     ListView.builder(
                         shrinkWrap: true,
                         physics: NeverScrollableScrollPhysics(),
@@ -357,30 +352,23 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         itemCount: activityList.length,
                         itemBuilder: (BuildContext context, int index) {
                           return Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: 50,
-                                  ),
                                   Container(
+                                    width: deviceWidth * 0.75,
+                                    padding: const EdgeInsets.all(5.0),
                                     child: Text(
                                       '都道府県',
                                       style: TextStyle(
                                           fontSize: 20, color: Colors.black),
                                     ),
                                   ),
-                                ],
-                              ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  SizedBox(
-                                    width: 50,
-                                  ),
                                   Container(
                                     padding: const EdgeInsets.all(5.0),
-                                    width: 250,
+                                    width: deviceWidth * 0.65,
                                     height: 40,
                                     decoration: BoxDecoration(
                                         border: Border.all(color: Colors.grey),
@@ -393,42 +381,34 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                           fontSize: 20, color: Colors.black),
                                     ),
                                   ),
-                                  IconButton(
-                                    icon: Icon(
-                                        Icons.arrow_drop_down_circle_rounded),
-                                    onPressed: () {
-                                      _showModalLocationPicker(
-                                          context,
-                                          int.parse(activityList[index].No),
-                                          activityList[index].SHICHOSON);
-                                      setState(() {});
-                                    },
+                                  Container(
+                                    width: deviceWidth * 0.1,
+                                    child: IconButton(
+                                      icon: Icon(
+                                          Icons.arrow_drop_down_circle_rounded),
+                                      onPressed: () {
+                                        _showModalLocationPicker(
+                                            context,
+                                            int.parse(activityList[index].No),
+                                            activityList[index].SHICHOSON);
+                                        setState(() {});
+                                      },
+                                    ),
                                   ),
                                 ],
                               ),
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: 50,
-                                  ),
                                   Container(
+                                    width: deviceWidth * 0.75,
+                                    padding: const EdgeInsets.all(5.0),
                                     child: Text(
                                       '市区町村',
                                       style: TextStyle(
                                           fontSize: 20, color: Colors.black),
                                     ),
                                   ),
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 50,
-                                  ),
                                   Container(
                                       padding: const EdgeInsets.all(5.0),
-                                      width: 250,
+                                      width: deviceWidth * 0.75,
                                       height: 40,
                                       decoration: BoxDecoration(
                                           border:
@@ -445,8 +425,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                         style: TextStyle(
                                             fontSize: 20, color: Colors.black),
                                       ))
-                                ],
-                              ),
                             ],
                           );
                         }),
@@ -491,30 +469,20 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         ),
                       ],
                     ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 30,
-                        ),
                         Container(
+                          padding: const EdgeInsets.all(5.0),
+                          width: deviceWidth * 0.8,
                           child: Text(
                             '●年齢',
                             style: TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
-                      ],
-                    ),
-                    //   ],
-                    // ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          width: 50,
-                        ),
                         Container(
                           padding: const EdgeInsets.all(5.0),
-                          width: 250,
+                          width: deviceWidth * 0.65,
                           height: 40,
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey),
@@ -525,39 +493,34 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             style: TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
-                        IconButton(
-                          icon: Icon(Icons.arrow_drop_down_circle_rounded),
-                          onPressed: () {
-                            _showModalAgePicker(context);
-                          },
+                        Container(
+                          width: deviceWidth * 0.1,
+                          child: IconButton(
+                            icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                            onPressed: () {
+                              _showModalAgePicker(context);
+                            },
+                          ),
                         ),
                       ],
                     ),
                     SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 30,
-                        ),
                         Container(
+                          padding: const EdgeInsets.all(5.0),
+                          width: deviceWidth * 0.8,
                           child: Text(
                             '●性別',
                             style: TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
-                      ],
-                    ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          width: 50,
-                        ),
                         Container(
                           padding: const EdgeInsets.all(5.0),
-                          width: 250,
+                          width: deviceWidth * 0.65,
                           height: 40,
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey),
@@ -568,47 +531,41 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             style: TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
-                        IconButton(
-                          icon: Icon(Icons.arrow_drop_down_circle_rounded),
-                          onPressed: () {
-                            _showModalGenderPicker(context);
-                          },
+                        Container(
+                          width: deviceWidth * 0.1,
+                          child: IconButton(
+                            icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                            onPressed: () {
+                              _showModalGenderPicker(context);
+                            },
+                          ),
                         ),
                       ],
                     ),
                     SizedBox(
                       height: 10,
                     ),
-
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 30,
-                        ),
                         Container(
+                          padding: const EdgeInsets.all(5.0),
+                          width: deviceWidth * 0.8,
                           child: Text(
                             '●コメント',
                             style: TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
-                      ],
-                    ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(
-                          width: 50,
-                        ),
                         Container(
                           padding: const EdgeInsets.all(5.0),
-                          width: 300,
+                          width: deviceWidth * 0.8,
                           height: 150,
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey),
                               color: Colors.white,
                               borderRadius: BorderRadius.circular(20)),
                           child: TextField(
-                            maxLines: 7,
+                            maxLines: 20,
                             decoration: InputDecoration.collapsed(
                                 border: InputBorder.none, hintText: ''),
                             controller: coment,
@@ -620,116 +577,113 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     SizedBox(
                       height: 10,
                     ),
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: 260,
-                        ),
-                        TextButton(
-                          style: TextButton.styleFrom(
-                            backgroundColor: Colors.lightGreenAccent,
-                            shape: const RoundedRectangleBorder(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(100)),
+                        Container(
+                          alignment: Alignment.centerRight,
+                          padding: EdgeInsets.only(right: 40),
+                          child: TextButton(
+                            style: TextButton.styleFrom(
+                              backgroundColor: Colors.lightGreenAccent,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(100)),
+                              ),
                             ),
-                          ),
-                          child: Text(
-                            "登録",
-                            style: TextStyle(color: Colors.black),
-                          ),
-                          onPressed: () async {
-                            myProfile.USER_ID = auth.currentUser!.uid;
-                            myProfile.PROFILE_IMAGE = profileImage;
-                            myProfile.NICK_NAME = nickName.text;
-                            myProfile.MY_USER_ID = inputUserID.text;
-                            myProfile.TOROKU_RANK = torokuRank;
-                            myProfile.activityList = activityList;
-                            myProfile.AGE = age;
-                            myProfile.GENDER = gender;
-                            myProfile.COMENT = coment.text;
-                            myProfile.TITLE = myTitleMap;
-                            //必須入力項目のチェック
-                            if (nickName.text.isNotEmpty && inputUserID.text.isNotEmpty) {
-                              print(nickName.text);
-                              print(inputUserID.text);
-                              bool isDoubleMyUserId = await FirestoreMethod.checkDoubleMyUserID(inputUserID.text, isDoubleUser);
-                              //ユーザーIDの重複確認
-                              if (isDoubleMyUserId) {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: Text('このユーザーIDは既に使用されています'),
-                                        actions: <Widget>[
-                                          ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                                primary: Colors.lightGreenAccent,
-                                                onPrimary: Colors.black),
-                                            child: Text('OK'),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              }
-                              else if (inputUserID.text.length < 5 || inputUserID.text.length > 20) {
-                                showDialog(
-                                    context: context,
-                                    builder: (context) {
-                                      return AlertDialog(
-                                        title: Text('ユーザーIDは5文字以上20文字以内です'),
-                                        actions: <Widget>[
-                                          ElevatedButton(
-                                            style: ElevatedButton.styleFrom(
-                                                primary: Colors.lightGreenAccent,
-                                                onPrimary: Colors.black),
-                                            child: Text('OK'),
-                                            onPressed: () {
-                                              Navigator.pop(context);
-                                            },
-                                          ),
-                                        ],
-                                      );
-                                    });
-                              }
-                              else {
-                                await FirestoreMethod.makeProfile(myProfile);
-                                await FirestoreMethod.makeProfileDetail(myProfile,widget.koushinFlg);
-                                await FirestoreMethod.putReviewFeatureEnabled(true);
+                            child: Text(
+                              "登録",
+                              style: TextStyle(color: Colors.black),
+                            ),
+                            onPressed: () async {
+                              myProfile.USER_ID = auth.currentUser!.uid;
+                              myProfile.PROFILE_IMAGE = profileImage;
+                              myProfile.NICK_NAME = nickName.text;
+                              myProfile.MY_USER_ID = inputUserID.text;
+                              myProfile.TOROKU_RANK = torokuRank;
+                              myProfile.activityList = activityList;
+                              myProfile.AGE = age;
+                              myProfile.GENDER = gender;
+                              myProfile.COMENT = coment.text;
+                              myProfile.TITLE = myTitleMap;
+                              //必須入力項目のチェック
+                              if (nickName.text.isNotEmpty && inputUserID.text.isNotEmpty) {
+                                print(nickName.text);
+                                print(inputUserID.text);
+                                bool isDoubleMyUserId = await FirestoreMethod.checkDoubleMyUserID(inputUserID.text, isDoubleUser);
+                                //ユーザーIDの重複確認
+                                if (isDoubleMyUserId) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text('このユーザーIDは既に使用されています'),
+                                          actions: <Widget>[
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  primary: Colors.lightGreenAccent,
+                                                  onPrimary: Colors.black),
+                                              child: Text('OK'),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      });
+                                }
+                                else if (inputUserID.text.length < 5 || inputUserID.text.length > 20) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                          title: Text('ユーザーIDは5文字以上20文字以内です'),
+                                          actions: <Widget>[
+                                            ElevatedButton(
+                                              style: ElevatedButton.styleFrom(
+                                                  primary: Colors.lightGreenAccent,
+                                                  onPrimary: Colors.black),
+                                              child: Text('OK'),
+                                              onPressed: () {
+                                                Navigator.pop(context);
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      });
+                                }
+                                else {
+                                  await FirestoreMethod.makeProfile(myProfile);
+                                  await FirestoreMethod.makeProfileDetail(myProfile,widget.koushinFlg);
+                                  await FirestoreMethod.putReviewFeatureEnabled(true);
 
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => UnderMenuMove.make(0),
-                                  ),
-                                );
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => UnderMenuMove.make(0),
+                                    ),
+                                  );
+                                }
+                              } else {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text('必須項目を入力してください'),
+                                        actions: <Widget>[
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                primary: Colors.lightGreenAccent,
+                                                onPrimary: Colors.black),
+                                            child: Text('OK'),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    });
                               }
-                            } else {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: Text('必須項目を入力してください'),
-                                      actions: <Widget>[
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              primary: Colors.lightGreenAccent,
-                                              onPrimary: Colors.black),
-                                          child: Text('OK'),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            }
-                          },
+                            },
+                          ),
                         ),
-                      ],
-                    )
                   ]),
             ),
           ));

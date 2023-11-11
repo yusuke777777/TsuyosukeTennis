@@ -42,7 +42,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                 isAlwaysShown: false,
                 child: SingleChildScrollView(
                   child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
                           width: 80,
@@ -361,26 +361,25 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                         const SizedBox(
                           height: 20,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
+                        Container(
+                          alignment: Alignment.center,
+                          child:
                             Text('感想・フィードバック', style: TextStyle(fontSize: 20)),
-                          ],
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
                             Container(
+                              alignment: Alignment.center,
                               color: Colors.white,
-                              width: 300,
+                              width: deviceWidth * 0.8,
                               height: 100,
-                              child: Text(
-                                widget.feedBackMessage ?? "",
-                                maxLines: 20,
+                              child: SingleChildScrollView(
+                                child: Text(
+                                  widget.feedBackMessage ?? "",
+                                  textAlign:
+                                  TextAlign.start,
+                                  softWrap: true,
+                                ),
                               ),
                             ),
-                          ],
-                        ),
                         const SizedBox(
                           height: 20,
                         ),

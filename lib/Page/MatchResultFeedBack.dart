@@ -74,7 +74,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                 isAlwaysShown: false,
                 child: SingleChildScrollView(
                   child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         SizedBox(
                           width: 80,
@@ -368,18 +368,16 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                         const SizedBox(
                           height: 20,
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text('感想・フィードバック', style: TextStyle(fontSize: 20)),
-                          ],
+                        Container(
+                          width: deviceWidth * 0.8,
+                          alignment: Alignment.center,
+                          child:Text('感想・フィードバック',
+                              style: TextStyle(fontSize: 20)),
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
                             Container(
-                              width: 300,
+                              width: deviceWidth * 0.8,
                               height: 100,
+                              alignment: Alignment.center,
                               child: TextFormField(
                                 cursorColor: Colors.green,
                                 controller: inputWord,
@@ -393,8 +391,6 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                 ),
                               ),
                             ),
-                          ],
-                        ),
                         const SizedBox(
                           height: 20,
                         ),

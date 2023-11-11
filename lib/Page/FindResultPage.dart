@@ -38,7 +38,7 @@ class _FindResultPageState extends State<FindResultPage> {
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: TextDirection.ltr,
-      maxLines: 1000,
+      maxLines: 5,
     );
     textPainter.layout(maxWidth: MediaQuery.of(context).size.width * 0.7);
     return textPainter.height;
@@ -51,6 +51,7 @@ class _FindResultPageState extends State<FindResultPage> {
     //必要コンフィグの初期化
     HeaderConfig().init(context, "検索結果");
     DrawerConfig().init(context);
+    final deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
           backgroundColor: HeaderConfig.backGroundColor,
@@ -145,7 +146,7 @@ class _FindResultPageState extends State<FindResultPage> {
                                   crossAxisAlignment:CrossAxisAlignment.start,
                                   children: [
                                     Container(
-                                      width: MediaQuery.of(context).size.width * 0.7,
+                                      width: deviceWidth * 0.7,
                                       height: 30,
                                       child: Text(profileList[0],
                                           textAlign: TextAlign.start,
@@ -157,12 +158,12 @@ class _FindResultPageState extends State<FindResultPage> {
                                       ),
                                     ),
                                     Container(
-                                      width: MediaQuery.of(context).size.width * 0.7,
+                                      width: deviceWidth * 0.7,
                                       child: Text(profileList[3],
                                           textAlign: TextAlign.start,
                                           softWrap: true,
                                           overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
-                                          maxLines: (textHeight/12).floor(),
+                                          maxLines: (textHeight/12).floor()> 5 ? 5 :(textHeight/12).floor(),
                                           style: TextStyle(
                                               fontSize: 12)),
                                     ),

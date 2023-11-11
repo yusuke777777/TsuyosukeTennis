@@ -100,7 +100,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                 ),
                                               ),
                                               Container(
-                                                width: deviceWidth * 0.3,
+                                                width: deviceWidth * 0.32,
                                                 alignment: Alignment.bottomLeft,
                                                 child: Text(
                                                   "TSP RANKING",
@@ -810,14 +810,14 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                     border: Border.all(color: Colors.grey),
                                     color: Colors.white,
                                     borderRadius: BorderRadius.circular(20)),
-                                child: Text(
-                                  profileDetailList.COMENT,
-                                  textAlign: TextAlign.start,
-                                  softWrap: true,
-                                  overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
-                                  maxLines: 7,
-                                  style: TextStyle(
-                                      fontSize: 14, color: Colors.black),
+                                child: SingleChildScrollView(
+                                  child: Text(
+                                    profileDetailList.COMENT,
+                                    textAlign: TextAlign.start,
+                                    softWrap: true,
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.black),
+                                  ),
                                 ),
                               ),
                             ],

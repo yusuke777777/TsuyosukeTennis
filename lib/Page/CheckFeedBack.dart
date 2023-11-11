@@ -32,7 +32,6 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
           .limit(10)
           .get();
 
-
       List<CFeedBackCommentSetting> feedBackListWk = [];
 
       for (final doc in querySnapshot.docs) {
@@ -153,42 +152,48 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
               } else {
                 //共通リストタイルの呼出
                 return Card(
-                  elevation: 0,
-                  child: ListTile(
-                      tileColor: Colors.white24,
-                      leading: ClipOval(
-                        child: GestureDetector(
-                          //アイコン押下時の挙動
-                          onTap: () {
-                            // Navigator.push(
-                            //     context,
-                            //     MaterialPageRoute(
-                            //       builder: (context) => ProfileReference(pro),
-                            //     ));
-                          },
-                          child: feedBackList[index].OPPONENT_IMAGE == ""
-                              ? Image.asset('images/upper_body-2.png',
-                                  fit: BoxFit.cover)
-                              : Image.network(
-                                  feedBackList[index].OPPONENT_IMAGE.toString(),
-                                  width: 50,
-                                  height: 50,
-                                  fit: BoxFit.fill,
-                                ),
+                    elevation: 0,
+                    child: ListTile(
+                        tileColor: Colors.white24,
+                        leading: ClipOval(
+                          child: GestureDetector(
+                            //アイコン押下時の挙動
+                            onTap: () {
+                              // Navigator.push(
+                              //     context,
+                              //     MaterialPageRoute(
+                              //       builder: (context) => ProfileReference(pro),
+                              //     ));
+                            },
+                            child: feedBackList[index].OPPONENT_IMAGE == ""
+                                ? Image.asset('images/upper_body-2.png',
+                                    fit: BoxFit.cover)
+                                : Image.network(
+                                    feedBackList[index]
+                                        .OPPONENT_IMAGE
+                                        .toString(),
+                                    width: 50,
+                                    height: 50,
+                                    fit: BoxFit.fill,
+                                  ),
+                          ),
                         ),
-                      ),
-                      title: Text(feedBackList[index].FEED_BACK.toString()),
-                      subtitle: Text("タイトル：" +
-                          feedBackList[index].MATCH_TITLE.toString() +
-                          "\n入力者：" +
-                          feedBackList[index].OPPONENT_NAME.toString() +
-                          "\n入力日時：" +
-                          feedBackList[index]
-                              .DATE_TIME
-                              .toString()
-                          .substring(0,16)
-                              )),
-                );
+                        title: Text(
+                          feedBackList[index].FEED_BACK.toString(),
+                          style: TextStyle(fontSize: 16),
+                        ),
+                        subtitle: Text(
+                          "タイトル：" +
+                              feedBackList[index].MATCH_TITLE.toString() +
+                              "\n入力者：" +
+                              feedBackList[index].OPPONENT_NAME.toString() +
+                              "\n入力日時：" +
+                              feedBackList[index]
+                                  .DATE_TIME
+                                  .toString()
+                                  .substring(0, 16),
+                          style: TextStyle(fontSize: 12),
+                        )));
               }
             }));
   }

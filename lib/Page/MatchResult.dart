@@ -118,7 +118,7 @@ class _MatchResultState extends State<MatchResult> {
                 isAlwaysShown: false,
                 child: SingleChildScrollView(
                   child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Center(
                           child: Container(
@@ -494,19 +494,16 @@ class _MatchResultState extends State<MatchResult> {
                                 const SizedBox(
                                   height: 20,
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Text('感想・フィードバック',
+                                Container(
+                                  width: deviceWidth * 0.8,
+                                  alignment: Alignment.center,
+                                    child:Text('感想・フィードバック',
                                         style: TextStyle(fontSize: 20)),
-                                  ],
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
                                     Container(
-                                      width: 300,
+                                      width: deviceWidth * 0.8,
                                       height: 100,
+                                      alignment: Alignment.center,
                                       child: TextFormField(
                                         cursorColor: Colors.green,
                                         controller: inputWord,
@@ -521,8 +518,6 @@ class _MatchResultState extends State<MatchResult> {
                                         ),
                                       ),
                                     ),
-                                  ],
-                                ),
                               ])
                             : Container(),
                         const SizedBox(
@@ -547,7 +542,8 @@ class _MatchResultState extends State<MatchResult> {
                         ),
                         Center(
                           child: Container(
-                            width: 300,
+                            padding: EdgeInsets.only(bottom: 20),
+                            width: deviceWidth * 0.8,
                             child: TextButton(
                               style: TextButton.styleFrom(
                                 backgroundColor: Colors.lightGreenAccent,
