@@ -95,7 +95,8 @@ class FirestoreMethod {
         'COMENT': profile.COMENT,
         'koushinYmd': today,
         'MY_USER_ID': profile.MY_USER_ID,
-        'TITLE': profile.TITLE
+        'TITLE': profile.TITLE,
+        'FEEDBACK_COUNT':0,
       });
     } catch (e) {
       print('ユーザー登録に失敗しました --- $e');
@@ -296,7 +297,8 @@ class FirestoreMethod {
           'SERVE_2ND_AVE': 0.0,
           //ランクNoの結果
           'RANK_NO': 0,
-          'TITLE': profile.TITLE
+          'TITLE': profile.TITLE,
+          'FEEDBACK_COUNT':0,
         });
       }
     } catch (e) {

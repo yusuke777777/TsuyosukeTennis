@@ -469,6 +469,7 @@ async function checkTitleState(): Promise<void> {
     const titleData: Map<string, string> = objectToMap(docs.data()?.TITLE);
     const feedbackCount: number = Number(docs.data()["FEEDBACK_COUNT"]);
     const strokeForeAve: number = Number(docs.data()["STROKE_FOREHAND_AVE"]);
+    const strokeBackAve: number = Number(docs.data()["STROKE_BACKHAND_AVE"]);
     console.log(typeof titleData);
     // 更新確認(No1の確認)!!!!!!!!!!!!!!!!!!!!!
     let mapVal1: string = "0";
@@ -515,15 +516,182 @@ async function checkTitleState(): Promise<void> {
       myObjectData.set("2", mapVal2);
     }
     // No2確認終了＝＝＝＝＝＝＝＝＝＝
-    // Map3以降
-    myObjectData.set("3", "0");
-    myObjectData.set("4", "0");
-    myObjectData.set("5", "0");
-    myObjectData.set("6", "0");
-    myObjectData.set("7", "0");
-    myObjectData.set("8", "0");
-    myObjectData.set("9", "0");
-    myObjectData.set("10", "0");
+    // 更新確認(No3の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal3: string = "0";
+    if (titleData.get("3") !== undefined) {
+      console.log("No3存在します");
+      mapVal3 = titleData.get("3") as string;
+      console.log(mapVal3);
+    } else {
+      console.log("No3存在しません");
+    }
+    // myObjectDataの3キーを更新
+    if (mapVal3 == "0") {
+      console.log("No3が0");
+      if (feedbackCount >= 20 && strokeForeAve >= 3.0) {
+        console.log("No3条件達成！");
+        myObjectData.set("3", "1");
+      } else {
+        myObjectData.set("3", "0");
+      }
+    } else {
+      myObjectData.set("3", mapVal3);
+    }
+    // No3確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No4の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal4: string = "0";
+    if (titleData.get("4") !== undefined) {
+      console.log("No4存在します");
+      mapVal4 = titleData.get("4") as string;
+      console.log(mapVal4);
+    } else {
+      console.log("No4存在しません");
+    }
+    // myObjectDataの4キーを更新
+    if (mapVal4 == "0") {
+      console.log("No4が0");
+      if (feedbackCount >= 30 && strokeForeAve >= 4.0) {
+        console.log("No4条件達成！");
+        myObjectData.set("4", "1");
+      } else {
+        myObjectData.set("4", "0");
+      }
+    } else {
+      myObjectData.set("4", mapVal4);
+    }
+    // No4確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No5の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal5: string = "0";
+    if (titleData.get("5") !== undefined) {
+      console.log("No5存在します");
+      mapVal5 = titleData.get("5") as string;
+      console.log(mapVal5);
+    } else {
+      console.log("No5存在しません");
+    }
+    // myObjectDataの5キーを更新
+    if (mapVal5 == "0") {
+      console.log("No5が0");
+      if (feedbackCount >= 50 && strokeForeAve >= 4.1) {
+        console.log("No5条件達成！");
+        myObjectData.set("5", "1");
+      } else {
+        myObjectData.set("5", "0");
+      }
+    } else {
+      myObjectData.set("5", mapVal5);
+    }
+    // No5確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No6の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal6: string = "0";
+    if (titleData.get("6") !== undefined) {
+      console.log("No6存在します");
+      mapVal6 = titleData.get("6") as string;
+      console.log(mapVal6);
+    } else {
+      console.log("No6存在しません");
+    }
+    // myObjectDataの6キーを更新
+    if (mapVal6 == "0") {
+      console.log("No6が0");
+      if (feedbackCount >= 10 && strokeBackAve >= 1.0) {
+        console.log("No6条件達成！");
+        myObjectData.set("6", "1");
+      } else {
+        myObjectData.set("6", "0");
+      }
+    } else {
+      myObjectData.set("6", mapVal6);
+    }
+    // No6確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No7の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal7: string = "0";
+    if (titleData.get("7") !== undefined) {
+      console.log("No7存在します");
+      mapVal7 = titleData.get("7") as string;
+      console.log(mapVal7);
+    } else {
+      console.log("No7存在しません");
+    }
+    // myObjectDataの7キーを更新
+    if (mapVal7 == "0") {
+      console.log("No7が0");
+      if (feedbackCount >= 15 && strokeBackAve >= 2.0) {
+        console.log("No7条件達成！");
+        myObjectData.set("7", "1");
+      } else {
+        myObjectData.set("7", "0");
+      }
+    } else {
+      myObjectData.set("7", mapVal6);
+    }
+    // No7確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No8の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal8: string = "0";
+    if (titleData.get("8") !== undefined) {
+      console.log("No8存在します");
+      mapVal8 = titleData.get("8") as string;
+      console.log(mapVal8);
+    } else {
+      console.log("No8存在しません");
+    }
+    // myObjectDataの8キーを更新
+    if (mapVal8 == "0") {
+      console.log("No8が0");
+      if (feedbackCount >= 20 && strokeBackAve >= 3.0) {
+        console.log("No8条件達成！");
+        myObjectData.set("8", "1");
+      } else {
+        myObjectData.set("8", "0");
+      }
+    } else {
+      myObjectData.set("8", mapVal8);
+    }
+    // No8確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No9の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal9: string = "0";
+    if (titleData.get("9") !== undefined) {
+      console.log("No9存在します");
+      mapVal9 = titleData.get("9") as string;
+      console.log(mapVal9);
+    } else {
+      console.log("No9存在しません");
+    }
+    // myObjectDataの9キーを更新
+    if (mapVal9 == "0") {
+      console.log("No9が0");
+      if (feedbackCount >= 30 && strokeBackAve >= 4.0) {
+        console.log("No9条件達成！");
+        myObjectData.set("9", "1");
+      } else {
+        myObjectData.set("9", "0");
+      }
+    } else {
+      myObjectData.set("9", mapVal9);
+    }
+    // No9確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No10の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal10: string = "0";
+    if (titleData.get("10") !== undefined) {
+      console.log("No10存在します");
+      mapVal10 = titleData.get("10") as string;
+      console.log(mapVal10);
+    } else {
+      console.log("No10存在しません");
+    }
+    // myObjectDataの10キーを更新
+    if (mapVal10 == "0") {
+      console.log("No10が0");
+      if (feedbackCount >= 50 && strokeBackAve >= 4.1) {
+        console.log("No10条件達成！");
+        myObjectData.set("10", "1");
+      } else {
+        myObjectData.set("10", "0");
+      }
+    } else {
+      myObjectData.set("10", mapVal10);
+    }
+    // No10確認終了＝＝＝＝＝＝＝＝＝＝
     // 結果をマップに詰める
     const updateMap = {
       "1": myObjectData.get("1"),
