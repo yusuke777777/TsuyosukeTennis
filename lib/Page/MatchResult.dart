@@ -723,9 +723,6 @@ class _MatchResultState extends State<MatchResult> {
                                           widget.yourProfile.USER_ID,
                                           dayKey);
                                     }
-                                    //称号の更新
-                                    FirestoreMethod.updateTitle(widget.myProfile, widget.yourProfile);
-
                                   }
                                 }
                               },
