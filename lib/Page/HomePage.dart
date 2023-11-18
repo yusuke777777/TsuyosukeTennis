@@ -610,7 +610,7 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                     ),
-                    Container(
+                        profileDetailList.REVIEW_ENABLED == true ?  Container(
                       height: 380,
                       width: deviceWidth * 0.8,
                       child: Column(
@@ -826,8 +826,8 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-                    ),
-                    Container(
+                    ):Container(),
+                        profileDetailList.REVIEW_ENABLED == true ? Container(
                       height: 130,
                       width: deviceWidth * 0.8,
                       child: Column(
@@ -875,7 +875,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-                    ),
+                    ):Container(),
                     Container(
                       height: 180,
                       width: deviceWidth * 0.8,

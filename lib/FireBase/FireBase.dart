@@ -235,7 +235,9 @@ class FirestoreMethod {
         //   'SERVE_2ND_AVE': 0.0
         ////ランクNoの結果
         //'RANK_NO':0.0,
-        //'TITLE':profile.TITLE
+        //'TITLE':profile.TITLE,
+        //レビューセッティング
+        //"REVIEW_ENABLED":false
         // });
         //KOUSHIN_TIME更新なし
 
@@ -299,6 +301,8 @@ class FirestoreMethod {
           'RANK_NO': 0,
           'TITLE': profile.TITLE,
           'FEEDBACK_COUNT':0,
+          //レビューセッティング
+          "REVIEW_ENABLED":false
         });
       }
     } catch (e) {
@@ -600,6 +604,7 @@ class FirestoreMethod {
       KOUSHIN_TIME: snapShot.data()!['KOUSHIN_TIME'],
       RANK_NO: snapShot.data()!['RANK_NO'],
       TITLE: returnTitle,
+      REVIEW_ENABLED:snapShot.data()?['REVIEW_ENABLED'] ?? true,
     );
 
     return cprofileDetail;
@@ -668,7 +673,9 @@ class FirestoreMethod {
         FIRST_TODOFUKEN_SICHOSON: snapShot.data()!['FIRST_TODOFUKEN_SICHOSON'],
         KOUSHIN_TIME: snapShot.data()!['KOUSHIN_TIME'],
         RANK_NO: snapShot.data()!['RANK_NO'],
-        TITLE: returnTitle);
+        TITLE: returnTitle,
+        REVIEW_ENABLED:snapShot.data()?['REVIEW_ENABLED'] ?? true,
+    );
 
     return cprofileDetail;
   }
@@ -3904,7 +3911,8 @@ class FirestoreMethod {
   static Future<void> putReviewFeatureEnabled(bool reviewFeatureEnabled) async {
     final settingSnapshot = await settingRef.doc(auth.currentUser!.uid);
 
-    settingSnapshot.set({"REVIEW_ENABLED": reviewFeatureEnabled});
+    await settingSnapshot.set({"REVIEW_ENABLED": reviewFeatureEnabled});
+    await profileDetailRef.doc(auth.currentUser!.uid).set({"REVIEW_ENABLED":reviewFeatureEnabled},SetOptions(merge: true));
   }
 
   static Future<bool> getYourReviewFeatureEnabled(String userId) async {

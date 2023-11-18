@@ -561,7 +561,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                           ],
                         ),
                       ),
-                          Container(
+                          profileDetailList.REVIEW_ENABLED == true ? Container(
                             height: 380,
                             width: deviceWidth * 0.8,
                             child: Column(
@@ -781,7 +781,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                 ),
                               ],
                             ),
-                          ),
+                          ) : Container(),
                       Container(
                         height: 250,
                         width: deviceWidth * 0.8,

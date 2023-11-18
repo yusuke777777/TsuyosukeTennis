@@ -35,6 +35,7 @@ class CprofileDetail {
   late double SERVE_2ND_AVE;
   late int RANK_NO;
   late String TITLE;
+  late bool? REVIEW_ENABLED;
 
   CprofileDetail(
       {required this.USER_ID,
@@ -69,5 +70,7 @@ class CprofileDetail {
       required this.SERVE_2ND_AVE,
       required this.FIRST_TODOFUKEN_SICHOSON,
       required this.KOUSHIN_TIME,required this.RANK_NO,
-      required this.TITLE});
+      required this.TITLE,
+        this.REVIEW_ENABLED
+      });
 }
