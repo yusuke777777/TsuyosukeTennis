@@ -79,6 +79,9 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
         query = query.where('AGE', isEqualTo: age);
       }
 
+      query = query.where('SEARCH_ENABLED', isEqualTo: true);
+
+
       if (todoufuken != '') {
         if (shichoson != '') {
           query = query.where('TODOFUKEN_SHICHOSON_LIST',
@@ -152,6 +155,9 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
       if (age != '') {
         query = query.where('AGE', isEqualTo: age);
       }
+
+      query = query.where('SEARCH_ENABLED', isEqualTo: true);
+
 
       if (todoufuken != '') {
         if (shichoson != '') {

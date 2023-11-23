@@ -237,7 +237,9 @@ class FirestoreMethod {
         //'RANK_NO':0.0,
         //'TITLE':profile.TITLE,
         //レビューセッティング
-        //"REVIEW_ENABLED":false
+        //"REVIEW_ENABLED":true
+        //サーチセッティング
+        //"SEARCH_ENABLED":true
         // });
         //KOUSHIN_TIME更新なし
 
@@ -302,7 +304,9 @@ class FirestoreMethod {
           'TITLE': profile.TITLE,
           'FEEDBACK_COUNT':0,
           //レビューセッティング
-          "REVIEW_ENABLED":false
+          "REVIEW_ENABLED":true,
+          //サーチセッティング
+          "SEARCH_ENABLED":true
         });
       }
     } catch (e) {
@@ -3928,6 +3932,32 @@ class FirestoreMethod {
 
     return yourReviewFeatureEnabled; // Firestoreのデータがnullの場合は初期値を使用する
   }
+
+
+  static bool searchFeatureEnabled = true;
+
+  static Future<void> putSearchFeatureEnabled(bool searchFeatureEnabled) async {
+    final settingSnapshot = await settingRef.doc(auth.currentUser!.uid);
+
+    await settingSnapshot.set({"SEARCH_ENABLED": searchFeatureEnabled},SetOptions(merge: true));
+    await profileDetailRef.doc(auth.currentUser!.uid).set({"SEARCH_ENABLED":searchFeatureEnabled},SetOptions(merge: true));
+  }
+
+  static Future<bool> getSearchFeatureEnabled() async {
+    final settingSnapshot = await settingRef.doc(auth.currentUser!.uid).get();
+
+    if (settingSnapshot == null || !settingSnapshot.exists) {
+      searchFeatureEnabled = true;
+      // データが存在しない場合、初期値を使用する
+      return true;
+    }
+
+    searchFeatureEnabled = settingSnapshot.data()?["SEARCH_ENABLED"] ?? true;
+
+    return searchFeatureEnabled; // Firestoreのデータがnullの場合は初期値を使用する
+  }
+
+
 
   //ログインするユーザーがプロフィール登録を完了しているか確認
   static bool isprofile = false;

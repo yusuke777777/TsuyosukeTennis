@@ -21,6 +21,11 @@ class _MySettingState extends State<MySetting> {
         FirestoreMethod.reviewFeatureEnabled = enabled;
       });
     });
+    FirestoreMethod.getSearchFeatureEnabled().then((enabled2) {
+      setState(() {
+        FirestoreMethod.searchFeatureEnabled = enabled2;
+      });
+    });
   }
 
   @override
@@ -76,6 +81,19 @@ class _MySettingState extends State<MySetting> {
                 setState(() {
                   FirestoreMethod.reviewFeatureEnabled = value ?? true;
                   FirestoreMethod.putReviewFeatureEnabled(FirestoreMethod.reviewFeatureEnabled);
+                });
+              },
+            ),
+          ),
+          ListTile(
+            title: Text("マルチ検索機能（OFF/ON）",
+                style: TextStyle(fontSize: 20, color: Colors.black)),
+            trailing: CupertinoSwitch(
+              value: FirestoreMethod.searchFeatureEnabled,
+              onChanged: (bool? value) {
+                setState(() {
+                  FirestoreMethod.searchFeatureEnabled = value ?? true;
+                  FirestoreMethod.putSearchFeatureEnabled(FirestoreMethod.searchFeatureEnabled);
                 });
               },
             ),
