@@ -772,6 +772,7 @@ class _MatchResultState extends State<MatchResult> {
     "4",
     "5",
     "6",
+    "7",
   ];
 
   void _showModalYourPointPicker(BuildContext context, int No) {
@@ -804,6 +805,7 @@ class _MatchResultState extends State<MatchResult> {
     "4",
     "5",
     "6",
+    "7",
   ];
 
   void _onSelectedMyPointChanged(int index) {
