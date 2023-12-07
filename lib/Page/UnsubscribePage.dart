@@ -26,14 +26,27 @@ class _UnsubscribeState extends State<UnsubscribePage> {
         iconTheme: IconThemeData(color: Colors.black),
       ),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () => _showConfirmationDialog(context),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green, // 背景色を設定
-          ),
-          child: Text('アカウントを削除'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ElevatedButton(
+              onPressed: () => _showConfirmationDialog(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green, // 背景色を設定
+              ),
+              child: Text('アカウント削除を行う'),
+            ),
+            Text(
+              '⚠️退会するとこれまでのデータは失われます！',
+              style: TextStyle(
+                fontSize: 15,
+                color: Colors.red,
+              ),
+            ),
+          ],
         ),
       ),
+
     );
   }
 
