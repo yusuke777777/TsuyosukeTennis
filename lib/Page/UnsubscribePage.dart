@@ -114,14 +114,35 @@ class _UnsubscribeState extends State<UnsubscribePage> {
 
       // 現在のユーザーを取得
       User? user = FirebaseAuth.instance.currentUser;
+      String userId = user!.uid;
 
       // パスワードで再認証
       var credential = EmailAuthProvider.credential(email: email, password: password);
       await user?.reauthenticateWithCredential(credential);
 
+      //コレクションの該当データを削除
+      // //myProfileDetail
+      // final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_myProfileDetail =
+      // await FirebaseFirestore.instance.collection('myProfileDetail').doc(userId).get();
+      // if(documentSnapshot_myProfileDetail.exists){
+      //   FirebaseFirestore.instance.collection('myProfileDetail').doc(userId).delete();
+      // }
+      // //MySetting
+      // final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_MySetting =
+      // await FirebaseFirestore.instance.collection('MySetting').doc(userId).get();
+      // if(documentSnapshot_MySetting.exists){
+      //   FirebaseFirestore.instance.collection('MySetting').doc(userId).delete();
+      // }
+      // //blockList
+      // final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_blockList =
+      // await FirebaseFirestore.instance.collection('blockList').doc(userId).get();
+      // if(documentSnapshot_blockList.exists){
+      //   FirebaseFirestore.instance.collection('blockList').doc(userId).delete();
+      // }
+
       // ユーザーアカウントを削除
       await user?.delete();
-      //FirebaseFirestore.instance.collection('users').doc(userId).delete();
+
       print('ユーザーアカウントが削除されました');
       return true; // 認証成功
     } catch (e) {
