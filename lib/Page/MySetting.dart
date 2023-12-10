@@ -4,6 +4,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
 import 'Billing.dart';
+import 'UnsubscribePage.dart';
 
 class MySetting extends StatefulWidget {
   const MySetting({Key? key}) : super(key: key);
@@ -113,6 +114,16 @@ class _MySettingState extends State<MySetting> {
                 });
               },
             ),
+          ),
+          ListTile(
+            title: Text('退会', style: TextStyle(fontSize: 20, color: Colors.black)),
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UnsubscribePage(),
+                  ));
+            },
           ),
         ],
       ),
