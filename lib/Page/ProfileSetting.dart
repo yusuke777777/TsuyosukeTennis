@@ -199,7 +199,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
             shadowColor: Colors.white,
           ),
           body: Scrollbar(
-            isAlwaysShown: false,
             child: SingleChildScrollView(
               child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,

@@ -39,7 +39,6 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                 leading: HeaderConfig.backIcon
               ),
               body: Scrollbar(
-                isAlwaysShown: false,
                 child: SingleChildScrollView(
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,

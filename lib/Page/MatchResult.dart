@@ -115,7 +115,6 @@ class _MatchResultState extends State<MatchResult> {
                   iconTheme: IconThemeData(color: Colors.black),
                   leading: HeaderConfig.backIcon),
               body: Scrollbar(
-                isAlwaysShown: false,
                 child: SingleChildScrollView(
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,

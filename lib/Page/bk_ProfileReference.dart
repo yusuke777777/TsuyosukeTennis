@@ -51,7 +51,6 @@ class _ProfileReferenceState extends State<ProfileReference> {
               } else if (snapshot.hasData) {
                 CprofileSetting? profileList = snapshot.data;
                 return Scrollbar(
-                    isAlwaysShown: false,
                     child: SingleChildScrollView(
                       //画面の中身
                       //プロフィール画像

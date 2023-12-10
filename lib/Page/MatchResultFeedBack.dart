@@ -71,7 +71,6 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                   iconTheme: IconThemeData(color: Colors.black),
                   leading: HeaderConfig.backIcon),
               body: Scrollbar(
-                isAlwaysShown: false,
                 child: SingleChildScrollView(
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,

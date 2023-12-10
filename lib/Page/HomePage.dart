@@ -76,7 +76,6 @@ class _HomePageState extends State<HomePage> {
             } else if (snapshot.hasData) {
               CprofileDetail profileDetailList = snapshot.data;
               return Scrollbar(
-                  isAlwaysShown: false,
                   child: SingleChildScrollView(
                       //プロフィール画像
                       child: Column(children: [

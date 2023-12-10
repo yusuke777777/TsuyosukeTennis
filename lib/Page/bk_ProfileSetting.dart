@@ -41,7 +41,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
     return MaterialApp(
       home: Scaffold(
           body: Scrollbar(
-        isAlwaysShown: false,
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
