@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:tsuyosuke_tennis_ap/Page/PassWordChangeForm.dart';
 
 import 'Common/CtalkRoom.dart';
@@ -174,6 +175,7 @@ class DrawerConfig {
           GestureDetector(
             onTap: () async {
               await FirebaseAuth.instance.signOut();
+              await Purchases.logOut();
               // ログアウト後の画面に遷移
               Navigator.pushAndRemoveUntil(
                 context,

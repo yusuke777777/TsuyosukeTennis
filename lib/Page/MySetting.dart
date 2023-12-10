@@ -1,8 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
+import 'Billing.dart';
 
 class MySetting extends StatefulWidget {
   const MySetting({Key? key}) : super(key: key);
@@ -69,6 +70,21 @@ class _MySettingState extends State<MySetting> {
                 context: context,
                 applicationName: 'テニポイ',
                 applicationVersion: '1.0.0',
+              );
+            },
+          ),
+          ListTile(
+            title: Text('有料プランへの加入', style: TextStyle(fontSize: 20, color: Colors.black)),
+            onTap: () async{
+              // final offerings = await Purchases.getOfferings();
+              // print(offerings.current); // コンソールでcurrentに設定しているやつ
+              // print(offerings.all); // Offeringすべて
+              // print(offerings.current?.monthly?.storeProduct.priceString); // '¥120' みたいなのが取得できます
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => Billing(),
+                ),
               );
             },
           ),

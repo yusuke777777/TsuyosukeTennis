@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/SigninModel.dart';
 import '../FireBase/TextDaialog.dart';
@@ -109,6 +110,10 @@ class SignInPage extends StatelessWidget {
                                     await FirestoreMethod.isProfile();
                                     //ダウンロードテスト
                                     // await FirestoreMethod().downloadImage();
+
+                                    // //課金機能　RevenueCat
+                                    // await Purchases.logIn(auth.currentUser!.uid);
+
                                     await Navigator.pushReplacement(
                                       context,
                                       MaterialPageRoute(

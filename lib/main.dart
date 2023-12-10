@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -5,6 +7,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:purchases_flutter/models/purchases_configuration.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:tsuyosuke_tennis_ap/FireBase/Notification_badge.dart';
 import 'Common/CPushNotification.dart';
 import 'FireBase/FireBase.dart';
@@ -35,6 +39,14 @@ void main() async {
     statusBarColor: Colors.transparent,
     statusBarBrightness: Brightness.light,
   ));
+//課金機能　RevenueCat
+//   final configuration = PurchasesConfiguration(
+//     Platform.isAndroid
+//         ? 'androidRevenueCatKey'
+//         : 'iosRevenueCatKey',
+//   );
+//   await Purchases.configure(configuration);
+
 
   runApp( MyApp());
 }

@@ -367,7 +367,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                             Text('感想・フィードバック', style: TextStyle(fontSize: 20)),
                         ),
                             Container(
-                              alignment: Alignment.center,
+                              alignment: Alignment.topLeft,
                               color: Colors.white,
                               width: deviceWidth * 0.8,
                               height: 100,
