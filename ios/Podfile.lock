@@ -872,9 +872,15 @@ PODS:
     - Flutter
     - FlutterMacOS
   - PromisesObjC (2.2.0)
+  - purchases_flutter (6.5.0):
+    - Flutter
+    - PurchasesHybridCommon (= 8.1.0)
+  - PurchasesHybridCommon (8.1.0):
+    - RevenueCat (= 4.31.1)
   - qr_code_scanner (0.2.0):
     - Flutter
     - MTBBarcodeScanner
+  - RevenueCat (4.31.1)
   - TOCropViewController (2.6.1)
   - url_launcher_ios (0.0.1):
     - Flutter
@@ -897,6 +903,7 @@ DEPENDENCIES:
   - image_cropper (from `.symlinks/plugins/image_cropper/ios`)
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
+  - purchases_flutter (from `.symlinks/plugins/purchases_flutter/ios`)
   - qr_code_scanner (from `.symlinks/plugins/qr_code_scanner/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
@@ -931,6 +938,8 @@ SPEC REPOS:
     - MTBBarcodeScanner
     - nanopb
     - PromisesObjC
+    - PurchasesHybridCommon
+    - RevenueCat
     - TOCropViewController
 
 EXTERNAL SOURCES:
@@ -964,6 +973,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/image_picker_ios/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
+  purchases_flutter:
+    :path: ".symlinks/plugins/purchases_flutter/ios"
   qr_code_scanner:
     :path: ".symlinks/plugins/qr_code_scanner/ios"
   url_launcher_ios:
@@ -1015,11 +1026,14 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   PromisesObjC: 09985d6d70fbe7878040aa746d78236e6946d2ef
+  purchases_flutter: 437e9c2ba0619a8c502a4036d3e0ea78c870d429
+  PurchasesHybridCommon: 8920b878fd7b5e2b358b24c6c37592259655657a
   qr_code_scanner: bb67d64904c3b9658ada8c402e8b4d406d5d796e
+  RevenueCat: 3d9d19d3564c101f7f25a0a4fc10da1a9b04ddbe
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   url_launcher_ios: 08a3dfac5fb39e8759aeb0abbd5d9480f30fc8b4
   webview_flutter_wkwebview: 2e2d318f21a5e036e2c3f26171342e95908bd60a
 
 PODFILE CHECKSUM: debda708bc28d028f2b83c1dc7e87aac4a386ba8
 
-COCOAPODS: 1.12.0
+COCOAPODS: 1.14.3

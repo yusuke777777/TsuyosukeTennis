@@ -112,7 +112,7 @@ class SignInPage extends StatelessWidget {
                                     // await FirestoreMethod().downloadImage();
 
                                     // //課金機能　RevenueCat
-                                    // await Purchases.logIn(auth.currentUser!.uid);
+                                    await Purchases.logIn(auth.currentUser!.uid);
 
                                     await Navigator.pushReplacement(
                                       context,

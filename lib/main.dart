@@ -39,13 +39,23 @@ void main() async {
     statusBarColor: Colors.transparent,
     statusBarBrightness: Brightness.light,
   ));
-//課金機能　RevenueCat
-//   final configuration = PurchasesConfiguration(
-//     Platform.isAndroid
-//         ? 'androidRevenueCatKey'
-//         : 'iosRevenueCatKey',
-//   );
-//   await Purchases.configure(configuration);
+
+  final configuration = PurchasesConfiguration(
+    Platform.isAndroid
+        ? 'androidRevenueCatKey'
+        : 'appl_FqFukGrTjwGVYwYkalAgeTGGkog',
+  );
+  await Purchases.configure(configuration);
+
+  const isDebug = !bool.fromEnvironment('TSP0001');
+  Purchases.setDebugLogsEnabled(isDebug);
+
+  // Purchases.removeCustomerInfoUpdateListener(_customerInfoUpdated); // この行は必要な場合のみでOK
+  // Purchases.addCustomerInfoUpdateListener(_customerInfoUpdated);
+  //
+  // void _customerInfoUpdated(CustomerInfo info) {
+  //   print('customerInfoUpdated: $info');
+  // }
 
 
   runApp( MyApp());

@@ -77,10 +77,10 @@ class _MySettingState extends State<MySetting> {
           ListTile(
             title: Text('有料プランへの加入', style: TextStyle(fontSize: 20, color: Colors.black)),
             onTap: () async{
-              // final offerings = await Purchases.getOfferings();
-              // print(offerings.current); // コンソールでcurrentに設定しているやつ
-              // print(offerings.all); // Offeringすべて
-              // print(offerings.current?.monthly?.storeProduct.priceString); // '¥120' みたいなのが取得できます
+              final offerings = await Purchases.getOfferings();
+              print(offerings.current); // コンソールでcurrentに設定しているやつ
+              print(offerings.all); // Offeringすべて
+              print(offerings.current?.monthly?.storeProduct.priceString); // '¥120' みたいなのが取得できます
               Navigator.push(
                 context,
                 MaterialPageRoute(

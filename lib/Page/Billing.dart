@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import '../PropSetCofig.dart';
 
 class Billing extends StatefulWidget {
@@ -32,8 +33,10 @@ class _BillingState extends State<Billing> {
           ListTile(
             title: Text('プレミアムプランへ加入',
                 style: TextStyle(fontSize: 20, color: Colors.black)),
-            onTap: () {
-              //利用規約を記入する
+            onTap: () async{
+              final offerings = await Purchases.getOfferings();
+              final product = offerings.current?.monthly?.storeProduct;
+              final info = await Purchases.purchaseProduct('TSP0001'); // 1つのサブスクリプションプランしかない場合はproduct.idは固定文字列で指定しても問題ありません
             },
           ),
         ],
