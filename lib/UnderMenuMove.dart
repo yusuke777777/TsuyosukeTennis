@@ -4,6 +4,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/HomePage.dart';
 
@@ -12,11 +13,13 @@ import 'Common/CtalkRoom.dart';
 import 'FireBase/FireBase.dart';
 import 'FireBase/NotificationMethod.dart';
 import 'FireBase/Notification_badge.dart';
+import 'FireBase/singletons_data.dart';
 import 'Page/MatchList.dart';
 import 'Page/RankList.dart';
 import 'Page/TalkList.dart';
 import 'Page/TalkRoom.dart';
 import 'Page/manSinglesRankList.dart';
+import 'constant.dart';
 
 /**
  * 下部メニューの動きを制御するクラス
@@ -145,6 +148,8 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
         // FlutterAppBadger.updateBadgeCount(_totalNotifications);
       });
     });
+    //課金処理
+    initPlatformState();
     // _totalNotifications = 0;
     //トラッキングチェック処理
     super.initState();
@@ -169,6 +174,22 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     final uuid = await AppTrackingTransparency.getAdvertisingIdentifier();
     print("UUID: $uuid");
   }
+
+  //課金機能
+  Future<void> initPlatformState() async {
+    appData.appUserID = await Purchases.appUserID;
+
+    Purchases.addCustomerInfoUpdateListener((customerInfo) async {
+      appData.appUserID = await Purchases.appUserID;
+      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+      EntitlementInfo? entitlement =
+      customerInfo.entitlements.all[entitlementID];
+      appData.entitlementIsActive = entitlement?.isActive ?? false;
+
+      setState(() {});
+    });
+  }
+
 
   Future<void> showCustomTrackingDialog(BuildContext context) async =>
       await showDialog<void>(

@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import '../FireBase/FireBase.dart';
@@ -7,6 +8,8 @@ import '../FireBase/SigninModel.dart';
 import '../FireBase/TextDaialog.dart';
 import '../FireBase/WillPopScope.dart';
 
+import '../FireBase/native_dialog.dart';
+import '../FireBase/singletons_data.dart';
 import '../UnderMenuMove.dart';
 import 'ProfileSetting.dart';
 import 'SignupPage.dart';
@@ -112,7 +115,19 @@ class SignInPage extends StatelessWidget {
                                     // await FirestoreMethod().downloadImage();
 
                                     // //課金機能　RevenueCat
-                                    await Purchases.logIn(auth.currentUser!.uid);
+                                    try {
+                                      await Purchases.logIn(
+                                          auth.currentUser!.uid);
+                                      appData.appUserID =
+                                      await Purchases.appUserID;
+                                    }on PlatformException catch (e) {
+                                      await showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) => ShowDialogToDismiss(
+                                              title: "Error",
+                                              content: e.message ?? "Unknown error",
+                                              buttonText: 'OK'));
+                                    }
 
                                     await Navigator.pushReplacement(
                                       context,

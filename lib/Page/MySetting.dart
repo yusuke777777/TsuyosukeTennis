@@ -14,7 +14,6 @@ class MySetting extends StatefulWidget {
 }
 
 class _MySettingState extends State<MySetting> {
-
   @override
   void initState() {
     super.initState();
@@ -65,7 +64,8 @@ class _MySettingState extends State<MySetting> {
             },
           ),
           ListTile(
-            title: Text('ライセンス', style: TextStyle(fontSize: 20, color: Colors.black)),
+            title: Text('ライセンス',
+                style: TextStyle(fontSize: 20, color: Colors.black)),
             onTap: () {
               showLicensePage(
                 context: context,
@@ -75,18 +75,23 @@ class _MySettingState extends State<MySetting> {
             },
           ),
           ListTile(
-            title: Text('有料プランへの加入', style: TextStyle(fontSize: 20, color: Colors.black)),
-            onTap: () async{
+            title: Text('有料プランへの加入',
+                style: TextStyle(fontSize: 20, color: Colors.black)),
+            onTap: () async {
               final offerings = await Purchases.getOfferings();
               print(offerings.current); // コンソールでcurrentに設定しているやつ
               print(offerings.all); // Offeringすべて
-              print(offerings.current?.monthly?.storeProduct.priceString); // '¥120' みたいなのが取得できます
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => Billing(),
-                ),
-              );
+              print(offerings.current?.monthly?.storeProduct
+                  .priceString); // '¥120' みたいなのが取得できます
+              if (offerings == null || offerings.current == null) {
+                // offerings are empty, show a message to your user
+              } else {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Billing(offering: offerings!.current!)),
+                );
+              }
             },
           ),
           ListTile(
@@ -97,7 +102,8 @@ class _MySettingState extends State<MySetting> {
               onChanged: (bool? value) {
                 setState(() {
                   FirestoreMethod.reviewFeatureEnabled = value ?? true;
-                  FirestoreMethod.putReviewFeatureEnabled(FirestoreMethod.reviewFeatureEnabled);
+                  FirestoreMethod.putReviewFeatureEnabled(
+                      FirestoreMethod.reviewFeatureEnabled);
                 });
               },
             ),
@@ -110,13 +116,15 @@ class _MySettingState extends State<MySetting> {
               onChanged: (bool? value) {
                 setState(() {
                   FirestoreMethod.searchFeatureEnabled = value ?? true;
-                  FirestoreMethod.putSearchFeatureEnabled(FirestoreMethod.searchFeatureEnabled);
+                  FirestoreMethod.putSearchFeatureEnabled(
+                      FirestoreMethod.searchFeatureEnabled);
                 });
               },
             ),
           ),
           ListTile(
-            title: Text('退会', style: TextStyle(fontSize: 20, color: Colors.black)),
+            title:
+                Text('退会', style: TextStyle(fontSize: 20, color: Colors.black)),
             onTap: () {
               Navigator.push(
                   context,

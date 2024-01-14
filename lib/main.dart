@@ -11,6 +11,7 @@ import 'package:purchases_flutter/models/purchases_configuration.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:tsuyosuke_tennis_ap/FireBase/Notification_badge.dart';
 import 'Common/CPushNotification.dart';
+import 'FireBase/BillingMethod.dart';
 import 'FireBase/FireBase.dart';
 import 'FireBase/GoogleAds.dart';
 import 'FireBase/NotificationMethod.dart';
@@ -22,6 +23,8 @@ import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+
+import 'constant.dart';
 
 
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -43,20 +46,18 @@ void main() async {
   final configuration = PurchasesConfiguration(
     Platform.isAndroid
         ? 'androidRevenueCatKey'
-        : 'appl_FqFukGrTjwGVYwYkalAgeTGGkog',
+        : appleApiKey,
   );
   await Purchases.configure(configuration);
 
-  const isDebug = !bool.fromEnvironment('TSP0001');
-  Purchases.setDebugLogsEnabled(isDebug);
-
-  // Purchases.removeCustomerInfoUpdateListener(_customerInfoUpdated); // この行は必要な場合のみでOK
-  // Purchases.addCustomerInfoUpdateListener(_customerInfoUpdated);
+  // const isDebug = !bool.fromEnvironment('TSP0001');
+  // Purchases.setDebugLogsEnabled(isDebug);
   //
-  // void _customerInfoUpdated(CustomerInfo info) {
-  //   print('customerInfoUpdated: $info');
+  // void _customerInfoUpdated(CustomerInfo info) async{
+  //   // if (isExecuting) return;
+  //   await BillingMethod().syncSubscription(info);
   // }
-
+  // Purchases.addCustomerInfoUpdateListener(_customerInfoUpdated);
 
   runApp( MyApp());
 }

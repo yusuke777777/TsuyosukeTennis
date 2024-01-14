@@ -1,12 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:tsuyosuke_tennis_ap/Page/PassWordChangeForm.dart';
 
 import 'Common/CtalkRoom.dart';
 import 'FireBase/FireBase.dart';
+import 'FireBase/native_dialog.dart';
+import 'FireBase/singletons_data.dart';
 import 'Page/BlockList.dart';
 import 'Page/EmailChangeForm.dart';
 import 'Page/FriendManagerPage.dart';
@@ -175,7 +178,18 @@ class DrawerConfig {
           GestureDetector(
             onTap: () async {
               await FirebaseAuth.instance.signOut();
-              await Purchases.logOut();
+              //課金機能ログアウト
+              try {
+                await Purchases.logOut();
+                appData.appUserID = await Purchases.appUserID;
+              } on PlatformException catch (e) {
+                await showDialog(
+                    context: context,
+                    builder: (BuildContext context) => ShowDialogToDismiss(
+                        title: "Error",
+                        content: e.message ?? "Unknown error",
+                        buttonText: 'OK'));
+              }
               // ログアウト後の画面に遷移
               Navigator.pushAndRemoveUntil(
                 context,
