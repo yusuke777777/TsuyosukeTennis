@@ -42,22 +42,23 @@ class SignInPage extends StatelessWidget {
             builder: (context, model, child) {
               return Stack(
                 children: [
+                  //背景画像をセット
+                  Container(
+                      decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            colorFilter: ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.dstATop,
+                            ),
+                            image: AssetImage('images/haikei_katakana.png'),
+                            fit: BoxFit.cover,
+                          ))),
                   Center(
                     child: SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
                           children: <Widget>[
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 120,
-                                  child:
-                                  Image.asset('images/ans_032.jpg'),
-                                ),
-                              ],
-                            ),
                             SizedBox(
                               height: 16.0,
                             ),
@@ -68,6 +69,8 @@ class SignInPage extends StatelessWidget {
                               },
                               maxLines: 1,
                               decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
                                 errorText: model.errorMail == ''
                                     ? null
                                     : model.errorMail,
@@ -86,6 +89,8 @@ class SignInPage extends StatelessWidget {
                               obscureText: true,
                               maxLines: 1,
                               decoration: InputDecoration(
+                                fillColor: Colors.white,
+                                filled: true,
                                 errorText: model.errorPassword == ''
                                     ? null
                                     : model.errorPassword,
@@ -100,9 +105,16 @@ class SignInPage extends StatelessWidget {
                               width: double.infinity,
                               height: 50,
                               child: ElevatedButton(
-                                child: Text('ログイン',style: TextStyle(color: Colors.white,),),
+                                child: Text(
+                                  'ログイン',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                ),
                                 style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.all<Color>(Color(0xFF4CAF50)),
+                                  backgroundColor:
+                                      MaterialStateProperty.all<Color>(
+                                          Color(0xFF4CAF50)),
                                 ),
                                 onPressed: model.isMailValid &&
                                     model.isPasswordValid
@@ -153,7 +165,8 @@ class SignInPage extends StatelessWidget {
                             TextButton(
                               child: Text(
                                 '新規登録はこちら',
-                             style: TextStyle(color:Color(0xFF4CAF50) ), ),
+                                style: TextStyle(color: Colors.white),
+                              ),
                               onPressed: () {
                                 Navigator.pushReplacement(
                                   context,
@@ -166,7 +179,8 @@ class SignInPage extends StatelessWidget {
                             TextButton(
                               child: Text(
                                 'パスワードを忘れた場合',
-                              style: TextStyle(color:Colors.grey),),
+                                style: TextStyle(color: Colors.white),
+                              ),
                               onPressed: () {
                                 Navigator.pushReplacement(
                                   context,
