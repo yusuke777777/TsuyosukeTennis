@@ -26,6 +26,17 @@ class ForgetPasswordPage extends StatelessWidget {
             builder: (context, model, child) {
               return Stack(
                 children: [
+                  //背景画像をセット
+                  Container(
+                      decoration: const BoxDecoration(
+                          image: DecorationImage(
+                            colorFilter: ColorFilter.mode(
+                              Colors.white,
+                              BlendMode.dstATop,
+                            ),
+                            image: AssetImage('images/haikei_katakana.png'),
+                            fit: BoxFit.cover,
+                          ))),
                   Container(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -39,6 +50,8 @@ class ForgetPasswordPage extends StatelessWidget {
                             },
                             maxLines: 1,
                             decoration: InputDecoration(
+                              fillColor: Colors.white,
+                              filled: true,
                               errorText: model.errorMail == ''
                                   ? null
                                   : model.errorMail,
@@ -91,7 +104,7 @@ class ForgetPasswordPage extends StatelessWidget {
                             child: Text(
                               'ログイン画面に戻る',
                               style: TextStyle(
-                                color: Color(0xFF4CAF50),
+                                color: Colors.white,
                               ),
                             ),
                             onPressed: () {

@@ -3971,9 +3971,13 @@ if(friendFlg == false) {
   static bool isprofile = false;
 
   static Future<void> isProfile() async {
-    DocumentReference docRef = await profileRef.doc(auth.currentUser!.uid);
-    DocumentSnapshot docSnapshot = await docRef.get();
-    isprofile = docSnapshot.exists;
+    if(auth.currentUser !=null){
+      DocumentReference docRef = await profileRef.doc(auth.currentUser!.uid);
+      print(docRef.toString());
+      DocumentSnapshot docSnapshot = await docRef.get();
+      isprofile = docSnapshot.exists;
+    }
+
   }
 
   /**

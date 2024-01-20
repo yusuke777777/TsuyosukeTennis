@@ -58,7 +58,20 @@ class _SignUpPageState extends State<SignUpPage> {
               builder: (context,  model, child) {
                 return Stack(
                   children: [
+                    //背景画像をセット
+                    Container(
+                        decoration: const BoxDecoration(
+                            image: DecorationImage(
+                              colorFilter: ColorFilter.mode(
+                                Colors.white,
+                                BlendMode.dstATop,
+                              ),
+                              image: AssetImage('images/haikei_katakana.png'),
+                              fit: BoxFit.cover,
+                            ))),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Padding(padding: EdgeInsets.all(50)),
                         Column(
@@ -69,17 +82,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                   padding: const EdgeInsets.all(16.0),
                                   child: Column(
                                     children: <Widget>[
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          SizedBox(
-                                            width: 120,
-                                            child: Image.asset(
-                                                'images/ans_032.jpg'),
-                                          ),
-                                        ],
-                                      ),
                                       TextFormField(
                                         controller: mailController,
                                         onChanged: (text) {
@@ -88,6 +90,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                         maxLines: 1,
                                         style: TextStyle(fontSize: 16),
                                         decoration: InputDecoration(
+                                          fillColor: Colors.white,
+                                          filled: true,
                                           errorText: model.errorMail == ''
                                               ? null
                                               : model.errorMail,
@@ -109,6 +113,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                         maxLines: 1,
                                         style: TextStyle(fontSize: 16),
                                         decoration: InputDecoration(
+                                          fillColor: Colors.white,
+                                          filled: true,
                                           errorText: model.errorPassword == ''
                                               ? null
                                               : model.errorPassword,
@@ -128,6 +134,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                         maxLines: 1,
                                         style: TextStyle(fontSize: 16),
                                         decoration: InputDecoration(
+                                          fillColor: Colors.white,
+                                          filled: true,
                                           labelText: 'パスワード（確認用）',
                                           errorText: model.errorConfirm == ''
                                               ? null
@@ -188,7 +196,8 @@ class _SignUpPageState extends State<SignUpPage> {
                                                               },
                                                       ),
                                                       TextSpan(
-                                                          text: ' を読んで同意しました。'),
+                                                          text: ' を読んで同意しました。',
+                                                          style: TextStyle(color: Colors.white)),
                                                     ],
                                                   ),
                                                 ),
@@ -232,8 +241,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                               TextButton(
                                                 child: Text(
                                                   'ログイン画面に戻る',
-                                                  style: TextStyle(
-                                                      color: Color(0xFF9E9E9E)),
+                                                  style: TextStyle(color: Colors.white),
                                                 ),
                                                 onPressed: () {
                                                   Navigator.pushReplacement(
