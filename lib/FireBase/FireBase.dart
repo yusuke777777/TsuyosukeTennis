@@ -2891,18 +2891,26 @@ class FirestoreMethod {
     DateFormat outputFormat = DateFormat('yyyy/MM/dd HH:mm');
     String today = outputFormat.format(now);
 
-    try {
-      await friendsListRef.add({
-        'RECIPIENT_ID': auth.currentUser!.uid,
-        'SENDER_ID': talkRoom.user.USER_ID,
-        'SAKUSEI_TIME': today,
-        'FRIENDS_FLG': '1',
-      }).then((value) {
-        friendsListRef.doc(value.id).update({'FRIENDS_ID': value.id});
-      });
-    } catch (e) {
-      print('友達登録に失敗しました --- $e');
-    }
+    bool friendFlg = await FirestoreMethod
+        .checkFriends(
+        talkRoom.roomId);
+
+if(friendFlg == false) {
+  try {
+    await friendsListRef.add({
+      'RECIPIENT_ID': auth.currentUser!.uid,
+      'SENDER_ID': talkRoom.user.USER_ID,
+      'SAKUSEI_TIME': today,
+      'FRIENDS_FLG': '1',
+    }).then((value) {
+      friendsListRef.doc(value.id).update({'FRIENDS_ID': value.id});
+    });
+  } catch (e) {
+    print('友達登録に失敗しました --- $e');
+  }
+}else{
+  print("既に友人登録済です");
+}
   }
 
   /**

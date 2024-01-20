@@ -60,6 +60,7 @@ class _FindPageState extends State<FindPage> {
     //必要コンフィグの初期化
     HeaderConfig().init(context, "検索");
     DrawerConfig().init(context);
+    final deviceWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
         onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
         child: Scaffold(
@@ -91,7 +92,7 @@ class _FindPageState extends State<FindPage> {
                         ),
                         Container(
                           alignment: Alignment.bottomRight,
-                          width: 200,
+                          width: deviceWidth * 0.6,
                           height: 40,
                           child: TextFormField(
                             controller: inputId,
@@ -153,7 +154,7 @@ class _FindPageState extends State<FindPage> {
                         ),
                         Container(
                           padding: const EdgeInsets.all(5.0),
-                          width: 200,
+                          width: deviceWidth * 0.6,
                           height: 40,
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey),
@@ -194,7 +195,7 @@ class _FindPageState extends State<FindPage> {
                         ),
                         Container(
                           alignment: Alignment.bottomRight,
-                          width: 200,
+                          width: deviceWidth * 0.6,
                           height: 40,
                           child: TextFormField(
                             controller: inputShichouson,
@@ -230,7 +231,7 @@ class _FindPageState extends State<FindPage> {
                         ),
                         Container(
                           padding: const EdgeInsets.all(5.0),
-                          width: 200,
+                          width: deviceWidth * 0.6,
                           height: 40,
                           decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey),
@@ -276,7 +277,7 @@ class _FindPageState extends State<FindPage> {
                         ),
                         Container(
                             padding: const EdgeInsets.all(5.0),
-                            width: 200,
+                            width: deviceWidth * 0.6,
                             height: 40,
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey),
@@ -316,7 +317,7 @@ class _FindPageState extends State<FindPage> {
                         ),
                         Container(
                             padding: const EdgeInsets.all(5.0),
-                            width: 200,
+                            width: deviceWidth * 0.6,
                             height: 40,
                             decoration: BoxDecoration(
                                 border: Border.all(color: Colors.grey),

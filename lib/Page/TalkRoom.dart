@@ -293,29 +293,30 @@ class _TalkRoomState extends State<TalkRoom> {
                                                         bool friendflg = await FirestoreMethod
                                                             .checkFriends(
                                                             widget.room.roomId);
-                                                        friendflg ==
-                                                            true
-                                                            ? showDialog(
-                                                            context: context,
-                                                            builder: (_) =>
-                                                                AlertDialog(
-                                                                  content: Text(
-                                                                      "すでに友人登録済みです"),
-                                                                ))
-                                                            :
-                                                        //受け入れ処理を入れる
-                                                        FirestoreMethod
-                                                            .friendAccept(
-                                                            widget.room,
-                                                            (_messages[index]
-                                                                .data() as Map<
-                                                                String,
-                                                                dynamic>)['messageId'] as String
-                                                        );
-                                                        //友人一覧追記
-                                                        FirestoreMethod
-                                                            .makeFriends(
-                                                            widget.room);
+                                                        if (friendflg ==
+                                                            true) {
+                                                          showDialog(
+                                                              context: context,
+                                                              builder: (_) =>
+                                                                  AlertDialog(
+                                                                    content: Text(
+                                                                        "すでに友人登録済みです"),
+                                                                  ));
+                                                        } else {
+                                                          //受け入れ処理を入れる
+                                                          FirestoreMethod
+                                                              .friendAccept(
+                                                              widget.room,
+                                                              (_messages[index]
+                                                                  .data() as Map<
+                                                                  String,
+                                                                  dynamic>)['messageId'] as String
+                                                          );
+                                                          //友人一覧追記
+                                                          FirestoreMethod
+                                                              .makeFriends(
+                                                              widget.room);
+                                                        }
                                                       }
                                                     },
                                                     child: Text(
@@ -721,8 +722,22 @@ class _TalkRoomState extends State<TalkRoom> {
                   ],
                 ),
                 onPressed: () async {
-                  print("友達登録メッセージ送信");
-                  await FirestoreMethod.sendFriendMessage(widget.room);
+                  bool friendflg = await FirestoreMethod
+                      .checkFriends(
+                      widget.room.roomId);
+                  if (friendflg ==
+                      true) {
+                    showDialog(
+                        context: context,
+                        builder: (_) =>
+                            AlertDialog(
+                              content: Text(
+                                  "すでに友人登録済みです"),
+                            ));
+                  }else{
+                    print("友達登録メッセージ送信");
+                    await FirestoreMethod.sendFriendMessage(widget.room);
+                  }
                 }),
           ),
           SizedBox(
