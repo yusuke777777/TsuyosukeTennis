@@ -46,15 +46,15 @@ class FirestoreMethod {
   static final blockRef = _firestoreInstance.collection('blockList');
   static final settingRef = _firestoreInstance.collection('MySetting');
   static final profileDetailRef =
-      _firestoreInstance.collection('myProfileDetail');
+  _firestoreInstance.collection('myProfileDetail');
 
   //ランキングリスト
   static final manSinglesRankRef =
-      _firestoreInstance.collection('manSinglesRank');
+  _firestoreInstance.collection('manSinglesRank');
   static final manRankSnapshot = manSinglesRankRef.snapshots();
 
   static final femailesSinglesRankRef =
-      _firestoreInstance.collection('femailSinglesRank');
+  _firestoreInstance.collection('femailSinglesRank');
 
   //トークルームコレクション
   static final roomRef = _firestoreInstance.collection('talkRoom');
@@ -77,7 +77,7 @@ class FirestoreMethod {
 
   //ユーザー向けメッセージ取得
   static final toUserMessageRef =
-      _firestoreInstance.collection('toUserMessage');
+  _firestoreInstance.collection('toUserMessage');
 
   //プロフィール情報設定
   static Future<void> makeProfile(CprofileSetting profile) async {
@@ -109,7 +109,7 @@ class FirestoreMethod {
         .get();
 
     final snapshotActivity =
-        await profileRef.doc(auth.currentUser!.uid).collection("activityList");
+    await profileRef.doc(auth.currentUser!.uid).collection("activityList");
 
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
       snapshotActivity.doc(doc.id).delete();
@@ -344,9 +344,7 @@ class FirestoreMethod {
   }
 
   /**
-   *ドキュメントをキーに指定コレクションから指定フィールドをリスト型で取得するメソッド
-   * uid ドキュメント
-   * return　フィールドプロパティのリスト
+   * bkでしか呼ばれてない
    */
   static Future<CHomePageVal> getNickNameAndTorokuRank(uid) async {
     final snapShot =
@@ -358,7 +356,7 @@ class FirestoreMethod {
     String myid = snapShot.data()!['MY_USER_ID'];
     String image = snapShot.data()!['PROFILE_IMAGE'];
     CSkilLevelSetting skill = await getAvgSkillLevel();
-    String toUserMessage = await FirestoreMethod.getToUserMessage();
+    String toUserMessage = " ";
 
     CHomePageVal homePageval = CHomePageVal(
         NAME: name,
@@ -456,53 +454,59 @@ class FirestoreMethod {
   }
 
   static Future<CprofileSetting> getProfile() async {
-    final snapShot = await FirebaseFirestore.instance
-        .collection('myProfile')
-        .doc(auth.currentUser!.uid)
-        .get();
+    late CprofileSetting cprofileSet;
+    try {
+      final snapShot = await FirebaseFirestore.instance
+          .collection('myProfile')
+          .doc(auth.currentUser!.uid)
+          .get();
 
-    String USER_ID = auth.currentUser!.uid;
-    String PROFILE_IMAGE = snapShot.data()!['PROFILE_IMAGE'];
-    String NICK_NAME = snapShot.data()!['NICK_NAME'];
-    String TOROKU_RANK = snapShot.data()!['TOROKU_RANK'];
-    String AGE = snapShot.data()!['AGE'];
-    String GENDER = snapShot.data()!['GENDER'];
-    String COMENT = snapShot.data()!['COMENT'];
-    String MY_USER_ID = snapShot.data()!['MY_USER_ID'];
-    Map<String, dynamic>? TITLE = snapShot.data()!['TITLE'];
+      String USER_ID = auth.currentUser!.uid;
+      String PROFILE_IMAGE = snapShot.data()!['PROFILE_IMAGE'];
+      String NICK_NAME = snapShot.data()!['NICK_NAME'];
+      String TOROKU_RANK = snapShot.data()!['TOROKU_RANK'];
+      String AGE = snapShot.data()!['AGE'];
+      String GENDER = snapShot.data()!['GENDER'];
+      String COMENT = snapShot.data()!['COMENT'];
+      String MY_USER_ID = snapShot.data()!['MY_USER_ID'];
+      Map<String, dynamic>? TITLE = snapShot.data()!['TITLE'];
 
-    final snapShotActivity = await FirebaseFirestore.instance
-        .collection('myProfile')
-        .doc(auth.currentUser!.uid)
-        .collection("activityList")
-        .get();
+      final snapShotActivity = await FirebaseFirestore.instance
+          .collection('myProfile')
+          .doc(auth.currentUser!.uid)
+          .collection("activityList")
+          .get();
 
-    List<CativityList> activityList = [];
+      List<CativityList> activityList = [];
 
-    await Future.forEach<dynamic>(snapShotActivity.docs, (doc) async {
-      activityList.add(CativityList(
-        No: doc.data()['No'],
-        TODOFUKEN: doc.data()['TODOFUKEN'],
-        SHICHOSON: TextEditingController(text: doc.data()['SHICHOSON']),
-      ));
-    });
+      await Future.forEach<dynamic>(snapShotActivity.docs, (doc) async {
+        activityList.add(CativityList(
+          No: doc.data()['No'],
+          TODOFUKEN: doc.data()['TODOFUKEN'],
+          SHICHOSON: TextEditingController(text: doc.data()['SHICHOSON']),
+        ));
+      });
 
-    CprofileSetting cprofileSet = await CprofileSetting(
-        USER_ID: USER_ID,
-        PROFILE_IMAGE: PROFILE_IMAGE,
-        NICK_NAME: NICK_NAME,
-        TOROKU_RANK: TOROKU_RANK,
-        activityList: activityList,
-        AGE: AGE,
-        GENDER: GENDER,
-        COMENT: COMENT,
-        MY_USER_ID: MY_USER_ID,
-        TITLE: TITLE);
-
+      cprofileSet = await CprofileSetting(
+          USER_ID: USER_ID,
+          PROFILE_IMAGE: PROFILE_IMAGE,
+          NICK_NAME: NICK_NAME,
+          TOROKU_RANK: TOROKU_RANK,
+          activityList: activityList,
+          AGE: AGE,
+          GENDER: GENDER,
+          COMENT: COMENT,
+          MY_USER_ID: MY_USER_ID,
+          TITLE: TITLE);
+      return cprofileSet;
+    } catch (e) {
+      print("getProfileで失敗しました");
+    }
     return cprofileSet;
   }
 
   static Future<CprofileSetting> getYourProfile(String userId) async {
+    List<CativityList> activityList = [];
     final snapShot = await FirebaseFirestore.instance
         .collection('myProfile')
         .doc(userId)
@@ -517,14 +521,13 @@ class FirestoreMethod {
     String COMENT = snapShot.data()!['COMENT'];
     String MY_USER_ID = snapShot.data()!['MY_USER_ID'];
 
-    final snapShotActivity = await FirebaseFirestore.instance
-        .collection('myProfile')
-        .doc(userId)
-        .collection("activityList")
-        .get();
-
-    List<CativityList> activityList = [];
     try {
+      final snapShotActivity = await FirebaseFirestore.instance
+          .collection('myProfile')
+          .doc(userId)
+          .collection("activityList")
+          .get();
+
       await Future.forEach<dynamic>(snapShotActivity.docs, (doc) async {
         activityList.add(CativityList(
           No: doc.data()!['No'],
@@ -551,99 +554,106 @@ class FirestoreMethod {
   }
 
   static Future<CprofileDetail> getYourDetailProfile(String userId) async {
-    final snapShot = await FirebaseFirestore.instance
-        .collection('myProfileDetail')
-        .doc(userId)
-        .get();
+    late CprofileDetail cprofileDetail;
+    try {
+      final snapShot = await FirebaseFirestore.instance
+          .collection('myProfileDetail')
+          .doc(userId)
+          .get();
 
-    Map<String,dynamic> titleMap = snapShot.data()!['TITLE'];
+      Map<String,dynamic> titleMap = snapShot.data()!['TITLE'];
 
-    //現在の称号一覧表の項目を全件取得
-    final String yamlString = await rootBundle.loadString('assets/Title.yaml');
-    final List<dynamic> yamlList = loadYaml(yamlString);
-    String returnTitle = '';
-    String homeViewTitle = '0';
-    titleMap.forEach((key, value) {
-      if (value == '2') {
-        homeViewTitle = key;
+      //現在の称号一覧表の項目を全件取得
+      final String yamlString = await rootBundle.loadString('assets/Title.yaml');
+      final List<dynamic> yamlList = loadYaml(yamlString);
+      String returnTitle = '';
+      String homeViewTitle = '0';
+      titleMap.forEach((key, value) {
+        if (value == '2') {
+          homeViewTitle = key;
+        }
+      });
+      for (var item in yamlList) {
+        if (item['no'].toString() == homeViewTitle) {
+          returnTitle = item['name'];
+        }
       }
-    });
-    for (var item in yamlList) {
-      if (item['no'].toString() == homeViewTitle) {
-        returnTitle = item['name'];
-      }
+
+      cprofileDetail = CprofileDetail(
+        USER_ID: snapShot.data()!['USER_ID'],
+        PROFILE_IMAGE: snapShot.data()!['PROFILE_IMAGE'],
+        NICK_NAME: snapShot.data()!['NICK_NAME'],
+        TOROKU_RANK: snapShot.data()!['TOROKU_RANK'],
+        AGE: snapShot.data()!['AGE'],
+        GENDER: snapShot.data()!['GENDER'],
+        COMENT: snapShot.data()!['COMENT'],
+        TODOFUKEN_LIST: snapShot.data()!['TODOFUKEN_LIST'],
+        SHICHOSON_LIST: snapShot.data()!['SHICHOSON_LIST'],
+        TODOFUKEN_SHICHOSON_LIST: snapShot.data()!['TODOFUKEN_SHICHOSON_LIST'],
+        TS_POINT: snapShot.data()!['TS_POINT'],
+        SHOKYU_WIN_SU: snapShot.data()!['SHOKYU_WIN_SU'],
+        SHOKYU_LOSE_SU: snapShot.data()!['SHOKYU_LOSE_SU'],
+        SHOKYU_MATCH_SU: snapShot.data()!['SHOKYU_MATCH_SU'],
+        SHOKYU_WIN_RATE: snapShot.data()!['SHOKYU_WIN_RATE'],
+        CHUKYU_WIN_SU: snapShot.data()!['CHUKYU_WIN_SU'],
+        CHUKYU_LOSE_SU: snapShot.data()!['CHUKYU_LOSE_SU'],
+        CHUKYU_MATCH_SU: snapShot.data()!['CHUKYU_MATCH_SU'],
+        CHUKYU_WIN_RATE: snapShot.data()!['CHUKYU_WIN_RATE'],
+        JYOKYU_WIN_SU: snapShot.data()!['JYOKYU_WIN_SU'],
+        JYOKYU_LOSE_SU: snapShot.data()!['JYOKYU_LOSE_SU'],
+        JYOKYU_MATCH_SU: snapShot.data()!['JYOKYU_MATCH_SU'],
+        JYOKYU_WIN_RATE: snapShot.data()!['JYOKYU_WIN_RATE'],
+        STROKE_FOREHAND_AVE: snapShot.data()!['STROKE_FOREHAND_AVE'],
+        STROKE_BACKHAND_AVE: snapShot.data()!['STROKE_BACKHAND_AVE'],
+        VOLLEY_FOREHAND_AVE: snapShot.data()!['VOLLEY_FOREHAND_AVE'],
+        VOLLEY_BACKHAND_AVE: snapShot.data()!['VOLLEY_BACKHAND_AVE'],
+        SERVE_1ST_AVE: snapShot.data()!['SERVE_1ST_AVE'],
+        SERVE_2ND_AVE: snapShot.data()!['SERVE_2ND_AVE'],
+        FIRST_TODOFUKEN_SICHOSON: snapShot.data()!['FIRST_TODOFUKEN_SICHOSON'],
+        KOUSHIN_TIME: snapShot.data()!['KOUSHIN_TIME'],
+        RANK_NO: snapShot.data()!['RANK_NO'],
+        TITLE: returnTitle,
+        REVIEW_ENABLED:snapShot.data()?['REVIEW_ENABLED'] ?? true,
+      );
     }
-
-    CprofileDetail cprofileDetail = CprofileDetail(
-      USER_ID: snapShot.data()!['USER_ID'],
-      PROFILE_IMAGE: snapShot.data()!['PROFILE_IMAGE'],
-      NICK_NAME: snapShot.data()!['NICK_NAME'],
-      TOROKU_RANK: snapShot.data()!['TOROKU_RANK'],
-      AGE: snapShot.data()!['AGE'],
-      GENDER: snapShot.data()!['GENDER'],
-      COMENT: snapShot.data()!['COMENT'],
-      TODOFUKEN_LIST: snapShot.data()!['TODOFUKEN_LIST'],
-      SHICHOSON_LIST: snapShot.data()!['SHICHOSON_LIST'],
-      TODOFUKEN_SHICHOSON_LIST: snapShot.data()!['TODOFUKEN_SHICHOSON_LIST'],
-      TS_POINT: snapShot.data()!['TS_POINT'],
-      SHOKYU_WIN_SU: snapShot.data()!['SHOKYU_WIN_SU'],
-      SHOKYU_LOSE_SU: snapShot.data()!['SHOKYU_LOSE_SU'],
-      SHOKYU_MATCH_SU: snapShot.data()!['SHOKYU_MATCH_SU'],
-      SHOKYU_WIN_RATE: snapShot.data()!['SHOKYU_WIN_RATE'],
-      CHUKYU_WIN_SU: snapShot.data()!['CHUKYU_WIN_SU'],
-      CHUKYU_LOSE_SU: snapShot.data()!['CHUKYU_LOSE_SU'],
-      CHUKYU_MATCH_SU: snapShot.data()!['CHUKYU_MATCH_SU'],
-      CHUKYU_WIN_RATE: snapShot.data()!['CHUKYU_WIN_RATE'],
-      JYOKYU_WIN_SU: snapShot.data()!['JYOKYU_WIN_SU'],
-      JYOKYU_LOSE_SU: snapShot.data()!['JYOKYU_LOSE_SU'],
-      JYOKYU_MATCH_SU: snapShot.data()!['JYOKYU_MATCH_SU'],
-      JYOKYU_WIN_RATE: snapShot.data()!['JYOKYU_WIN_RATE'],
-      STROKE_FOREHAND_AVE: snapShot.data()!['STROKE_FOREHAND_AVE'],
-      STROKE_BACKHAND_AVE: snapShot.data()!['STROKE_BACKHAND_AVE'],
-      VOLLEY_FOREHAND_AVE: snapShot.data()!['VOLLEY_FOREHAND_AVE'],
-      VOLLEY_BACKHAND_AVE: snapShot.data()!['VOLLEY_BACKHAND_AVE'],
-      SERVE_1ST_AVE: snapShot.data()!['SERVE_1ST_AVE'],
-      SERVE_2ND_AVE: snapShot.data()!['SERVE_2ND_AVE'],
-      FIRST_TODOFUKEN_SICHOSON: snapShot.data()!['FIRST_TODOFUKEN_SICHOSON'],
-      KOUSHIN_TIME: snapShot.data()!['KOUSHIN_TIME'],
-      RANK_NO: snapShot.data()!['RANK_NO'],
-      TITLE: returnTitle,
-      REVIEW_ENABLED:snapShot.data()?['REVIEW_ENABLED'] ?? true,
-    );
-
+    catch (e) {
+      print("getYourDetailProfileエラー");
+    }
     return cprofileDetail;
   }
 
   static Future<CprofileDetail> getMyDetailProfile(String userId) async {
-    final snapShot = await FirebaseFirestore.instance
-        .collection('myProfileDetail')
-        .doc(userId)
-        .get();
-    final snapShotMyProfile = await FirebaseFirestore.instance
-        .collection('myProfile')
-        .doc(auth.currentUser!.uid)
-        .get();
+    late CprofileDetail cprofileDetail;
+    try {
+      final snapShot = await FirebaseFirestore.instance
+          .collection('myProfileDetail')
+          .doc(userId)
+          .get();
+      final snapShotMyProfile = await FirebaseFirestore.instance
+          .collection('myProfile')
+          .doc(auth.currentUser!.uid)
+          .get();
 
-    Map<String, dynamic> titleMap = snapShot.data()!['TITLE'];
+      Map<String, dynamic> titleMap = snapShot.data()!['TITLE'];
 
-    //現在の称号一覧表の項目を全件取得
-    final String yamlString = await rootBundle.loadString('assets/Title.yaml');
-    final List<dynamic> yamlList = loadYaml(yamlString);
-    String returnTitle = '';
+      //現在の称号一覧表の項目を全件取得
+      final String yamlString = await rootBundle.loadString('assets/Title.yaml');
+      final List<dynamic> yamlList = loadYaml(yamlString);
+      String returnTitle = '';
 
-    String homeViewTitleKeyNo = '0';
-    titleMap.forEach((key, value) {
-      if (value == '2') {
-        homeViewTitleKeyNo = key;
+      String homeViewTitleKeyNo = '0';
+      titleMap.forEach((key, value) {
+        if (value == '2') {
+          homeViewTitleKeyNo = key;
+        }
+      });
+      for (var item in yamlList) {
+        if (item['no'].toString() == homeViewTitleKeyNo) {
+          returnTitle = item['name'];
+        }
       }
-    });
-    for (var item in yamlList) {
-      if (item['no'].toString() == homeViewTitleKeyNo) {
-        returnTitle = item['name'];
-      }
-    }
 
-    CprofileDetail cprofileDetail = CprofileDetail(
+      cprofileDetail = CprofileDetail(
         USER_ID: snapShot.data()!['USER_ID'],
         PROFILE_IMAGE: snapShot.data()!['PROFILE_IMAGE'],
         NICK_NAME: snapShot.data()!['NICK_NAME'],
@@ -679,8 +689,11 @@ class FirestoreMethod {
         RANK_NO: snapShot.data()!['RANK_NO'],
         TITLE: returnTitle,
         REVIEW_ENABLED:snapShot.data()?['REVIEW_ENABLED'] ?? true,
-    );
-
+      );
+    }
+    catch (e){
+      print("getMyDetailProfileエラー");
+    }
     return cprofileDetail;
   }
 
@@ -771,7 +784,7 @@ class FirestoreMethod {
   static Future<bool> checkRoom(
       String myUserId, String yourUserID, bool roomCheck) async {
     final snapshot =
-        await roomRef.where('joined_user_ids', arrayContains: myUserId).get();
+    await roomRef.where('joined_user_ids', arrayContains: myUserId).get();
     bool roomCheck = false;
 
     for (var doc in snapshot.docs) {
@@ -794,7 +807,7 @@ class FirestoreMethod {
   static Future<TalkRoomModel> getRoomBySearchResult(
       String myUserId, String yourUserId) async {
     final snapshot =
-        await roomRef.where('joined_user_ids', arrayContains: myUserId).get();
+    await roomRef.where('joined_user_ids', arrayContains: myUserId).get();
 
     late TalkRoomModel room;
     late int count;
@@ -819,7 +832,7 @@ class FirestoreMethod {
 
   static Future<List<TalkRoomModel>> getRooms(String myUserId) async {
     final snapshot =
-        await roomRef.where('joined_user_ids', arrayContains: myUserId).get();
+    await roomRef.where('joined_user_ids', arrayContains: myUserId).get();
     List<TalkRoomModel> roomList = [];
     late int count;
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
@@ -937,67 +950,73 @@ class FirestoreMethod {
   // }
 
   static Future<void> sendMessage(TalkRoomModel room, String message) async {
-    final messageRef = roomRef.doc(room.roomId).collection('message');
-    final DocumentReference newMessageRef =
-        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
-    String? myUid = auth.currentUser!.uid;
-    await newMessageRef.set({
-      'messageId': newMessageRef.id,
-      'message': message,
-      'sender_id': myUid,
-      'send_time': Timestamp.now(),
-      'matchStatusFlg': "0",
-      'friendStatusFlg': "0",
-    });
-    roomRef
-        .doc(room.roomId)
-        .update({'last_message': message, 'updated_time': Timestamp.now()});
-    CprofileSetting myProfile = await FirestoreMethod.getProfile();
-    String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
-    print(tokenId);
-    if (tokenId == "") {
-      //トークンIDが登録されていない場合
-    } else {
-      //トークンIDが登録されている場合
-      await NotificationMethod.sendMessage(
-          tokenId!, message, myProfile.NICK_NAME);
+    try {
+      final messageRef = roomRef.doc(room.roomId).collection('message');
+      final DocumentReference newMessageRef =
+      messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+      String? myUid = auth.currentUser!.uid;
+      await newMessageRef.set({
+        'messageId': newMessageRef.id,
+        'message': message,
+        'sender_id': myUid,
+        'send_time': Timestamp.now(),
+        'matchStatusFlg': "0",
+        'friendStatusFlg': "0",
+      });
+      roomRef
+          .doc(room.roomId)
+          .update({'last_message': message, 'updated_time': Timestamp.now()});
+      CprofileSetting myProfile = await FirestoreMethod.getProfile();
+      String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
+      print(tokenId);
+      if (tokenId == "") {
+        //トークンIDが登録されていない場合
+      } else {
+        //トークンIDが登録されている場合
+        await NotificationMethod.sendMessage(
+            tokenId!, message, myProfile.NICK_NAME);
+      }
+      //未読メッセージ数の更新
+      await NotificationMethod.unreadCount(room.user.USER_ID);
     }
-    //未読メッセージ数の更新
-    await NotificationMethod.unreadCount(room.user.USER_ID);
-  }
-
-  static Stream<QuerySnapshot> messageSnapshot(String roomId) {
-    return roomRef.doc(roomId).collection('message').snapshots();
+    catch (e) {
+      print("sendMessageエラー");
+    }
   }
 
   //試合申請メッセージ
   static Future<void> sendMatchMessage(TalkRoomModel room) async {
-    final messageRef = roomRef.doc(room.roomId).collection('message');
-    final DocumentReference newMessageRef =
-        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
-    String? myUid = auth.currentUser!.uid;
-    await newMessageRef.set({
-      'messageId': newMessageRef.id,
-      'message': "対戦お願いします！",
-      'sender_id': myUid,
-      'send_time': Timestamp.now(),
-      'matchStatusFlg': "1",
-      'friendStatusFlg': "0",
-    });
-    roomRef
-        .doc(room.roomId)
-        .update({'last_message': "対戦お願いします！", 'updated_time': Timestamp.now()});
-    CprofileSetting myProfile = await FirestoreMethod.getProfile();
-    String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
-    if (tokenId == "") {
-      //トークンIDが登録されていない場合
-    } else {
-      //トークンIDが登録されている場合
-      await NotificationMethod.sendMessage(
-          tokenId!, "対戦お願いします！", myProfile.NICK_NAME);
+    try {
+      final messageRef = roomRef.doc(room.roomId).collection('message');
+      final DocumentReference newMessageRef =
+      messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+      String? myUid = auth.currentUser!.uid;
+      await newMessageRef.set({
+        'messageId': newMessageRef.id,
+        'message': "対戦お願いします！",
+        'sender_id': myUid,
+        'send_time': Timestamp.now(),
+        'matchStatusFlg': "1",
+        'friendStatusFlg': "0",
+      });
+      roomRef
+          .doc(room.roomId)
+          .update({'last_message': "対戦お願いします！", 'updated_time': Timestamp.now()});
+      CprofileSetting myProfile = await FirestoreMethod.getProfile();
+      String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
+      if (tokenId == "") {
+        //トークンIDが登録されていない場合
+      } else {
+        //トークンIDが登録されている場合
+        await NotificationMethod.sendMessage(
+            tokenId!, "対戦お願いします！", myProfile.NICK_NAME);
+      }
+      //未読メッセージ数の更新
+      await NotificationMethod.unreadCount(room.user.USER_ID);
     }
-    //未読メッセージ数の更新
-    await NotificationMethod.unreadCount(room.user.USER_ID);
+    catch (e) {
+      print("sendMatchMessageエラー");
+    }
   }
 
   //対戦結果入力メッセージ(フィードバック入力希望しない場合)
@@ -1006,7 +1025,7 @@ class FirestoreMethod {
     TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
     final messageRef = roomRef.doc(room.roomId).collection('message');
     final DocumentReference newMessageRef =
-        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+    messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
     String? myUid = auth.currentUser!.uid;
     await newMessageRef.set({
       'messageId': newMessageRef.id,
@@ -1035,41 +1054,45 @@ class FirestoreMethod {
   //対戦結果入力メッセージ(フィードバック入力希望の場合)
   static Future<void> sendMatchResultFeedMessage(
       String myUserId, String yourUserId, String dayKey) async {
-    TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
-    final messageRef = roomRef.doc(room.roomId).collection('message');
-    final DocumentReference newMessageRef =
-        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
-    String? myUid = auth.currentUser!.uid;
-    await newMessageRef.set({
-      'messageId': newMessageRef.id,
-      'message': "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！",
-      'sender_id': myUid,
-      'send_time': Timestamp.now(),
-      'matchStatusFlg': "4",
-      'friendStatusFlg': "0",
-      'dayKey': dayKey
-    });
-    roomRef.doc(room.roomId).update({
-      'last_message': "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！",
-      'updated_time': Timestamp.now()
-    });
-    CprofileSetting myProfile = await FirestoreMethod.getProfile();
-    String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
-    if (tokenId == "") {
-      //トークンIDが登録されていない場合
-    } else {
-      //トークンIDが登録されている場合
-      await NotificationMethod.sendMessage(tokenId!,
-          "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！", myProfile.NICK_NAME);
+    try {
+      TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
+      final messageRef = roomRef.doc(room.roomId).collection('message');
+      final DocumentReference newMessageRef =
+      messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+      String? myUid = auth.currentUser!.uid;
+      await newMessageRef.set({
+        'messageId': newMessageRef.id,
+        'message': "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！",
+        'sender_id': myUid,
+        'send_time': Timestamp.now(),
+        'matchStatusFlg': "4",
+        'friendStatusFlg': "0",
+        'dayKey': dayKey
+      });
+      roomRef.doc(room.roomId).update({
+        'last_message': "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！",
+        'updated_time': Timestamp.now()
+      });
+      CprofileSetting myProfile = await FirestoreMethod.getProfile();
+      String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
+      if (tokenId == "") {
+        //トークンIDが登録されていない場合
+      } else {
+        //トークンIDが登録されている場合
+        await NotificationMethod.sendMessage(tokenId!,
+            "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！", myProfile.NICK_NAME);
+      }
+      //未読メッセージ数の更新
+      await NotificationMethod.unreadCount(room.user.USER_ID);
+    }catch(e){
+      print("sendMatchResultFeedMessageエラー");
     }
-    //未読メッセージ数の更新
-    await NotificationMethod.unreadCount(room.user.USER_ID);
   }
 
   static Future<void> sendFriendMessage(TalkRoomModel room) async {
     final messageRef = roomRef.doc(room.roomId).collection('message');
     final DocumentReference newMessageRef =
-        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+    messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
     String? myUid = auth.currentUser!.uid;
     await newMessageRef.set({
       'messageId': newMessageRef.id,
@@ -1097,36 +1120,40 @@ class FirestoreMethod {
   //対戦結果入力メッセージ(フィードバック入力希望の場合)
   static Future<void> sendMatchResultFeedMessageReturn(
       String myUserId, String yourUserId, String dayKey) async {
-    TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
-    final messageRef = roomRef.doc(room.roomId).collection('message');
-    final DocumentReference newMessageRef =
-        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+    try {
+      TalkRoomModel room = await getRoomBySearchResult(myUserId, yourUserId);
+      final messageRef = roomRef.doc(room.roomId).collection('message');
+      final DocumentReference newMessageRef =
+      messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
 
-    String? myUid = auth.currentUser!.uid;
-    await newMessageRef.set({
-      'messageId': newMessageRef.id,
-      'message': "評価・フィードバックを入力しました！",
-      'sender_id': myUid,
-      'send_time': Timestamp.now(),
-      'matchStatusFlg': "3",
-      'friendStatusFlg': "0",
-      'dayKey': dayKey
-    });
-    roomRef.doc(room.roomId).update({
-      'last_message': "評価・フィードバックを入力しました！",
-      'updated_time': Timestamp.now()
-    });
-    CprofileSetting myProfile = await FirestoreMethod.getProfile();
-    String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
-    if (tokenId == "") {
-      //トークンIDが登録されていない場合
-    } else {
-      //トークンIDが登録されている場合
-      await NotificationMethod.sendMessage(
-          tokenId!, "評価・フィードバックを入力しました！", myProfile.NICK_NAME);
+      String? myUid = auth.currentUser!.uid;
+      await newMessageRef.set({
+        'messageId': newMessageRef.id,
+        'message': "評価・フィードバックを入力しました！",
+        'sender_id': myUid,
+        'send_time': Timestamp.now(),
+        'matchStatusFlg': "3",
+        'friendStatusFlg': "0",
+        'dayKey': dayKey
+      });
+      roomRef.doc(room.roomId).update({
+        'last_message': "評価・フィードバックを入力しました！",
+        'updated_time': Timestamp.now()
+      });
+      CprofileSetting myProfile = await FirestoreMethod.getProfile();
+      String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
+      if (tokenId == "") {
+        //トークンIDが登録されていない場合
+      } else {
+        //トークンIDが登録されている場合
+        await NotificationMethod.sendMessage(
+            tokenId!, "評価・フィードバックを入力しました！", myProfile.NICK_NAME);
+      }
+      //未読メッセージ数の更新
+      await NotificationMethod.unreadCount(room.user.USER_ID);
+    }catch (e){
+      print("sendMatchResultFeedMessageReturnエラー");
     }
-    //未読メッセージ数の更新
-    await NotificationMethod.unreadCount(room.user.USER_ID);
   }
 
   /**
@@ -1145,101 +1172,106 @@ class FirestoreMethod {
     List<String> profileList = [];
     List<String> idList = [];
     List<String> blockList = [];
-    final snapShot_self = await profileRef
-        .where('USER_ID', isEqualTo: auth.currentUser!.uid)
-        .get();
-
-    final snapShot_block = await blockRef
-        .doc(auth.currentUser!.uid)
-        .collection('blockUserList')
-        .get();
-
-    await Future.forEach<dynamic>(snapShot_block.docs, (document) async {
-      blockList.add(document.data()['BLOCK_USER']);
-    });
-
-    // コレクション「myProfile」から該当データを絞る
-    Query<Map<String, dynamic>> query =
-        FirebaseFirestore.instance.collection('myProfile');
-
-    if (gender != '') {
-      query = query.where('GENDER', isEqualTo: gender);
-    }
-
-    if (rank != '') {
-      query = query.where('TOROKU_RANK', isEqualTo: rank);
-    }
-
-    if (age != '') {
-      query = query.where('AGE', isEqualTo: age);
-    }
-
-    final snapShot = await query.get();
-
-    await Future.forEach<dynamic>(snapShot.docs, (document) async {
-      if (blockList.contains(document.data()['USER_ID'])) {
-        return;
-      }
-      final snapShot_sub = await FirebaseFirestore.instance
-          .collection('myProfile')
-          .doc(document.id)
-          .collection('activityList')
+    try {
+      final snapShot_self = await profileRef
+          .where('USER_ID', isEqualTo: auth.currentUser!.uid)
           .get();
 
-      //各ユーザーの表示回数を１回に制限
-      int count = 0;
-      await Future.forEach<dynamic>(snapShot_sub.docs, (doc) async {
-        if (todofuken == '' && count == 0) {
-          if (shichoson == '') {
-            if (document.get('USER_ID') !=
-                snapShot_self.docs.first.get('USER_ID')) {
-              nameList.add(document.get('NICK_NAME'));
-              profileList.add(document.get('PROFILE_IMAGE'));
-              idList.add(document.get('USER_ID'));
-              resultList.add(nameList);
-              resultList.add(profileList);
-              resultList.add(idList);
-              count++;
-            }
-          } else if (doc.data()['SHICHOSON'] == shichoson) {
-            if (document.get('USER_ID') !=
-                snapShot_self.docs.first.get('USER_ID')) {
-              nameList.add(document.get('NICK_NAME'));
-              profileList.add(document.get('PROFILE_IMAGE'));
-              idList.add(document.get('USER_ID'));
-              resultList.add(nameList);
-              resultList.add(profileList);
-              resultList.add(idList);
-              count++;
-            }
-          }
-        } else if (doc.data()['TODOFUKEN'] == todofuken && count == 0) {
-          if (shichoson == '') {
-            if (document.get('USER_ID') !=
-                snapShot_self.docs.first.get('USER_ID')) {
-              nameList.add(document.get('NICK_NAME'));
-              profileList.add(document.get('PROFILE_IMAGE'));
-              idList.add(document.get('USER_ID'));
-              resultList.add(nameList);
-              resultList.add(profileList);
-              resultList.add(idList);
-              count++;
-            }
-          } else if (doc.data()['SHICHOSON'] == shichoson && count == 0) {
-            if (document.get('USER_ID') !=
-                snapShot_self.docs.first.get('USER_ID')) {
-              nameList.add(document.get('NICK_NAME'));
-              profileList.add(document.get('PROFILE_IMAGE'));
-              idList.add(document.get('USER_ID'));
-              resultList.add(nameList);
-              resultList.add(profileList);
-              resultList.add(idList);
-              count++;
-            }
-          }
-        }
+      final snapShot_block = await blockRef
+          .doc(auth.currentUser!.uid)
+          .collection('blockUserList')
+          .get();
+
+      await Future.forEach<dynamic>(snapShot_block.docs, (document) async {
+        blockList.add(document.data()['BLOCK_USER']);
       });
-    });
+
+      // コレクション「myProfile」から該当データを絞る
+      Query<Map<String, dynamic>> query =
+      FirebaseFirestore.instance.collection('myProfile');
+
+      if (gender != '') {
+        query = query.where('GENDER', isEqualTo: gender);
+      }
+
+      if (rank != '') {
+        query = query.where('TOROKU_RANK', isEqualTo: rank);
+      }
+
+      if (age != '') {
+        query = query.where('AGE', isEqualTo: age);
+      }
+
+      final snapShot = await query.get();
+
+      await Future.forEach<dynamic>(snapShot.docs, (document) async {
+        if (blockList.contains(document.data()['USER_ID'])) {
+          return;
+        }
+        final snapShot_sub = await FirebaseFirestore.instance
+            .collection('myProfile')
+            .doc(document.id)
+            .collection('activityList')
+            .get();
+
+        //各ユーザーの表示回数を１回に制限
+        int count = 0;
+        await Future.forEach<dynamic>(snapShot_sub.docs, (doc) async {
+          if (todofuken == '' && count == 0) {
+            if (shichoson == '') {
+              if (document.get('USER_ID') !=
+                  snapShot_self.docs.first.get('USER_ID')) {
+                nameList.add(document.get('NICK_NAME'));
+                profileList.add(document.get('PROFILE_IMAGE'));
+                idList.add(document.get('USER_ID'));
+                resultList.add(nameList);
+                resultList.add(profileList);
+                resultList.add(idList);
+                count++;
+              }
+            } else if (doc.data()['SHICHOSON'] == shichoson) {
+              if (document.get('USER_ID') !=
+                  snapShot_self.docs.first.get('USER_ID')) {
+                nameList.add(document.get('NICK_NAME'));
+                profileList.add(document.get('PROFILE_IMAGE'));
+                idList.add(document.get('USER_ID'));
+                resultList.add(nameList);
+                resultList.add(profileList);
+                resultList.add(idList);
+                count++;
+              }
+            }
+          } else if (doc.data()['TODOFUKEN'] == todofuken && count == 0) {
+            if (shichoson == '') {
+              if (document.get('USER_ID') !=
+                  snapShot_self.docs.first.get('USER_ID')) {
+                nameList.add(document.get('NICK_NAME'));
+                profileList.add(document.get('PROFILE_IMAGE'));
+                idList.add(document.get('USER_ID'));
+                resultList.add(nameList);
+                resultList.add(profileList);
+                resultList.add(idList);
+                count++;
+              }
+            } else if (doc.data()['SHICHOSON'] == shichoson && count == 0) {
+              if (document.get('USER_ID') !=
+                  snapShot_self.docs.first.get('USER_ID')) {
+                nameList.add(document.get('NICK_NAME'));
+                profileList.add(document.get('PROFILE_IMAGE'));
+                idList.add(document.get('USER_ID'));
+                resultList.add(nameList);
+                resultList.add(profileList);
+                resultList.add(idList);
+                count++;
+              }
+            }
+          }
+        });
+      });
+      return resultList;
+    }catch(e){
+      print("getFindMultiResultエラー");
+    }
     return resultList;
   }
 
@@ -1248,140 +1280,154 @@ class FirestoreMethod {
    */
   static Future<List<String>> getUserByMyUserId(String myUserID) async {
     List<String> resultList = [];
+    try{
+      final snapShot_self = await profileRef
+          .where('USER_ID', isEqualTo: auth.currentUser!.uid)
+          .get();
+      if (myUserID == snapShot_self.docs.first.get('MY_USER_ID')) {
+        return resultList;
+      }
+      //コレクション「myProfile」から該当データを絞る
+      final snapShot =
+      await profileRef.where('MY_USER_ID', isEqualTo: myUserID).get();
 
-    final snapShot_self = await profileRef
-        .where('USER_ID', isEqualTo: auth.currentUser!.uid)
-        .get();
-    if (myUserID == snapShot_self.docs.first.get('MY_USER_ID')) {
+      if (snapShot.docs.first == null) {
+        return resultList;
+      }
+
+      String id = snapShot.docs.first.id;
+      final snapShot_block = await blockRef
+          .doc(auth.currentUser!.uid)
+          .collection('blockUserList')
+          .where('BLOCK_USER', isEqualTo: id)
+          .get();
+
+      if (snapShot_block.size != 0) {
+        return resultList;
+      }
+
+      String name = snapShot.docs.first!['NICK_NAME'];
+      String profile = snapShot.docs.first!['PROFILE_IMAGE'];
+      String coment = snapShot.docs.first!['COMENT'];
+      resultList.add(name);
+      resultList.add(profile);
+      resultList.add(id);
+      resultList.add(coment);
+
       return resultList;
+    }catch(e){
+      print("getUserByMyUserIdエラー");
     }
-    //コレクション「myProfile」から該当データを絞る
-    final snapShot =
-        await profileRef.where('MY_USER_ID', isEqualTo: myUserID).get();
-
-    if (snapShot.docs.first == null) {
-      return resultList;
-    }
-
-    String id = snapShot.docs.first.id;
-    final snapShot_block = await blockRef
-        .doc(auth.currentUser!.uid)
-        .collection('blockUserList')
-        .where('BLOCK_USER', isEqualTo: id)
-        .get();
-
-    print("aaa" + snapShot_block.size.toString());
-    if (snapShot_block.size != 0) {
-      return resultList;
-    }
-
-    String name = snapShot.docs.first!['NICK_NAME'];
-    String profile = snapShot.docs.first!['PROFILE_IMAGE'];
-    String coment = snapShot.docs.first!['COMENT'];
-    resultList.add(name);
-    resultList.add(profile);
-    resultList.add(id);
-    resultList.add(coment);
-
     return resultList;
   }
 
   //試合申請受け入れ
   static Future<void> matchAccept(TalkRoomModel room, String messageId) async {
-    final messageRef = roomRef.doc(room.roomId).collection('message');
-    final DocumentReference newMessageRef =
-        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+    try{
+      final messageRef = roomRef.doc(room.roomId).collection('message');
+      final DocumentReference newMessageRef =
+      messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
 
-    String? myUid = auth.currentUser!.uid;
+      String? myUid = auth.currentUser!.uid;
 
-    await messageRef.doc(messageId).update({'matchStatusFlg': "2"});
+      await messageRef.doc(messageId).update({'matchStatusFlg': "2"});
 
-    await newMessageRef.set({
-      'messageId': newMessageRef.id, // ドキュメントのフィールドにIDを保存します
-      'message': "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！",
-      'sender_id': myUid,
-      'send_time': Timestamp.now(),
-      'matchStatusFlg': "0",
-      'friendStatusFlg': "0"
-    });
-    ;
-    roomRef.doc(room.roomId).update({
-      'last_message': "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！",
-      'updated_time': Timestamp.now()
-    });
-    CprofileSetting myProfile = await FirestoreMethod.getProfile();
-    String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
-    if (tokenId == "") {
-      //トークンIDが登録されていない場合
-      //トークンIDが登録されていない場合
-    } else {
-      //トークンIDが登録されている場合
-      await NotificationMethod.sendMessage(
-          tokenId!, "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！", myProfile.NICK_NAME);
+      await newMessageRef.set({
+        'messageId': newMessageRef.id, // ドキュメントのフィールドにIDを保存します
+        'message': "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！",
+        'sender_id': myUid,
+        'send_time': Timestamp.now(),
+        'matchStatusFlg': "0",
+        'friendStatusFlg': "0"
+      });
+      ;
+      roomRef.doc(room.roomId).update({
+        'last_message': "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！",
+        'updated_time': Timestamp.now()
+      });
+      CprofileSetting myProfile = await FirestoreMethod.getProfile();
+      String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
+      if (tokenId == "") {
+        //トークンIDが登録されていない場合
+        //トークンIDが登録されていない場合
+      } else {
+        //トークンIDが登録されている場合
+        await NotificationMethod.sendMessage(
+            tokenId!, "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！", myProfile.NICK_NAME);
+      }
+      //未読メッセージ数の更新
+      await NotificationMethod.unreadCount(room.user.USER_ID);
+    }catch(e){
+      print("matchAcceptエラー");
     }
-    //未読メッセージ数の更新
-    await NotificationMethod.unreadCount(room.user.USER_ID);
   }
 
   //マッチフィードバック受け入れ
   static Future<void> matchFeedAccept(
       TalkRoomModel room, String messageId) async {
-    final messageRef = roomRef.doc(room.roomId).collection('message');
+    try{
+      final messageRef = roomRef.doc(room.roomId).collection('message');
 
-    await messageRef.doc(messageId).update({'matchStatusFlg': "3"});
+      await messageRef.doc(messageId).update({'matchStatusFlg': "3"});
+    }catch(e){
+      print("matchFeedAcceptエラー");
+    }
   }
 
   //友人申請受け入れ
   static Future<void> friendAccept(TalkRoomModel room, String messageId) async {
-    final messageRef = roomRef.doc(room.roomId).collection('message');
-    final DocumentReference newMessageRef =
-        messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+    try{
+      final messageRef = roomRef.doc(room.roomId).collection('message');
+      final DocumentReference newMessageRef =
+      messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
 
-    String? myUid = auth.currentUser!.uid;
+      String? myUid = auth.currentUser!.uid;
 
-    await messageRef.doc(messageId).update({'friendStatusFlg': "2"});
+      await messageRef.doc(messageId).update({'friendStatusFlg': "2"});
 
-    await newMessageRef.set({
-      'messageId': newMessageRef.id, // ドキュメントのフィールドにIDを保存します
-      'message': "友人申請を受け入れました。\n友人一覧を確認してみよう！",
-      'sender_id': myUid,
-      'send_time': Timestamp.now(),
-      'matchStatusFlg': "0",
-      'friendStatusFlg': "0"
-    });
+      await newMessageRef.set({
+        'messageId': newMessageRef.id, // ドキュメントのフィールドにIDを保存します
+        'message': "友人申請を受け入れました。\n友人一覧を確認してみよう！",
+        'sender_id': myUid,
+        'send_time': Timestamp.now(),
+        'matchStatusFlg': "0",
+        'friendStatusFlg': "0"
+      });
 
-    roomRef.doc(room.roomId).update({
-      'last_message': "友人申請を受け入れました。\n友人一覧を確認してみよう！",
-      'updated_time': Timestamp.now()
-    });
-    CprofileSetting myProfile = await FirestoreMethod.getProfile();
-    String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
-    if (tokenId == "") {
-      //トークンIDが登録されていない場合
-    } else {
-      //トークンIDが登録されている場合
-      await NotificationMethod.sendMessage(
-          tokenId!, "友人申請を受け入れました。\n友人一覧を確認してみよう！", myProfile.NICK_NAME);
+      roomRef.doc(room.roomId).update({
+        'last_message': "友人申請を受け入れました。\n友人一覧を確認してみよう！",
+        'updated_time': Timestamp.now()
+      });
+      CprofileSetting myProfile = await FirestoreMethod.getProfile();
+      String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
+      if (tokenId == "") {
+        //トークンIDが登録されていない場合
+      } else {
+        //トークンIDが登録されている場合
+        await NotificationMethod.sendMessage(
+            tokenId!, "友人申請を受け入れました。\n友人一覧を確認してみよう！", myProfile.NICK_NAME);
+      }
+      //未読メッセージ数の更新
+      await NotificationMethod.unreadCount(room.user.USER_ID);
+    }catch(e){
+      print("friendAcceptエラー");
     }
-    //未読メッセージ数の更新
-    await NotificationMethod.unreadCount(room.user.USER_ID);
   }
 
   static Future<void> addMatchList(String roomId) async {
-    final snapShot = await roomRef.doc(roomId).get();
-    String joinedUser1 = snapShot.data()!['joined_user_ids'][0];
-    String joinedUser2 = snapShot.data()!['joined_user_ids'][1];
-    late String myUserId;
-    late String yourUserID;
-    if (joinedUser1 == auth.currentUser!.uid) {
-      myUserId = joinedUser1;
-      yourUserID = joinedUser2;
-    } else {
-      myUserId = joinedUser2;
-      yourUserID = joinedUser1;
-    }
-
     try {
+      final snapShot = await roomRef.doc(roomId).get();
+      String joinedUser1 = snapShot.data()!['joined_user_ids'][0];
+      String joinedUser2 = snapShot.data()!['joined_user_ids'][1];
+      late String myUserId;
+      late String yourUserID;
+      if (joinedUser1 == auth.currentUser!.uid) {
+        myUserId = joinedUser1;
+        yourUserID = joinedUser2;
+      } else {
+        myUserId = joinedUser2;
+        yourUserID = joinedUser1;
+      }
       await roomRef.add({
         'joined_user_ids': [myUserId, yourUserID],
         'updated_time': Timestamp.now()
@@ -1488,8 +1534,12 @@ class FirestoreMethod {
                     primary: Colors.lightGreenAccent, onPrimary: Colors.black),
                 child: Text('はい'),
                 onPressed: () {
-                  matchRef.doc(delId).delete();
-                  Navigator.pop(context);
+                  try{
+                    matchRef.doc(delId).delete();
+                    Navigator.pop(context);
+                  }catch(e){
+                    print("delMatchListエラー");
+                  }
                 },
               ),
               ElevatedButton(
@@ -1507,18 +1557,28 @@ class FirestoreMethod {
 
   //マッチング一覧削除(対戦結果入力時削除)
   static void delMatchListAuto(String delId) async {
-    await matchRef.doc(delId).delete();
+    try{
+      await matchRef.doc(delId).delete();
+    }catch(e){
+      print("delMatchListAutoエラー");
+    }
   }
 
   //対戦結果_新規フラグ取得
   static Future<String> newFlgMatchResult(String UserId) async {
-    final snapshot = await matchResultRef.doc(UserId).get();
     late String NEW_FLG;
+    try{
+      final snapshot = await matchResultRef.doc(UserId).get();
 
-    if (snapshot.exists) {
-      NEW_FLG = "0";
-    } else {
-      NEW_FLG = "1";
+      if (snapshot.exists) {
+        NEW_FLG = "0";
+      } else {
+        NEW_FLG = "1";
+      }
+
+    }catch(e){
+      print("newFlgMatchResultエラー");
+
     }
     return NEW_FLG;
   }
@@ -1528,17 +1588,20 @@ class FirestoreMethod {
       String myUserId, String yourUserId) async {
     late String NEW_FLG;
 
-    final snapshot = await matchResultRef
-        .doc(myUserId)
-        .collection('opponentList')
-        .doc(yourUserId)
-        .get();
-    if (snapshot.exists) {
-      NEW_FLG = "0";
-    } else {
-      NEW_FLG = "1";
+    try{
+      final snapshot = await matchResultRef
+          .doc(myUserId)
+          .collection('opponentList')
+          .doc(yourUserId)
+          .get();
+      if (snapshot.exists) {
+        NEW_FLG = "0";
+      } else {
+        NEW_FLG = "1";
+      }
+    }catch(e){
+      print("individualNewFlgMatchエラー");
     }
-
     return NEW_FLG;
   }
 
@@ -1553,48 +1616,55 @@ class FirestoreMethod {
       manSingleRank = "JoukyuRank";
     }
     late String NEW_FLG;
-    final rankSnap = await FirebaseFirestore.instance
-        .collection('manSinglesRank')
-        .doc(manSingleRank)
-        .collection('RankList')
-        .doc(myUserId)
-        .get();
-    if (rankSnap.exists) {
-      NEW_FLG = "0";
-    } else {
-      NEW_FLG = "1";
+    try{
+      final rankSnap = await FirebaseFirestore.instance
+          .collection('manSinglesRank')
+          .doc(manSingleRank)
+          .collection('RankList')
+          .doc(myUserId)
+          .get();
+      if (rankSnap.exists) {
+        NEW_FLG = "0";
+      } else {
+        NEW_FLG = "1";
+      }
+    }catch(e){
+      print("rankNewFlgMatchエラー");
     }
     return NEW_FLG;
   }
 
   //ランキング取得
   static Future<int> rankingGet(String UserId) async {
-    final myProfileSnap = await FirebaseFirestore.instance
-        .collection('myProfile')
-        .doc(UserId)
-        .get();
-    String rank = myProfileSnap.data()!['TOROKU_RANK'];
-    int rank_no = 0;
-
     late String manSingleRank;
-    String NEW_FLG = await rankNewFlgMatch(UserId, rank);
-    if (NEW_FLG == "1") {
-      rank_no = 0;
-    } else {
-      if (rank == "初級") {
-        manSingleRank = "ShokyuRank";
-      } else if (rank == "中級") {
-        manSingleRank = "ChukyuRank";
-      } else if (rank == "上級") {
-        manSingleRank = "JoukyuRank";
-      }
-      final rankSnap = await FirebaseFirestore.instance
-          .collection('manSinglesRank')
-          .doc(manSingleRank)
-          .collection('RankList')
+    int rank_no = 0;
+    try{
+      final myProfileSnap = await FirebaseFirestore.instance
+          .collection('myProfile')
           .doc(UserId)
           .get();
-      rank_no = rankSnap.data()!['RANK_NO'];
+      String rank = myProfileSnap.data()!['TOROKU_RANK'];
+      String NEW_FLG = await rankNewFlgMatch(UserId, rank);
+      if (NEW_FLG == "1") {
+        rank_no = 0;
+      } else {
+        if (rank == "初級") {
+          manSingleRank = "ShokyuRank";
+        } else if (rank == "中級") {
+          manSingleRank = "ChukyuRank";
+        } else if (rank == "上級") {
+          manSingleRank = "JoukyuRank";
+        }
+        final rankSnap = await FirebaseFirestore.instance
+            .collection('manSinglesRank')
+            .doc(manSingleRank)
+            .collection('RankList')
+            .doc(UserId)
+            .get();
+        rank_no = rankSnap.data()!['RANK_NO'];
+      }
+    }catch(e){
+      print("rankingGetエラー");
     }
     return rank_no;
   }
@@ -1978,9 +2048,9 @@ class FirestoreMethod {
 
     //初対戦フラグ取得メソッド結果を取得(メソッドは作る必要あり)
     MY_NEW_MATCH_FLG =
-        await individualNewFlgMatch(myProfile.USER_ID, yourProfile.USER_ID);
+    await individualNewFlgMatch(myProfile.USER_ID, yourProfile.USER_ID);
     YOUR_NEW_MATCH_FLG =
-        await individualNewFlgMatch(yourProfile.USER_ID, myProfile.USER_ID);
+    await individualNewFlgMatch(yourProfile.USER_ID, myProfile.USER_ID);
     print("MY_NEW_MATCH_FLG" + MY_NEW_MATCH_FLG);
     print("YOUR_NEW_MATCH_FLG" + YOUR_NEW_MATCH_FLG);
 
@@ -2253,7 +2323,7 @@ class FirestoreMethod {
     } else {
       try {
         final yourSnapShot =
-            await matchResultRef.doc(yourProfile.USER_ID).get();
+        await matchResultRef.doc(yourProfile.USER_ID).get();
         //現在のTSPポイントの取得
         YOUR_TS_POINT_CUR = yourSnapShot.data()!['TS_POINT'];
         //現在の生涯TSPポイントの取得
@@ -2269,13 +2339,13 @@ class FirestoreMethod {
 
         //現在の生涯初級TSPポイントの取得
         YOUR_ALL_SHOKYU_TS_POINT_CUR =
-            yourSnapShot.data()!['ALL_SHOKYU_TS_POINT'];
+        yourSnapShot.data()!['ALL_SHOKYU_TS_POINT'];
         //現在の生涯中級TSPポイントの取得
         YOUR_ALL_CHUKYU_TS_POINT_CUR =
-            yourSnapShot.data()!['ALL_CHUKYU_TS_POINT'];
+        yourSnapShot.data()!['ALL_CHUKYU_TS_POINT'];
         //現在の生涯上級TSPポイントの取得
         YOUR_ALL_JYOKYU_TS_POINT_CUR =
-            yourSnapShot.data()!['ALL_JYOKYU_TS_POINT'];
+        yourSnapShot.data()!['ALL_JYOKYU_TS_POINT'];
 
         //現在の勝率・勝利数・試合数などを取得
         YOUR_SHOKYU_WIN_SU_CUR = yourSnapShot.data()!['SHOKYU_WIN_SU'];
@@ -2881,8 +2951,6 @@ class FirestoreMethod {
     profileDetailRef.doc(myProfile.USER_ID).update({'KOUSHIN_TIME': today});
 
     profileDetailRef.doc(yourProfile.USER_ID).update({'KOUSHIN_TIME': today});
-
-    //フィードバックを
   }
 
   //友達一覧に追加
@@ -2895,22 +2963,22 @@ class FirestoreMethod {
         .checkFriends(
         talkRoom.roomId);
 
-if(friendFlg == false) {
-  try {
-    await friendsListRef.add({
-      'RECIPIENT_ID': auth.currentUser!.uid,
-      'SENDER_ID': talkRoom.user.USER_ID,
-      'SAKUSEI_TIME': today,
-      'FRIENDS_FLG': '1',
-    }).then((value) {
-      friendsListRef.doc(value.id).update({'FRIENDS_ID': value.id});
-    });
-  } catch (e) {
-    print('友達登録に失敗しました --- $e');
-  }
-}else{
-  print("既に友人登録済です");
-}
+    if(friendFlg == false) {
+      try {
+        await friendsListRef.add({
+          'RECIPIENT_ID': auth.currentUser!.uid,
+          'SENDER_ID': talkRoom.user.USER_ID,
+          'SAKUSEI_TIME': today,
+          'FRIENDS_FLG': '1',
+        }).then((value) {
+          friendsListRef.doc(value.id).update({'FRIENDS_ID': value.id});
+        });
+      } catch (e) {
+        print('友達登録に失敗しました --- $e');
+      }
+    }else{
+      print("既に友人登録済です");
+    }
   }
 
   /**
@@ -2922,66 +2990,74 @@ if(friendFlg == false) {
     List<String> checkList = [];
     checkList.add(doc.data()!['joined_user_ids'][0]);
     checkList.add(doc.data()!['joined_user_ids'][1]);
+    try{
+      final snapshotRECIP = await friendsListRef
+          .where('RECIPIENT_ID', isEqualTo: doc.data()!['joined_user_ids'][0])
+          .where('SENDER_ID', isEqualTo: doc.data()!['joined_user_ids'][1])
+          .get();
 
-    final snapshotRECIP = await friendsListRef
-        .where('RECIPIENT_ID', isEqualTo: doc.data()!['joined_user_ids'][0])
-        .where('SENDER_ID', isEqualTo: doc.data()!['joined_user_ids'][1])
-        .get();
+      final snapshotSENDER = await friendsListRef
+          .where('RECIPIENT_ID', isEqualTo: doc.data()!['joined_user_ids'][1])
+          .where('SENDER_ID', isEqualTo: doc.data()!['joined_user_ids'][0])
+          .get();
 
-    final snapshotSENDER = await friendsListRef
-        .where('RECIPIENT_ID', isEqualTo: doc.data()!['joined_user_ids'][1])
-        .where('SENDER_ID', isEqualTo: doc.data()!['joined_user_ids'][0])
-        .get();
-
-    if (snapshotRECIP.docs.isNotEmpty || snapshotSENDER.docs.isNotEmpty) {
-      alreadyFriendflg = true;
-      print("alreadyFriendflg" + alreadyFriendflg.toString());
-    } else {
-      alreadyFriendflg = false;
+      if (snapshotRECIP.docs.isNotEmpty || snapshotSENDER.docs.isNotEmpty) {
+        alreadyFriendflg = true;
+        print("alreadyFriendflg" + alreadyFriendflg.toString());
+      } else {
+        alreadyFriendflg = false;
+      }
+    }catch(e){
+      print("checkFriendsエラー");
     }
     return alreadyFriendflg;
   }
 
   //友人リスト取得
   static Future<List<FriendsListModel>> getFriendsList(String myUserId) async {
-    final snapshot1 =
-        await friendsListRef.where('RECIPIENT_ID', isEqualTo: myUserId).get();
-    final snapshot2 =
-        await friendsListRef.where('SENDER_ID', isEqualTo: myUserId).get();
     List<FriendsListModel> friendsList = [];
-    await Future.forEach<dynamic>(snapshot1.docs, (doc) async {
-      CprofileSetting yourProfile =
-          await getYourProfile(doc.data()['SENDER_ID']);
-      CprofileSetting myProfile =
-          await getYourProfile(doc.data()['RECIPIENT_ID']);
+    try{
+      final snapshot1 =
+      await friendsListRef.where('RECIPIENT_ID', isEqualTo: myUserId).get();
+      final snapshot2 =
+      await friendsListRef.where('SENDER_ID', isEqualTo: myUserId).get();
+      await Future.forEach<dynamic>(snapshot1.docs, (doc) async {
+        CprofileSetting yourProfile =
+        await getYourProfile(doc.data()['SENDER_ID']);
+        CprofileSetting myProfile =
+        await getYourProfile(doc.data()['RECIPIENT_ID']);
 
-      FriendsListModel friends = FriendsListModel(
-        FRIENDS_ID: doc.data()['FRIENDS_ID'],
-        RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
-        SENDER_ID: doc.data()['SENDER_ID'],
-        SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
-        FRIENDS_FLG: doc.data()['FRIENDS_FLG'],
-        MY_USER: myProfile,
-        YOUR_USER: yourProfile,
-      );
-      friendsList.add(friends);
-    });
-    await Future.forEach<dynamic>(snapshot2.docs, (doc) async {
-      CprofileSetting yourProfile =
-          await getYourProfile(doc.data()['RECIPIENT_ID']);
-      CprofileSetting myProfile = await getYourProfile(doc.data()['SENDER_ID']);
+        FriendsListModel friends = FriendsListModel(
+          FRIENDS_ID: doc.data()['FRIENDS_ID'],
+          RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
+          SENDER_ID: doc.data()['SENDER_ID'],
+          SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
+          FRIENDS_FLG: doc.data()['FRIENDS_FLG'],
+          MY_USER: myProfile,
+          YOUR_USER: yourProfile,
+        );
+        friendsList.add(friends);
+      });
+      await Future.forEach<dynamic>(snapshot2.docs, (doc) async {
+        CprofileSetting yourProfile =
+        await getYourProfile(doc.data()['RECIPIENT_ID']);
+        CprofileSetting myProfile = await getYourProfile(doc.data()['SENDER_ID']);
 
-      FriendsListModel friends = FriendsListModel(
-        FRIENDS_ID: doc.data()['FRIENDS_ID'],
-        RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
-        SENDER_ID: doc.data()['SENDER_ID'],
-        SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
-        FRIENDS_FLG: doc.data()['FRIENDS_FLG'],
-        MY_USER: myProfile,
-        YOUR_USER: yourProfile,
-      );
-      friendsList.add(friends);
-    });
+        FriendsListModel friends = FriendsListModel(
+          FRIENDS_ID: doc.data()['FRIENDS_ID'],
+          RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
+          SENDER_ID: doc.data()['SENDER_ID'],
+          SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
+          FRIENDS_FLG: doc.data()['FRIENDS_FLG'],
+          MY_USER: myProfile,
+          YOUR_USER: yourProfile,
+        );
+        friendsList.add(friends);
+      });
+
+    }catch(e){
+      print("getFriendsListエラー");
+    }
     return friendsList;
   }
 
@@ -2998,8 +3074,12 @@ if(friendFlg == false) {
                     primary: Colors.lightGreenAccent, onPrimary: Colors.black),
                 child: Text('はい'),
                 onPressed: () {
-                  friendsListRef.doc(delId).delete();
-                  Navigator.pop(context);
+                  try{
+                    friendsListRef.doc(delId).delete();
+                    Navigator.pop(context);
+                  }catch(e){
+                    print("delFriendsListエラー");
+                  }
                 },
               ),
               ElevatedButton(
@@ -3615,35 +3695,6 @@ if(friendFlg == false) {
     }
     return matchResultList;
   }
-
-  /**
-   * 対戦結果一覧を取得する
-   */
-  static Future<List<CmatchResultList>> getMatchResults() async {
-    List<CmatchResultList> matchResultList = [];
-    try {
-      final snapShotWk = await FirebaseFirestore.instance
-          .collectionGroup('daily')
-          .where('userId', isEqualTo: auth.currentUser!.uid)
-          .orderBy('dailyId', descending: true)
-          .limit(5)
-          .get();
-
-      await Future.forEach<dynamic>(snapShotWk.docs, (doc2) async {
-        CprofileSetting yourProfile = await FirestoreMethod.getYourProfile(
-            doc2.data()?['opponentId'] ?? "");
-        matchResultList.add(CmatchResultList(
-            YOUR_USER: yourProfile,
-            dayKey: doc2.id,
-            matchTitle: doc2.data()?['matchTitle'] ?? ""));
-      });
-    } catch (e) {
-      print('対戦結果LIST取得に失敗しました --- $e');
-    }
-    matchResultList.sort((a, b) => b.dayKey.compareTo(a.dayKey));
-    return matchResultList;
-  }
-
   // static Future<List<CmatchResultList>> getMatchResults() async {
   //   List<CmatchResultList> matchResultList = [];
   //   try {
@@ -3678,19 +3729,24 @@ if(friendFlg == false) {
   static Future<String> getMatchTitle(String? dayKey, String yourUserId) async {
     //タイトル取得
     String matchTitle = "";
-    if (dayKey != null) {
-      final snapShot = await matchResultRef
-          .doc(auth.currentUser!.uid)
-          .collection('opponentList')
-          .doc(yourUserId)
-          .collection('daily')
-          .doc(dayKey)
-          .get();
-      String matchTitle = await snapShot.data()?['matchTitle'] ?? "";
-      return matchTitle;
-    } else {
-      return matchTitle;
+    try{
+      if (dayKey != null) {
+        final snapShot = await matchResultRef
+            .doc(auth.currentUser!.uid)
+            .collection('opponentList')
+            .doc(yourUserId)
+            .collection('daily')
+            .doc(dayKey)
+            .get();
+        String matchTitle = await snapShot.data()?['matchTitle'] ?? "";
+        return matchTitle;
+      } else {
+        return matchTitle;
+      }
+    }catch(e){
+      print("getMatchTitleエラー");
     }
+    return matchTitle;
   }
 
   /**
@@ -3698,30 +3754,34 @@ if(friendFlg == false) {
    */
   static Future<bool> checkDoubleMyUserID(
       String inputText, bool isDoubleMyUserId) async {
-    final snapShot =
-        await profileRef.where('MY_USER_ID', isEqualTo: inputText).get();
+    try{
+      final snapShot =
+      await profileRef.where('MY_USER_ID', isEqualTo: inputText).get();
 
-    final snapShot_self = await profileRef
-        .where('USER_ID', isEqualTo: auth.currentUser!.uid)
-        .get();
+      final snapShot_self = await profileRef
+          .where('USER_ID', isEqualTo: auth.currentUser!.uid)
+          .get();
 
-    if (snapShot.docs.isNotEmpty) {
-      //既存のMyUserIdが存在する場合
-      String inputID = snapShot.docs.first.get('MY_USER_ID');
-      if (snapShot_self.docs.isNotEmpty) {
-        //既存のMyUserIdが存在する場合、自分自身のMyUserIdと同じ場合のみ重複を認める
-        String selfID = snapShot_self.docs.first.get('MY_USER_ID');
-        if (inputID == selfID) {
-          isDoubleMyUserId = false;
+      if (snapShot.docs.isNotEmpty) {
+        //既存のMyUserIdが存在する場合
+        String inputID = snapShot.docs.first.get('MY_USER_ID');
+        if (snapShot_self.docs.isNotEmpty) {
+          //既存のMyUserIdが存在する場合、自分自身のMyUserIdと同じ場合のみ重複を認める
+          String selfID = snapShot_self.docs.first.get('MY_USER_ID');
+          if (inputID == selfID) {
+            isDoubleMyUserId = false;
+          } else {
+            isDoubleMyUserId = true;
+          }
         } else {
           isDoubleMyUserId = true;
         }
       } else {
-        isDoubleMyUserId = true;
+        //既存のMyUserIdが存在しない場合
+        isDoubleMyUserId = false;
       }
-    } else {
-      //既存のMyUserIdが存在しない場合
-      isDoubleMyUserId = false;
+    }catch(e){
+      print("checkDoubleMyUserIDエラー");
     }
     return isDoubleMyUserId;
   }
@@ -3730,57 +3790,73 @@ if(friendFlg == false) {
   static Future<void> addBlockList(String userId) async {
 //ブロックリストチェック
     String newFlg =
-        await FirestoreMethod.newFlgBlockList(auth.currentUser!.uid);
+    await FirestoreMethod.newFlgBlockList(auth.currentUser!.uid);
     print("newFlg" + newFlg.toString());
 
     if (newFlg == "0") {
-      final snapshot = await blockListRef
-          .doc(auth.currentUser!.uid)
-          .collection('blockUserList')
-          .where('BLOCK_USER', isEqualTo: userId)
-          .get();
-      if (snapshot.docs.isNotEmpty) {
-        print("既にブロック済みです");
-      } else {
+      try{
+        final snapshot = await blockListRef
+            .doc(auth.currentUser!.uid)
+            .collection('blockUserList')
+            .where('BLOCK_USER', isEqualTo: userId)
+            .get();
+        if (snapshot.docs.isNotEmpty) {
+          print("既にブロック済みです");
+        } else {
+          await blockListRef
+              .doc(auth.currentUser!.uid)
+              .collection('blockUserList')
+              .add({'BLOCK_USER': userId});
+        }
+      }catch(e){
+        print("addBlockListエラー");
+      }
+    } else {
+      try{
         await blockListRef
             .doc(auth.currentUser!.uid)
             .collection('blockUserList')
             .add({'BLOCK_USER': userId});
+      }catch(e){
+        print("addBlockListブロックエラー");
       }
-    } else {
-      await blockListRef
-          .doc(auth.currentUser!.uid)
-          .collection('blockUserList')
-          .add({'BLOCK_USER': userId});
     }
   }
 
 //ブロックリスト解除
   static Future<void> delBlockList(String userId) async {
-    QuerySnapshot querySnapshot = await blockListRef
-        .doc(auth.currentUser!.uid)
-        .collection('blockUserList')
-        .where('BLOCK_USER', isEqualTo: userId)
-        .get();
-
-    querySnapshot.docs.forEach((doc) {
-      blockListRef
+    try{
+      QuerySnapshot querySnapshot = await blockListRef
           .doc(auth.currentUser!.uid)
           .collection('blockUserList')
-          .doc(doc.id)
-          .delete();
-    });
+          .where('BLOCK_USER', isEqualTo: userId)
+          .get();
+
+      querySnapshot.docs.forEach((doc) {
+        blockListRef
+            .doc(auth.currentUser!.uid)
+            .collection('blockUserList')
+            .doc(doc.id)
+            .delete();
+      });
+    }catch(e){
+      print("delBlockListエラー");
+    }
   }
 
 //ブロックリスト_新規フラグ取得
   static Future<String> newFlgBlockList(String userId) async {
-    final snapshot =
-        await blockListRef.doc(userId).collection('blockUserList').get();
     late String newFlg;
-    if (snapshot.docs.isNotEmpty) {
-      newFlg = "0";
-    } else {
-      newFlg = "1";
+    try{
+      final snapshot =
+      await blockListRef.doc(userId).collection('blockUserList').get();
+      if (snapshot.docs.isNotEmpty) {
+        newFlg = "0";
+      } else {
+        newFlg = "1";
+      }
+    }catch(e){
+      print("newFlgBlockListエラー");
     }
     return newFlg;
   }
@@ -3809,7 +3885,7 @@ if(friendFlg == false) {
     List<BlockListModel> blockList = [];
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
       CprofileSetting yourProfile =
-          await getYourProfile(doc.data()['BLOCK_USER']);
+      await getYourProfile(doc.data()['BLOCK_USER']);
       try {
         BlockListModel blockUser = BlockListModel(
           BLOCK_USER_ID: doc.data()['BLOCK_USER'],
@@ -3840,13 +3916,6 @@ if(friendFlg == false) {
     return blockList;
   }
 
-//開発者からユーザーへのメッセージ
-  static Future<String> getToUserMessage() async {
-    final snapShot = await toUserMessageRef.doc("message").get();
-    String userToMessage = snapShot.data()!["userMessage"];
-    return userToMessage;
-  }
-
   /**
    * 自分のユーザIDをキーに指定対戦相手との対戦結果を取得するメソッド
    *  userId 自身のユーザーID
@@ -3856,50 +3925,54 @@ if(friendFlg == false) {
     late CScoreRef result;
     late CScoreRefHistory history;
 
-    //対戦結果を取得
-    final doc = await matchResultRef
-        .doc(auth.currentUser!.uid)
-        .collection('opponentList')
-        .doc(oponent_UserId)
-        .get();
+    try{
+      //対戦結果を取得
+      final doc = await matchResultRef
+          .doc(auth.currentUser!.uid)
+          .collection('opponentList')
+          .doc(oponent_UserId)
+          .get();
 
-    final snapShot_daily = await matchResultRef
-        .doc(auth.currentUser!.uid)
-        .collection('opponentList')
-        .doc(oponent_UserId)
-        .collection('daily')
-        .orderBy('dailyId', descending: true)
-        .limit(5)
-        .get();
-    if (snapShot_daily.docs.isNotEmpty) {
-      await Future.forEach<dynamic>(snapShot_daily.docs, (docHis) async {
+      final snapShot_daily = await matchResultRef
+          .doc(auth.currentUser!.uid)
+          .collection('opponentList')
+          .doc(oponent_UserId)
+          .collection('daily')
+          .orderBy('dailyId', descending: true)
+          .limit(5)
+          .get();
+      if (snapShot_daily.docs.isNotEmpty) {
+        await Future.forEach<dynamic>(snapShot_daily.docs, (docHis) async {
+          history = CScoreRefHistory(
+              TITLE: docHis.data()["matchTitle"],
+              KOUSHIN_TIME: docHis.data()["koushinTime"],
+              SCORE_POINT: docHis.data()["scorePoint"],
+              FEEDBACK_COMMENT: docHis.data()?["FEEDBACK_COMMENT"] ?? "");
+          historyList.add(history);
+        });
+      } else {
         history = CScoreRefHistory(
-            TITLE: docHis.data()["matchTitle"],
-            KOUSHIN_TIME: docHis.data()["koushinTime"],
-            SCORE_POINT: docHis.data()["scorePoint"],
-            FEEDBACK_COMMENT: docHis.data()?["FEEDBACK_COMMENT"] ?? "");
-        historyList.add(history);
-      });
-    } else {
-      history = CScoreRefHistory(
-          TITLE: "", KOUSHIN_TIME: "", SCORE_POINT: [], FEEDBACK_COMMENT: "");
-    }
-    if (doc.exists) {
-      result = new CScoreRef(
-        MATCH_COUNT: doc!['MATCH_SU'],
-        WIN_COUNT: doc!['WIN_SU'],
-        LOSE_COUNT: doc!['LOSE_SU'],
-        WIN_LATE: doc!['WIN_RATE'],
-        HISTORYLIST: historyList,
-      );
-    } else {
-      result = new CScoreRef(
-        MATCH_COUNT: 0,
-        WIN_COUNT: 0,
-        LOSE_COUNT: 0,
-        WIN_LATE: 0,
-        HISTORYLIST: historyList,
-      );
+            TITLE: "", KOUSHIN_TIME: "", SCORE_POINT: [], FEEDBACK_COMMENT: "");
+      }
+      if (doc.exists) {
+        result = new CScoreRef(
+          MATCH_COUNT: doc!['MATCH_SU'],
+          WIN_COUNT: doc!['WIN_SU'],
+          LOSE_COUNT: doc!['LOSE_SU'],
+          WIN_LATE: doc!['WIN_RATE'],
+          HISTORYLIST: historyList,
+        );
+      } else {
+        result = new CScoreRef(
+          MATCH_COUNT: 0,
+          WIN_COUNT: 0,
+          LOSE_COUNT: 0,
+          WIN_LATE: 0,
+          HISTORYLIST: historyList,
+        );
+      }
+    }catch(e){
+      print("getMatchResultScoreエラー");
     }
     return result;
   }
@@ -3907,37 +3980,46 @@ if(friendFlg == false) {
   static bool reviewFeatureEnabled = true;
 
   static Future<bool> getReviewFeatureEnabled() async {
-    final settingSnapshot = await settingRef.doc(auth.currentUser!.uid).get();
+    try{
+      final settingSnapshot = await settingRef.doc(auth.currentUser!.uid).get();
 
-    if (settingSnapshot == null || !settingSnapshot.exists) {
-      reviewFeatureEnabled = true;
-      // データが存在しない場合、初期値を使用する
-      return true;
+      if (settingSnapshot == null || !settingSnapshot.exists) {
+        reviewFeatureEnabled = true;
+        // データが存在しない場合、初期値を使用する
+        return true;
+      }
+
+      reviewFeatureEnabled = settingSnapshot.data()?["REVIEW_ENABLED"] ?? true;
+    }catch(e){
+      print("getReviewFeatureEnabledエラー");
     }
-
-    reviewFeatureEnabled = settingSnapshot.data()?["REVIEW_ENABLED"] ?? true;
-
     return reviewFeatureEnabled; // Firestoreのデータがnullの場合は初期値を使用する
   }
 
   static Future<void> putReviewFeatureEnabled(bool reviewFeatureEnabled) async {
-    final settingSnapshot = await settingRef.doc(auth.currentUser!.uid);
-
-    await settingSnapshot.set({"REVIEW_ENABLED": reviewFeatureEnabled});
-    await profileDetailRef.doc(auth.currentUser!.uid).set({"REVIEW_ENABLED":reviewFeatureEnabled},SetOptions(merge: true));
+    try{
+      final settingSnapshot = await settingRef.doc(auth.currentUser!.uid);
+      await settingSnapshot.set({"REVIEW_ENABLED": reviewFeatureEnabled});
+      await profileDetailRef.doc(auth.currentUser!.uid).set({"REVIEW_ENABLED":reviewFeatureEnabled},SetOptions(merge: true));
+    }catch(e){
+      print("putReviewFeatureEnabledエラー");
+    }
   }
 
   static Future<bool> getYourReviewFeatureEnabled(String userId) async {
-    final settingSnapshot = await settingRef.doc(userId).get();
     bool yourReviewFeatureEnabled = true;
+    try{
+      final settingSnapshot = await settingRef.doc(userId).get();
 
-    if (settingSnapshot == null || !settingSnapshot.exists) {
-      // データが存在しない場合、初期値を使用する
-      return true;
+      if (settingSnapshot == null || !settingSnapshot.exists) {
+        // データが存在しない場合、初期値を使用する
+        return true;
+      }
+      yourReviewFeatureEnabled =
+          settingSnapshot.data()?["REVIEW_ENABLED"] ?? true;
+    }catch(e){
+      print("getYourReviewFeatureEnabledエラー");
     }
-    yourReviewFeatureEnabled =
-        settingSnapshot.data()?["REVIEW_ENABLED"] ?? true;
-
     return yourReviewFeatureEnabled; // Firestoreのデータがnullの場合は初期値を使用する
   }
 
@@ -3945,23 +4027,28 @@ if(friendFlg == false) {
   static bool searchFeatureEnabled = true;
 
   static Future<void> putSearchFeatureEnabled(bool searchFeatureEnabled) async {
-    final settingSnapshot = await settingRef.doc(auth.currentUser!.uid);
-
-    await settingSnapshot.set({"SEARCH_ENABLED": searchFeatureEnabled},SetOptions(merge: true));
-    await profileDetailRef.doc(auth.currentUser!.uid).set({"SEARCH_ENABLED":searchFeatureEnabled},SetOptions(merge: true));
+    try{
+      final settingSnapshot = await settingRef.doc(auth.currentUser!.uid);
+      await settingSnapshot.set({"SEARCH_ENABLED": searchFeatureEnabled},SetOptions(merge: true));
+      await profileDetailRef.doc(auth.currentUser!.uid).set({"SEARCH_ENABLED":searchFeatureEnabled},SetOptions(merge: true));
+    }catch(e){
+      print("putSearchFeatureEnabledエラー");
+    }
   }
 
   static Future<bool> getSearchFeatureEnabled() async {
-    final settingSnapshot = await settingRef.doc(auth.currentUser!.uid).get();
+    try{
+      final settingSnapshot = await settingRef.doc(auth.currentUser!.uid).get();
 
-    if (settingSnapshot == null || !settingSnapshot.exists) {
-      searchFeatureEnabled = true;
-      // データが存在しない場合、初期値を使用する
-      return true;
+      if (settingSnapshot == null || !settingSnapshot.exists) {
+        searchFeatureEnabled = true;
+        // データが存在しない場合、初期値を使用する
+        return true;
+      }
+      searchFeatureEnabled = settingSnapshot.data()?["SEARCH_ENABLED"] ?? true;
+    }catch(e){
+      print("getSearchFeatureEnabledエラー");
     }
-
-    searchFeatureEnabled = settingSnapshot.data()?["SEARCH_ENABLED"] ?? true;
-
     return searchFeatureEnabled; // Firestoreのデータがnullの場合は初期値を使用する
   }
 
@@ -3971,25 +4058,34 @@ if(friendFlg == false) {
   static bool isprofile = false;
 
   static Future<void> isProfile() async {
-    if(auth.currentUser !=null){
-      DocumentReference docRef = await profileRef.doc(auth.currentUser!.uid);
-      print(docRef.toString());
-      DocumentSnapshot docSnapshot = await docRef.get();
-      isprofile = docSnapshot.exists;
+    try{
+      if(auth.currentUser !=null){
+        DocumentReference docRef = await profileRef.doc(auth.currentUser!.uid);
+        print(docRef.toString());
+        DocumentSnapshot docSnapshot = await docRef.get();
+        isprofile = docSnapshot.exists;
+      }
     }
-
+    catch(e){
+      print("isProfileエラー");
+    }
   }
 
   /**
    * 称号管理Mapの取得
    */
   static Future<Map<String, dynamic>> getMyTitle() async {
-    final snapShot = await FirebaseFirestore.instance
-        .collection('myProfileDetail')
-        .doc(auth.currentUser!.uid)
-        .get();
+    late Map<String, dynamic> title;
+    try{
+      final snapShot = await FirebaseFirestore.instance
+          .collection('myProfileDetail')
+          .doc(auth.currentUser!.uid)
+          .get();
 
-    Map<String, dynamic> title = snapShot.data()!['TITLE'];
+      title = snapShot.data()!['TITLE'];
+    }catch(e){
+      print("getMyTitleエラー");
+    }
     return title;
   }
 
@@ -3997,17 +4093,21 @@ if(friendFlg == false) {
    * ホーム画面に表示している称号を変更する
    */
   static Future<void> changeTitle(int no) async {
-    Map<String, dynamic> map = await getMyTitle();
-    String changedKey = '';
-    for (dynamic entry in map.entries) {
-      if (entry.value.toString() == "2") {
-        changedKey = entry.key;
+    try{
+      Map<String, dynamic> map = await getMyTitle();
+      String changedKey = '';
+      for (dynamic entry in map.entries) {
+        if (entry.value.toString() == "2") {
+          changedKey = entry.key;
+        }
       }
+      if (changedKey != '') {
+        map[changedKey] = '1';
+      }
+      map[no.toString()] = '2';
+      await profileDetailRef.doc(auth.currentUser!.uid).update({'TITLE': map});
+    }catch(e){
+      print("changeTitleエラー");
     }
-    if (changedKey != '') {
-      map[changedKey] = '1';
-    }
-    map[no.toString()] = '2';
-    await profileDetailRef.doc(auth.currentUser!.uid).update({'TITLE': map});
   }
 }
