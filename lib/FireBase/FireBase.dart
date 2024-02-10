@@ -2900,6 +2900,7 @@ if(friendFlg == false) {
     await friendsListRef.add({
       'RECIPIENT_ID': auth.currentUser!.uid,
       'SENDER_ID': talkRoom.user.USER_ID,
+      'FRIEND_USER_LIST': [auth.currentUser!.uid, talkRoom.user.USER_ID],
       'SAKUSEI_TIME': today,
       'FRIENDS_FLG': '1',
     }).then((value) {
@@ -2943,47 +2944,47 @@ if(friendFlg == false) {
   }
 
   //友人リスト取得
-  static Future<List<FriendsListModel>> getFriendsList(String myUserId) async {
-    final snapshot1 =
-        await friendsListRef.where('RECIPIENT_ID', isEqualTo: myUserId).get();
-    final snapshot2 =
-        await friendsListRef.where('SENDER_ID', isEqualTo: myUserId).get();
-    List<FriendsListModel> friendsList = [];
-    await Future.forEach<dynamic>(snapshot1.docs, (doc) async {
-      CprofileSetting yourProfile =
-          await getYourProfile(doc.data()['SENDER_ID']);
-      CprofileSetting myProfile =
-          await getYourProfile(doc.data()['RECIPIENT_ID']);
-
-      FriendsListModel friends = FriendsListModel(
-        FRIENDS_ID: doc.data()['FRIENDS_ID'],
-        RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
-        SENDER_ID: doc.data()['SENDER_ID'],
-        SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
-        FRIENDS_FLG: doc.data()['FRIENDS_FLG'],
-        MY_USER: myProfile,
-        YOUR_USER: yourProfile,
-      );
-      friendsList.add(friends);
-    });
-    await Future.forEach<dynamic>(snapshot2.docs, (doc) async {
-      CprofileSetting yourProfile =
-          await getYourProfile(doc.data()['RECIPIENT_ID']);
-      CprofileSetting myProfile = await getYourProfile(doc.data()['SENDER_ID']);
-
-      FriendsListModel friends = FriendsListModel(
-        FRIENDS_ID: doc.data()['FRIENDS_ID'],
-        RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
-        SENDER_ID: doc.data()['SENDER_ID'],
-        SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
-        FRIENDS_FLG: doc.data()['FRIENDS_FLG'],
-        MY_USER: myProfile,
-        YOUR_USER: yourProfile,
-      );
-      friendsList.add(friends);
-    });
-    return friendsList;
-  }
+  // static Future<List<FriendsListModel>> getFriendsList(String myUserId) async {
+  //   final snapshot1 =
+  //       await friendsListRef.where('RECIPIENT_ID', isEqualTo: myUserId).get();
+  //   final snapshot2 =
+  //       await friendsListRef.where('SENDER_ID', isEqualTo: myUserId).get();
+  //   List<FriendsListModel> friendsList = [];
+  //   await Future.forEach<dynamic>(snapshot1.docs, (doc) async {
+  //     CprofileSetting yourProfile =
+  //         await getYourProfile(doc.data()['SENDER_ID']);
+  //     CprofileSetting myProfile =
+  //         await getYourProfile(doc.data()['RECIPIENT_ID']);
+  //
+  //     FriendsListModel friends = FriendsListModel(
+  //       FRIENDS_ID: doc.data()['FRIENDS_ID'],
+  //       RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
+  //       SENDER_ID: doc.data()['SENDER_ID'],
+  //       SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
+  //       FRIENDS_FLG: doc.data()['FRIENDS_FLG'],
+  //       MY_USER: myProfile,
+  //       YOUR_USER: yourProfile,
+  //     );
+  //     friendsList.add(friends);
+  //   });
+  //   await Future.forEach<dynamic>(snapshot2.docs, (doc) async {
+  //     CprofileSetting yourProfile =
+  //         await getYourProfile(doc.data()['RECIPIENT_ID']);
+  //     CprofileSetting myProfile = await getYourProfile(doc.data()['SENDER_ID']);
+  //
+  //     FriendsListModel friends = FriendsListModel(
+  //       FRIENDS_ID: doc.data()['FRIENDS_ID'],
+  //       RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
+  //       SENDER_ID: doc.data()['SENDER_ID'],
+  //       SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
+  //       FRIENDS_FLG: doc.data()['FRIENDS_FLG'],
+  //       MY_USER: myProfile,
+  //       YOUR_USER: yourProfile,
+  //     );
+  //     friendsList.add(friends);
+  //   });
+  //   return friendsList;
+  // }
 
   //友人リスト削除
   static void delFriendsList(String delId, BuildContext context) async {

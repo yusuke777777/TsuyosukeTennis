@@ -25,7 +25,6 @@ class _MatchListState extends State<MatchList> {
   late ScrollController _scrollController;
 
   Future<void> createMatchList() async {
-    print("ccc");
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('matchList')

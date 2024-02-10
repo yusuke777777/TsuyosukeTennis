@@ -182,6 +182,7 @@ class DrawerConfig {
               try {
                 await Purchases.logOut();
                 appData.appUserID = await Purchases.appUserID;
+                print("ログアウト"+appData.appUserID );
               } on PlatformException catch (e) {
                 await showDialog(
                     context: context,

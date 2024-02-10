@@ -11,6 +11,7 @@ import '../FireBase/WillPopScope.dart';
 import '../FireBase/native_dialog.dart';
 import '../FireBase/singletons_data.dart';
 import '../UnderMenuMove.dart';
+import '../constant.dart';
 import 'ProfileSetting.dart';
 import 'SignupPage.dart';
 import 'PasswordForgetPage.dart';
@@ -132,6 +133,10 @@ class SignInPage extends StatelessWidget {
                                           auth.currentUser!.uid);
                                       appData.appUserID =
                                       await Purchases.appUserID;
+                                      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+                                      EntitlementInfo? entitlement =
+                                      customerInfo.entitlements.all[entitlementID];
+                                      appData.entitlementIsActive = entitlement?.isActive ?? false;
                                     }on PlatformException catch (e) {
                                       await showDialog(
                                           context: context,
