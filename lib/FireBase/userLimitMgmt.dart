@@ -1,20 +1,21 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tsuyosuke_tennis_ap/FireBase/singletons_data.dart';
+import './../BillingThreshold.dart';
 
 // Firestoreのコレクションおよびドキュメントのパス
 FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
 final userLimitMgmtRef = _firestoreInstance.collection('userLimitMgmt');
 
-Future<int> getDailyMessageLimit(String userId) async {
-  DocumentSnapshot userSnapshot = await userLimitMgmtRef.doc(userId).get();
-
-  if (userSnapshot.exists) {
-    return userSnapshot['dailyMessageLimit'];
-  } else {
-    // ユーザーが存在しない場合のデフォルト上限を返す
-    return 10; // 例として100としていますが、適切なデフォルト値を設定してください
-  }
-}
-
+// Future<int> getDailyMessageLimit(String userId) async {
+//   DocumentSnapshot userSnapshot = await userLimitMgmtRef.doc(userId).get();
+//
+//   if (userSnapshot.exists) {
+//     return userSnapshot['dailyMessageLimit'];
+//   } else {
+//     // ユーザーが存在しない場合のデフォルト上限を返す
+//     return 10; // 例として100としていますが、適切なデフォルト値を設定してください
+//   }
+// }
 
 Future<bool> updateDailyMessageLimit(String userId) async {
   late bool MessageLimitFlg;
@@ -46,10 +47,17 @@ Future<bool> updateDailyMessageLimit(String userId) async {
 Future<void> resetDailyMessageLimit(String userId) async {
   // 現在のタイムスタンプを取得
   Timestamp currentTimestamp = Timestamp.now();
+  late int dailyMessageLimit;
+
+  if(appData.entitlementIsActive){
+    dailyMessageLimit = messagePremiumLimit;
+  }else{
+    dailyMessageLimit = messageGeneralLimit;
+  }
 
   // Firestoreのユーザードキュメントを更新してリセット
   await userLimitMgmtRef.doc(userId).set({
-    'dailyMessageLimit': 10, // リセット後のデフォルト上限を設定
+    'dailyMessageLimit': dailyMessageLimit, // リセット後のデフォルト上限を設定
     'lastResetTimestamp': currentTimestamp,
   }, SetOptions(merge: true));
 }

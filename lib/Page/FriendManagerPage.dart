@@ -10,6 +10,7 @@ import 'package:tsuyosuke_tennis_ap/Page/ScoreRefPage.dart';
 import '../Common/CfriendsList.dart';
 import '../Common/CprofileSetting.dart';
 import '../Common/CtalkRoom.dart';
+import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
 import '../UnderMenuMove.dart';
@@ -332,55 +333,62 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                                   .USER_ID)),
                                     );
                                   } else {
-                                    showDialog(
+                                    await showDialog(
                                         context: context,
-                                        builder: (_) => AlertDialog(
-                                              content: Text(
-                                                  "友人との対戦成績を確認するためには、有料プランへの加入が必要です。有料プランを確認しますか"),
-                                              actions: <Widget>[
-                                                ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                          primary: Colors
-                                                              .lightGreenAccent,
-                                                          onPrimary:
-                                                              Colors.black),
-                                                  child: Text('はい'),
-                                                  onPressed: () async {
-                                                    final offerings =
-                                                        await Purchases
-                                                            .getOfferings();
-                                                    if (offerings == null ||
-                                                        offerings.current ==
-                                                            null) {
-                                                      // offerings are empty, show a message to your user
-                                                    } else {
-                                                      Navigator.pushReplacement(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                Billing(
-                                                                    offering:
-                                                                        offerings!
-                                                                            .current!)),
-                                                      );
-                                                    }
-                                                  },
-                                                ),
-                                                ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                          primary: Colors
-                                                              .lightGreenAccent,
-                                                          onPrimary:
-                                                              Colors.black),
-                                                  child: Text('いいえ'),
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                ),
-                                              ],
+                                        builder: (BuildContext context) =>
+                                            BillingShowDialogToDismiss(
+                                              content: "友人との対戦成績を確認するためには、有料プランへの加入が必要です。有料プランを確認しますか",
                                             ));
+                                    //
+                                    // showDialog(
+                                    //     context: context,
+                                    //     builder: (_) => AlertDialog(
+                                    //           content: Text(
+                                    //               "友人との対戦成績を確認するためには、有料プランへの加入が必要です。有料プランを確認しますか"),
+                                    //           actions: <Widget>[
+                                    //             ElevatedButton(
+                                    //               style:
+                                    //                   ElevatedButton.styleFrom(
+                                    //                       primary: Colors
+                                    //                           .lightGreenAccent,
+                                    //                       onPrimary:
+                                    //                           Colors.black),
+                                    //               child: Text('はい'),
+                                    //               onPressed: () async {
+                                    //                 final offerings =
+                                    //                     await Purchases
+                                    //                         .getOfferings();
+                                    //                 if (offerings == null ||
+                                    //                     offerings.current ==
+                                    //                         null) {
+                                    //                   // offerings are empty, show a message to your user
+                                    //                 } else {
+                                    //                   Navigator.pushReplacement(
+                                    //                     context,
+                                    //                     MaterialPageRoute(
+                                    //                         builder: (context) =>
+                                    //                             Billing(
+                                    //                                 offering:
+                                    //                                     offerings!
+                                    //                                         .current!)),
+                                    //                   );
+                                    //                 }
+                                    //               },
+                                    //             ),
+                                    //             ElevatedButton(
+                                    //               style:
+                                    //                   ElevatedButton.styleFrom(
+                                    //                       primary: Colors
+                                    //                           .lightGreenAccent,
+                                    //                       onPrimary:
+                                    //                           Colors.black),
+                                    //               child: Text('いいえ'),
+                                    //               onPressed: () {
+                                    //                 Navigator.pop(context);
+                                    //               },
+                                    //             ),
+                                    //           ],
+                                    //         ));
                                   }
                                 },
                               ),

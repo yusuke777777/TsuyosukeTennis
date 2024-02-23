@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:tsuyosuke_tennis_ap/FireBase/userLimitMgmt.dart';
+import '../FireBase/FireBase.dart';
 import '../FireBase/singletons_data.dart';
 import '../PropSetCofig.dart';
 import '../constant.dart';
@@ -41,6 +43,7 @@ class _BillingState extends State<Billing> {
                   child: ListTile(
                       onTap: () async {
                         try {
+                          bool beforeentitlementIsActive = appData.entitlementIsActive;
                           CustomerInfo customerInfo =
                           await Purchases.purchasePackage(
                               myProductList[index]);
@@ -48,6 +51,14 @@ class _BillingState extends State<Billing> {
                           customerInfo.entitlements.all[entitlementID];
                           appData.entitlementIsActive =
                               entitlement?.isActive ?? false;
+                          //トーク上限数のリセット
+                          print("beforeentitlementIsActive" + beforeentitlementIsActive.toString());
+                          print("entitlementIsActive" + appData.entitlementIsActive.toString());
+                          
+                          if(beforeentitlementIsActive == false && appData.entitlementIsActive == true) {
+                            await resetDailyMessageLimit(
+                                FirestoreMethod.auth.currentUser!.uid);
+                          }
                         } catch (e) {
                           print(e);
                         }

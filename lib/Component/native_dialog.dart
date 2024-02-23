@@ -2,59 +2,82 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
+import 'package:purchases_flutter/purchases_flutter.dart';
+
+import '../Page/Billing.dart';
+
 class ShowDialogToDismiss extends StatelessWidget {
   final String content;
+
   // final String title;
   final String buttonText;
 
-  const ShowDialogToDismiss(
-      {Key? key,
-        // required this.title,
-        required this.buttonText,
-        required this.content})
+  const ShowDialogToDismiss({Key? key, required this.content,required this.buttonText})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    if (!Platform.isIOS) {
-      return AlertDialog(
-        // title: Text(
-        //   title,
-        // ),
-        content: Text(
-          content,
+    return AlertDialog(
+      content: Text(
+        content,
+      ),
+      actions: <Widget>[
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+          child: Text(buttonText),
+          onPressed: () async {
+            Navigator.pop(context);
+          },
         ),
-        actions: <Widget>[
-          TextButton(
-            child: Text(
-              buttonText,
-            ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    } else {
-      return CupertinoAlertDialog(
-          // title: Text(
-          //   title,
-          // ),
-          content: Text(
-            content,
-          ),
-          actions: <Widget>[
-            CupertinoDialogAction(
-              isDefaultAction: true,
-              child: Text(
-                buttonText[0].toUpperCase() +
-                    buttonText.substring(1).toLowerCase(),
-              ),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            )
-          ]);
-    }
+      ],
+    );
+  }
+}
+
+class BillingShowDialogToDismiss extends StatelessWidget {
+  final String content;
+
+  // final String title;
+  // final String buttonText;
+
+  const BillingShowDialogToDismiss({Key? key, required this.content})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      content: Text(
+        content,
+      ),
+      actions: <Widget>[
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+          child: Text('はい'),
+          onPressed: () async {
+            final offerings = await Purchases.getOfferings();
+            if (offerings == null || offerings.current == null) {
+              // offerings are empty, show a message to your user
+            } else {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        Billing(offering: offerings!.current!)),
+              );
+            }
+          },
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+          child: Text('いいえ'),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+      ],
+    );
   }
 }

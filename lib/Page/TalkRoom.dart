@@ -13,6 +13,7 @@ import '../Common/CtalkRoom.dart';
 import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/NotificationMethod.dart';
+import '../FireBase/singletons_data.dart';
 import '../FireBase/userLimitMgmt.dart';
 import '../PropSetCofig.dart';
 import '../UnderMenuMove.dart';
@@ -29,7 +30,6 @@ class TalkRoom extends StatefulWidget {
   @override
   _TalkRoomState createState() => _TalkRoomState();
 }
-
 
 
 class _TalkRoomState extends State<TalkRoom> {
@@ -49,7 +49,7 @@ class _TalkRoomState extends State<TalkRoom> {
   void initState() {
     super.initState();
     //メッセージの上限数を制御する
-     checkAndResetDailyLimitIfNeeded(FirestoreMethod.auth.currentUser!.uid);
+    checkAndResetDailyLimitIfNeeded(FirestoreMethod.auth.currentUser!.uid);
     _scrollController = ScrollController();
     _messagesStream = _getMessagesStream();
     // スクロール位置を監視してページネーションを実行
@@ -654,27 +654,36 @@ class _TalkRoomState extends State<TalkRoom> {
   }
 
   Future<void> handleSendMessage() async {
-     String sendMessage = controller.text;
-      controller.clear();
+    String sendMessage = controller.text;
+    controller.clear();
 
-      if (sendMessage.isNotEmpty) {
-        // 上限数を減算してから更新する
-        bool MessageLimitFlg = await updateDailyMessageLimit(
-            FirestoreMethod.auth.currentUser!.uid);
+    if (sendMessage.isNotEmpty) {
+      // 上限数を減算してから更新する
+      bool MessageLimitFlg = await updateDailyMessageLimit(
+          FirestoreMethod.auth.currentUser!.uid);
 
-        if (MessageLimitFlg) {
-          await FirestoreMethod.sendMessage(
-              widget.room, sendMessage);
-        } else {
+      if (MessageLimitFlg) {
+        await FirestoreMethod.sendMessage(
+            widget.room, sendMessage);
+      } else {
+        if (appData.entitlementIsActive == true) {
           await showDialog(
               context: context,
               builder: (BuildContext context) =>
                   ShowDialogToDismiss(
-                      content: "1日の上限メッセージ数を超えました。上限数を上げたい場合、TSPプレミアムプランの加入を検討してください",
-                      buttonText: 'OK'));
+                    content: "1日の上限メッセージ数を超えました。", buttonText: 'はい',
+                  ));
+        } else {
+          await showDialog(
+              context: context,
+              builder: (BuildContext context) =>
+                  BillingShowDialogToDismiss(
+                    content: "1日の上限メッセージ数を超えました。上限数を上げたい場合、有料プランへの加入が必要です。有料プランを確認しますか ",
+                  ));
         }
       }
     }
+  }
 
   void addControl() {
     if (addFlg == "0") {
