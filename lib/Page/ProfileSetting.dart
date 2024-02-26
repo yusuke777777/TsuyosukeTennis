@@ -649,10 +649,13 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                       });
                                 }
                                 else {
-                                  await FirestoreMethod.makeProfile(myProfile);
-                                  await FirestoreMethod.makeProfileDetail(myProfile,widget.koushinFlg);
-                                  await FirestoreMethod.putReviewFeatureEnabled(true);
-
+                                  try{
+                                    await FirestoreMethod.makeProfile(myProfile);
+                                    await FirestoreMethod.makeProfileDetail(myProfile,widget.koushinFlg);
+                                    await FirestoreMethod.putReviewFeatureEnabled(true);
+                                  }catch(e){
+                                    print("XXXXXXここでエラーに対する処理を入れるXXXXXX");
+                                  }
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

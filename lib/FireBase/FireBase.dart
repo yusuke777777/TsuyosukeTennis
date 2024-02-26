@@ -100,6 +100,7 @@ class FirestoreMethod {
       });
     } catch (e) {
       print('ユーザー登録に失敗しました --- $e');
+      throw('ユーザー登録に失敗しました --- $e');
     }
 
     //アクティビティリスト削除
@@ -311,6 +312,7 @@ class FirestoreMethod {
       }
     } catch (e) {
       print('ユーザー情報の詳細登録に失敗しました --- $e');
+      throw('ユーザー情報の詳細登録に失敗しました --- $e');
     }
   }
 
@@ -3957,6 +3959,7 @@ if(friendFlg == false) {
       await profileDetailRef.doc(auth.currentUser!.uid).set({"REVIEW_ENABLED":reviewFeatureEnabled},SetOptions(merge: true));
     }catch(e){
       print("putReviewFeatureEnabledエラー");
+      throw("putReviewFeatureEnabledエラー");
     }
   }
 
