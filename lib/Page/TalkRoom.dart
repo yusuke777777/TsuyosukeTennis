@@ -663,8 +663,12 @@ class _TalkRoomState extends State<TalkRoom> {
           FirestoreMethod.auth.currentUser!.uid);
 
       if (MessageLimitFlg) {
-        await FirestoreMethod.sendMessage(
-            widget.room, sendMessage);
+        try{
+          await FirestoreMethod.sendMessage(
+              widget.room, sendMessage);
+        }catch(e) {
+          print("TalkRoom :" + e.toString());
+        }
       } else {
         if (appData.entitlementIsActive == true) {
           await showDialog(
