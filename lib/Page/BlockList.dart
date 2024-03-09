@@ -14,7 +14,7 @@ import 'ProfileSetting.dart';
 import 'TalkRoom.dart';
 
 /**
- * 友人管理画面です
+ * ブロックリスト画面です
  */
 class BlockList extends StatefulWidget {
   const BlockList({Key? key}) : super(key: key);
@@ -43,10 +43,8 @@ class _BlockListState extends State<BlockList> {
           leading: HeaderConfig.backIcon
       ),
 
-      body: StreamBuilder<QuerySnapshot>(
-          stream: FirestoreMethod.friendsListSnapshot,
-          builder: (context, snapshot) {
-            return FutureBuilder(
+      body:
+             FutureBuilder(
               future: createBlockList(),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.done) {
@@ -134,9 +132,7 @@ class _BlockListState extends State<BlockList> {
                   return Center(child: CircularProgressIndicator());
                 }
               },
-            );
-          }
-      ),
+            )
     );
   }
 }

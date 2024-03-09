@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -62,12 +63,19 @@ class _BillingState extends State<Billing> {
 
                               if (beforeentitlementIsActive == false &&
                                   appData.entitlementIsActive == true) {
-                                //プレミアム会員登録時に、トークメッセージの上限数でリセット
-                                await resetDailyMessageLimit(
-                                    FirestoreMethod.auth.currentUser!.uid);
-                                //プレミアム会員登録時に、チケットの上限数でリセット
-                                await billingUpdateTicket(
-                                    FirestoreMethod.auth.currentUser!.uid);
+                                await FirebaseFirestore.instance.runTransaction(
+                                    (transaction) async {
+                                  //プレミアム会員登録時に、トークメッセージの上限数でリセット
+                                  await resetDailyMessageLimit(
+                                      FirestoreMethod.auth.currentUser!.uid);
+                                  //プレミアム会員登録時に、チケットの上限数でリセット
+                                  await billingUpdateTicket(
+                                      FirestoreMethod.auth.currentUser!.uid);
+                                }).then(
+                                    (value) => print(
+                                        "DocumentSnapshot successfully updated!"),
+                                    onError: (e) =>
+                                        throw ("課金処理の更新に失敗しました $e"));
                               }
                             } catch (e) {
                               print(e);

@@ -264,7 +264,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                 // 子ウィジェットを親ウィジェットにフィットさせる
                                 child: Text(RankModelList[index].user.NICK_NAME,
                                     style: TextStyle(
-                                        fontSize: 15, color: Colors.teal)),
+                                        fontSize: 15, color: Colors.green)),
                               ),
                             ),
                             onTap: ()  {

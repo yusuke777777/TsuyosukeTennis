@@ -115,7 +115,7 @@ class _EmailChangeFormState extends State<EmailChangeForm> {
                       }
                       ;
                     },
-                    child: Text('メールアドレスを変更する'),
+                    child: Text('メールアドレスを変更する',style: TextStyle(color: Colors.white),),
                   ),
                   SizedBox(height: 16),
                   ElevatedButton(
@@ -129,7 +129,7 @@ class _EmailChangeFormState extends State<EmailChangeForm> {
                             builder: (context) => UnderMenuMove.make(0),
                           ));
                     },
-                    child: Text('ホームへ戻る'),
+                    child: Text('ホームへ戻る',style: TextStyle(color: Colors.white),),
                   ),
                 ],
               ),

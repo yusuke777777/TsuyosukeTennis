@@ -654,9 +654,9 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                     await FirestoreMethod.makeProfile(myProfile);
                                     await FirestoreMethod.makeProfileDetail(myProfile,widget.koushinFlg);
                                     await FirestoreMethod.putReviewFeatureEnabled(true);
-                                    if(widget.koushinFlg == 0){
+                                    if(widget.koushinFlg == '0'){
                                       //新規ユーザー情報の登録時にチケット発行する
-                                      await makeTicket(auth.currentUser!.uid);
+                                      await newUserMakeTicket(auth.currentUser!.uid);
                                     }
                                   }catch(e){
                                     print("XXXXXXここでエラーに対する処理を入れるXXXXXX");

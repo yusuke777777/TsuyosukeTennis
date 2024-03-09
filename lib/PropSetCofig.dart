@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:tsuyosuke_tennis_ap/Page/PassWordChangeForm.dart';
+import 'package:tsuyosuke_tennis_ap/Page/TicketListPage.dart';
 
 import 'Common/CtalkRoom.dart';
 import 'FireBase/FireBase.dart';
@@ -69,6 +70,23 @@ class DrawerConfig {
             children: [
               Text('管理一覧', style: TextStyle(fontSize: 30)),
             ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const TicketList(),
+                ),
+              );
+            },
+            child: Container(
+              child: Text('チケット管理'),
+              alignment: Alignment.center,
+            ),
           ),
           const SizedBox(
             height: 20,

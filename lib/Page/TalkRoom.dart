@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:tsuyosuke_tennis_ap/Common/CticketList.dart';
 
 import '../Common/CSkilLevelSetting.dart';
 import '../Common/CmatchResult.dart';
@@ -15,6 +16,7 @@ import '../FireBase/FireBase.dart';
 import '../FireBase/NotificationMethod.dart';
 import '../FireBase/singletons_data.dart';
 import '../FireBase/userLimitMgmt.dart';
+import '../FireBase/userTicketMgmt.dart';
 import '../PropSetCofig.dart';
 import '../UnderMenuMove.dart';
 import 'MatchResultFeedBack.dart';
@@ -253,25 +255,79 @@ class _TalkRoomState extends State<TalkRoom> {
                                               Text(_messageDetail
                                                   .message),
                                               TextButton(
-                                                  onPressed: () {
+                                                  onPressed: () async {
                                                     if (_messageDetail
                                                         .isMe) {
                                                       print(
                                                           "試合の受け入れメッセージ送信済");
                                                     } else {
-                                                      FirestoreMethod
-                                                          .matchAccept(
-                                                          widget
-                                                              .room,
-                                                          (_messages[index]
-                                                              .data() as Map<
-                                                              String,
-                                                              dynamic>)['messageId'] as String
-                                                      );
                                                       //受け入れ処理を入れる
-                                                      FirestoreMethod
-                                                          .makeMatch(
-                                                          widget.room);
+                                                      try {
+                                                        String ticketFlg = await FirestoreMethod
+                                                            .makeMatch(
+                                                            widget.room);
+                                                        if (ticketFlg == "0") {
+                                                          FirestoreMethod
+                                                              .matchAccept(
+                                                              widget
+                                                                  .room,
+                                                              (_messages[index]
+                                                                  .data() as Map<
+                                                                  String,
+                                                                  dynamic>)['messageId'] as String
+                                                          );
+                                                        } else
+                                                        if (ticketFlg == "1") {
+                                                          if (appData
+                                                              .entitlementIsActive ==
+                                                              true) {
+                                                            await showDialog(
+                                                                context: context,
+                                                                builder: (
+                                                                    BuildContext context) =>
+                                                                    ShowDialogToDismiss(
+                                                                      content: "チケットが不足しています。",
+                                                                      buttonText: "はい",
+                                                                    ));
+                                                          } else {
+                                                            await showDialog(
+                                                                context: context,
+                                                                builder: (
+                                                                    BuildContext context) =>
+                                                                    BillingShowDialogToDismiss(
+                                                                        content: "チケットが不足しています。有料プランを確認しますか"
+                                                                    ));
+                                                          }
+                                                        } else {
+                                                          await showDialog(
+                                                              context: context,
+                                                              builder: (
+                                                                  BuildContext context) =>
+                                                                  ShowDialogToDismiss(
+                                                                    content: "対戦相手のチケットが不足しています。",
+                                                                    buttonText: "はい",
+                                                                  ));
+                                                          FirestoreMethod
+                                                              .matchAcceptTicketError(
+                                                              widget
+                                                                  .room,
+                                                              (_messages[index]
+                                                                  .data() as Map<
+                                                                  String,
+                                                                  dynamic>)['messageId'] as String
+                                                          );
+                                                        }
+                                                      } catch (e) {
+                                                        await showDialog(
+                                                            context: context,
+                                                            builder: (
+                                                                BuildContext context) =>
+                                                                ShowDialogToDismiss(
+                                                                  content: e
+                                                                      .toString(),
+                                                                  buttonText: "はい",
+                                                                ));
+                                                      }
                                                     }
                                                   },
                                                   child: Text(
@@ -663,8 +719,12 @@ class _TalkRoomState extends State<TalkRoom> {
           FirestoreMethod.auth.currentUser!.uid);
 
       if (MessageLimitFlg) {
-        await FirestoreMethod.sendMessage(
-            widget.room, sendMessage);
+        try {
+          await FirestoreMethod.sendMessage(
+              widget.room, sendMessage);
+        } catch (e) {
+          print("TalkRoom :" + e.toString());
+        }
       } else {
         if (appData.entitlementIsActive == true) {
           await showDialog(
@@ -726,7 +786,31 @@ class _TalkRoomState extends State<TalkRoom> {
                 ),
                 onPressed: () async {
                   print("対戦メッセージ送信");
-                  await FirestoreMethod.sendMatchMessage(widget.room);
+                  CTicketModel myCurTicketSu = await getTicketSu(FirestoreMethod.auth.currentUser!.uid);
+                  if(myCurTicketSu.TICKET_SU > 0) {
+                    await FirestoreMethod.sendMatchMessage(widget.room);
+                  }else{
+                    if (appData
+                        .entitlementIsActive ==
+                        true) {
+                      await showDialog(
+                          context: context,
+                          builder: (
+                              BuildContext context) =>
+                              ShowDialogToDismiss(
+                                content: "チケットが不足してるため、対戦申し込みができません",
+                                buttonText: "はい",
+                              ));
+                    } else {
+                      await showDialog(
+                          context: context,
+                          builder: (
+                              BuildContext context) =>
+                              BillingShowDialogToDismiss(
+                                  content: "チケットが不足してるため、対戦申し込みができません。有料プランを確認しますか"
+                              ));
+                    }
+                  }
                 }),
           ),
           SizedBox(

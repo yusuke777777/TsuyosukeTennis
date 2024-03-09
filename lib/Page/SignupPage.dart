@@ -43,11 +43,13 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   Widget build(BuildContext context) {
+    final deviceHeight = MediaQuery.of(context).size.height;
     return WillPopScope(
       onWillPop: willPopCallback,
       child: ChangeNotifierProvider<SignUpModel>(
           create: (_) => SignUpModel()..init(),
           child: Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: PreferredSize(
               preferredSize: Size.fromHeight(40.0),
               child: AppBar(
@@ -55,20 +57,20 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ),
             body: Consumer<SignUpModel>(
-              builder: (context,  model, child) {
+              builder: (context, model, child) {
                 return Stack(
                   children: [
                     //背景画像をセット
                     Container(
                         decoration: const BoxDecoration(
                             image: DecorationImage(
-                              colorFilter: ColorFilter.mode(
-                                Colors.white,
-                                BlendMode.dstATop,
-                              ),
-                              image: AssetImage('images/haikei_katakana.png'),
-                              fit: BoxFit.cover,
-                            ))),
+                      colorFilter: ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.dstATop,
+                      ),
+                      image: AssetImage('images/haikei_katakana.png'),
+                      fit: BoxFit.cover,
+                    ))),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -77,187 +79,184 @@ class _SignUpPageState extends State<SignUpPage> {
                         Column(
                           children: [
                             Center(
-                              child: SingleChildScrollView(
-                                child: Padding(
-                                  padding: const EdgeInsets.all(16.0),
-                                  child: Column(
-                                    children: <Widget>[
-                                      TextFormField(
-                                        controller: mailController,
-                                        onChanged: (text) {
-                                          model.changeMail(text);
-                                        },
-                                        maxLines: 1,
-                                        style: TextStyle(fontSize: 16),
-                                        decoration: InputDecoration(
-                                          fillColor: Colors.white,
-                                          filled: true,
-                                          errorText: model.errorMail == ''
-                                              ? null
-                                              : model.errorMail,
-                                          labelText: 'メールアドレス',
-                                          border: OutlineInputBorder(),
-                                        ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Column(
+                                  children: <Widget>[
+                                    TextFormField(
+                                      controller: mailController,
+                                      onChanged: (text) {
+                                        model.changeMail(text);
+                                      },
+                                      maxLines: 1,
+                                      style: TextStyle(fontSize: 16),
+                                      decoration: InputDecoration(
+                                        fillColor: Colors.white,
+                                        filled: true,
+                                        errorText: model.errorMail == ''
+                                            ? null
+                                            : model.errorMail,
+                                        labelText: 'メールアドレス',
+                                        border: OutlineInputBorder(),
                                       ),
-
-                                      SizedBox(
-                                        height: 8,
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    TextFormField(
+                                      controller: passwordController,
+                                      onChanged: (text) {
+                                        model.changePassword(text);
+                                      },
+                                      obscureText: true,
+                                      maxLines: 1,
+                                      style: TextStyle(fontSize: 16),
+                                      decoration: InputDecoration(
+                                        fillColor: Colors.white,
+                                        filled: true,
+                                        errorText: model.errorPassword == ''
+                                            ? null
+                                            : model.errorPassword,
+                                        labelText: 'パスワード',
+                                        border: OutlineInputBorder(),
                                       ),
-
-                                      TextFormField(
-                                        controller: passwordController,
-                                        onChanged: (text) {
-                                          model.changePassword(text);
-                                        },
-                                        obscureText: true,
-                                        maxLines: 1,
-                                        style: TextStyle(fontSize: 16),
-                                        decoration: InputDecoration(
-                                          fillColor: Colors.white,
-                                          filled: true,
-                                          errorText: model.errorPassword == ''
-                                              ? null
-                                              : model.errorPassword,
-                                          labelText: 'パスワード',
-                                          border: OutlineInputBorder(),
-                                        ),
+                                    ),
+                                    SizedBox(
+                                      height: 8,
+                                    ),
+                                    TextFormField(
+                                      controller: confirmController,
+                                      onChanged: (text) {
+                                        model.changeConfirm(text);
+                                      },
+                                      obscureText: true,
+                                      maxLines: 1,
+                                      style: TextStyle(fontSize: 16),
+                                      decoration: InputDecoration(
+                                        fillColor: Colors.white,
+                                        filled: true,
+                                        labelText: 'パスワード（確認用）',
+                                        errorText: model.errorConfirm == ''
+                                            ? null
+                                            : model.errorConfirm,
+                                        border: OutlineInputBorder(),
                                       ),
-                                      SizedBox(
-                                        height: 8,
-                                      ),
-                                      TextFormField(
-                                        controller: confirmController,
-                                        onChanged: (text) {
-                                          model.changeConfirm(text);
-                                        },
-                                        obscureText: true,
-                                        maxLines: 1,
-                                        style: TextStyle(fontSize: 16),
-                                        decoration: InputDecoration(
-                                          fillColor: Colors.white,
-                                          filled: true,
-                                          labelText: 'パスワード（確認用）',
-                                          errorText: model.errorConfirm == ''
-                                              ? null
-                                              : model.errorConfirm,
-                                          border: OutlineInputBorder(),
-                                        ),
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.start,
-                                            children: [
-                                              SizedBox(
-                                                width: 24,
-                                                child: Checkbox(
-                                                  activeColor:
-                                                      Color(0xFF4CAF50),
-                                                  checkColor: Colors.white,
-                                                  onChanged: (val) {
-                                                    model.tapAgreeCheckBox(val);
-                                                  },
-                                                  value: model.agreeGuideline,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 8,
-                                              ),
-                                              Flexible(
-                                                child: RichText(
-                                                  text: TextSpan(
-                                                    style: TextStyle(
-                                                      color: Colors.grey,
-                                                      fontSize: 12.0,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                    children: [
-                                                      TextSpan(
-                                                        text: '利用規約',
-                                                        style: TextStyle(
-                                                          color:
-                                                              Color(0xFF4CAF50),
-                                                          decoration:
-                                                              TextDecoration
-                                                                  .underline,
-                                                          decorationThickness:
-                                                              2.00,
-                                                        ),
-                                                        recognizer:
-                                                            TapGestureRecognizer()
-                                                              ..onTap = () {
-                                                                _SignUprulesURL();
-                                                              },
-                                                      ),
-                                                      TextSpan(
-                                                          text: ' を読んで同意しました。',
-                                                          style: TextStyle(color: Colors.white)),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            children: [
-                                              FloatingActionButton.extended(
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          5), //角の丸み
-                                                ),
-                                                label: Text('新規登録'),
-                                                backgroundColor:
-                                                    const Color(0xFF4CAF50),
-                                                onPressed: model.agreeGuideline
-                                                    ? () async {
-                                                        try {
-                                                          await model.signUp();
-                                                          await Navigator
-                                                              .pushReplacement(
-                                                            context,
-                                                            MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  ProfileSetting
-                                                                      .Make(),
-                                                            ),
-                                                          );
-                                                          model.endLoading();
-                                                        } catch (e) {
-                                                          showTextDialog(
-                                                              context, e);
-                                                          model.endLoading();
-                                                        }
-                                                      }
-                                                    : null,
-                                              ),
-                                              TextButton(
-                                                child: Text(
-                                                  'ログイン画面に戻る',
-                                                  style: TextStyle(color: Colors.white),
-                                                ),
-                                                onPressed: () {
-                                                  Navigator.pushReplacement(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                      builder: (context) =>
-                                                          SignInPage(),
-                                                    ),
-                                                  );
+                                    ),
+                                    Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.start,
+                                          children: [
+                                            SizedBox(
+                                              width: 24,
+                                              child: Checkbox(
+                                                activeColor: Color(0xFF4CAF50),
+                                                checkColor: Colors.white,
+                                                onChanged: (val) {
+                                                  model.tapAgreeCheckBox(val);
                                                 },
+                                                value: model.agreeGuideline,
                                               ),
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
+                                            ),
+                                            SizedBox(
+                                              width: 8,
+                                            ),
+                                            Flexible(
+                                              child: RichText(
+                                                text: TextSpan(
+                                                  style: TextStyle(
+                                                    color: Colors.grey,
+                                                    fontSize: 12.0,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                  children: [
+                                                    TextSpan(
+                                                      text: '利用規約',
+                                                      style: TextStyle(
+                                                        color:
+                                                            Color(0xFF4CAF50),
+                                                        decoration:
+                                                            TextDecoration
+                                                                .underline,
+                                                        decorationThickness:
+                                                            2.00,
+                                                      ),
+                                                      recognizer:
+                                                          TapGestureRecognizer()
+                                                            ..onTap = () {
+                                                              _SignUprulesURL();
+                                                            },
+                                                    ),
+                                                    TextSpan(
+                                                        text: ' を読んで同意しました。',
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.white)),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        Column(
+                                          children: [
+                                            FloatingActionButton.extended(
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        5), //角の丸み
+                                              ),
+                                              label: Text('新規登録'),
+                                              backgroundColor:
+                                                  const Color(0xFF4CAF50),
+                                              onPressed: model.agreeGuideline
+                                                  ? () async {
+                                                      try {
+                                                        await model.signUp();
+                                                        await Navigator
+                                                            .pushReplacement(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                ProfileSetting
+                                                                    .Make(),
+                                                          ),
+                                                        );
+                                                        model.endLoading();
+                                                      } catch (e) {
+                                                        showTextDialog(
+                                                            context, e);
+                                                        model.endLoading();
+                                                      }
+                                                    }
+                                                  : null,
+                                            ),
+                                            TextButton(
+                                              child: Text(
+                                                'ログイン画面に戻る',
+                                                style: TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                              onPressed: () {
+                                                Navigator.pushReplacement(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        SignInPage(),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ],
                                 ),
                               ),
                             ),
