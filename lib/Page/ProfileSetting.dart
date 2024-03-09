@@ -8,6 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/ProfileImage.dart';
+import '../FireBase/userTicketMgmt.dart';
 import '../PropSetCofig.dart';
 import '../UnderMenuMove.dart';
 
@@ -653,6 +654,10 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                     await FirestoreMethod.makeProfile(myProfile);
                                     await FirestoreMethod.makeProfileDetail(myProfile,widget.koushinFlg);
                                     await FirestoreMethod.putReviewFeatureEnabled(true);
+                                    if(widget.koushinFlg == 0){
+                                      //新規ユーザー情報の登録時にチケット発行する
+                                      await makeTicket(auth.currentUser!.uid);
+                                    }
                                   }catch(e){
                                     print("XXXXXXここでエラーに対する処理を入れるXXXXXX");
                                   }

@@ -228,7 +228,6 @@ class _SignUpPageState extends State<SignUpPage> {
                                                                       .Make(),
                                                             ),
                                                           );
-
                                                           model.endLoading();
                                                         } catch (e) {
                                                           showTextDialog(

@@ -1440,24 +1440,66 @@ class FirestoreMethod {
   }
 
   //対戦マッチ一覧に追加
-  static Future<void> makeMatch(TalkRoomModel talkRoom) async {
+  static final userTicketMgmtRef = _firestoreInstance.collection('userTicketMgmt');
+
+  static Future<bool> makeMatch(TalkRoomModel talkRoom) async {
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy/MM/dd HH:mm');
     String today = outputFormat.format(now);
 
-    try {
-      await matchRef.add({
-        'RECIPIENT_ID': auth.currentUser!.uid,
-        'SENDER_ID': talkRoom.user.USER_ID,
-        'MATCH_USER_LIST': [auth.currentUser!.uid, talkRoom.user.USER_ID],
-        'SAKUSEI_TIME': today,
-        'MATCH_FLG': '1',
-      }).then((value) {
-        matchRef.doc(value.id).update({'MATCH_ID': value.id});
-      });
-    } catch (e) {
-      print('マッチングに失敗しました --- $e');
-    }
+    DateFormat outputFormatKoushinYmd = DateFormat('yyyy-MM-dd');
+    String koushinYmd = outputFormatKoushinYmd.format(now);
+
+    String myUserId = auth.currentUser!.uid;
+    String yourUserId =talkRoom.user.USER_ID;
+
+    late bool ticketFlg;
+    // トランザクション内で上限数を減算してから更新
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      //自分と相手の残チケット数を取得する
+      DocumentReference myTicketRef = await userTicketMgmtRef.doc(myUserId);
+      final myTicketRefSna = await transaction.get(myTicketRef);
+
+      DocumentReference yourTicketRef = await userTicketMgmtRef.doc(yourUserId);
+      final yourTicketRefSna = await transaction.get(yourTicketRef);
+
+      if (myTicketRefSna.exists && yourTicketRefSna.exists) {
+        final myTicketSu = myTicketRefSna.get("ticketSu") - 1;
+        final yourTicketSu = yourTicketRefSna.get("ticketSu") - 1;
+
+        if (myTicketSu >= 0 && yourTicketSu >= 0) {
+          transaction.update(
+            myTicketRef,
+            {'ticketSu': myTicketSu, 'ticketKoushinYmd': today},
+          );
+          transaction.update(
+            yourTicketRef,
+            {'ticketSu': yourTicketSu, 'ticketKoushinYmd': today},
+          );
+         //マッチング処理を実施
+
+            await matchRef.add({
+              'RECIPIENT_ID': auth.currentUser!.uid,
+              'SENDER_ID': talkRoom.user.USER_ID,
+              'MATCH_USER_LIST': [auth.currentUser!.uid, talkRoom.user.USER_ID],
+              'SAKUSEI_TIME': today,
+              'MATCH_FLG': '1',
+            }).then((value) {
+              matchRef.doc(value.id).update({'MATCH_ID': value.id});
+            });
+          ticketFlg = true;
+
+        } else {
+          ticketFlg = false;
+        }
+      }else{
+        ticketFlg = false;
+      }
+    }).then(
+          (value) => print("DocumentSnapshot successfully updated!"),
+      onError: (e) => throw("チケット数の更新に失敗しました $e"),
+    );
+    return ticketFlg;
   }
 
   //対戦マッチ一覧に追加
