@@ -86,10 +86,12 @@ class _MySettingState extends State<MySetting> {
               if (offerings == null || offerings.current == null) {
                 // offerings are empty, show a message to your user
               } else {
+                Package? tspPlan = offerings!.current?.monthly;
+                print(tspPlan);
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => Billing(offering: offerings!.current!)),
+                      builder: (context) => Billing(tspPlan: tspPlan!)),
                 );
               }
             },

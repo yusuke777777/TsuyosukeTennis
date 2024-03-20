@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
+import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
+import '../FireBase/singletons_data.dart';
 import '../PropSetCofig.dart';
 import 'HomePage.dart';
 
@@ -85,11 +87,43 @@ class _QrScanViewState extends State<QrScanView> {
       //読み込んだ相手のID
       String yourId = scanData.code!;
       if (!matchdList.contains(yourId)) {
-        FirestoreMethod.makeMatchByQrScan(yourId);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('マッチング完了！')),
-        );
-        matchdList.add(yourId);
+        try {
+          String ticketFlg = await FirestoreMethod.makeMatchByQrScan(yourId);
+          if (ticketFlg == "0") {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('マッチング完了！')),
+            );
+            matchdList.add(yourId);
+          } else if (ticketFlg == "1") {
+            if (appData.entitlementIsActive == true) {
+              await showDialog(
+                  context: context,
+                  builder: (BuildContext context) => ShowDialogToDismiss(
+                        content: "チケットが不足しています。",
+                        buttonText: "はい",
+                      ));
+            } else {
+              await showDialog(
+                  context: context,
+                  builder: (BuildContext context) => BillingShowDialogToDismiss(
+                      content: "チケットが不足しています。有料プランを確認しますか"));
+            }
+          } else {
+            await showDialog(
+                context: context,
+                builder: (BuildContext context) => ShowDialogToDismiss(
+                      content: "対戦相手のチケットが不足しています。",
+                      buttonText: "はい",
+                    ));
+          }
+        } catch (e) {
+          await showDialog(
+              context: context,
+              builder: (BuildContext context) => ShowDialogToDismiss(
+                    content: e.toString(),
+                    buttonText: "はい",
+                  ));
+        }
       }
     });
   }

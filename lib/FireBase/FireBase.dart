@@ -1506,7 +1506,7 @@ class FirestoreMethod {
                 'MATCH_ID':newDocId
               },
             );
-            throw("マッチングに失敗しました");//エラーテスト用
+            // throw("マッチングに失敗しました");//エラーテスト用
           } catch (e) {
             throw (e);
             print('マッチングに失敗しました --- $e');
@@ -1530,25 +1530,97 @@ class FirestoreMethod {
   }
 
   //対戦マッチ一覧に追加
-  static Future<void> makeMatchByQrScan(String yourUserId) async {
+  static Future<String> makeMatchByQrScan(String yourUserId) async {
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy/MM/dd HH:mm');
     String today = outputFormat.format(now);
+    DateFormat outputFormatKoushinYmd = DateFormat('yyyy-MM-dd');
+    String koushinYmd = outputFormatKoushinYmd.format(now);
 
-    try {
-      await matchRef.add({
-        'RECIPIENT_ID': auth.currentUser!.uid,
-        'SENDER_ID': yourUserId,
-        'MATCH_USER_LIST': [auth.currentUser!.uid, yourUserId],
-        'SAKUSEI_TIME': today,
-        'MATCH_FLG': '1',
-      }).then((value) {
-        matchRef.doc(value.id).update({'MATCH_ID': value.id});
-      });
-    } catch (e) {
-      throw (e);
-      print('マッチングに失敗しました --- $e');
-    }
+    String myUserId = auth.currentUser!.uid;
+
+    late String ticketFlg; //0:チケットあり 1:自分のチケットなし(相手もない可能性もある) 2:相手のチケットなし
+    // トランザクション内で上限数を減算してから更新
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      //自分と相手の残チケット数を取得する
+      DocumentReference myTicketRef = await userTicketMgmtRef.doc(myUserId);
+      final myTicketRefSna = await transaction.get(myTicketRef);
+
+      DocumentReference yourTicketRef = await userTicketMgmtRef.doc(yourUserId);
+      final yourTicketRefSna = await transaction.get(yourTicketRef);
+
+      if (myTicketRefSna.exists && yourTicketRefSna.exists) {
+        //自分の残チケット数を取得する
+        final myTicketSu = myTicketRefSna.get("ticketSu");
+        final myTogetsuTicketSu = myTicketRefSna.get("togetsuTicketSu");
+        final myZengetsuTicketSu = myTicketRefSna.get("zengetsuTicketSu");
+
+        //対戦相手の残チケット数を取得する
+        final yourTicketSu = yourTicketRefSna.get("ticketSu");
+        final yourTogetsuTicketSu = yourTicketRefSna.get("togetsuTicketSu");
+        final yourZengetsuTicketSu = yourTicketRefSna.get("zengetsuTicketSu");
+
+        if (myTicketSu >= 1 && yourTicketSu >= 1) {
+          if(myZengetsuTicketSu >= 1) {
+            transaction.update(
+              myTicketRef,
+              {'ticketSu': myTicketSu - 1, 'zengetsuTicketSu':myZengetsuTicketSu - 1 ,'ticketKoushinYmd': koushinYmd},
+            );
+          }else{
+            transaction.update(
+              myTicketRef,
+              {'ticketSu': myTicketSu -1, 'togetsuTicketSu':myTogetsuTicketSu -1 ,'ticketKoushinYmd': koushinYmd},
+            );
+          }
+          if(yourZengetsuTicketSu >= 1) {
+            transaction.update(
+              yourTicketRef,
+              {'ticketSu': yourTicketSu - 1, 'zengetsuTicketSu':yourZengetsuTicketSu - 1 ,'ticketKoushinYmd': koushinYmd},
+            );
+          }else{
+            transaction.update(
+              yourTicketRef,
+              {'ticketSu': yourTicketSu -1, 'togetsuTicketSu':yourTogetsuTicketSu -1 ,'ticketKoushinYmd': koushinYmd},
+            );
+          }
+          //マッチング処理を実施
+          try {
+            // マッチング処理をトランザクション内で実行
+            // 新しいドキュメントを追加し、そのIDを取得
+            DocumentReference newDocMatchRef = matchRef.doc();
+            String newDocId = newDocMatchRef.id;
+
+            transaction.set(
+              newDocMatchRef,
+              {
+                'RECIPIENT_ID': auth.currentUser!.uid,
+                'SENDER_ID': yourUserId,
+                'MATCH_USER_LIST': [auth.currentUser!.uid, yourUserId],
+                'SAKUSEI_TIME': today,
+                'MATCH_FLG': '1',
+                'MATCH_ID':newDocId
+              },
+            );
+            // throw("マッチングに失敗しました");//エラーテスト用
+          } catch (e) {
+            throw (e);
+          }
+          ticketFlg = "0";
+        } else {
+          if(myTicketSu < 1){
+            ticketFlg = "1";
+          }else{
+            ticketFlg = "2";
+          }
+        }
+      }else{
+        throw("チケット数の更新に失敗しました");
+      }
+    }).then(
+          (value) => print("DocumentSnapshot successfully updated!"),
+      onError: (e) => throw(e),
+    );
+    return ticketFlg;
   }
 
   // static Future<List<MatchListModel>> getMatchList(String myUserId) async {

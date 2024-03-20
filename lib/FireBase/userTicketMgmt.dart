@@ -62,6 +62,7 @@ Future<void> billingUpdateTicket(String myUserId) async {
       'zengetsuTicketSu': zengetsuTicketSu,
       'ticketKoushinYmd': today
     }, SetOptions(merge: true));
+    // throw ("エラー");
   } catch (e) {
     throw ("TSPプレミアム会員のチケット発行に失敗しました $e");
   }

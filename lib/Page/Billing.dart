@@ -3,16 +3,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:tsuyosuke_tennis_ap/FireBase/userLimitMgmt.dart';
+import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/singletons_data.dart';
+import '../FireBase/urlMove.dart';
 import '../FireBase/userTicketMgmt.dart';
 import '../PropSetCofig.dart';
 import '../constant.dart';
 
 class Billing extends StatefulWidget {
-  final Offering offering;
+  final Package tspPlan;
 
-  const Billing({Key? key, required this.offering}) : super(key: key);
+  const Billing({Key? key, required this.tspPlan}) : super(key: key);
 
   @override
   State<Billing> createState() => _BillingState();
@@ -22,11 +24,13 @@ class _BillingState extends State<Billing> {
   @override
   void initState() {
     super.initState();
+    print(widget.tspPlan);
   }
 
   @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "有料プランへ加入");
+    final deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: AppBar(
             backgroundColor: HeaderConfig.backGroundColor,
@@ -37,80 +41,284 @@ class _BillingState extends State<Billing> {
           child: SafeArea(
             child: Wrap(
               children: <Widget>[
-                ListView.builder(
-                  itemCount: widget.offering.availablePackages.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    var myProductList = widget.offering.availablePackages;
-                    return Card(
-                      color: Colors.black,
-                      child: ListTile(
-                          onTap: () async {
-                            try {
-                              bool beforeentitlementIsActive =
-                                  appData.entitlementIsActive;
-                              CustomerInfo customerInfo =
-                                  await Purchases.purchasePackage(
-                                      myProductList[index]);
-                              EntitlementInfo? entitlement =
-                                  customerInfo.entitlements.all[entitlementID];
-                              appData.entitlementIsActive =
-                                  entitlement?.isActive ?? false;
-                              //トーク上限数のリセット
-                              print("beforeentitlementIsActive" +
-                                  beforeentitlementIsActive.toString());
-                              print("entitlementIsActive" +
-                                  appData.entitlementIsActive.toString());
-
-                              if (beforeentitlementIsActive == false &&
-                                  appData.entitlementIsActive == true) {
-                                await FirebaseFirestore.instance.runTransaction(
-                                    (transaction) async {
-                                  //プレミアム会員登録時に、トークメッセージの上限数でリセット
-                                  await resetDailyMessageLimit(
-                                      FirestoreMethod.auth.currentUser!.uid);
-                                  //プレミアム会員登録時に、チケットの上限数でリセット
-                                  await billingUpdateTicket(
-                                      FirestoreMethod.auth.currentUser!.uid);
-                                }).then(
-                                    (value) => print(
-                                        "DocumentSnapshot successfully updated!"),
-                                    onError: (e) =>
-                                        throw ("課金処理の更新に失敗しました $e"));
-                              }
-                            } catch (e) {
-                              print(e);
-                            }
-                            setState(() {});
-                            Navigator.pop(context);
-                          },
-                          title: Text(
-                            myProductList[index].storeProduct.title,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                Column(
+                  children: [
+                    Column(
+                      children: [
+                        Container(
+                            alignment: Alignment.bottomLeft,
+                            width: deviceWidth * 0.95,
+                            child:
+                                Text("現在のプラン", style: TextStyle(fontSize: 18))),
+                        appData.entitlementIsActive == true
+                            ? Card(
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.greenAccent,
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
+                                    width: deviceWidth * 0.9,
+                                    height: 50,
+                                    alignment: Alignment.centerLeft,
+                                    child: Text(
+                                        widget.tspPlan.storeProduct.title,
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.white))),
+                              )
+                            : Card(
+                                child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.greenAccent,
+                                        borderRadius:
+                                            BorderRadius.circular(10.0)),
+                                    width: deviceWidth * 0.9,
+                                    height: 50,
+                                    alignment: Alignment.centerLeft,
+                                    child: Text("ベーシック(無料)",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.white))),
+                              )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    appData.entitlementIsActive == true
+                        ?  Column(
+                      children: [
+                        Container(
+                          width: deviceWidth * 0.95,
+                          alignment: Alignment.centerLeft,
+                          child: Text("TSPプレミアム",
+                              style: TextStyle(fontSize: 18)),
+                        ),
+                        Card(
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Column(
+                              children: [
+                                Container(
+                                    width: deviceWidth * 0.9,
+                                    alignment: Alignment.bottomLeft,
+                                    child: Text(
+                                        widget.tspPlan.storeProduct.title,
+                                        style: TextStyle(fontSize: 20))),
+                                Container(
+                                  width: deviceWidth * 0.9,
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text("チケット増量に加え、友人対戦管理機能も利用可能に！",
+                                      style: TextStyle(fontSize: 18)),
+                                ),
+                                Card(
+                                  child: InkWell(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.greenAccent,
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                              10.0)),
+                                      width: deviceWidth * 0.5,
+                                      height: 50,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        "解約する",
+                                        style: TextStyle(
+                                            fontSize: 18,
+                                            color: Colors.white),
+                                      ),
+                                    ),
+                                    onTap: () async {
+                                      //退会処理
+                                      UrlMove().UrlMoving(
+                                          'https://support.apple.com/ja-jp/118428');
+                                    },
+                                  ),
+                                )
+                              ],
                             ),
                           ),
-                          subtitle: Text(
-                            myProductList[index].storeProduct.description,
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.normal,
-                              fontSize: 16,
-                            ).copyWith(fontSize: 10),
+                        ),
+                      ],
+                    )
+                        : Column(
+                            children: [
+                              Container(
+                                width: deviceWidth * 0.95,
+                                alignment: Alignment.centerLeft,
+                                child: Text("TSPプレミアム",
+                                    style: TextStyle(fontSize: 18)),
+                              ),
+                              Card(
+                                child: Container(
+                                  padding: EdgeInsets.all(10),
+                                  child: Column(
+                                    children: [
+                                      Container(
+                                          width: deviceWidth * 0.9,
+                                          alignment: Alignment.bottomLeft,
+                                          child: Text(
+                                              widget.tspPlan.storeProduct.title,
+                                              style: TextStyle(fontSize: 20))),
+                                      Container(
+                                        width: deviceWidth * 0.9,
+                                        alignment: Alignment.bottomLeft,
+                                        child: Text("チケット増量に加え、友人対戦管理機能も利用可能に！",
+                                            style: TextStyle(fontSize: 18)),
+                                      ),
+                                      Card(
+                                        child: InkWell(
+                                          child: Container(
+                                            decoration: BoxDecoration(
+                                                color: Colors.greenAccent,
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        10.0)),
+                                            width: deviceWidth * 0.5,
+                                            height: 50,
+                                            alignment: Alignment.center,
+                                            child: Text(
+                                              "加入する",
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  color: Colors.white),
+                                            ),
+                                          ),
+                                          onTap: () async {
+                                            try {
+                                              //トーク上限数のリセット
+                                              await FirebaseFirestore.instance
+                                                  .runTransaction(
+                                                      (transaction) async {
+                                                //プレミアム会員登録時に、トークメッセージの上限数でリセット
+                                                await resetDailyMessageLimit(
+                                                    FirestoreMethod
+                                                        .auth.currentUser!.uid);
+                                                //プレミアム会員登録時に、チケットの上限数でリセット
+                                                await billingUpdateTicket(
+                                                    FirestoreMethod
+                                                        .auth.currentUser!.uid);
+                                              }).then(
+                                                      (value) => print(
+                                                          "DocumentSnapshot successfully updated!"),
+                                                      onError: (e) =>
+                                                          throw ("課金処理の更新に失敗しました $e"));
+                                              //処理
+                                              CustomerInfo customerInfo =
+                                                  await Purchases
+                                                      .purchasePackage(
+                                                          widget.tspPlan);
+                                              EntitlementInfo? entitlement =
+                                                  customerInfo.entitlements
+                                                      .all[entitlementID];
+                                              appData.entitlementIsActive =
+                                                  entitlement?.isActive ??
+                                                      false;
+                                              setState(() {
+                                              });
+                                            } catch (e) {
+                                              await showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          ShowDialogToDismiss(
+                                                            content:
+                                                                e.toString(),
+                                                            buttonText: "はい",
+                                                          ));
+                                            }
+                                          },
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
-                          trailing: Text(
-                              myProductList[index].storeProduct.priceString,
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 18.0,
-                              ))),
-                    );
-                  },
-                  shrinkWrap: true,
-                  physics: const ClampingScrollPhysics(),
+                  ],
                 ),
+                // ListView.builder(
+                //   itemCount: widget.offering.availablePackages.length,
+                //   itemBuilder: (BuildContext context, int index) {
+                //     var myProductList = widget.offering.availablePackages;
+                //     color:
+                //     Colors.black,
+                //     child: ListTile(
+                //     onTap: () async {
+                //     try {
+                //     bool beforeentitlementIsActive =
+                //     appData.entitlementIsActive;
+                //     CustomerInfo customerInfo =
+                //     await Purchases.purchasePackage(
+                //     myProductList[index]);
+                //     EntitlementInfo? entitlement =
+                //     customerInfo.entitlements.all[entitlementID];
+                //     appData.entitlementIsActive =
+                //     entitlement?.isActive ?? false;
+                //     //トーク上限数のリセット
+                //     print("beforeentitlementIsActive" +
+                //     beforeentitlementIsActive.toString());
+                //     print("entitlementIsActive" +
+                //     appData.entitlementIsActive.toString());
+                //
+                //     if (beforeentitlementIsActive == false &&
+                //     appData.entitlementIsActive == true) {
+                //     await FirebaseFirestore.instance.runTransaction(
+                //     (transaction) async {
+                //     //プレミアム会員登録時に、トークメッセージの上限数でリセット
+                //     await resetDailyMessageLimit(
+                //     FirestoreMethod.auth.currentUser!.uid);
+                //     //プレミアム会員登録時に、チケットの上限数でリセット
+                //     await billingUpdateTicket(
+                //     FirestoreMethod.auth.currentUser!.uid);
+                //     }).then(
+                //     (value) => print(
+                //     "DocumentSnapshot successfully updated!"),
+                //     onError: (e) =>
+                //     throw ("課金処理の更新に失敗しました $e"));
+                //     }
+                //     } catch (e) {
+                //     await showDialog(
+                //     context: context,
+                //     builder: (BuildContext context) =>
+                //     ShowDialogToDismiss(
+                //     content: e.toString(),
+                //     buttonText: "はい",
+                //     ));
+                //     }
+                //     setState(() {});
+                //     Navigator.pop(context);
+                //     },
+                //     title: Text(
+                //     myProductList[index].storeProduct.title,
+                //     style: TextStyle(
+                //     color: Colors.white,
+                //     fontWeight: FontWeight.bold,
+                //     fontSize: 18,
+                //     ),
+                //     ),
+                //     subtitle: Text(
+                //     myProductList[index].storeProduct.description,
+                //     style: TextStyle(
+                //     color: Colors.white,
+                //     fontWeight: FontWeight.normal,
+                //     fontSize: 16,
+                //     ).copyWith(fontSize: 10),
+                //     ),
+                //     trailing: Text(
+                //     myProductList[index].storeProduct.priceString,
+                //     style: TextStyle(
+                //     color: Colors.white,
+                //     fontWeight: FontWeight.bold,
+                //     fontSize: 18.0,
+                //     ))),
+                //     );
+                //   },
+                //   shrinkWrap: true,
+                //   physics: const ClampingScrollPhysics(),
+                // ),
                 const Padding(
                   padding: EdgeInsets.only(
                       top: 32, bottom: 16, left: 16.0, right: 16.0),
