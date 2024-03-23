@@ -15,6 +15,7 @@ import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CScoreRef.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CScoreRefHistory.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
+import 'package:tsuyosuke_tennis_ap/FireBase/singletons_data.dart';
 import 'package:yaml/yaml.dart';
 
 import '../Common/CFeedBackCommentSetting.dart';
@@ -79,6 +80,28 @@ class FirestoreMethod {
   static final toUserMessageRef =
       _firestoreInstance.collection('toUserMessage');
 
+  //課金フラグの更新
+  static Future<void> updateBillingFlg() async {
+    try {
+      final profileSnapshot = await profileRef.doc(auth.currentUser!.uid);
+      await profileSnapshot.set(
+          {"BILLING_FLG": appData.entitlementIsActive == true ? "1" : "0"},
+          SetOptions(merge: true));
+    } catch (e) {
+      throw("課金フラグの更新に失敗しました");
+    }
+    try {
+      final profileDetailSnapshot =
+      await profileDetailRef.doc(auth.currentUser!.uid);
+
+      await profileDetailSnapshot.set(
+          {"BILLING_FLG": appData.entitlementIsActive == true ? "1" : "0"},
+          SetOptions(merge: true));
+    }catch(e){
+      throw("課金フラグの更新に失敗しました");
+    }
+  }
+
   //プロフィール情報設定
   static Future<void> makeProfile(CprofileSetting profile) async {
     DateTime now = DateTime.now();
@@ -97,6 +120,7 @@ class FirestoreMethod {
         'MY_USER_ID': profile.MY_USER_ID,
         'TITLE': profile.TITLE,
         'FEEDBACK_COUNT': 0,
+        'BILLING_FLG': appData.entitlementIsActive == true ? "1" : "0"
       });
     } catch (e) {
       throw (e);
@@ -259,6 +283,7 @@ class FirestoreMethod {
           'SHICHOSON_LIST': shichosonList,
           'TODOFUKEN_SHICHOSON_LIST': todofukenShichosonList,
           'FIRST_TODOFUKEN_SICHOSON': todofukenShichoson,
+          'BILLING_FLG': appData.entitlementIsActive == true ? "1" : "0"
         });
       } else {
         //KOUSHIN_TIME更新あり(初回)
@@ -309,7 +334,9 @@ class FirestoreMethod {
           //レビューセッティング
           "REVIEW_ENABLED": true,
           //サーチセッティング
-          "SEARCH_ENABLED": true
+          "SEARCH_ENABLED": true,
+          //課金フラグ
+          'BILLING_FLG': appData.entitlementIsActive == true ? "1" : "0"
         });
       }
     } catch (e) {
@@ -1317,11 +1344,12 @@ class FirestoreMethod {
     }
   }
 
-  static Future<void> matchAcceptTicketError(TalkRoomModel room, String messageId) async {
+  static Future<void> matchAcceptTicketError(
+      TalkRoomModel room, String messageId) async {
     try {
       final messageRef = roomRef.doc(room.roomId).collection('message');
       final DocumentReference newMessageRef =
-      messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
+          messageRef.doc(); // ランダムなドキュメントIDが自動生成されます
 
       String? myUid = auth.currentUser!.uid;
 
@@ -1353,7 +1381,6 @@ class FirestoreMethod {
       print("matchAcceptエラー");
     }
   }
-
 
   //マッチフィードバック受け入れ
   static Future<void> matchFeedAccept(
@@ -1432,7 +1459,8 @@ class FirestoreMethod {
   }
 
   //対戦マッチ一覧に追加
-  static final userTicketMgmtRef = _firestoreInstance.collection('userTicketMgmt');
+  static final userTicketMgmtRef =
+      _firestoreInstance.collection('userTicketMgmt');
 
   static Future<String> makeMatch(TalkRoomModel talkRoom) async {
     DateTime now = DateTime.now();
@@ -1466,29 +1494,45 @@ class FirestoreMethod {
         final yourZengetsuTicketSu = yourTicketRefSna.get("zengetsuTicketSu");
 
         if (myTicketSu >= 1 && yourTicketSu >= 1) {
-          if(myZengetsuTicketSu >= 1) {
+          if (myZengetsuTicketSu >= 1) {
             transaction.update(
               myTicketRef,
-              {'ticketSu': myTicketSu - 1, 'zengetsuTicketSu':myZengetsuTicketSu - 1 ,'ticketKoushinYmd': koushinYmd},
+              {
+                'ticketSu': myTicketSu - 1,
+                'zengetsuTicketSu': myZengetsuTicketSu - 1,
+                'ticketKoushinYmd': koushinYmd
+              },
             );
-          }else{
+          } else {
             transaction.update(
               myTicketRef,
-              {'ticketSu': myTicketSu -1, 'togetsuTicketSu':myTogetsuTicketSu -1 ,'ticketKoushinYmd': koushinYmd},
+              {
+                'ticketSu': myTicketSu - 1,
+                'togetsuTicketSu': myTogetsuTicketSu - 1,
+                'ticketKoushinYmd': koushinYmd
+              },
             );
           }
-          if(yourZengetsuTicketSu >= 1) {
+          if (yourZengetsuTicketSu >= 1) {
             transaction.update(
               yourTicketRef,
-              {'ticketSu': yourTicketSu - 1, 'zengetsuTicketSu':yourZengetsuTicketSu - 1 ,'ticketKoushinYmd': koushinYmd},
+              {
+                'ticketSu': yourTicketSu - 1,
+                'zengetsuTicketSu': yourZengetsuTicketSu - 1,
+                'ticketKoushinYmd': koushinYmd
+              },
             );
-          }else{
+          } else {
             transaction.update(
               yourTicketRef,
-              {'ticketSu': yourTicketSu -1, 'togetsuTicketSu':yourTogetsuTicketSu -1 ,'ticketKoushinYmd': koushinYmd},
+              {
+                'ticketSu': yourTicketSu - 1,
+                'togetsuTicketSu': yourTogetsuTicketSu - 1,
+                'ticketKoushinYmd': koushinYmd
+              },
             );
           }
-         //マッチング処理を実施
+          //マッチング処理を実施
           try {
             // マッチング処理をトランザクション内で実行
             // 新しいドキュメントを追加し、そのIDを取得
@@ -1500,10 +1544,13 @@ class FirestoreMethod {
               {
                 'RECIPIENT_ID': auth.currentUser!.uid,
                 'SENDER_ID': talkRoom.user.USER_ID,
-                'MATCH_USER_LIST': [auth.currentUser!.uid, talkRoom.user.USER_ID],
+                'MATCH_USER_LIST': [
+                  auth.currentUser!.uid,
+                  talkRoom.user.USER_ID
+                ],
                 'SAKUSEI_TIME': today,
                 'MATCH_FLG': '1',
-                'MATCH_ID':newDocId
+                'MATCH_ID': newDocId
               },
             );
             // throw("マッチングに失敗しました");//エラーテスト用
@@ -1513,18 +1560,18 @@ class FirestoreMethod {
           }
           ticketFlg = "0";
         } else {
-          if(myTicketSu < 1){
+          if (myTicketSu < 1) {
             ticketFlg = "1";
-          }else{
+          } else {
             ticketFlg = "2";
           }
         }
-      }else{
-        throw("チケット数の更新に失敗しました");
+      } else {
+        throw ("チケット数の更新に失敗しました");
       }
     }).then(
-          (value) => print("DocumentSnapshot successfully updated!"),
-      onError: (e) => throw(e),
+      (value) => print("DocumentSnapshot successfully updated!"),
+      onError: (e) => throw (e),
     );
     return ticketFlg;
   }
@@ -1561,26 +1608,42 @@ class FirestoreMethod {
         final yourZengetsuTicketSu = yourTicketRefSna.get("zengetsuTicketSu");
 
         if (myTicketSu >= 1 && yourTicketSu >= 1) {
-          if(myZengetsuTicketSu >= 1) {
+          if (myZengetsuTicketSu >= 1) {
             transaction.update(
               myTicketRef,
-              {'ticketSu': myTicketSu - 1, 'zengetsuTicketSu':myZengetsuTicketSu - 1 ,'ticketKoushinYmd': koushinYmd},
+              {
+                'ticketSu': myTicketSu - 1,
+                'zengetsuTicketSu': myZengetsuTicketSu - 1,
+                'ticketKoushinYmd': koushinYmd
+              },
             );
-          }else{
+          } else {
             transaction.update(
               myTicketRef,
-              {'ticketSu': myTicketSu -1, 'togetsuTicketSu':myTogetsuTicketSu -1 ,'ticketKoushinYmd': koushinYmd},
+              {
+                'ticketSu': myTicketSu - 1,
+                'togetsuTicketSu': myTogetsuTicketSu - 1,
+                'ticketKoushinYmd': koushinYmd
+              },
             );
           }
-          if(yourZengetsuTicketSu >= 1) {
+          if (yourZengetsuTicketSu >= 1) {
             transaction.update(
               yourTicketRef,
-              {'ticketSu': yourTicketSu - 1, 'zengetsuTicketSu':yourZengetsuTicketSu - 1 ,'ticketKoushinYmd': koushinYmd},
+              {
+                'ticketSu': yourTicketSu - 1,
+                'zengetsuTicketSu': yourZengetsuTicketSu - 1,
+                'ticketKoushinYmd': koushinYmd
+              },
             );
-          }else{
+          } else {
             transaction.update(
               yourTicketRef,
-              {'ticketSu': yourTicketSu -1, 'togetsuTicketSu':yourTogetsuTicketSu -1 ,'ticketKoushinYmd': koushinYmd},
+              {
+                'ticketSu': yourTicketSu - 1,
+                'togetsuTicketSu': yourTogetsuTicketSu - 1,
+                'ticketKoushinYmd': koushinYmd
+              },
             );
           }
           //マッチング処理を実施
@@ -1598,7 +1661,7 @@ class FirestoreMethod {
                 'MATCH_USER_LIST': [auth.currentUser!.uid, yourUserId],
                 'SAKUSEI_TIME': today,
                 'MATCH_FLG': '1',
-                'MATCH_ID':newDocId
+                'MATCH_ID': newDocId
               },
             );
             // throw("マッチングに失敗しました");//エラーテスト用
@@ -1607,18 +1670,18 @@ class FirestoreMethod {
           }
           ticketFlg = "0";
         } else {
-          if(myTicketSu < 1){
+          if (myTicketSu < 1) {
             ticketFlg = "1";
-          }else{
+          } else {
             ticketFlg = "2";
           }
         }
-      }else{
-        throw("チケット数の更新に失敗しました");
+      } else {
+        throw ("チケット数の更新に失敗しました");
       }
     }).then(
-          (value) => print("DocumentSnapshot successfully updated!"),
-      onError: (e) => throw(e),
+      (value) => print("DocumentSnapshot successfully updated!"),
+      onError: (e) => throw (e),
     );
     return ticketFlg;
   }

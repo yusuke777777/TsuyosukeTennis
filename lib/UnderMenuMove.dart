@@ -10,6 +10,7 @@ import 'package:tsuyosuke_tennis_ap/Page/HomePage.dart';
 
 import 'Common/CPushNotification.dart';
 import 'Common/CtalkRoom.dart';
+import 'Component/native_dialog.dart';
 import 'FireBase/FireBase.dart';
 import 'FireBase/NotificationMethod.dart';
 import 'FireBase/Notification_badge.dart';
@@ -94,7 +95,8 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
       provisional: false,
       sound: true,
     );
-    await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    await FirebaseMessaging.instance
+        .setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,
       sound: true,
@@ -107,7 +109,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
 
       print("The token is " + myTokenId!);
 
-      FirebaseMessaging.onMessage.listen((RemoteMessage message)  {
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
         CPushNotification notification = CPushNotification(
           title: message.notification?.title,
           body: message.notification?.body,
@@ -143,7 +145,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
         _notificationInfo = notification;
         String? senderId = message.data['senderUid'];
         print(senderId);
-        notificationMove(context,senderId);
+        notificationMove(context, senderId);
         // _totalNotifications++;
         // FlutterAppBadger.updateBadgeCount(_totalNotifications);
       });
@@ -153,11 +155,13 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     // _totalNotifications = 0;
     //トラッキングチェック処理
     super.initState();
-    WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_) => initPlugin());
+    WidgetsFlutterBinding.ensureInitialized()
+        .addPostFrameCallback((_) => initPlugin());
   }
+
   Future<void> initPlugin() async {
     final TrackingStatus status =
-    await AppTrackingTransparency.trackingAuthorizationStatus;
+        await AppTrackingTransparency.trackingAuthorizationStatus;
     setState(() => _authStatus = '$status');
     // If the system can show an authorization request dialog
     if (status == TrackingStatus.notDetermined) {
@@ -167,7 +171,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
       await Future.delayed(const Duration(milliseconds: 200));
       // Request system's tracking authorization dialog
       final TrackingStatus status =
-      await AppTrackingTransparency.requestTrackingAuthorization();
+          await AppTrackingTransparency.requestTrackingAuthorization();
       setState(() => _authStatus = '$status');
     }
 
@@ -183,13 +187,21 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
       appData.appUserID = await Purchases.appUserID;
       CustomerInfo customerInfo = await Purchases.getCustomerInfo();
       EntitlementInfo? entitlement =
-      customerInfo.entitlements.all[entitlementID];
+          customerInfo.entitlements.all[entitlementID];
       appData.entitlementIsActive = entitlement?.isActive ?? false;
-
+      try {
+        await FirestoreMethod.updateBillingFlg();
+      } catch (e) {
+        await showDialog(
+            context: context,
+            builder: (BuildContext context) => ShowDialogToDismiss(
+                  content: e.toString(),
+                  buttonText: "はい",
+                ));
+      }
       setState(() {});
     });
   }
-
 
   Future<void> showCustomTrackingDialog(BuildContext context) async =>
       await showDialog<void>(
@@ -198,8 +210,8 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
           title: const Text('Dear User'),
           content: const Text(
             'We care about your privacy and data security. We keep this app free by showing ads. '
-                'Can we continue to use your data to tailor ads for you?\n\nYou can change your choice anytime in the app settings. '
-                'Our partners will collect data and use a unique identifier on your device to show you ads.',
+            'Can we continue to use your data to tailor ads for you?\n\nYou can change your choice anytime in the app settings. '
+            'Our partners will collect data and use a unique identifier on your device to show you ads.',
           ),
           actions: [
             TextButton(

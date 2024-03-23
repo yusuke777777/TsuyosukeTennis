@@ -215,6 +215,8 @@ class _BillingState extends State<Billing> {
                                               appData.entitlementIsActive =
                                                   entitlement?.isActive ??
                                                       false;
+                                              //DBの課金フラグを更新する
+                                              await FirestoreMethod.updateBillingFlg();
                                               setState(() {
                                               });
                                             } catch (e) {

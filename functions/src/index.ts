@@ -7,6 +7,8 @@ admin.initializeApp();
 const manSinglesRankRef = admin.firestore().collection("manSinglesRank");
 const matchResultRef = admin.firestore().collection("matchResult");
 const profileDetailRef = admin.firestore().collection("myProfileDetail");
+const profileRef = admin.firestore().collection("myProfile");
+const userTicketMgmtRef = admin.firestore().collection("userTicketMgmt");
 
 /** 定期的にメタ情報を更新する関数。 */
 exports.updateMetaFunction = functions
@@ -47,6 +49,20 @@ exports.updateTitleFunction = functions
         await checkTitleState();
       } catch (e) {
         console.log(e + "取得称号状況更新に失敗しました ----$e");
+      }
+      return null;
+    });
+
+exports.addTicketFunction = functions
+    .region("asia-northeast1")
+    .pubsub.schedule("0 0 1 * *")
+    .timeZone("Asia/Tokyo")
+    .onRun(async () => {
+      console.log("チケットの付与");
+      try {
+        await addTicket();
+      } catch (e) {
+        console.log("チケットの付与に失敗しました ----$e");
       }
       return null;
     });
@@ -467,12 +483,12 @@ async function checkTitleState(): Promise<void> {
   for (const docs of profileDetailSnapshot.docs) {
     console.log("通過点１");
     const titleData: Map<string, string> = objectToMap(docs.data()?.TITLE);
-    const feedbackCount: number = Number(docs.data()["FEEDBACK_COUNT"]);
-    const strokeForeAve: number = Number(docs.data()["STROKE_FOREHAND_AVE"]);
-    const strokeBackAve: number = Number(docs.data()["STROKE_BACKHAND_AVE"]);
+    const feedbackCount = Number(docs.data()["FEEDBACK_COUNT"]);
+    const strokeForeAve = Number(docs.data()["STROKE_FOREHAND_AVE"]);
+    const strokeBackAve = Number(docs.data()["STROKE_BACKHAND_AVE"]);
     console.log(typeof titleData);
     // 更新確認(No1の確認)!!!!!!!!!!!!!!!!!!!!!
-    let mapVal1: string = "0";
+    let mapVal1 = "0";
     if (titleData.get("1") !== undefined) {
       console.log("No1存在します");
       mapVal1 = titleData.get("1") as string;
@@ -495,7 +511,7 @@ async function checkTitleState(): Promise<void> {
     }
     // No1の確認終了＝＝＝＝＝＝＝＝＝＝
     // 更新確認(No2の確認)!!!!!!!!!!!!!!!!!!!!!
-    let mapVal2: string = "0";
+    let mapVal2 = "0";
     if (titleData.get("2") !== undefined) {
       console.log("No2存在します");
       mapVal2 = titleData.get("2") as string;
@@ -517,7 +533,7 @@ async function checkTitleState(): Promise<void> {
     }
     // No2確認終了＝＝＝＝＝＝＝＝＝＝
     // 更新確認(No3の確認)!!!!!!!!!!!!!!!!!!!!!
-    let mapVal3: string = "0";
+    let mapVal3 = "0";
     if (titleData.get("3") !== undefined) {
       console.log("No3存在します");
       mapVal3 = titleData.get("3") as string;
@@ -539,7 +555,7 @@ async function checkTitleState(): Promise<void> {
     }
     // No3確認終了＝＝＝＝＝＝＝＝＝＝
     // 更新確認(No4の確認)!!!!!!!!!!!!!!!!!!!!!
-    let mapVal4: string = "0";
+    let mapVal4 = "0";
     if (titleData.get("4") !== undefined) {
       console.log("No4存在します");
       mapVal4 = titleData.get("4") as string;
@@ -561,7 +577,7 @@ async function checkTitleState(): Promise<void> {
     }
     // No4確認終了＝＝＝＝＝＝＝＝＝＝
     // 更新確認(No5の確認)!!!!!!!!!!!!!!!!!!!!!
-    let mapVal5: string = "0";
+    let mapVal5 = "0";
     if (titleData.get("5") !== undefined) {
       console.log("No5存在します");
       mapVal5 = titleData.get("5") as string;
@@ -583,7 +599,7 @@ async function checkTitleState(): Promise<void> {
     }
     // No5確認終了＝＝＝＝＝＝＝＝＝＝
     // 更新確認(No6の確認)!!!!!!!!!!!!!!!!!!!!!
-    let mapVal6: string = "0";
+    let mapVal6 = "0";
     if (titleData.get("6") !== undefined) {
       console.log("No6存在します");
       mapVal6 = titleData.get("6") as string;
@@ -605,7 +621,7 @@ async function checkTitleState(): Promise<void> {
     }
     // No6確認終了＝＝＝＝＝＝＝＝＝＝
     // 更新確認(No7の確認)!!!!!!!!!!!!!!!!!!!!!
-    let mapVal7: string = "0";
+    let mapVal7 = "0";
     if (titleData.get("7") !== undefined) {
       console.log("No7存在します");
       mapVal7 = titleData.get("7") as string;
@@ -627,7 +643,7 @@ async function checkTitleState(): Promise<void> {
     }
     // No7確認終了＝＝＝＝＝＝＝＝＝＝
     // 更新確認(No8の確認)!!!!!!!!!!!!!!!!!!!!!
-    let mapVal8: string = "0";
+    let mapVal8 = "0";
     if (titleData.get("8") !== undefined) {
       console.log("No8存在します");
       mapVal8 = titleData.get("8") as string;
@@ -649,7 +665,7 @@ async function checkTitleState(): Promise<void> {
     }
     // No8確認終了＝＝＝＝＝＝＝＝＝＝
     // 更新確認(No9の確認)!!!!!!!!!!!!!!!!!!!!!
-    let mapVal9: string = "0";
+    let mapVal9 = "0";
     if (titleData.get("9") !== undefined) {
       console.log("No9存在します");
       mapVal9 = titleData.get("9") as string;
@@ -671,7 +687,7 @@ async function checkTitleState(): Promise<void> {
     }
     // No9確認終了＝＝＝＝＝＝＝＝＝＝
     // 更新確認(No10の確認)!!!!!!!!!!!!!!!!!!!!!
-    let mapVal10: string = "0";
+    let mapVal10 = "0";
     if (titleData.get("10") !== undefined) {
       console.log("No10存在します");
       mapVal10 = titleData.get("10") as string;
@@ -716,5 +732,47 @@ async function checkTitleState(): Promise<void> {
  */
 function objectToMap(obj: { [key: string]: string }): Map<string, string> {
   return new Map(Object.entries(obj));
+}
+
+/** 月次でチケットを付与する */
+async function addTicket(): Promise<void> {
+  const userTicketMgmtSnapshot = await userTicketMgmtRef.get();
+  const shoriYmd: Date = utcToZonedTime(new Date(), "Asia/Tokyo");
+  // 日付を "yyyy-MM-dd" 形式の文字列に変換する
+  const formattedDate: string = shoriYmd.toISOString().slice(0, 10);
+  for (const doc of userTicketMgmtSnapshot.docs) {
+    const profileDoc = await profileRef.doc(doc.id).get();
+    let billingFlg;
+    if (profileDoc.exists) {
+      billingFlg = profileDoc.data()?.["BILLING_FLG"] ?? "0";
+    } else {
+      billingFlg = "0";
+    }
+    const togetsuTicketSu: number = doc.data()["togetsuTicketSu"];
+
+    if (billingFlg == "0" ) {
+      // 一般ユーザーに対する処理
+      await userTicketMgmtRef
+          .doc(doc.id)
+          .update({
+            ticketSu: 5 + togetsuTicketSu,
+            togetsuTicketSu: 5,
+            zengetsuTicketSu: togetsuTicketSu,
+            ticketKoushinYmd: formattedDate,
+          });
+      console.log("一般ユーザーにチケット追加");
+    } else {
+      // 課金ユーザーに対する処理
+      await userTicketMgmtRef
+          .doc(doc.id)
+          .update({
+            ticketSu: 20 + togetsuTicketSu,
+            togetsuTicketSu: 20,
+            zengetsuTicketSu: togetsuTicketSu,
+            ticketKoushinYmd: formattedDate,
+          });
+      console.log("課金ユーザーにチケット追加");
+    }
+  }
 }
 
