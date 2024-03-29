@@ -97,7 +97,7 @@ class FirestoreMethod {
       await profileDetailSnapshot.set(
           {"BILLING_FLG": appData.entitlementIsActive == true ? "1" : "0"},
           SetOptions(merge: true));
-    }catch(e){
+    } catch(e){
       throw("課金フラグの更新に失敗しました");
     }
   }
@@ -4304,6 +4304,34 @@ class FirestoreMethod {
       await profileDetailRef.doc(auth.currentUser!.uid).update({'TITLE': map});
     } catch (e) {
       print("changeTitleエラー");
+    }
+  }
+
+  /**
+   * 承認が終わっていないメアドの承認を行う
+   */
+  static Future<void> sendUserAuthMail() async{
+    User? currentUser = auth.currentUser;
+      print(currentUser);
+      print("承認メール送信");
+      currentUser?.sendEmailVerification();
+  }
+
+  /**
+   * 承認が終わっていないメアドの承認を行う
+   */
+  static Future<bool> checkUserAuth() async{
+    Firebase_Auth.FirebaseAuth auth =
+        Firebase_Auth.FirebaseAuth.instance;
+    User? currentUser = auth.currentUser;
+    print(currentUser);
+    if(currentUser!.emailVerified){
+      print("承認されました");
+    return true;
+    }
+    else {
+      print("承認されていません");
+      return false;
     }
   }
 }

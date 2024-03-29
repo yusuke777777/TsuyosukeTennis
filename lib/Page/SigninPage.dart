@@ -13,6 +13,7 @@ import '../FireBase/singletons_data.dart';
 import '../UnderMenuMove.dart';
 import '../constant.dart';
 import 'ProfileSetting.dart';
+import 'ReLoginMessagePage.dart';
 import 'SignupPage.dart';
 import 'PasswordForgetPage.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
@@ -123,7 +124,20 @@ class SignInPage extends StatelessWidget {
                                   model.startLoading();
                                   try {
                                     await model.login();
-                                    await FirestoreMethod.isProfile();
+                                    bool isAuth = await FirestoreMethod.checkUserAuth();
+                                    if(isAuth){
+                                      await FirestoreMethod.isProfile();
+                                    }
+                                    else {
+                                      await Navigator
+                                          .pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ReLoginMessagePage(),
+                                          ));
+                                    }
+
                                     //ダウンロードテスト
                                     // await FirestoreMethod().downloadImage();
 

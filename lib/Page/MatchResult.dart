@@ -666,7 +666,7 @@ class _MatchResultState extends State<MatchResult> {
                                     adInterstitial.createAd();
                                     //マッチリストを削除する
                                     FirestoreMethod.delMatchListAuto(widget.matchId);
-                                    Navigator.push(
+                                    Navigator.pushReplacement(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
