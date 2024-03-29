@@ -1,14 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 
 import '../FireBase/FireBase.dart';
+import '../FireBase/SigninModel.dart';
+import '../FireBase/singletons_data.dart';
 import '../PropSetCofig.dart';
 import 'ProfileSetting.dart';
 import 'SigninPage.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
+import 'package:tsuyosuke_tennis_ap/FireBase/native_dialog.dart';
 
 class ReLoginMessagePage extends StatefulWidget {
+
   @override
   _ReLoginMessagePageState createState() => _ReLoginMessagePageState();
 }
@@ -52,13 +58,26 @@ class _ReLoginMessagePageState extends State<ReLoginMessagePage> {
                     color: Colors.white,
                     backgroundColor: Colors.green),
               ),
-              onPressed: () {
-                Navigator.pushReplacement(
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut();
+                //課金機能ログアウト
+                try {
+                  await Purchases.logOut();
+                  appData.appUserID = await Purchases.appUserID;
+                  print("ログアウト"+appData.appUserID );
+                } on PlatformException catch (e) {
+                  await showDialog(
+                      context: context,
+                      builder: (BuildContext context) => ShowDialogToDismiss(
+                          title: "Error",
+                          content: e.message ?? "Unknown error",
+                          buttonText: 'OK'));
+                }
+                // ログアウト後の画面に遷移
+                Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        SignInPage(),
-                  ),
+                  MaterialPageRoute(builder: (context) =>  SignInPage()),
+                      (Route<dynamic> route) => false,
                 );
               },
             ),

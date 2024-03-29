@@ -16,6 +16,7 @@ import 'FireBase/FireBase.dart';
 import 'FireBase/GoogleAds.dart';
 import 'FireBase/NotificationMethod.dart';
 import 'Page/ProfileSetting.dart';
+import 'Page/ReLoginMessagePage.dart';
 import 'Page/SigninPage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'UnderMenuMove.dart';
@@ -132,7 +133,10 @@ class _MyAppState extends State<MyApp> {
       home: FirebaseAuth.instance.currentUser == null
           ? SignInPage()
           :
-      FirestoreMethod.isprofile == true ? UnderMenuMove.make(0) : ProfileSetting.Make(),
+       !FirestoreMethod.isAuth
+         ? ReLoginMessagePage()
+      :
+        FirestoreMethod.isprofile == true ? UnderMenuMove.make(0) : ProfileSetting.Make(),
     );
   }
 }
