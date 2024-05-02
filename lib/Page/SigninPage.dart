@@ -13,6 +13,7 @@ import '../FireBase/singletons_data.dart';
 import '../UnderMenuMove.dart';
 import '../constant.dart';
 import 'ProfileSetting.dart';
+import 'ReLoginMessagePage.dart';
 import 'SignupPage.dart';
 import 'PasswordForgetPage.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
@@ -118,13 +119,23 @@ class SignInPage extends StatelessWidget {
                                 onPressed: model.isMailValid &&
                                         model.isPasswordValid
                                     ? () async {
-                                        model.startLoading();
-                                        try {
-                                          await model.login();
-                                          await FirestoreMethod.isProfile();
-                                          //ダウンロードテスト
-                                          // await FirestoreMethod().downloadImage();
-
+                                  model.startLoading();
+                                  try {
+                                    await model.login();
+                                    bool isAuth = await FirestoreMethod.checkUserAuth();
+                                    if(isAuth){
+                                      await FirestoreMethod.isProfile();
+                                    }
+                                    else {
+                                      await Navigator
+                                          .pushReplacement(
+                                          context,
+                                          MaterialPageRoute(
+                                            //TODO 引数消す
+                                            builder: (context) =>
+                                                ReLoginMessagePage(),
+                                          ));
+                                    }
                                           // //課金機能　RevenueCat
                                           try {
                                             await Purchases.logIn(

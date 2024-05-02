@@ -15,6 +15,7 @@ import 'FireBase/FireBase.dart';
 import 'FireBase/GoogleAds.dart';
 import 'FireBase/NotificationMethod.dart';
 import 'Page/ProfileSetting.dart';
+import 'Page/ReLoginMessagePage.dart';
 import 'Page/SigninPage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'UnderMenuMove.dart';
@@ -37,6 +38,7 @@ void main() async {
   MobileAds.instance.initialize();
   await Firebase.initializeApp();
    await FirestoreMethod.isProfile();
+   await FirestoreMethod.checkUserAuth();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarBrightness: Brightness.light,
@@ -117,7 +119,6 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
         textTheme:GoogleFonts.latoTextTheme(),
         // This is the theme of your application.
-        //
         // Try running your application with "flutter run". You'll see the
         // application has a blue toolbar. Then, without quitting the app, try
         // changing the primarySwatch below to Colors.green and then invoke
@@ -131,7 +132,10 @@ class _MyAppState extends State<MyApp> {
       home: FirebaseAuth.instance.currentUser == null
           ? SignInPage()
           :
-      FirestoreMethod.isprofile == true ? UnderMenuMove.make(0) : ProfileSetting.Make(),
+       !FirestoreMethod.isAuth
+         ? ReLoginMessagePage()
+      :
+        FirestoreMethod.isprofile == true ? UnderMenuMove.make(0) : ProfileSetting.Make(),
     );
   }
 }

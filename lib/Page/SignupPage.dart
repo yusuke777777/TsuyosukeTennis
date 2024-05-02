@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:tsuyosuke_tennis_ap/FireBase/SigninModel.dart';
+import 'package:tsuyosuke_tennis_ap/Page/ReLoginMessagePage.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
+import '../FireBase/FireBase.dart';
 import '../FireBase/SignupModel.dart';
 import '../FireBase/TextDaialog.dart';
 import '../FireBase/WillPopScope.dart';
@@ -218,13 +221,14 @@ class _SignUpPageState extends State<SignUpPage> {
                                                   ? () async {
                                                       try {
                                                         await model.signUp();
+                                                        await FirestoreMethod.sendUserAuthMail();
                                                         await Navigator
                                                             .pushReplacement(
                                                           context,
                                                           MaterialPageRoute(
                                                             builder: (context) =>
-                                                                ProfileSetting
-                                                                    .Make(),
+                                                            //TODO 引数消す
+                                                                ReLoginMessagePage(),
                                                           ),
                                                         );
                                                         model.endLoading();

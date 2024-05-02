@@ -4309,4 +4309,34 @@ class FirestoreMethod {
       print("changeTitleエラー");
     }
   }
+
+  /**
+   * 承認が終わっていないメアドの承認を行う
+   */
+  static Future<void> sendUserAuthMail() async{
+    User? currentUser = auth.currentUser;
+      print(currentUser);
+      print("承認メール送信");
+      currentUser?.sendEmailVerification();
+  }
+
+  //main.dartの判定で使用
+  static bool isAuth = false;
+  /**
+   * 承認が終わっていないメアドの承認を行う
+   */
+  static Future<bool> checkUserAuth() async{
+    User? currentUser = auth.currentUser;
+    print(currentUser);
+    if(currentUser!.emailVerified){
+      print("承認されました");
+      isAuth = true;
+    return true;
+    }
+    else {
+      print("承認されていません");
+      isAuth = false;
+      return false;
+    }
+  }
 }
