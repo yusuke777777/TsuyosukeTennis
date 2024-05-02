@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import '../FireBase/GoogleAds.dart';
 import '../PropSetCofig.dart';
 import 'manSinglesRankList.dart';
 
@@ -65,11 +67,19 @@ class RankList extends StatelessWidget {
                 ),
               ),
             )),
-        body: TabBarView(
-          children: <Widget>[
-            manSinglesRankList("ShokyuRank"),
-            manSinglesRankList("ChukyuRank"),
-            manSinglesRankList("JyokyuRank")
+        body: Stack(
+          children: [
+            Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
+            Padding(
+              padding: EdgeInsets.only(top: 40),
+              child: TabBarView(
+                children: <Widget>[
+                  manSinglesRankList("ShokyuRank"),
+                  manSinglesRankList("ChukyuRank"),
+                  manSinglesRankList("JyokyuRank")
+                ],
+              ),
+            ),
           ],
         ),
         drawer: DrawerConfig.drawer,

@@ -11,7 +11,6 @@ import 'package:purchases_flutter/models/purchases_configuration.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:tsuyosuke_tennis_ap/FireBase/Notification_badge.dart';
 import 'Common/CPushNotification.dart';
-import 'FireBase/BillingMethod.dart';
 import 'FireBase/FireBase.dart';
 import 'FireBase/GoogleAds.dart';
 import 'FireBase/NotificationMethod.dart';

@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/material/list_tile.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 
+import '../FireBase/GoogleAds.dart';
 import '../PropSetCofig.dart';
 import 'ProfileReference.dart';
 import 'TalkRoom.dart';
@@ -58,130 +60,138 @@ class _FindResultPageState extends State<FindResultPage> {
           title: HeaderConfig.appBarText,
           iconTheme: IconThemeData(color: Colors.black),
           leading: HeaderConfig.backIcon),
-      body: FutureBuilder(
-        future: futureList,
-        builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
-          {
-            if (snapshot.connectionState != ConnectionState.done) {
-              return new Align(
-                  child: Center(
-                child: new CircularProgressIndicator(),
-              ));
-            } else if (snapshot.hasError) {
-              print('Error: ${snapshot.error!}');
-              return new Text("対象ユーザーは存在しません");
-            } else if (snapshot.hasData) {
-              //取得したい値をリスト型で格納
-              List<String>? profileList = snapshot.data;
-              //該当するユーザが存在しない時
+      body: Stack(
+        children: [
+          Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
+          Padding(
+            padding: EdgeInsets.only(top: 40),
+            child: FutureBuilder(
+              future: futureList,
+              builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
+                {
+                  if (snapshot.connectionState != ConnectionState.done) {
+                    return new Align(
+                        child: Center(
+                      child: new CircularProgressIndicator(),
+                    ));
+                  } else if (snapshot.hasError) {
+                    print('Error: ${snapshot.error!}');
+                    return new Text("対象ユーザーは存在しません");
+                  } else if (snapshot.hasData) {
+                    //取得したい値をリスト型で格納
+                    List<String>? profileList = snapshot.data;
+                    //該当するユーザが存在しない時
 
-              if (profileList!.isEmpty) {
-                return ListView(
-                    padding: const EdgeInsets.all(8),
-                    children: <Widget>[
-                      ListTile(title: Text("対象ユーザーは存在しません")),
-                    ]);
-              } else {
-                return InkWell(
-                  onTap: () async {
-                    //トーク画面へ遷移
-                    TalkRoomModel room = await FirestoreMethod.makeRoom(
-                        auth.currentUser!.uid,
-                        profileList[2]);
+                    if (profileList!.isEmpty) {
+                      return ListView(
+                          padding: const EdgeInsets.all(8),
+                          children: <Widget>[
+                            ListTile(title: Text("対象ユーザーは存在しません")),
+                          ]);
+                    } else {
+                      return InkWell(
+                        onTap: () async {
+                          //トーク画面へ遷移
+                          TalkRoomModel room = await FirestoreMethod.makeRoom(
+                              auth.currentUser!.uid,
+                              profileList[2]);
 
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TalkRoom(room),
-                        ));
-                  },
-                  child: Card(
-                    color: Colors.white,
-                      child: FutureBuilder(
-                          future: _calculateTextHeight(profileList[3], TextStyle(fontSize: 12)),
-                        builder: (context,snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
-                            return CircularProgressIndicator(); // テキストの高さ計算中にローディング表示
-                          }
-                          if (snapshot.hasError) {
-                            return Text('Error: ${snapshot.error}');
-                          }
-                          double textHeight = snapshot.data as double;
-                          print(textHeight);
-                          return Container(
-                            height: profileList[3] == '' ? 60 : textHeight + 45,
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                                  //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
-                                  child: InkWell(
-                                    child:
-                                    profileList[1] == ''
-                                        ? CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      backgroundImage: NetworkImage(
-                                          "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                      radius: 30,
-                                    )
-                                        : CircleAvatar(
-                                        backgroundColor: Colors.white,
-                                        backgroundImage: NetworkImage(
-                                            profileList[1]
-                                                ),
-                                        radius: 30),
-                                    onTap: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => ProfileReference(
-                                                  profileList[2]
-                                                     )));
-                                    },
-                                  ),
-                                ),
-                                Column(
-                                  crossAxisAlignment:CrossAxisAlignment.start,
-                                  children: [
-                                    Container(
-                                      width: deviceWidth * 0.7,
-                                      height: 30,
-                                      child: Text(profileList[0],
-                                          textAlign: TextAlign.start,
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
-                                          maxLines: 1,
-                                          style: TextStyle(
-                                              fontSize: 20, fontWeight: FontWeight.bold)
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TalkRoom(room),
+                              ));
+                        },
+                        child: Card(
+                          color: Colors.white,
+                            child: FutureBuilder(
+                                future: _calculateTextHeight(profileList[3], TextStyle(fontSize: 12)),
+                              builder: (context,snapshot) {
+                                if (snapshot.connectionState == ConnectionState.waiting) {
+                                  return CircularProgressIndicator(); // テキストの高さ計算中にローディング表示
+                                }
+                                if (snapshot.hasError) {
+                                  return Text('Error: ${snapshot.error}');
+                                }
+                                double textHeight = snapshot.data as double;
+                                print(textHeight);
+                                return Container(
+                                  height: profileList[3] == '' ? 70 : textHeight + 55,
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                        const EdgeInsets.symmetric(horizontal: 8.0),
+                                        //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
+                                        child: InkWell(
+                                          child:
+                                          profileList[1] == ''
+                                              ? CircleAvatar(
+                                            backgroundColor: Colors.white,
+                                            backgroundImage: NetworkImage(
+                                                "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                            radius: 30,
+                                          )
+                                              : CircleAvatar(
+                                              backgroundColor: Colors.white,
+                                              backgroundImage: NetworkImage(
+                                                  profileList[1]
+                                                      ),
+                                              radius: 30),
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => ProfileReference(
+                                                        profileList[2]
+                                                           )));
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                    Container(
-                                      width: deviceWidth * 0.7,
-                                      child: Text(profileList[3],
-                                          textAlign: TextAlign.start,
-                                          softWrap: true,
-                                          overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
-                                          maxLines: (textHeight/12).floor()> 5 ? 5 :(textHeight/12).floor(),
-                                          style: TextStyle(
-                                              fontSize: 12)),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                                      Column(
+                                        crossAxisAlignment:CrossAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            width: deviceWidth * 0.7,
+                                            height: 30,
+                                            child: Text(profileList[0],
+                                                textAlign: TextAlign.start,
+                                                softWrap: true,
+                                                overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
+                                                maxLines: 1,
+                                                style: TextStyle(
+                                                    fontSize: 20, fontWeight: FontWeight.bold)
+                                            ),
+                                          ),
+                                          Container(
+                                            width: deviceWidth * 0.7,
+                                            child: Text(profileList[3],
+                                                textAlign: TextAlign.start,
+                                                softWrap: true,
+                                                overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
+                                                maxLines: (textHeight/12).floor()> 5 ? 5 :(textHeight/12).floor(),
+                                                style: TextStyle(
+                                                    fontSize: 12)),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
                             ),
-                          );
-                        }
-                      ),
-                  ),
-                );
-              }
-            } else {
-              return Text("データが存在しません");
-            }
-          }
-        },
+                        ),
+                      );
+                    }
+                  } else {
+                    return Text("データが存在しません");
+                  }
+                }
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

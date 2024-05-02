@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:yaml/yaml.dart';
 import '../Common/CTitle.dart';
 import '../Common/CactivityList.dart';

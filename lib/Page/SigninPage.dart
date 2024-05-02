@@ -17,7 +17,6 @@ import 'SignupPage.dart';
 import 'PasswordForgetPage.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 
-
 class SignInPage extends StatelessWidget {
   final mailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -36,8 +35,7 @@ class SignInPage extends StatelessWidget {
         child: Scaffold(
           appBar: PreferredSize(
             preferredSize: Size.fromHeight(40.0),
-            child: AppBar(
-                backgroundColor: Colors.green),
+            child: AppBar(backgroundColor: Colors.green),
           ),
           body: Consumer<SignInModel>(
             builder: (context, model, child) {
@@ -47,13 +45,13 @@ class SignInPage extends StatelessWidget {
                   Container(
                       decoration: const BoxDecoration(
                           image: DecorationImage(
-                            colorFilter: ColorFilter.mode(
-                              Colors.white,
-                              BlendMode.dstATop,
-                            ),
-                            image: AssetImage('images/haikei_katakana.png'),
-                            fit: BoxFit.cover,
-                          ))),
+                    colorFilter: ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.dstATop,
+                    ),
+                    image: AssetImage('images/haikei_katakana.png'),
+                    fit: BoxFit.cover,
+                  ))),
                   Center(
                     child: SingleChildScrollView(
                       child: Padding(
@@ -118,49 +116,58 @@ class SignInPage extends StatelessWidget {
                                           Color(0xFF4CAF50)),
                                 ),
                                 onPressed: model.isMailValid &&
-                                    model.isPasswordValid
+                                        model.isPasswordValid
                                     ? () async {
-                                  model.startLoading();
-                                  try {
-                                    await model.login();
-                                    await FirestoreMethod.isProfile();
-                                    //ダウンロードテスト
-                                    // await FirestoreMethod().downloadImage();
+                                        model.startLoading();
+                                        try {
+                                          await model.login();
+                                          await FirestoreMethod.isProfile();
+                                          //ダウンロードテスト
+                                          // await FirestoreMethod().downloadImage();
 
-                                    // //課金機能　RevenueCat
-                                    try {
-                                      await Purchases.logIn(
-                                          auth.currentUser!.uid);
-                                      appData.appUserID =
-                                      await Purchases.appUserID;
-                                      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-                                      EntitlementInfo? entitlement =
-                                      customerInfo.entitlements.all[entitlementID];
-                                      appData.entitlementIsActive = entitlement?.isActive ?? false;
-                                    }on PlatformException catch (e) {
-                                      await showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) => ShowDialogToDismiss(
-                                              title: "Error",
-                                              content: e.message ?? "Unknown error",
-                                              buttonText: 'OK'));
-                                    }
+                                          // //課金機能　RevenueCat
+                                          try {
+                                            await Purchases.logIn(
+                                                auth.currentUser!.uid);
+                                            appData.appUserID =
+                                                await Purchases.appUserID;
+                                            CustomerInfo customerInfo =
+                                                await Purchases
+                                                    .getCustomerInfo();
+                                            EntitlementInfo? entitlement =
+                                                customerInfo.entitlements
+                                                    .all[entitlementID];
+                                            appData.entitlementIsActive =
+                                                entitlement?.isActive ?? false;
+                                            await FirestoreMethod
+                                                .updateBillingFlg();
+                                          } on PlatformException catch (e) {
+                                            await showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext context) =>
+                                                        ShowDialogToDismiss(
+                                                            title: "Error",
+                                                            content: e
+                                                                    .message ??
+                                                                "Unknown error",
+                                                            buttonText: 'OK'));
+                                          }
 
-                                    await Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                        FirestoreMethod.isprofile
-                                            ?
-                                        UnderMenuMove.make(0)
-                                            : ProfileSetting.Make(),
-                                      ),
-                                    );
-                                  } catch (e) {
-                                    showTextDialog(context, e.toString());
-                                    model.endLoading();
-                                  }
-                                }
+                                          await Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  FirestoreMethod.isprofile
+                                                      ? UnderMenuMove.make(0)
+                                                      : ProfileSetting.Make(),
+                                            ),
+                                          );
+                                        } catch (e) {
+                                          showTextDialog(context, e.toString());
+                                          model.endLoading();
+                                        }
+                                      }
                                     : null,
                               ),
                             ),
@@ -202,11 +209,11 @@ class SignInPage extends StatelessWidget {
                   ),
                   model.isLoading
                       ? Container(
-                    color: Colors.black.withOpacity(0.3),
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
+                          color: Colors.black.withOpacity(0.3),
+                          child: Center(
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
                       : SizedBox(),
                 ],
               );

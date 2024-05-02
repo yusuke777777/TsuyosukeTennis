@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:intl/intl.dart' as intl;
 import 'package:tsuyosuke_tennis_ap/Common/CticketList.dart';
 
@@ -13,6 +14,7 @@ import '../Common/CprofileSetting.dart';
 import '../Common/CtalkRoom.dart';
 import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
+import '../FireBase/GoogleAds.dart';
 import '../FireBase/NotificationMethod.dart';
 import '../FireBase/singletons_data.dart';
 import '../FireBase/userLimitMgmt.dart';
@@ -117,8 +119,9 @@ class _TalkRoomState extends State<TalkRoom> {
                 })),
         body: Stack(
           children: [
+            Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
             Padding(
-              padding: EdgeInsets.only(bottom: menuHeight),
+              padding: EdgeInsets.only(top: 40, bottom: menuHeight),
               child: StreamBuilder<List<QueryDocumentSnapshot>>(
                   stream: _messagesStream,
                   builder: (context, snapshot) {
@@ -786,17 +789,17 @@ class _TalkRoomState extends State<TalkRoom> {
                 ),
                 onPressed: () async {
                   print("対戦メッセージ送信");
-                  CTicketModel myCurTicketSu = await getTicketSu(FirestoreMethod.auth.currentUser!.uid);
-                  if(myCurTicketSu.TICKET_SU > 0) {
+                  CTicketModel myCurTicketSu = await getTicketSu(
+                      FirestoreMethod.auth.currentUser!.uid);
+                  if (myCurTicketSu.TICKET_SU > 0) {
                     await FirestoreMethod.sendMatchMessage(widget.room);
-                  }else{
+                  } else {
                     if (appData
                         .entitlementIsActive ==
                         true) {
                       await showDialog(
                           context: context,
-                          builder: (
-                              BuildContext context) =>
+                          builder: (BuildContext context) =>
                               ShowDialogToDismiss(
                                 content: "チケットが不足してるため、対戦申し込みができません",
                                 buttonText: "はい",
@@ -804,8 +807,7 @@ class _TalkRoomState extends State<TalkRoom> {
                     } else {
                       await showDialog(
                           context: context,
-                          builder: (
-                              BuildContext context) =>
+                          builder: (BuildContext context) =>
                               BillingShowDialogToDismiss(
                                   content: "チケットが不足してるため、対戦申し込みができません。有料プランを確認しますか"
                               ));

@@ -83,20 +83,23 @@ class FirestoreMethod {
   //課金フラグの更新
   static Future<void> updateBillingFlg() async {
     try {
-      final profileSnapshot = await profileRef.doc(auth.currentUser!.uid);
-      await profileSnapshot.set(
-          {"BILLING_FLG": appData.entitlementIsActive == true ? "1" : "0"},
-          SetOptions(merge: true));
+      final profileSnapshot = await profileRef.doc(auth.currentUser!.uid).get();
+      if (profileSnapshot.exists) {
+        await profileSnapshot.reference.set(
+            {"BILLING_FLG": appData.entitlementIsActive == true ? "1" : "0"},
+            SetOptions(merge: true));
+      }
     } catch (e) {
       throw("課金フラグの更新に失敗しました");
     }
     try {
       final profileDetailSnapshot =
-      await profileDetailRef.doc(auth.currentUser!.uid);
-
-      await profileDetailSnapshot.set(
-          {"BILLING_FLG": appData.entitlementIsActive == true ? "1" : "0"},
-          SetOptions(merge: true));
+      await profileDetailRef.doc(auth.currentUser!.uid).get();
+      if (profileDetailSnapshot.exists) {
+        await profileDetailSnapshot.reference.set(
+            {"BILLING_FLG": appData.entitlementIsActive == true ? "1" : "0"},
+            SetOptions(merge: true));
+      }
     }catch(e){
       throw("課金フラグの更新に失敗しました");
     }

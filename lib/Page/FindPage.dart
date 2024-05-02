@@ -1,9 +1,11 @@
 import 'package:bordered_text/bordered_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
+import '../FireBase/GoogleAds.dart';
 import '../PropSetCofig.dart';
 import 'FindMultiResultPage.dart';
 import 'FindResultPage.dart';
@@ -80,6 +82,7 @@ class _FindPageState extends State<FindPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
                     SizedBox(
                       height: 20,
                     ),

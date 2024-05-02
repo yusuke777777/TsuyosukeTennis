@@ -2,12 +2,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/material/list_tile.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:tsuyosuke_tennis_ap/Page/ProfileReference.dart';
 import '../Common/CFindMultiResultPage.dart';
 import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 
+import '../FireBase/GoogleAds.dart';
 import '../PropSetCofig.dart';
 import 'TalkRoom.dart';
 
@@ -242,108 +244,113 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
             title: HeaderConfig.appBarText,
             iconTheme: IconThemeData(color: Colors.black),
             leading: HeaderConfig.backIcon),
-        body: Padding(
-          padding: EdgeInsets.only(top: 5),
-          child: searchResultListAll.length == 0 ? new Text("対象ユーザーは存在しません") : ListView.builder(
-              controller: _scrollController,
-              physics: RangeMaintainingScrollPhysics(),
-              shrinkWrap: true,
-              reverse: false,
-              itemCount: searchResultListAll.length + 1,
-              itemBuilder: (context, index) {
-                if (index == searchResultListAll.length) {
-                  // ページネーションアイテムの場合
-                  if (_isLoadingMore) {
-                    print(_isLoadingMore);
-                    return Center(child: CircularProgressIndicator());
-                  } else {
-                    print("aaa");
-                    return SizedBox();
-                  }
-                } else {
-                  return InkWell(
-                    onTap: () async {
-                      //トーク画面へ遷移
-                      TalkRoomModel room = await FirestoreMethod.makeRoom(
-                          auth.currentUser!.uid,
-                          searchResultListAll[index].USER_ID);
+        body: Stack(
+          children: [
+            Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
+            Padding(
+              padding: EdgeInsets.only(top: 40),
+              child: searchResultListAll.length == 0 ? new Text("対象ユーザーは存在しません") : ListView.builder(
+                  controller: _scrollController,
+                  physics: RangeMaintainingScrollPhysics(),
+                  shrinkWrap: true,
+                  reverse: false,
+                  itemCount: searchResultListAll.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == searchResultListAll.length) {
+                      // ページネーションアイテムの場合
+                      if (_isLoadingMore) {
+                        print(_isLoadingMore);
+                        return Center(child: CircularProgressIndicator());
+                      } else {
+                        print("aaa");
+                        return SizedBox();
+                      }
+                    } else {
+                      return InkWell(
+                        onTap: () async {
+                          //トーク画面へ遷移
+                          TalkRoomModel room = await FirestoreMethod.makeRoom(
+                              auth.currentUser!.uid,
+                              searchResultListAll[index].USER_ID);
 
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => TalkRoom(room),
-                          ));
-                    },
-                    child: Card(
-                      color: Colors.white,
-                      child:Container(
-                        height: searchResultListAll[index].COMENT == '' ? 60 : searchResultListAll[index].COMENT_HEIGHT + 45,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8.0),
-                              //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
-                              child: InkWell(
-                                child:
-                                    searchResultListAll[index].PROFILE_IMAGE == ''
-                                        ? CircleAvatar(
-                                            backgroundColor: Colors.white,
-                                            backgroundImage: NetworkImage(
-                                                "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                            radius: 30,
-                                          )
-                                        : CircleAvatar(
-                                            backgroundColor: Colors.white,
-                                            backgroundImage: NetworkImage(
-                                                searchResultListAll[index]
-                                                    .PROFILE_IMAGE),
-                                            radius: 30),
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ProfileReference(
-                                              searchResultListAll[index]
-                                                  .USER_ID)));
-                                },
-                              ),
-                            ),
-                            Column(
-                                crossAxisAlignment:CrossAxisAlignment.start,
-
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TalkRoom(room),
+                              ));
+                        },
+                        child: Card(
+                          color: Colors.white,
+                          child:Container(
+                            height: searchResultListAll[index].COMENT == '' ? 70 : searchResultListAll[index].COMENT_HEIGHT + 55,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Container(
-                                  width: deviceWidth * 0.7,
-                                  height: 30,
-                                  child: Text(searchResultListAll[index].NICK_NAME,
-                                      textAlign: TextAlign.start,
-                                      softWrap: true,
-                                      overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
-                                      maxLines: 1,
-                                      style: TextStyle(
-                                          fontSize: 20, fontWeight: FontWeight.bold)),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(horizontal: 8.0),
+                                  //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
+                                  child: InkWell(
+                                    child:
+                                        searchResultListAll[index].PROFILE_IMAGE == ''
+                                            ? CircleAvatar(
+                                                backgroundColor: Colors.white,
+                                                backgroundImage: NetworkImage(
+                                                    "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                                radius: 30,
+                                              )
+                                            : CircleAvatar(
+                                                backgroundColor: Colors.white,
+                                                backgroundImage: NetworkImage(
+                                                    searchResultListAll[index]
+                                                        .PROFILE_IMAGE),
+                                                radius: 30),
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => ProfileReference(
+                                                  searchResultListAll[index]
+                                                      .USER_ID)));
+                                    },
+                                  ),
                                 ),
-                                Container(
-                                  width: deviceWidth * 0.7,
-                                  child: Text(searchResultListAll[index].COMENT,
-                                      textAlign: TextAlign.start,
-                                      softWrap: true,
-                                      overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
-                                      maxLines: (searchResultListAll[index].COMENT_HEIGHT/12).floor() > 5 ? 5 :(searchResultListAll[index].COMENT_HEIGHT/12).floor()  ,
-                                      style: TextStyle(
-                                          fontSize: 12)),
+                                Column(
+                                    crossAxisAlignment:CrossAxisAlignment.start,
+
+                                  children: [
+                                    Container(
+                                      width: deviceWidth * 0.7,
+                                      height: 30,
+                                      child: Text(searchResultListAll[index].NICK_NAME,
+                                          textAlign: TextAlign.start,
+                                          softWrap: true,
+                                          overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
+                                          maxLines: 1,
+                                          style: TextStyle(
+                                              fontSize: 20, fontWeight: FontWeight.bold)),
+                                    ),
+                                    Container(
+                                      width: deviceWidth * 0.7,
+                                      child: Text(searchResultListAll[index].COMENT,
+                                          textAlign: TextAlign.start,
+                                          softWrap: true,
+                                          overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
+                                          maxLines: (searchResultListAll[index].COMENT_HEIGHT/12).floor() > 5 ? 5 :(searchResultListAll[index].COMENT_HEIGHT/12).floor()  ,
+                                          style: TextStyle(
+                                              fontSize: 12)),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                  );
-                }
-              }),
+                      );
+                    }
+                  }),
+            ),
+          ],
         ));
   }
 }

@@ -182,7 +182,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
   //課金機能
   Future<void> initPlatformState() async {
     appData.appUserID = await Purchases.appUserID;
-
+    print("appUserId" + appData.appUserID);
     Purchases.addCustomerInfoUpdateListener((customerInfo) async {
       appData.appUserID = await Purchases.appUserID;
       CustomerInfo customerInfo = await Purchases.getCustomerInfo();
@@ -192,12 +192,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
       try {
         await FirestoreMethod.updateBillingFlg();
       } catch (e) {
-        await showDialog(
-            context: context,
-            builder: (BuildContext context) => ShowDialogToDismiss(
-                  content: e.toString(),
-                  buttonText: "はい",
-                ));
+      print("課金DBエラー");
       }
       setState(() {});
     });
