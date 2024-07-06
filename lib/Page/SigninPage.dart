@@ -121,9 +121,10 @@ class SignInPage extends StatelessWidget {
                                     ? () async {
                                   model.startLoading();
                                   try {
+                                    print("aaa");
                                     await model.login();
                                     bool isAuth = await FirestoreMethod.checkUserAuth();
-                                    if(isAuth){
+                                    if(true){//isAuth⇨trueに変更
                                       await FirestoreMethod.isProfile();
                                     }
                                     else {
@@ -137,33 +138,34 @@ class SignInPage extends StatelessWidget {
                                           ));
                                     }
                                           // //課金機能　RevenueCat
-                                          try {
-                                            await Purchases.logIn(
-                                                auth.currentUser!.uid);
-                                            appData.appUserID =
-                                                await Purchases.appUserID;
-                                            CustomerInfo customerInfo =
-                                                await Purchases
-                                                    .getCustomerInfo();
-                                            EntitlementInfo? entitlement =
-                                                customerInfo.entitlements
-                                                    .all[entitlementID];
-                                            appData.entitlementIsActive =
-                                                entitlement?.isActive ?? false;
-                                            await FirestoreMethod
-                                                .updateBillingFlg();
-                                          } on PlatformException catch (e) {
-                                            await showDialog(
-                                                context: context,
-                                                builder:
-                                                    (BuildContext context) =>
-                                                        ShowDialogToDismiss(
-                                                            title: "Error",
-                                                            content: e
-                                                                    .message ??
-                                                                "Unknown error",
-                                                            buttonText: 'OK'));
-                                          }
+                                          // try {
+                                          //   await Purchases.logIn(
+                                          //       auth.currentUser!.uid);
+                                          //   appData.appUserID =
+                                          //       await Purchases.appUserID;
+                                          //   print("appData.appUserIDログイン" + appData.appUserID);
+                                          //   CustomerInfo customerInfo =
+                                          //       await Purchases
+                                          //           .getCustomerInfo();
+                                          //   EntitlementInfo? entitlement =
+                                          //       customerInfo.entitlements
+                                          //           .all[entitlementID];
+                                          //   appData.entitlementIsActive =
+                                          //       entitlement?.isActive ?? false;
+                                          //   await FirestoreMethod
+                                          //       .updateBillingFlg();
+                                          // } on PlatformException catch (e) {
+                                          //   await showDialog(
+                                          //       context: context,
+                                          //       builder:
+                                          //           (BuildContext context) =>
+                                          //               ShowDialogToDismiss(
+                                          //                   title: "Error",
+                                          //                   content: e
+                                          //                           .message ??
+                                          //                       "Unknown error",
+                                          //                   buttonText: 'OK'));
+                                          // }
 
                                           await Navigator.pushReplacement(
                                             context,

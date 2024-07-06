@@ -1,4 +1,6 @@
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +10,7 @@ import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/HomePage.dart';
 
+import 'BillingThreshold.dart';
 import 'Common/CPushNotification.dart';
 import 'Common/CtalkRoom.dart';
 import 'Component/native_dialog.dart';
@@ -17,10 +20,12 @@ import 'FireBase/Notification_badge.dart';
 import 'FireBase/singletons_data.dart';
 import 'Page/MatchList.dart';
 import 'Page/RankList.dart';
+import 'Page/SigninPage.dart';
 import 'Page/TalkList.dart';
 import 'Page/TalkRoom.dart';
 import 'Page/manSinglesRankList.dart';
 import 'constant.dart';
+import 'package:intl/intl.dart';
 
 /**
  * 下部メニューの動きを制御するクラス
@@ -159,6 +164,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
         .addPostFrameCallback((_) => initPlugin());
   }
 
+
   Future<void> initPlugin() async {
     final TrackingStatus status =
         await AppTrackingTransparency.trackingAuthorizationStatus;
@@ -184,17 +190,105 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     appData.appUserID = await Purchases.appUserID;
     print("appUserId" + appData.appUserID);
     Purchases.addCustomerInfoUpdateListener((customerInfo) async {
-      appData.appUserID = await Purchases.appUserID;
-      CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-      EntitlementInfo? entitlement =
+      // if(!appData.isPurchasing) {
+        if (FirebaseAuth.instance.currentUser != null) {
+          //課金ユーザーへログイン
+          await Purchases.logIn(FirebaseAuth.instance.currentUser!.uid);
+          appData.appUserID = await Purchases.appUserID;
+          print("appData.appUserIDログイン" + appData.appUserID);
+          //appUserIdをセットする
+          appData.appUserID = await Purchases.appUserID;
+          //現在の課金フラグを取得する
+          String BILLING_FLG = await FirestoreMethod.getBillingFlg();
+          //現在の課金状態をチェックする
+          CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+          EntitlementInfo? entitlement =
           customerInfo.entitlements.all[entitlementID];
-      appData.entitlementIsActive = entitlement?.isActive ?? false;
-      try {
-        await FirestoreMethod.updateBillingFlg();
-      } catch (e) {
-      print("課金DBエラー");
-      }
-      setState(() {});
+          appData.entitlementIsActive = entitlement?.isActive ?? false;
+          print(appData.entitlementIsActive.toString());
+          if (BILLING_FLG == "0" && appData.entitlementIsActive == true) {
+            //プレミアム会員へ更新する
+            try {
+              //トーク上限数のリセット
+              await FirebaseFirestore.instance
+                  .runTransaction((transaction) async {
+                //プレミアム会員登録時に、トークメッセージの上限数でリセット
+                // 現在のタイムスタンプを取得
+                Timestamp currentTimestamp = Timestamp.now();
+
+                // Firestoreのユーザードキュメントを更新してリセット
+                DocumentReference userLimitMgmtDocRef = FirebaseFirestore
+                    .instance
+                    .collection('userLimitMgmt')
+                    .doc(FirestoreMethod.auth.currentUser!.uid);
+
+                try {
+                  await transaction.set(
+                      userLimitMgmtDocRef,
+                      {
+                        'dailyMessageLimit': messagePremiumLimit,
+                        // リセット後のデフォルト上限を設定
+                        'lastResetTimestamp': currentTimestamp,
+                      },
+                      SetOptions(merge: true));
+                } catch (e) {
+                  throw ("メッセージ数のリセットに失敗しました $e");
+                }
+
+                //プレミアム会員登録時に、チケットの上限数でリセット
+                DocumentReference userTicketMgmDocRef = FirebaseFirestore
+                    .instance
+                    .collection('userTicketMgmt')
+                    .doc(FirestoreMethod.auth.currentUser!.uid);
+
+                DateTime now = DateTime.now();
+                DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+                String today = outputFormat.format(now);
+                int zengetsuTicketSu = 0;
+                DocumentSnapshot userTicketMgmDoc =
+                await userTicketMgmDocRef.get();
+
+                if (userTicketMgmDoc.exists) {
+                  zengetsuTicketSu = userTicketMgmDoc['zengetsuTicketSu'];
+                }
+                int ticketSuSum = ticketPremiumLimit + zengetsuTicketSu;
+                //当月のプレミアム会員のチケット数だけ更新する
+                try {
+                  transaction.set(
+                      userTicketMgmDocRef,
+                      {
+                        'ticketSu': ticketSuSum,
+                        'togetsuTicketSu': ticketPremiumLimit,
+                        'zengetsuTicketSu': zengetsuTicketSu,
+                        'ticketKoushinYmd': today
+                      },
+                      SetOptions(merge: true));
+                  // throw ("エラー");
+                } catch (e) {
+                  throw ("TSPプレミアム会員のチケット発行に失敗しました $e");
+                }
+              }).then((value) =>
+                  print("DocumentSnapshot successfully updated!"),
+                  onError: (e) => throw ("課金処理の更新に失敗しました $e"));
+              try {
+                await FirestoreMethod.updateBillingFlg();
+              } catch (e) {
+                throw ("課金処理のDB更新に失敗しました");
+              }
+            } catch (e) {
+              print("有料会員への更新に失敗しました");
+            }
+          } else
+          if (BILLING_FLG == "1" && appData.entitlementIsActive == false) {
+            //プレミアム会員から退会する
+            try {
+              await FirestoreMethod.updateBillingFlg();
+            } catch (e) {
+              print("退会処理のDB更新に失敗しました");
+            }
+          }
+        }
+      // }
     });
   }
 

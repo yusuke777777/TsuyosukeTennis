@@ -14,6 +14,7 @@ import 'Common/CPushNotification.dart';
 import 'FireBase/FireBase.dart';
 import 'FireBase/GoogleAds.dart';
 import 'FireBase/NotificationMethod.dart';
+import 'FireBase/singletons_data.dart';
 import 'Page/ProfileSetting.dart';
 import 'Page/ReLoginMessagePage.dart';
 import 'Page/SigninPage.dart';
@@ -26,7 +27,6 @@ import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 
 import 'constant.dart';
 
-
 Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("Handling a background message: ${message.messageId}");
 }
@@ -37,19 +37,27 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
   await Firebase.initializeApp();
-   await FirestoreMethod.isProfile();
-   await FirestoreMethod.checkUserAuth();
+  await FirestoreMethod.isProfile();
+  // await FirestoreMethod.checkUserAuth();
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarBrightness: Brightness.light,
   ));
-
-  final configuration = PurchasesConfiguration(
-    Platform.isAndroid
-        ? 'androidRevenueCatKey'
-        : appleApiKey,
-  );
-  await Purchases.configure(configuration);
+  if (FirebaseAuth.instance.currentUser != null) {
+    final configuration = PurchasesConfiguration(
+      Platform.isAndroid ? 'androidRevenueCatKey' : appleApiKey,
+    )..appUserID = FirebaseAuth.instance.currentUser!.uid;
+    await Purchases.configure(configuration);
+    appData.appUserID = await Purchases.appUserID;
+    print("main Login" + appData.appUserID.toString());
+  } else {
+    final configuration = PurchasesConfiguration(
+      Platform.isAndroid ? 'androidRevenueCatKey' : appleApiKey,
+    );
+    await Purchases.configure(configuration);
+    appData.appUserID = await Purchases.appUserID;
+    print("main Login" + appData.appUserID.toString());
+  }
 
   // const isDebug = !bool.fromEnvironment('TSP0001');
   // Purchases.setDebugLogsEnabled(isDebug);
@@ -60,9 +68,8 @@ void main() async {
   // }
   // Purchases.addCustomerInfoUpdateListener(_customerInfoUpdated);
 
-  runApp( MyApp());
+  runApp(MyApp());
 }
-
 
 class MyApp extends StatefulWidget {
   @override
@@ -71,6 +78,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   String _appBadgeSupported = 'Unknown';
+
   // This widget is the root of your application.
   @override
   void initState() {
@@ -78,6 +86,7 @@ class _MyAppState extends State<MyApp> {
     initPlatformState();
     initialization();
   }
+
   void initialization() async {
     // This is where you can initialize the resources needed by your app while
     // the splash screen is displayed.  Remove the following example because
@@ -92,6 +101,7 @@ class _MyAppState extends State<MyApp> {
     print('go!');
     FlutterNativeSplash.remove();
   }
+
   initPlatformState() async {
     String appBadgeSupported;
     try {
@@ -106,7 +116,6 @@ class _MyAppState extends State<MyApp> {
     }
   }
 
-
   // void _addBadge() {
   //   FlutterAppBadger.updateBadgeCount(1);
   // }
@@ -117,7 +126,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        textTheme:GoogleFonts.latoTextTheme(),
+        textTheme: GoogleFonts.latoTextTheme(),
         // This is the theme of your application.
         // Try running your application with "flutter run". You'll see the
         // application has a blue toolbar. Then, without quitting the app, try
@@ -132,10 +141,12 @@ class _MyAppState extends State<MyApp> {
       home: FirebaseAuth.instance.currentUser == null
           ? SignInPage()
           :
-       !FirestoreMethod.isAuth
-         ? ReLoginMessagePage()
-      :
-        FirestoreMethod.isprofile == true ? UnderMenuMove.make(0) : ProfileSetting.Make(),
+          //  !FirestoreMethod.isAuth
+          //    ? ReLoginMessagePage()
+          // :
+          FirestoreMethod.isprofile == true
+              ? UnderMenuMove.make(0)
+              : ProfileSetting.Make(),
     );
   }
 }

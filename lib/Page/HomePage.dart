@@ -87,6 +87,7 @@ class _HomePageState extends State<HomePage> {
                     decoration: BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage('images/kori.jpg'),
+                        fit: BoxFit.cover,
                       ),
                     ),
                     child: Column(children: [

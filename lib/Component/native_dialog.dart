@@ -60,7 +60,8 @@ class BillingShowDialogToDismiss extends StatelessWidget {
             if (offerings == null || offerings.current == null) {
               // offerings are empty, show a message to your user
             } else {
-              Package? tspPlan = offerings!.current!.getPackage("TSP0001");
+              Package? tspPlan = offerings!.current?.monthly;
+              print(tspPlan);
 
               Navigator.pushReplacement(
                 context,

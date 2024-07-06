@@ -36,7 +36,6 @@ class HeaderConfig {
   void init(BuildContext context, String inputTitle) {
     backGroundColor = Colors.white;
 
-
     appBarText = Text(
       inputTitle,
       style: TextStyle(fontSize: 20, color: Colors.black),
@@ -199,8 +198,12 @@ class DrawerConfig {
               //課金機能ログアウト
               try {
                 await Purchases.logOut();
-                appData.appUserID = await Purchases.appUserID;
-                print("ログアウト"+appData.appUserID );
+                // appUserID を取得
+                String? newAppUserID = await Purchases.appUserID;
+                appData.appUserID = newAppUserID ?? "未設定"; // nullの処理
+                // ログアウト情報の確認
+                print("ログアウト: " + (appData.appUserID.isNotEmpty ? appData.appUserID : "未設定"));
+
               } on PlatformException catch (e) {
                 await showDialog(
                     context: context,
@@ -208,15 +211,24 @@ class DrawerConfig {
                         title: "Error",
                         content: e.message ?? "Unknown error",
                         buttonText: 'OK'));
+              } catch (e) {
+                // その他のエラー処理
+                await showDialog(
+                  context: context,
+                  builder: (BuildContext context) => ShowDialogToDismiss(
+                    title: "エラー",
+                    content: e.toString(),
+                    buttonText: 'OK',
+                  ),
+                );
               }
               // ログアウト後の画面に遷移
               Navigator.pushAndRemoveUntil(
                 context,
-                MaterialPageRoute(builder: (context) =>  SignInPage()),
-                    (Route<dynamic> route) => false,
+                MaterialPageRoute(builder: (context) => SignInPage()),
+                (Route<dynamic> route) => false,
               );
             },
-
             child: Container(
               child: Text('ログアウト'),
               alignment: Alignment.center,

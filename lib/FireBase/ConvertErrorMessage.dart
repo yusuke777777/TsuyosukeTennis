@@ -1,11 +1,11 @@
 String convertErrorMessage(eCode) {
   switch (eCode) {
     case 'user-not-found':
-      return 'ユーザーが見つかりません。';
+      return 'ユーザー又はパスワードが正しくありません';
     case 'user-disabled':
       return 'ユーザーが無効です。';
     case 'wrong-password':
-      return 'パスワードが正しくありません。';
+      return 'ユーザー又はパスワードが正しくありません。';
     case 'too-many-requests':
       return 'しばらく時間を置いて再度お試し下さい。';
     case 'invalid-email':

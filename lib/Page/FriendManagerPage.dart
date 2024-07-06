@@ -221,6 +221,10 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                           onPressed: (value) {
                             FirestoreMethod.delFriendsList(
                                 friendsListAll[index].FRIENDS_ID, context);
+                            // リストから削除して再描画
+                            setState(() {
+                               friendsListAll.removeAt(index); // 項目をリストから削除
+                            });
                           },
                           backgroundColor: Colors.red,
                           icon: Icons.delete,

@@ -8,6 +8,7 @@ import 'package:tsuyosuke_tennis_ap/Page/ProfileReference.dart';
 import 'package:tsuyosuke_tennis_ap/Page/ProfileSetting.dart';
 import '../Common/CmatchList.dart';
 import '../Common/CprofileSetting.dart';
+import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/GoogleAds.dart';
 import '../PropSetCofig.dart';
@@ -195,7 +196,10 @@ class _MatchListState extends State<MatchList> {
         drawer: DrawerConfig.drawer,
         body: Stack(
           children: [
-            Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
+            Container(
+                alignment: Alignment.center,
+                height: 40,
+                child: AdBanner(size: AdSize.banner)),
             Padding(
               padding: EdgeInsets.only(top: 40),
               child: ListView.builder(
@@ -223,6 +227,10 @@ class _MatchListState extends State<MatchList> {
                                 onPressed: (value) {
                                   FirestoreMethod.delMatchList(
                                       matchListAll[index].MATCH_ID, context);
+                                  // リストから削除して再描画
+                                  setState(() {
+                                    matchListAll.removeAt(index); // 項目をリストから削除
+                                  });
                                 },
                                 backgroundColor: Colors.red,
                                 icon: Icons.delete,
@@ -251,17 +259,20 @@ class _MatchListState extends State<MatchList> {
                                                         .PROFILE_IMAGE ==
                                                     ''
                                                 ? CircleAvatar(
-                                                    backgroundColor: Colors.white,
+                                                    backgroundColor:
+                                                        Colors.white,
                                                     backgroundImage: NetworkImage(
                                                         "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
                                                     radius: 30,
                                                   )
                                                 : CircleAvatar(
-                                                    backgroundColor: Colors.white,
-                                                    backgroundImage: NetworkImage(
-                                                        matchListAll[index]
-                                                            .YOUR_USER
-                                                            .PROFILE_IMAGE),
+                                                    backgroundColor:
+                                                        Colors.white,
+                                                    backgroundImage:
+                                                        NetworkImage(
+                                                            matchListAll[index]
+                                                                .YOUR_USER
+                                                                .PROFILE_IMAGE),
                                                     radius: 30),
                                             onTap: () {
                                               Navigator.push(
@@ -269,7 +280,8 @@ class _MatchListState extends State<MatchList> {
                                                   MaterialPageRoute(
                                                       builder: (context) =>
                                                           ProfileReference(
-                                                              matchListAll[index]
+                                                              matchListAll[
+                                                                      index]
                                                                   .YOUR_USER
                                                                   .USER_ID)));
                                             },
@@ -280,7 +292,7 @@ class _MatchListState extends State<MatchList> {
                                             crossAxisAlignment:
                                                 CrossAxisAlignment.start,
                                             mainAxisAlignment:
-                                            MainAxisAlignment.center,
+                                                MainAxisAlignment.center,
                                             children: [
                                               Text(
                                                   matchListAll[index]
@@ -288,23 +300,109 @@ class _MatchListState extends State<MatchList> {
                                                       .NICK_NAME,
                                                   style: TextStyle(
                                                       fontSize: 20,
-                                                      fontWeight: FontWeight.bold)),
-                                              Text(matchListAll[index].SAKUSEI_TIME,
-                                                  style:
-                                                      TextStyle(color: Colors.grey),
-                                                  overflow: TextOverflow.ellipsis)
+                                                      fontWeight:
+                                                          FontWeight.bold)),
+                                              Text(
+                                                  matchListAll[index]
+                                                      .SAKUSEI_TIME,
+                                                  style: TextStyle(
+                                                      color: Colors.grey),
+                                                  overflow:
+                                                      TextOverflow.ellipsis)
                                             ],
                                           ),
-                                          onTap: () {
-                                            //対戦結果入力画面へ遷移
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) => MatchResult(
-                                                        matchListAll[index].MY_USER,
-                                                        matchListAll[index].YOUR_USER,
-                                                        matchListAll[index]
-                                                            .MATCH_ID)));
+                                          onTap: () async {
+                                            try {
+                                              // ドキュメントのロック状態を取得
+                                              final matchSnapshot =
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('matchList')
+                                                      .doc(matchListAll[index]
+                                                          .MATCH_ID)
+                                                      .get();
+
+                                              String LOCK_FLG = matchSnapshot
+                                                      .data()?['LOCK_FLG'] ??
+                                                  "0";
+                                              String LOCK_USER = matchSnapshot
+                                                      .data()?['LOCK_USER'] ??
+                                                  '';
+
+                                              // 自分がロックしている、もしくはロックされていない場合
+                                              if (LOCK_FLG == '0' ||
+                                                  LOCK_USER ==
+                                                      FirestoreMethod.auth
+                                                          .currentUser!.uid ||
+                                                  LOCK_USER == '') {
+                                                // 自分のUIDでロック設定
+                                                await FirebaseFirestore.instance
+                                                    .collection('matchList')
+                                                    .doc(matchListAll[index]
+                                                        .MATCH_ID)
+                                                    .set({
+                                                  'LOCK_FLG': '1',
+                                                  'LOCK_USER': FirestoreMethod
+                                                      .auth.currentUser!.uid,
+                                                }, SetOptions(merge: true));
+                                                //対戦結果入力画面へ遷移
+                                                await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            MatchResult(
+                                                                matchListAll[
+                                                                        index]
+                                                                    .MY_USER,
+                                                                matchListAll[
+                                                                        index]
+                                                                    .YOUR_USER,
+                                                                matchListAll[
+                                                                        index]
+                                                                    .MATCH_ID)));
+                                                // 画面から戻ってきたときに対象のドキュメントが存在するか確認
+                                                final matchDoc =
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('matchList')
+                                                        .doc(matchListAll[index]
+                                                            .MATCH_ID)
+                                                        .get();
+
+                                                if (matchDoc.exists) {
+                                                  // ドキュメントが存在する場合にのみロックを解除
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('matchList')
+                                                      .doc(matchListAll[index]
+                                                          .MATCH_ID)
+                                                      .set({
+                                                    'LOCK_FLG': '0',
+                                                    'LOCK_USER': '',
+                                                  }, SetOptions(merge: true));
+                                                }
+                                              } else {
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        ShowDialogToDismiss(
+                                                          content:
+                                                              '現在、他のユーザーが登録中です',
+                                                          buttonText: "はい",
+                                                        ));
+                                              }
+                                            } catch (e) {
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) =>
+                                                          ShowDialogToDismiss(
+                                                            content:
+                                                                'エラーが発生しました',
+                                                            buttonText: "はい",
+                                                          ));
+                                            }
                                           },
                                         ),
                                       ],
@@ -323,7 +421,9 @@ class _MatchListState extends State<MatchList> {
                                         onPressed: () async {
                                           TalkRoomModel room =
                                               await FirestoreMethod.makeRoom(
-                                                  matchListAll[index].MY_USER.USER_ID,
+                                                  matchListAll[index]
+                                                      .MY_USER
+                                                      .USER_ID,
                                                   matchListAll[index]
                                                       .YOUR_USER
                                                       .USER_ID);

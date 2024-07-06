@@ -82,27 +82,51 @@ class FirestoreMethod {
 
   //課金フラグの更新
   static Future<void> updateBillingFlg() async {
+    DateTime now = DateTime.now();
+    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+    String today = outputFormat.format(now);
+    DateFormat outputFormat2 = DateFormat('yyyy/MM/dd HH:mm');
+    String todayTime = outputFormat2.format(now);
+
     try {
       final profileSnapshot = await profileRef.doc(auth.currentUser!.uid).get();
       if (profileSnapshot.exists) {
-        await profileSnapshot.reference.set(
-            {"BILLING_FLG": appData.entitlementIsActive == true ? "1" : "0"},
-            SetOptions(merge: true));
+        await profileSnapshot.reference.set({
+          "BILLING_FLG": appData.entitlementIsActive == true ? "1" : "0",
+          "koushinYmd": today
+        }, SetOptions(merge: true));
       }
     } catch (e) {
-      throw("課金フラグの更新に失敗しました");
+      throw ("課金フラグの更新に失敗しました");
     }
     try {
       final profileDetailSnapshot =
-      await profileDetailRef.doc(auth.currentUser!.uid).get();
+          await profileDetailRef.doc(auth.currentUser!.uid).get();
       if (profileDetailSnapshot.exists) {
-        await profileDetailSnapshot.reference.set(
-            {"BILLING_FLG": appData.entitlementIsActive == true ? "1" : "0"},
-            SetOptions(merge: true));
+        await profileDetailSnapshot.reference.set({
+          "BILLING_FLG": appData.entitlementIsActive == true ? "1" : "0",
+          "KOUSHIN_TIME": todayTime
+        }, SetOptions(merge: true));
       }
-    }catch(e){
-      throw("課金フラグの更新に失敗しました");
+    } catch (e) {
+      throw ("課金フラグの更新に失敗しました");
     }
+  }
+
+  //課金フラグ取得
+  static Future<String> getBillingFlg() async {
+    String BILLING_FLG = "0";
+    try {
+      final profileSnapshot = await profileRef.doc(auth.currentUser!.uid).get();
+      if (profileSnapshot.exists) {
+        BILLING_FLG = profileSnapshot.data()!['BILLING_FLG'];
+      } else {
+        BILLING_FLG = "0";
+      }
+    } catch (e) {
+      throw ("課金フラグの取得失敗しました");
+    }
+    return BILLING_FLG;
   }
 
   //プロフィール情報設定
@@ -4313,27 +4337,27 @@ class FirestoreMethod {
   /**
    * 承認が終わっていないメアドの承認を行う
    */
-  static Future<void> sendUserAuthMail() async{
+  static Future<void> sendUserAuthMail() async {
     User? currentUser = auth.currentUser;
-      print(currentUser);
-      print("承認メール送信");
-      currentUser?.sendEmailVerification();
+    print(currentUser);
+    print("承認メール送信");
+    currentUser?.sendEmailVerification();
   }
 
   //main.dartの判定で使用
   static bool isAuth = false;
+
   /**
    * 承認が終わっていないメアドの承認を行う
    */
-  static Future<bool> checkUserAuth() async{
+  static Future<bool> checkUserAuth() async {
     User? currentUser = auth.currentUser;
     print(currentUser);
-    if(currentUser!.emailVerified){
+    if (currentUser!.emailVerified) {
       print("承認されました");
       isAuth = true;
-    return true;
-    }
-    else {
+      return true;
+    } else {
       print("承認されていません");
       isAuth = false;
       return false;

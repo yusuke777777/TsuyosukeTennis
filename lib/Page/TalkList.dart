@@ -93,6 +93,9 @@ class _TalkListState extends State<TalkList> {
                                     onPressed: (value) {
                                       FirestoreMethod.delTalkRoom(
                                           talkList[index].roomId, context);
+                                      // リストから削除して再描画
+                                      setState(() {
+                                      });
                                     },
                                     backgroundColor: Colors.red,
                                     icon: Icons.delete,

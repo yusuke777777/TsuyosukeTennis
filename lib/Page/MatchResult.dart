@@ -8,6 +8,7 @@ import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
 import '../Common/CFeedBackCommentSetting.dart';
 import '../Common/CmatchResult.dart';
 import '../Common/CprofileSetting.dart';
+import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/GoogleAds.dart';
@@ -21,7 +22,7 @@ class MatchResult extends StatefulWidget {
   late CprofileSetting yourProfile;
   late String matchId;
 
-  MatchResult(this.myProfile, this.yourProfile,this.matchId);
+  MatchResult(this.myProfile, this.yourProfile, this.matchId);
 
   @override
   _MatchResultState createState() => _MatchResultState();
@@ -98,7 +99,6 @@ class _MatchResultState extends State<MatchResult> {
       super.dispose();
       _interstitialAd?.dispose();
     }
-
   }
 
   @override
@@ -107,631 +107,620 @@ class _MatchResultState extends State<MatchResult> {
     opponent_id = widget.yourProfile.USER_ID;
     final deviceWidth = MediaQuery.of(context).size.width;
     return GestureDetector(
-        onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
-        child: Scaffold(
-              appBar: AppBar(
-                  backgroundColor: HeaderConfig.backGroundColor,
-                  title: HeaderConfig.appBarText,
-                  iconTheme: IconThemeData(color: Colors.black),
-                  leading: HeaderConfig.backIcon),
-              body: Scrollbar(
-                child: SingleChildScrollView(
-                  child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      child: Scaffold(
+          appBar: AppBar(
+              backgroundColor: HeaderConfig.backGroundColor,
+              title: HeaderConfig.appBarText,
+              iconTheme: IconThemeData(color: Colors.black),
+              leading: HeaderConfig.backIcon),
+          body: Scrollbar(
+            child: SingleChildScrollView(
+              child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Center(
+                      child: Container(
+                        alignment: Alignment.center,
+                        width: deviceWidth * 0.8,
+                        height: 100,
+                        child: TextField(
+                          cursorColor: Colors.green,
+                          decoration: InputDecoration(
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.green),
+                              ),
+                              labelText: "タイトル",
+                              labelStyle:
+                                  TextStyle(color: Colors.black, fontSize: 20),
+                              hintText: "(例)◯◯市民大会の1回戦"),
+                          style: TextStyle(fontSize: 20, color: Colors.black),
+                          controller: inputTitle,
+                          maxLength: 20,
+                        ),
+                      ),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Center(
-                          child: Container(
-                            alignment: Alignment.center,
-                            width: deviceWidth * 0.8,
-                            height: 100,
-                            child: TextField(
-                              cursorColor: Colors.green,
-                              decoration: InputDecoration(
-                                  focusedBorder: UnderlineInputBorder(
-                                    borderSide: BorderSide(color: Colors.green),
+                        Container(
+                          padding: EdgeInsets.only(right: 10),
+                          width: deviceWidth * 0.3,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                width: deviceWidth * 0.3,
+                                child: widget.myProfile.PROFILE_IMAGE == ''
+                                    ? CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                        backgroundImage: NetworkImage(
+                                            "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                        radius: 30,
+                                      )
+                                    : CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                        backgroundImage: NetworkImage(
+                                            widget.myProfile.PROFILE_IMAGE),
+                                        radius: 30,
+                                      ),
+                              ),
+                              Container(
+                                alignment: Alignment.center,
+                                width: deviceWidth * 0.3,
+                                child: FittedBox(
+                                  alignment: Alignment.bottomCenter,
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    widget.myProfile.NICK_NAME,
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.black),
                                   ),
-                                  labelText: "タイトル",
-                                  labelStyle: TextStyle(
-                                      color: Colors.black, fontSize: 20),
-                                  hintText: "(例)◯◯市民大会の1回戦"),
-                              style:
-                                  TextStyle(fontSize: 20, color: Colors.black),
-                              controller: inputTitle,
-                              maxLength: 20,
-                            ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
-                Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                         Container(
-                              padding: EdgeInsets.only(right: 10),
-                              width: deviceWidth * 0.3,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    alignment: Alignment.center,
-                                    width: deviceWidth * 0.3,
-                                    child: widget.myProfile.PROFILE_IMAGE == ''
-                                        ? CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      backgroundImage: NetworkImage(
-                                          "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                      radius: 30,
-                                    )
-                                        : CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      backgroundImage: NetworkImage(
-                                          widget.myProfile.PROFILE_IMAGE),
-                                      radius: 30,
-                                    ),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.center,
-                                    width: deviceWidth * 0.3,
-                                    child: FittedBox(
-                                      alignment: Alignment.bottomCenter,
-                                      fit:BoxFit.scaleDown,
-                                      child: Text(
-                                        widget.myProfile.NICK_NAME,
-                                        style: TextStyle(
-                                            fontSize: 20, color: Colors.black),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ) ,
-                                     Column(
-                                     children: matchResultList
-                                         .map((matchResult) => Column(
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                Container(
-                                                  alignment: Alignment.center,
-                                                  width: deviceWidth * 0.12,
-                                                  height: 50,
-                                                  decoration: BoxDecoration(
-                                                    border:
-                                                    Border.all(color: Colors.grey),
-                                                  ),
-                                                  child: TextButton(
-                                                    child: Text(
-                                                      '${matchResult.myGamePoint}',
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          color: Colors.black),
-                                                    ),
-                                                    onPressed: () {
-                                                      _showModalMyPointPicker(
-                                                          context,
-                                                          int.parse(
-                                                              matchResult.No));
-                                                      setState(() {});
-                                                    },
-                                                  ),
-                                                ),
-                                                Container(
-                                                  width: deviceWidth * 0.1,
-                                                  child: Center(
-                                                    child: Text(
-                                                      "-",
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          color: Colors.black),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  alignment: Alignment.center,
-                                                  width: deviceWidth * 0.12,
-                                                  height: 50,
-                                                  decoration: BoxDecoration(
-                                                    border:
-                                                    Border.all(color: Colors.grey),
-                                                  ),
-                                                  child: TextButton(
-                                                    child: Text(
-                                                      '${matchResult.yourGamePoint}',
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          color: Colors.black),
-                                                    ),
-                                                    onPressed: () {
-                                                      _showModalYourPointPicker(
-                                                          context,
-                                                          int.parse(
-                                                              matchResult.No));
-                                                      setState(() {});
-                                                    },
-                                                  ),
-                                                ),
-                                              ],
+                        Column(
+                          children: matchResultList
+                              .map((matchResult) => Column(
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Container(
+                                            alignment: Alignment.center,
+                                            width: deviceWidth * 0.12,
+                                            height: 50,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey),
                                             ),
-                                          ],
-                                    )).toList(),
-                                       ),
-                            Container(
-                              padding: EdgeInsets.only(left: 10),
-                              width: deviceWidth * 0.3,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    alignment: Alignment.center,
-                                    width: deviceWidth * 0.3,
-                                    child: widget.yourProfile.PROFILE_IMAGE == ''
-                                        ? CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      backgroundImage: NetworkImage(
-                                          "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                      radius: 30,
-                                    )
-                                        : CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      backgroundImage: NetworkImage(
-                                          widget.yourProfile.PROFILE_IMAGE),
-                                      radius: 30,
-                                    ),
-                                  ),
-                                  Container(
-                                    alignment: Alignment.center,
-                                    width: deviceWidth * 0.3,
-                                    child: FittedBox(
-                                      alignment: Alignment.bottomCenter,
-                                      fit:BoxFit.scaleDown,
-                                      child: Text(
-                                        widget.yourProfile.NICK_NAME,
-                                        style: TextStyle(
-                                            fontSize: 20, color: Colors.black),
+                                            child: TextButton(
+                                              child: Text(
+                                                '${matchResult.myGamePoint}',
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.black),
+                                              ),
+                                              onPressed: () {
+                                                _showModalMyPointPicker(context,
+                                                    int.parse(matchResult.No));
+                                                setState(() {});
+                                              },
+                                            ),
+                                          ),
+                                          Container(
+                                            width: deviceWidth * 0.1,
+                                            child: Center(
+                                              child: Text(
+                                                "-",
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.black),
+                                              ),
+                                            ),
+                                          ),
+                                          Container(
+                                            alignment: Alignment.center,
+                                            width: deviceWidth * 0.12,
+                                            height: 50,
+                                            decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Colors.grey),
+                                            ),
+                                            child: TextButton(
+                                              child: Text(
+                                                '${matchResult.yourGamePoint}',
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.black),
+                                              ),
+                                              onPressed: () {
+                                                _showModalYourPointPicker(
+                                                    context,
+                                                    int.parse(matchResult.No));
+                                                setState(() {});
+                                              },
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ),
-                                  ),
-                                ],
+                                    ],
+                                  ))
+                              .toList(),
+                        ),
+                        Container(
+                          padding: EdgeInsets.only(left: 10),
+                          width: deviceWidth * 0.3,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                alignment: Alignment.center,
+                                width: deviceWidth * 0.3,
+                                child: widget.yourProfile.PROFILE_IMAGE == ''
+                                    ? CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                        backgroundImage: NetworkImage(
+                                            "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                        radius: 30,
+                                      )
+                                    : CircleAvatar(
+                                        backgroundColor: Colors.white,
+                                        backgroundImage: NetworkImage(
+                                            widget.yourProfile.PROFILE_IMAGE),
+                                        radius: 30,
+                                      ),
                               ),
-                            )
-                          ],
+                              Container(
+                                alignment: Alignment.center,
+                                width: deviceWidth * 0.3,
+                                child: FittedBox(
+                                  alignment: Alignment.bottomCenter,
+                                  fit: BoxFit.scaleDown,
+                                  child: Text(
+                                    widget.yourProfile.NICK_NAME,
+                                    style: TextStyle(
+                                        fontSize: 20, color: Colors.black),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        IconButton(
+                          icon: Icon(Icons.add),
+                          onPressed: () {
+                            //登録Noを更新
+                            // curTourokuNo = curTourokuNo + 1;
+                            activityListAdd(matchResultList.length.toString());
+                            print(matchResultList.length);
+                            setState(() {});
+                          },
                         ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            IconButton(
-                              icon: Icon(Icons.add),
-                              onPressed: () {
-                                //登録Noを更新
-                                // curTourokuNo = curTourokuNo + 1;
-                                activityListAdd(matchResultList.length.toString());
-                                print(matchResultList.length);
-                                setState(() {});
-                              },
-                            ),
-                            SizedBox(
-                              width: 40,
-                            ),
-                          ],
+                        SizedBox(
+                          width: 40,
                         ),
-                        //レビュー集計機能
-                        yourReviewFeatureEnabled == true
-                            ? Column(children: [
-                                Column(
+                      ],
+                    ),
+                    //レビュー集計機能
+                    yourReviewFeatureEnabled == true
+                        ? Column(children: [
+                            Column(
+                              children: [
+                                Text('------------------------',
+                                    style: TextStyle(fontSize: 20)),
+                                Text('対戦相手へフィードバックを送ろう',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      decoration: TextDecoration.underline,
+                                    )),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Text('------------------------',
+                                    Text('フィードバックを入力しない',
+                                        style: TextStyle(fontSize: 10)),
+                                    Checkbox(
+                                      activeColor: Colors.blue,
+                                      // Onになった時の色を指定
+                                      value: _flag,
+                                      onChanged: _handleCheckbox,
+                                    )
+                                  ],
+                                ),
+                                //ストローク
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('ストローク',
                                         style: TextStyle(fontSize: 20)),
-                                    Text('対戦相手へフィードバックを送ろう',
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          fontWeight: FontWeight.bold,
-                                          decoration: TextDecoration.underline,
-                                        )),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text('フィードバックを入力しない',
-                                            style: TextStyle(fontSize: 10)),
-                                        Checkbox(
-                                          activeColor: Colors.blue,
-                                          // Onになった時の色を指定
-                                          value: _flag,
-                                          onChanged: _handleCheckbox,
-                                        )
-                                      ],
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('フォア：',
+                                        style: TextStyle(fontSize: 20)),
+                                    RatingBar.builder(
+                                      allowHalfRating: true,
+                                      itemBuilder: (context, index) =>
+                                          const Icon(
+                                        Icons.star,
+                                        color: Colors.yellow,
+                                      ),
+                                      //ratingが星の数
+                                      onRatingUpdate: (rating) {
+                                        stroke_fore = rating;
+                                      },
                                     ),
-                                    //ストローク
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('ストローク',
-                                            style: TextStyle(fontSize: 20)),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('フォア：',
-                                            style: TextStyle(fontSize: 20)),
-                                        RatingBar.builder(
-                                          allowHalfRating: true,
-                                          itemBuilder: (context, index) =>
-                                              const Icon(
-                                            Icons.star,
-                                            color: Colors.yellow,
-                                          ),
-                                          //ratingが星の数
-                                          onRatingUpdate: (rating) {
-                                            stroke_fore = rating;
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('バック：',
-                                            style: TextStyle(fontSize: 20)),
-                                        RatingBar.builder(
-                                          allowHalfRating: true,
-                                          itemBuilder: (context, index) =>
-                                              const Icon(
-                                            Icons.star,
-                                            color: Colors.yellow,
-                                          ),
-                                          onRatingUpdate: (rating) {
-                                            stroke_back = rating;
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    //ボレー
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('ボレー',
-                                            style: TextStyle(fontSize: 20)),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('フォア：',
-                                            style: TextStyle(fontSize: 20)),
-                                        RatingBar.builder(
-                                          allowHalfRating: true,
-                                          itemBuilder: (context, index) =>
-                                              const Icon(
-                                            Icons.star,
-                                            color: Colors.yellow,
-                                          ),
-                                          onRatingUpdate: (rating) {
-                                            volley_fore = rating;
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('バック：',
-                                            style: TextStyle(fontSize: 20)),
-                                        RatingBar.builder(
-                                          allowHalfRating: true,
-                                          itemBuilder: (context, index) =>
-                                              const Icon(
-                                            Icons.star,
-                                            color: Colors.yellow,
-                                          ),
-                                          onRatingUpdate: (rating) {
-                                            volley_back = rating;
-                                          },
-                                        ),
-                                      ],
-                                    ),
-
-                                    const SizedBox(
-                                      height: 20,
-                                    ),
-                                    //サーブ
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('サーブ',
-                                            style: TextStyle(fontSize: 20)),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('１ｓｔ：',
-                                            style: TextStyle(fontSize: 20)),
-                                        RatingBar.builder(
-                                          allowHalfRating: true,
-                                          itemBuilder: (context, index) =>
-                                              const Icon(
-                                            Icons.star,
-                                            color: Colors.yellow,
-                                          ),
-                                          onRatingUpdate: (rating) {
-                                            serve_1st = rating;
-                                          },
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text('２ｎｄ：',
-                                            style: TextStyle(fontSize: 20)),
-                                        RatingBar.builder(
-                                          allowHalfRating: true,
-                                          itemBuilder: (context, index) =>
-                                              const Icon(
-                                            Icons.star,
-                                            color: Colors.yellow,
-                                          ),
-                                          onRatingUpdate: (rating) {
-                                            serve_2nd = rating;
-                                          },
-                                        ),
-                                      ],
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('バック：',
+                                        style: TextStyle(fontSize: 20)),
+                                    RatingBar.builder(
+                                      allowHalfRating: true,
+                                      itemBuilder: (context, index) =>
+                                          const Icon(
+                                        Icons.star,
+                                        color: Colors.yellow,
+                                      ),
+                                      onRatingUpdate: (rating) {
+                                        stroke_back = rating;
+                                      },
                                     ),
                                   ],
                                 ),
                                 const SizedBox(
                                   height: 20,
                                 ),
-                                Container(
-                                  width: deviceWidth * 0.8,
-                                  alignment: Alignment.center,
-                                    child:Text('感想・フィードバック',
+                                //ボレー
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('ボレー', style: TextStyle(fontSize: 20)),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('フォア：',
                                         style: TextStyle(fontSize: 20)),
-                                ),
-                                    Container(
-                                      width: deviceWidth * 0.8,
-                                      height: 100,
-                                      alignment: Alignment.center,
-                                      child: TextFormField(
-                                        cursorColor: Colors.green,
-                                        controller: inputWord,
-                                        maxLines: 20,
-                                        decoration: InputDecoration(
-                                          fillColor: Colors.white,
-                                          filled: true,
-                                          focusedBorder: UnderlineInputBorder(
-                                            borderSide:
-                                                BorderSide(color: Colors.green),
-                                          ),
-                                        ),
+                                    RatingBar.builder(
+                                      allowHalfRating: true,
+                                      itemBuilder: (context, index) =>
+                                          const Icon(
+                                        Icons.star,
+                                        color: Colors.yellow,
                                       ),
+                                      onRatingUpdate: (rating) {
+                                        volley_fore = rating;
+                                      },
                                     ),
-                              ])
-                            : Container(),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        FirestoreMethod.reviewFeatureEnabled == true
-                            ? Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text('フィードバックを希望しますか？',
-                                      style: TextStyle(fontSize: 16)),
-                                  Checkbox(
-                                    activeColor: Colors.blue, // Onになった時の色を指定
-                                    value: _feedbackFlg,
-                                    onChanged: _handleCheckbox2,
-                                  )
-                                ],
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('バック：',
+                                        style: TextStyle(fontSize: 20)),
+                                    RatingBar.builder(
+                                      allowHalfRating: true,
+                                      itemBuilder: (context, index) =>
+                                          const Icon(
+                                        Icons.star,
+                                        color: Colors.yellow,
+                                      ),
+                                      onRatingUpdate: (rating) {
+                                        volley_back = rating;
+                                      },
+                                    ),
+                                  ],
+                                ),
+
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                //サーブ
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('サーブ', style: TextStyle(fontSize: 20)),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('１ｓｔ：',
+                                        style: TextStyle(fontSize: 20)),
+                                    RatingBar.builder(
+                                      allowHalfRating: true,
+                                      itemBuilder: (context, index) =>
+                                          const Icon(
+                                        Icons.star,
+                                        color: Colors.yellow,
+                                      ),
+                                      onRatingUpdate: (rating) {
+                                        serve_1st = rating;
+                                      },
+                                    ),
+                                  ],
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text('２ｎｄ：',
+                                        style: TextStyle(fontSize: 20)),
+                                    RatingBar.builder(
+                                      allowHalfRating: true,
+                                      itemBuilder: (context, index) =>
+                                          const Icon(
+                                        Icons.star,
+                                        color: Colors.yellow,
+                                      ),
+                                      onRatingUpdate: (rating) {
+                                        serve_2nd = rating;
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            Container(
+                              width: deviceWidth * 0.8,
+                              alignment: Alignment.center,
+                              child: Text('感想・フィードバック',
+                                  style: TextStyle(fontSize: 20)),
+                            ),
+                            Container(
+                              width: deviceWidth * 0.8,
+                              height: 100,
+                              alignment: Alignment.center,
+                              child: TextFormField(
+                                cursorColor: Colors.green,
+                                controller: inputWord,
+                                maxLines: 20,
+                                decoration: InputDecoration(
+                                  fillColor: Colors.white,
+                                  filled: true,
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.green),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ])
+                        : Container(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    FirestoreMethod.reviewFeatureEnabled == true
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text('フィードバックを希望しますか？',
+                                  style: TextStyle(fontSize: 16)),
+                              Checkbox(
+                                activeColor: Colors.blue, // Onになった時の色を指定
+                                value: _feedbackFlg,
+                                onChanged: _handleCheckbox2,
                               )
-                            : Container(),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        Center(
-                          child: Container(
-                            padding: EdgeInsets.only(bottom: 20),
-                            width: deviceWidth * 0.8,
-                            child: TextButton(
-                              style: TextButton.styleFrom(
-                                backgroundColor: Colors.lightGreenAccent,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(80)),
-                                ),
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '登録',
-                                  style: TextStyle(
-                                      fontSize: 20, color: Colors.black),
-                                ),
-                              ),
-                              onPressed: () async {
-                                String errorFlg = "0";
-                                String deleteFlg = "0";
-                                matchResultList.forEach((matchList) {
-                                  if(matchResultList.length != 1 && matchList.myGamePoint == 0 && matchList.yourGamePoint == 0){
-                                    deleteFlg = "1";
-                                  }else if (matchList.myGamePoint ==
-                                      matchList.yourGamePoint) {
-                                    errorFlg = "1";
-                                  }
-                                });
-                                if (errorFlg == "1") {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: Text('対戦結果に引き分けは入力できません'),
-                                          actions: <Widget>[
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                  primary:
-                                                      Colors.lightGreenAccent,
-                                                  onPrimary: Colors.black),
-                                              child: Text('OK'),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      });
-                                } else if (yourReviewFeatureEnabled && !_flag &&
-                                    serve_1st == 0 &&
-                                    serve_2nd == 0 &&
-                                    stroke_back == 0 &&
-                                    stroke_fore == 0 &&
-                                    volley_back == 0 &&
-                                    volley_fore == 0) {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: Text(
-                                              'フィードバックが未記入です。\nフィードバックをしない場合は「フィードバックを入力しない」にチェックをつけてください。'),
-                                          actions: <Widget>[
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                  primary:
-                                                      Colors.lightGreenAccent,
-                                                  onPrimary: Colors.black),
-                                              child: Text('OK'),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      });
-                                } else if (yourReviewFeatureEnabled && !_flag && inputWord.text.isEmpty) {
-                                  showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                          title: Text(
-                                              'フィードバックが未記入です。\nフィードバックをしない場合は「フィードバックを入力しない」にチェックをつけてください。'),
-                                          actions: <Widget>[
-                                            ElevatedButton(
-                                              style: ElevatedButton.styleFrom(
-                                                  primary:
-                                                      Colors.lightGreenAccent,
-                                                  onPrimary: Colors.black),
-                                              child: Text('OK'),
-                                              onPressed: () {
-                                                Navigator.pop(context);
-                                              },
-                                            ),
-                                          ],
-                                        );
-                                      });
-                                } else {
-                                  if (inputTitle.text.isEmpty) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: Text('タイトルが未記入です'),
-                                            actions: <Widget>[
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                    primary:
-                                                        Colors.lightGreenAccent,
-                                                    onPrimary: Colors.black),
-                                                child: Text('OK'),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        });
-                                  } else {
-                                    //対戦結果を登録する
-                                    String dayKey = DateTime.now().toString();
-                                    //広告を表示する
-                                    await adInterstitial.showAd();
-                                    adInterstitial.createAd();
-                                    //マッチリストを削除する
-                                    FirestoreMethod.delMatchListAuto(widget.matchId);
-                                    Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                UnderMenuMove.make(2)));
-                                    await FirestoreMethod.makeMatchResult(
-                                        widget.myProfile,
-                                        widget.yourProfile,
-                                        matchResultList,
-                                        dayKey,
-                                        inputTitle.text);
-                                    //星数を登録する
-                                    if (yourReviewFeatureEnabled && !_flag) {
-                                      CSkilLevelSetting skill =
-                                          CSkilLevelSetting(
-                                        OPPONENT_ID: opponent_id,
-                                        SERVE_1ST: serve_1st,
-                                        SERVE_2ND: serve_2nd,
-                                        STROKE_BACKHAND: stroke_back,
-                                        STROKE_FOREHAND: stroke_fore,
-                                        VOLLEY_BACKHAND: volley_back,
-                                        VOLLEY_FOREHAND: volley_fore,
-
-                                      );
-                                      await FirestoreMethod.registSkillLevel(
-                                          skill, dayKey);
-                                      await FirestoreMethod.registSkillSum(opponent_id);
-
-                                      if (yourReviewFeatureEnabled && !inputWord.text.isEmpty) {
-                                        CFeedBackCommentSetting feedBack =
-                                            CFeedBackCommentSetting(
-                                          OPPONENT_ID: opponent_id,
-                                          FEED_BACK: inputWord.text,
-                                          DATE_TIME: dayKey,
-                                        );
-                                        await FirestoreMethod.registFeedBack(
-                                            feedBack,
-                                            widget.myProfile,
-                                            widget.yourProfile,
-                                            dayKey);
-                                      }
-                                    }
-
-                                    //対戦結果のメッセージを送信する
-                                    if (_feedbackFlg && FirestoreMethod.reviewFeatureEnabled) {
-                                      FirestoreMethod
-                                          .sendMatchResultFeedMessage(
-                                              widget.myProfile.USER_ID,
-                                              widget.yourProfile.USER_ID,
-                                              dayKey);
-                                    } else {
-                                      FirestoreMethod.sendMatchResultMessage(
-                                          widget.myProfile.USER_ID,
-                                          widget.yourProfile.USER_ID,
-                                          dayKey);
-                                    }
-                                  }
-                                }
-                              },
+                            ],
+                          )
+                        : Container(),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Center(
+                      child: Container(
+                        padding: EdgeInsets.only(bottom: 20),
+                        width: deviceWidth * 0.8,
+                        child: TextButton(
+                          style: TextButton.styleFrom(
+                            backgroundColor: Colors.lightGreenAccent,
+                            shape: const RoundedRectangleBorder(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(80)),
                             ),
                           ),
+                          child: Center(
+                            child: Text(
+                              '登録',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
+                            ),
+                          ),
+                          onPressed: () async {
+                            String errorFlg = "0";
+                            String deleteFlg = "0";
+                            matchResultList.forEach((matchList) {
+                              if (matchResultList.length != 1 &&
+                                  matchList.myGamePoint == 0 &&
+                                  matchList.yourGamePoint == 0) {
+                                deleteFlg = "1";
+                              } else if (matchList.myGamePoint ==
+                                  matchList.yourGamePoint) {
+                                errorFlg = "1";
+                              }
+                            });
+                            if (errorFlg == "1") {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text('対戦結果に引き分けは入力できません'),
+                                      actions: <Widget>[
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: Colors.lightGreenAccent,
+                                              onPrimary: Colors.black),
+                                          child: Text('OK'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            } else if (yourReviewFeatureEnabled &&
+                                !_flag &&
+                                serve_1st == 0 &&
+                                serve_2nd == 0 &&
+                                stroke_back == 0 &&
+                                stroke_fore == 0 &&
+                                volley_back == 0 &&
+                                volley_fore == 0) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                          'フィードバックが未記入です。\nフィードバックをしない場合は「フィードバックを入力しない」にチェックをつけてください。'),
+                                      actions: <Widget>[
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: Colors.lightGreenAccent,
+                                              onPrimary: Colors.black),
+                                          child: Text('OK'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            } else if (yourReviewFeatureEnabled &&
+                                !_flag &&
+                                inputWord.text.isEmpty) {
+                              showDialog(
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                          'フィードバックが未記入です。\nフィードバックをしない場合は「フィードバックを入力しない」にチェックをつけてください。'),
+                                      actions: <Widget>[
+                                        ElevatedButton(
+                                          style: ElevatedButton.styleFrom(
+                                              primary: Colors.lightGreenAccent,
+                                              onPrimary: Colors.black),
+                                          child: Text('OK'),
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                          },
+                                        ),
+                                      ],
+                                    );
+                                  });
+                            } else {
+                              if (inputTitle.text.isEmpty) {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text('タイトルが未記入です'),
+                                        actions: <Widget>[
+                                          ElevatedButton(
+                                            style: ElevatedButton.styleFrom(
+                                                primary:
+                                                    Colors.lightGreenAccent,
+                                                onPrimary: Colors.black),
+                                            child: Text('OK'),
+                                            onPressed: () {
+                                              Navigator.pop(context);
+                                            },
+                                          ),
+                                        ],
+                                      );
+                                    });
+                              } else {
+                                //対戦結果を登録する
+                                String dayKey = DateTime.now().toString();
+                                //広告を表示する
+                                await adInterstitial.showAd();
+                                adInterstitial.createAd();
+                                //マッチリストを削除する
+                                FirestoreMethod.delMatchListAuto(
+                                    widget.matchId);
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            UnderMenuMove.make(2)));
+                                await FirestoreMethod.makeMatchResult(
+                                    widget.myProfile,
+                                    widget.yourProfile,
+                                    matchResultList,
+                                    dayKey,
+                                    inputTitle.text);
+                                //星数を登録する
+                                if (yourReviewFeatureEnabled && !_flag) {
+                                  CSkilLevelSetting skill = CSkilLevelSetting(
+                                    OPPONENT_ID: opponent_id,
+                                    SERVE_1ST: serve_1st,
+                                    SERVE_2ND: serve_2nd,
+                                    STROKE_BACKHAND: stroke_back,
+                                    STROKE_FOREHAND: stroke_fore,
+                                    VOLLEY_BACKHAND: volley_back,
+                                    VOLLEY_FOREHAND: volley_fore,
+                                  );
+                                  await FirestoreMethod.registSkillLevel(
+                                      skill, dayKey);
+                                  await FirestoreMethod.registSkillSum(
+                                      opponent_id);
+
+                                  if (yourReviewFeatureEnabled &&
+                                      !inputWord.text.isEmpty) {
+                                    CFeedBackCommentSetting feedBack =
+                                        CFeedBackCommentSetting(
+                                      OPPONENT_ID: opponent_id,
+                                      FEED_BACK: inputWord.text,
+                                      DATE_TIME: dayKey,
+                                    );
+                                    await FirestoreMethod.registFeedBack(
+                                        feedBack,
+                                        widget.myProfile,
+                                        widget.yourProfile,
+                                        dayKey);
+                                  }
+                                }
+
+                                //対戦結果のメッセージを送信する
+                                if (_feedbackFlg &&
+                                    FirestoreMethod.reviewFeatureEnabled) {
+                                  FirestoreMethod.sendMatchResultFeedMessage(
+                                      widget.myProfile.USER_ID,
+                                      widget.yourProfile.USER_ID,
+                                      dayKey);
+                                } else {
+                                  FirestoreMethod.sendMatchResultMessage(
+                                      widget.myProfile.USER_ID,
+                                      widget.yourProfile.USER_ID,
+                                      dayKey);
+                                }
+                              }
+                            }
+                          },
                         ),
-                      ]),
-                ),
-              )),
-        );
+                      ),
+                    ),
+                  ]),
+            ),
+          )),
+    );
   }
 
   Widget _pickerItem(String str) {
@@ -821,8 +810,17 @@ class _MatchResultState extends State<MatchResult> {
 
   activityListAdd(String No) {
     print("No" + No);
-    matchResultList.add(CmatchResult(No: No, myGamePoint: 0, yourGamePoint: 0));
-    myGamePoint = 0;
-    yourGamePoint = 0;
+    if (int.parse(No) >= 5) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context) => ShowDialogToDismiss(
+                content: "一度に5セット以上の対戦結果の入力はできません",
+                buttonText: "はい",
+              ));
+    }else{
+      matchResultList.add(CmatchResult(No: No, myGamePoint: 0, yourGamePoint: 0));
+      myGamePoint = 0;
+      yourGamePoint = 0;
+    }
   }
 }
