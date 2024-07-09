@@ -79,7 +79,7 @@ class _EmailChangeFormState extends State<EmailChangeForm> {
                   SizedBox(height: 16),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.green, // background
+                      backgroundColor: Colors.green, // background
                     ),
                     onPressed: () async {
                       if (_formKey.currentState!.validate()) {
@@ -120,7 +120,7 @@ class _EmailChangeFormState extends State<EmailChangeForm> {
                   SizedBox(height: 16),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.green, // background
+                      backgroundColor: Colors.green, // background
                     ),
                     onPressed: () async {
                       Navigator.push(

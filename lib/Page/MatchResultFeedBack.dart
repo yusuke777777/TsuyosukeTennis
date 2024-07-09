@@ -426,9 +426,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                             actions: <Widget>[
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
-                                                    primary:
-                                                        Colors.lightGreenAccent,
-                                                    onPrimary: Colors.black),
+                                                    foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
                                                 child: Text('OK'),
                                                 onPressed: () {
                                                   Navigator.pop(context);
@@ -446,9 +444,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                             actions: <Widget>[
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
-                                                    primary:
-                                                        Colors.lightGreenAccent,
-                                                    onPrimary: Colors.black),
+                                                    foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
                                                 child: Text('OK'),
                                                 onPressed: () {
                                                   Navigator.pop(context);

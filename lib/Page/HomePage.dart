@@ -13,7 +13,7 @@ import '../FireBase/GoogleAds.dart';
 import '../PropSetCofig.dart';
 import 'FriendManagerPage.dart';
 import 'ProfileSetting.dart';
-import 'package:marquee/marquee.dart';
+// import 'package:marquee/marquee.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:intl/intl.dart';

@@ -24,7 +24,7 @@ class ShowDialogToDismiss extends StatelessWidget {
       actions: <Widget>[
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-              primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+              foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
           child: Text(buttonText),
           onPressed: () async {
             Navigator.pop(context);
@@ -53,7 +53,7 @@ class BillingShowDialogToDismiss extends StatelessWidget {
       actions: <Widget>[
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-              primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+              foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
           child: Text('はい'),
           onPressed: () async {
             final offerings = await Purchases.getOfferings();
@@ -74,7 +74,7 @@ class BillingShowDialogToDismiss extends StatelessWidget {
         ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
-              primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+              foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
           child: Text('いいえ'),
           onPressed: () {
             Navigator.pop(context);

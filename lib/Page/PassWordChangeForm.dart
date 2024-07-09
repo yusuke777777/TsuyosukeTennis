@@ -96,7 +96,7 @@ class _PassWordChangeFormState extends State<PassWordChangeForm> {
                     SizedBox(height: 16),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                          primary: Colors.green, // background
+                          backgroundColor: Colors.green, // background
                       ),
                       onPressed: () async {
                           final user = _auth.currentUser;
@@ -139,7 +139,7 @@ class _PassWordChangeFormState extends State<PassWordChangeForm> {
                     SizedBox(height: 16),
                     ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        primary: Colors.green, // background
+                        backgroundColor: Colors.green, // background
                       ),
                       onPressed: () async {
                             Navigator.push(

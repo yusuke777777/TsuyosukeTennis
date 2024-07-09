@@ -757,7 +757,7 @@ class FirestoreMethod {
             actions: <Widget>[
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+                    foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
                 child: Text('はい'),
                 onPressed: () {
                   roomRef.doc(delId).delete();
@@ -766,7 +766,7 @@ class FirestoreMethod {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+                    foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
                 child: Text('いいえ'),
                 onPressed: () {
                   Navigator.pop(context);
@@ -1765,7 +1765,7 @@ class FirestoreMethod {
             actions: <Widget>[
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+                    foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
                 child: Text('はい'),
                 onPressed: () {
                   try {
@@ -1778,7 +1778,7 @@ class FirestoreMethod {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+                    foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
                 child: Text('いいえ'),
                 onPressed: () {
                   Navigator.pop(context);
@@ -3285,7 +3285,7 @@ class FirestoreMethod {
             actions: <Widget>[
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+                    foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
                 child: Text('はい'),
                 onPressed: () {
                   try {
@@ -3298,7 +3298,7 @@ class FirestoreMethod {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    primary: Colors.lightGreenAccent, onPrimary: Colors.black),
+                    foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
                 child: Text('いいえ'),
                 onPressed: () {
                   Navigator.pop(context);

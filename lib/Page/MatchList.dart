@@ -329,66 +329,79 @@ class _MatchListState extends State<MatchList> {
                                                       .data()?['LOCK_USER'] ??
                                                   '';
 
-                                              // 自分がロックしている、もしくはロックされていない場合
-                                              if (LOCK_FLG == '0' ||
-                                                  LOCK_USER ==
-                                                      FirestoreMethod.auth
-                                                          .currentUser!.uid ||
-                                                  LOCK_USER == '') {
-                                                // 自分のUIDでロック設定
-                                                await FirebaseFirestore.instance
-                                                    .collection('matchList')
-                                                    .doc(matchListAll[index]
-                                                        .MATCH_ID)
-                                                    .set({
-                                                  'LOCK_FLG': '1',
-                                                  'LOCK_USER': FirestoreMethod
-                                                      .auth.currentUser!.uid,
-                                                }, SetOptions(merge: true));
-                                                //対戦結果入力画面へ遷移
-                                                await Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            MatchResult(
-                                                                matchListAll[
-                                                                        index]
-                                                                    .MY_USER,
-                                                                matchListAll[
-                                                                        index]
-                                                                    .YOUR_USER,
-                                                                matchListAll[
-                                                                        index]
-                                                                    .MATCH_ID)));
-                                                // 画面から戻ってきたときに対象のドキュメントが存在するか確認
-                                                final matchDoc =
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection('matchList')
-                                                        .doc(matchListAll[index]
-                                                            .MATCH_ID)
-                                                        .get();
-
-                                                if (matchDoc.exists) {
-                                                  // ドキュメントが存在する場合にのみロックを解除
+                                              if(matchSnapshot.exists) {
+                                                // 自分がロックしている、もしくはロックされていない場合
+                                                if (LOCK_FLG == '0' ||
+                                                    LOCK_USER ==
+                                                        FirestoreMethod.auth
+                                                            .currentUser!.uid ||
+                                                    LOCK_USER == '') {
+                                                  // 自分のUIDでロック設定
                                                   await FirebaseFirestore
                                                       .instance
                                                       .collection('matchList')
                                                       .doc(matchListAll[index]
-                                                          .MATCH_ID)
+                                                      .MATCH_ID)
                                                       .set({
-                                                    'LOCK_FLG': '0',
-                                                    'LOCK_USER': '',
+                                                    'LOCK_FLG': '1',
+                                                    'LOCK_USER': FirestoreMethod
+                                                        .auth.currentUser!.uid,
                                                   }, SetOptions(merge: true));
+                                                  //対戦結果入力画面へ遷移
+                                                  await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              MatchResult(
+                                                                  matchListAll[
+                                                                  index]
+                                                                      .MY_USER,
+                                                                  matchListAll[
+                                                                  index]
+                                                                      .YOUR_USER,
+                                                                  matchListAll[
+                                                                  index]
+                                                                      .MATCH_ID)));
+                                                  // 画面から戻ってきたときに対象のドキュメントが存在するか確認
+                                                  final matchDoc =
+                                                  await FirebaseFirestore
+                                                      .instance
+                                                      .collection('matchList')
+                                                      .doc(matchListAll[index]
+                                                      .MATCH_ID)
+                                                      .get();
+
+                                                  if (matchDoc.exists) {
+                                                    // ドキュメントが存在する場合にのみロックを解除
+                                                    await FirebaseFirestore
+                                                        .instance
+                                                        .collection('matchList')
+                                                        .doc(matchListAll[index]
+                                                        .MATCH_ID)
+                                                        .set({
+                                                      'LOCK_FLG': '0',
+                                                      'LOCK_USER': '',
+                                                    }, SetOptions(merge: true));
+                                                  }
+                                                } else {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (BuildContext
+                                                      context) =>
+                                                          ShowDialogToDismiss(
+                                                            content:
+                                                            '現在、他のユーザーが登録中です',
+                                                            buttonText: "はい",
+                                                          ));
                                                 }
-                                              } else {
+                                              }else{
                                                 showDialog(
                                                     context: context,
                                                     builder: (BuildContext
-                                                            context) =>
+                                                    context) =>
                                                         ShowDialogToDismiss(
                                                           content:
-                                                              '現在、他のユーザーが登録中です',
+                                                          'この対戦は既に他ユーザーが登録済。又は削除されています',
                                                           buttonText: "はい",
                                                         ));
                                               }

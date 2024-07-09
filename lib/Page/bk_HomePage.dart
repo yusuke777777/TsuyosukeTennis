@@ -10,7 +10,6 @@ import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
 import 'FriendManagerPage.dart';
 import 'ProfileSetting.dart';
-import 'package:marquee/marquee.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
 class HomePage extends StatefulWidget {
@@ -89,20 +88,20 @@ class _HomePageState extends State<HomePage> {
                         flex: 0,
                         child: SizedBox(
                           height: 30,
-                          child: Marquee(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            text: homePageVal!.TOUSERMESSAGE,
-                            style: TextStyle(
-                              backgroundColor: Colors.green[50],
-                              color: Colors.white24,
-                              shadows: [
-                                Shadow(
-                                  blurRadius: 1 /*影の大きさ*/,
-                                ),
-                              ],
-                            ), //表示するテキスト
-                            velocity: 20,
-                          ),
+                          // child: Marquee(
+                          //   crossAxisAlignment: CrossAxisAlignment.start,
+                          //   text: homePageVal!.TOUSERMESSAGE,
+                          //   style: TextStyle(
+                          //     backgroundColor: Colors.green[50],
+                          //     color: Colors.white24,
+                          //     shadows: [
+                          //       Shadow(
+                          //         blurRadius: 1 /*影の大きさ*/,
+                          //       ),
+                          //     ],
+                          //   ), //表示するテキスト
+                          //   velocity: 20,
+                          // ),
                         )),
 
                     //profile画像

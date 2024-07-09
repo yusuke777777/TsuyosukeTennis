@@ -9,6 +9,8 @@ const matchResultRef = admin.firestore().collection("matchResult");
 const profileDetailRef = admin.firestore().collection("myProfileDetail");
 const profileRef = admin.firestore().collection("myProfile");
 const userTicketMgmtRef = admin.firestore().collection("userTicketMgmt");
+const talkRoomRef = admin.firestore().collection("talkRoom");
+
 
 /** 定期的にメタ情報を更新する関数。 */
 exports.updateMetaFunction = functions
@@ -63,6 +65,41 @@ exports.addTicketFunction = functions
         await addTicket();
       } catch (e) {
         console.log("チケットの付与に失敗しました ----$e");
+      }
+      return null;
+    });
+
+
+export const deleteOldMessages = functions
+    .region("asia-northeast1")
+    .pubsub.schedule("0 0 * * *")
+    .timeZone("Asia/Tokyo") // タイムゾーンを日本に設定
+    .onRun(async (context) => {
+      const now = admin.firestore.Timestamp.now();
+      const threeMonthsAgo =
+        new admin.firestore.Timestamp(now.seconds -
+          (90 * 24 * 60 * 60), now.nanoseconds);
+
+      try {
+        const roomsSnapshot = await talkRoomRef.get();
+
+        for (const roomDoc of roomsSnapshot.docs) {
+          const messagesRef =
+            talkRoomRef.doc(roomDoc.id).collection("message");
+          const oldMessagesSnapshot =
+            await messagesRef.where("send_time", "<", threeMonthsAgo).get();
+
+          const batch = admin.firestore().batch();
+
+          for (const oldMessageDoc of oldMessagesSnapshot.docs) {
+            batch.delete(oldMessageDoc.ref);
+          }
+          await batch.commit();
+          console.log(`Deleted ${oldMessagesSnapshot.size}
+            messages from room ${roomDoc.id}`);
+        }
+      } catch (error) {
+        console.error("Error deleting old messages: ", error);
       }
       return null;
     });

@@ -72,7 +72,7 @@ class MyTitlePage extends StatelessWidget {
                       trailing: title.status == "1" || title.status == "2"
                           ? ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.green,
+                                backgroundColor: Colors.green,
                               ),
                               onPressed: () {
                                 // ボタンが押されたときの処理
@@ -102,7 +102,7 @@ class MyTitlePage extends StatelessWidget {
                             )
                           : ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                primary: Colors.grey,
+                                backgroundColor: Colors.grey,
                               ),
                               onPressed: () {
                                 showDialog(
