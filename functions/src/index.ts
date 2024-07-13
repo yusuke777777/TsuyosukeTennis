@@ -76,9 +76,9 @@ export const deleteOldMessages = functions
     .timeZone("Asia/Tokyo") // タイムゾーンを日本に設定
     .onRun(async (context) => {
       const now = admin.firestore.Timestamp.now();
-      const threeMonthsAgo =
+      const oneYearAgo =
         new admin.firestore.Timestamp(now.seconds -
-          (90 * 24 * 60 * 60), now.nanoseconds);
+          (366 * 24 * 60 * 60), now.nanoseconds);
 
       try {
         const roomsSnapshot = await talkRoomRef.get();
@@ -87,7 +87,7 @@ export const deleteOldMessages = functions
           const messagesRef =
             talkRoomRef.doc(roomDoc.id).collection("message");
           const oldMessagesSnapshot =
-            await messagesRef.where("send_time", "<", threeMonthsAgo).get();
+            await messagesRef.where("send_time", "<", oneYearAgo).get();
 
           const batch = admin.firestore().batch();
 

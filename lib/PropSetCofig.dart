@@ -14,6 +14,7 @@ import 'FireBase/singletons_data.dart';
 import 'Page/BlockList.dart';
 import 'Page/EmailChangeForm.dart';
 import 'Page/FriendManagerPage.dart';
+import 'Page/Manual.dart';
 import 'Page/MatchResultList.dart';
 import 'Page/MySetting.dart';
 import 'Page/ProfileReference.dart';
@@ -69,6 +70,23 @@ class DrawerConfig {
             children: [
               Text('管理一覧', style: TextStyle(fontSize: 30)),
             ],
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const Manual(),
+                ),
+              );
+            },
+            child: Container(
+              child: Text('アプリ利用手順'),
+              alignment: Alignment.center,
+            ),
           ),
           const SizedBox(
             height: 20,
