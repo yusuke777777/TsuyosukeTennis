@@ -32,20 +32,23 @@ Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 void main() async {
+  // await dotenv.load(fileName: 'dart_defines/${String.fromEnvironment('FLAVOR')}.env');
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   WidgetsFlutterBinding.ensureInitialized();
   MobileAds.instance.initialize();
   await Firebase.initializeApp();
-  await FirestoreMethod.isProfile();
-  // await FirestoreMethod.checkUserAuth();
+  if (FirebaseAuth.instance.currentUser != null) {
+    await FirestoreMethod.isProfile();
+    await FirestoreMethod.checkUserAuth();
+  }
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     statusBarBrightness: Brightness.light,
   ));
   if (FirebaseAuth.instance.currentUser != null) {
     final configuration = PurchasesConfiguration(
-      Platform.isAndroid ? 'androidRevenueCatKey' : appleApiKey,
+      Platform.isAndroid ? 'androidRevenueCatKey' : appleApiKey
     )..appUserID = FirebaseAuth.instance.currentUser!.uid;
     await Purchases.configure(configuration);
     appData.appUserID = await Purchases.appUserID;

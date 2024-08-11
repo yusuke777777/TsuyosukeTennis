@@ -131,9 +131,11 @@ class FirestoreMethod {
 
   //プロフィール情報設定
   static Future<void> makeProfile(CprofileSetting profile) async {
+    print("ggg");
     DateTime now = DateTime.now();
     DateFormat outputFormat = DateFormat('yyyy-MM-dd');
     String today = outputFormat.format(now);
+    print("hhh");
     try {
       await profileRef.doc(auth.currentUser!.uid).set({
         'USER_ID': auth.currentUser!.uid,
@@ -150,17 +152,15 @@ class FirestoreMethod {
         'BILLING_FLG': appData.entitlementIsActive == true ? "1" : "0"
       });
     } catch (e) {
-      throw (e);
       print('ユーザー登録に失敗しました --- $e');
       throw ('ユーザー登録に失敗しました --- $e');
     }
-
     //アクティビティリスト削除
     final snapshot = await profileRef
         .doc(auth.currentUser!.uid)
         .collection("activityList")
         .get();
-
+    print("iiii");
     final snapshotActivity =
         await profileRef.doc(auth.currentUser!.uid).collection("activityList");
 
@@ -183,7 +183,6 @@ class FirestoreMethod {
             'SHICHOSON': profile.activityList[index].SHICHOSON.text
           });
         } catch (e) {
-          throw (e);
           print('ユーザー登録に失敗しました --- $e');
         }
         No = No + 1;
@@ -3975,6 +3974,7 @@ class FirestoreMethod {
    */
   static Future<bool> checkDoubleMyUserID(
       String inputText, bool isDoubleMyUserId) async {
+    print("bbb");
     try {
       final snapShot =
           await profileRef.where('MY_USER_ID', isEqualTo: inputText).get();
@@ -4004,6 +4004,7 @@ class FirestoreMethod {
     } catch (e) {
       print("checkDoubleMyUserIDエラー");
     }
+    print("ccc");
     return isDoubleMyUserId;
   }
 

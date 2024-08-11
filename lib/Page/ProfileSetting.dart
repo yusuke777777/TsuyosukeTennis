@@ -607,6 +607,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               if (nickName.text.isNotEmpty && inputUserID.text.isNotEmpty) {
                                 print(nickName.text);
                                 print(inputUserID.text);
+                                print(widget.koushinFlg);
                                 bool isDoubleMyUserId = await FirestoreMethod.checkDoubleMyUserID(inputUserID.text, isDoubleUser);
                                 //ユーザーIDの重複確認
                                 if (isDoubleMyUserId) {
@@ -649,7 +650,10 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                 }
                                 else {
                                   try{
+                                    print("ffff");
+                                    print(auth.currentUser!.uid);
                                     await FirestoreMethod.makeProfile(myProfile);
+                                    print("eeee");
                                     await FirestoreMethod.makeProfileDetail(myProfile,widget.koushinFlg);
                                     await FirestoreMethod.putReviewFeatureEnabled(true);
                                     if(widget.koushinFlg == '0'){
@@ -659,6 +663,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                   }catch(e){
                                     print("XXXXXXここでエラーに対する処理を入れるXXXXXX");
                                   }
+                                  print("dddd");
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

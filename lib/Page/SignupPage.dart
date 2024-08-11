@@ -279,7 +279,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
 void _SignUprulesURL() async {
   const url =
-      'https://dented-handball-204.notion.site/0fe2fc1cf0ca465abdb85616658c9106';
+      'https://spectacled-lan-4ae.notion.site/a20f927123de4185bf444025d095e525?pvs=4';
   if (await canLaunch(url)) {
     await launch(url);
   } else {

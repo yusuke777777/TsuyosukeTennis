@@ -1,8 +1,11 @@
 {
   "projects": {
     "default": "tsuyosuketeniss",
-    "tsuyosuketenissProd": "tsuyosuketeniss"
+    "tsuyosuketenissProd": "tsuyosuketeniss",
+    "dev": "tsuyosuketest",
+    "prod": "tsuyosuketeniss"
   },
   "targets": {},
-  "etags": {}
+  "etags": {},
+  "dataconnectEmulatorConfig": {}
 }

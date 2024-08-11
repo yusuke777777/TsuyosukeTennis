@@ -67,7 +67,7 @@ class NotificationMethod {
     static Future<void> sendMessage(
         String recipientToken, String message, String name) async {
       final FirebaseMessaging _fcm = FirebaseMessaging.instance;
-      String fcmUrl = 'https://fcm.googleapis.com/fcm/send';
+      String fcmUrl = 'https://fcm.googleapis.com/v1/projects/tsuyosuketest/messages:send';
       String serverKey =
           'AAAAsjXnpKQ:APA91bGhkNiydAXPg6rWfkGVXyOC7TQXuTJs0DrXJUXjTbuFvDf12cctlJb4lLh2BOeiJDBUu7zKe5VsVUDvnSsqU5O0b22OTJoJvdN6A-9LxNjXnXCnPAsda4kSI9aunT6dBlQ5az-e';
       var headers = {

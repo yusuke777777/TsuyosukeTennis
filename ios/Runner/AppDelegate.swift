@@ -20,3 +20,4 @@ import FirebaseMessaging
         super.application(application, didRegisterForRemoteNotificationsWithDeviceToken: deviceToken)
     }
 }
+
