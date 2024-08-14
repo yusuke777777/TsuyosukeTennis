@@ -64,6 +64,8 @@ dependencies:
   purchases_flutter: ^6.5.0
   logger: ^1.0.0
   fading_edge_scrollview: ^4.1.1
+  ffi: ^2.1.2
+  win32: ^5.5.3
 
 
 flutter_native_splash:

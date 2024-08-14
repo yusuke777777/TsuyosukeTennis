@@ -24,6 +24,14 @@ class _ReLoginMessagePageState extends State<ReLoginMessagePage> {
   final TextEditingController _passwordController = TextEditingController();
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
+  late Stream<List<QueryDocumentSnapshot>> _Stream;
+
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +55,51 @@ class _ReLoginMessagePageState extends State<ReLoginMessagePage> {
                 fontSize: 15,
                 color: Colors.red,
               ),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green, // 背景色を設定
+              ),
+              child: Text(
+                '承認しました',
+                style: TextStyle(
+                    color: Colors.white,
+                    backgroundColor: Colors.green),
+              ),
+              onPressed: () async {
+                try {
+                  //ボタンを押したタイミングでリロードをかけてメアドの認証チェックをする
+                  User? currentUser = auth.currentUser;
+                  await currentUser!.reload();
+                  User? currentUser_reload = auth.currentUser;
+
+                  if(currentUser_reload!.emailVerified == true){
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) =>  ProfileSetting.Make()),
+                          (Route<dynamic> route) => false,
+                    );
+                  }
+                  else{
+                    await showDialog(
+                        context: context,
+                        builder: (BuildContext context) => ShowDialogToDismiss(
+                            title: "承認されていません",
+                            buttonText: 'OK',
+                            content: 'メアド承認が済んでいる場合は再度ボタンを押してください',));
+                  }
+                } on PlatformException catch (e) {
+                  await showDialog(
+                      context: context,
+                      builder: (BuildContext context) => ShowDialogToDismiss(
+                          title: "Error",
+                          content: e.message ?? "Unknown error",
+                          buttonText: 'OK'));
+                }
+              },
+            ),
+            SizedBox(
+              height: 16,
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
