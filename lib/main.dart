@@ -24,6 +24,8 @@ import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
+import 'package:ffi/ffi.dart';
+import 'package:win32/win32.dart';
 import 'constant.dart';
 
 void main() async {
@@ -128,9 +130,10 @@ class _MyAppState extends State<MyApp> {
       home: FirebaseAuth.instance.currentUser == null
           ? SignInPage()
           :
-          //  !FirestoreMethod.isAuth
-          //    ? ReLoginMessagePage()
-          // :
+            //メール承認を終えていない場合は承認待機画面へ
+            !FirestoreMethod.isAuth
+              ? ReLoginMessagePage()
+           :
           FirestoreMethod.isprofile == true
               ? UnderMenuMove.make(0)
               : ProfileSetting.Make(),
