@@ -813,3 +813,25 @@ async function addTicket(): Promise<void> {
   }
 }
 
+export const sendMessage = functions.region("asia-northeast1")
+    .https.onRequest(async (req, res) => {
+      try {
+        const token = req.body.token;
+        const message = {
+          token: token,
+          data: {
+            senderUid: req.body.data.senderUid,
+          },
+          notification: {
+            title: req.body.notification.title,
+            body: req.body.notification.body,
+          },
+        };
+        const response = await admin.messaging().send(message);
+        console.log("Successfully sent message:", response);
+        res.status(200).send("Message sent successfully");
+      } catch (error) {
+        console.error("Error sending message:", error);
+        res.status(500).send("Error sending message");
+      }
+    });

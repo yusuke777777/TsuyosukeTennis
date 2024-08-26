@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
+import '../constant.dart';
+
 class AdInterstitial {
   InterstitialAd? _interstitialAd;
   int num_of_attempt_load = 0;
@@ -106,12 +108,12 @@ class AdBanner extends StatelessWidget {
 
   static String get bannerAdUnitId {
     if (Platform.isAndroid) {
-      return 'ca-app-pub-3940256099942544/9214589741';
+      return googleAdsAndroid;
     } else if (Platform.isIOS) {
-      return 'ca-app-pub-3940256099942544/2435281174';
+      return googleAdsIos;
     } else {
       //どちらでもない場合は、テスト用を返す
-      return 'ca-app-pub-3940256099942544/2435281174';
+      return googleAdsIos;
     }
   }
 }
