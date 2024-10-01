@@ -650,6 +650,7 @@ class _MatchResultState extends State<MatchResult> {
                                 //マッチリストを削除する
                                 FirestoreMethod.delMatchListAuto(
                                     widget.matchId);
+                                //マッチ画面へ戻る
                                 Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(

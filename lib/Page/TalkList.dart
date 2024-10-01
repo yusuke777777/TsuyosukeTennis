@@ -54,160 +54,163 @@ class _TalkListState extends State<TalkList> {
     //必要コンフィグの初期化
     HeaderConfig().init(context, "トーク一覧");
     DrawerConfig().init(context);
-    return Scaffold(
-        appBar: AppBar(
-          backgroundColor: HeaderConfig.backGroundColor,
-          title: HeaderConfig.appBarText,
-          iconTheme: IconThemeData(color: Colors.black),
-        ),
-        drawer: DrawerConfig.drawer,
-        body: Stack(
-          children: [
-            Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
-            Padding(
-              padding: EdgeInsets.only(top: 40),
-              child: FutureBuilder(
-                future: createRooms(),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done) {
-                    return ListView.builder(
-                        itemCount: talkList.length,
-                        itemBuilder: (context, index) {
-                          return Slidable(
-                              endActionPane: ActionPane(
-                                motion: DrawerMotion(),
-                                children: [
-                                  SlidableAction(
-                                    onPressed: (value) {
-                                      FirestoreMethod.addBlockList(
-                                          talkList[index].user.USER_ID);
-                                      setState(() {
-                                      });
-                                    },
-                                    backgroundColor: Colors.grey,
-                                    icon: Icons.block_flipped,
-                                    label: 'ブロック',
-                                    foregroundColor: Colors.white,
-                                  ),
-                                  SlidableAction(
-                                    onPressed: (value) {
-                                      FirestoreMethod.delTalkRoom(
-                                          talkList[index].roomId, context);
-                                      // リストから削除して再描画
-                                      setState(() {
-                                      });
-                                    },
-                                    backgroundColor: Colors.red,
-                                    icon: Icons.delete,
-                                    label: '削除',
-                                  ),
-                                ],
-                              ),
-                              child: InkWell(
-                                onTap: () async {
-                                  await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) =>
-                                              TalkRoom(talkList[index])));
-                                  await NotificationMethod.unreadCountRest(
-                                      talkList[index].user.USER_ID);
-                                },
-                                child: Card(
-                                  color: Colors.white,
-                                  child: Container(
-                                    height: 70,
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                      children: [
-                                        Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0),
-                                          child:
-                                              InkWell(
-                                                child: talkList[index].user.PROFILE_IMAGE == ''
-                                                    ? CircleAvatar(
-                                                        backgroundColor: Colors.white,
-                                                        backgroundImage: NetworkImage(
-                                                            "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                                        radius: 30,
-                                                      )
-                                                    : CircleAvatar(
-                                                        backgroundColor: Colors.white,
-                                                        backgroundImage: NetworkImage(
-                                                            talkList[index]
-                                                                .user
-                                                                .PROFILE_IMAGE),
-                                                        radius: 30,
-                                                      ),
-                                                onTap: () {
-                                                  Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              ProfileReference(
-                                                                  talkList[index].user.USER_ID)));
-                                                },
-                                              ),
-                                        ),
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Container(
-                                                  child: Text(
-                                                      talkList[index].user.NICK_NAME,
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.bold))),
-                                              Container(
-                                                  child: Text(
-                                                talkList[index].lastMessage,
-                                                style: TextStyle(
-                                                    color: Colors.grey, fontSize: 13),
-                                                overflow: TextOverflow.ellipsis,
-                                                maxLines: 2,
-                                              ))
-                                            ],
+    return PopScope(
+     canPop: false,
+      child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: HeaderConfig.backGroundColor,
+            title: HeaderConfig.appBarText,
+            iconTheme: IconThemeData(color: Colors.black),
+          ),
+          drawer: DrawerConfig.drawer,
+          body: Stack(
+            children: [
+              Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
+              Padding(
+                padding: EdgeInsets.only(top: 40),
+                child: FutureBuilder(
+                  future: createRooms(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.done) {
+                      return ListView.builder(
+                          itemCount: talkList.length,
+                          itemBuilder: (context, index) {
+                            return Slidable(
+                                endActionPane: ActionPane(
+                                  motion: DrawerMotion(),
+                                  children: [
+                                    SlidableAction(
+                                      onPressed: (value) {
+                                        FirestoreMethod.addBlockList(
+                                            talkList[index].user.USER_ID);
+                                        setState(() {
+                                        });
+                                      },
+                                      backgroundColor: Colors.grey,
+                                      icon: Icons.block_flipped,
+                                      label: 'ブロック',
+                                      foregroundColor: Colors.white,
+                                    ),
+                                    SlidableAction(
+                                      onPressed: (value) {
+                                        FirestoreMethod.delTalkRoom(
+                                            talkList[index].roomId, context);
+                                        // リストから削除して再描画
+                                        setState(() {
+                                        });
+                                      },
+                                      backgroundColor: Colors.red,
+                                      icon: Icons.delete,
+                                      label: '削除',
+                                    ),
+                                  ],
+                                ),
+                                child: InkWell(
+                                  onTap: () async {
+                                    await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                TalkRoom(talkList[index])));
+                                    await NotificationMethod.unreadCountRest(
+                                        talkList[index].user.USER_ID);
+                                  },
+                                  child: Card(
+                                    color: Colors.white,
+                                    child: Container(
+                                      height: 70,
+                                      child: Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8.0),
+                                            child:
+                                                InkWell(
+                                                  child: talkList[index].user.PROFILE_IMAGE == ''
+                                                      ? CircleAvatar(
+                                                          backgroundColor: Colors.white,
+                                                          backgroundImage: NetworkImage(
+                                                              "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                                          radius: 30,
+                                                        )
+                                                      : CircleAvatar(
+                                                          backgroundColor: Colors.white,
+                                                          backgroundImage: NetworkImage(
+                                                              talkList[index]
+                                                                  .user
+                                                                  .PROFILE_IMAGE),
+                                                          radius: 30,
+                                                        ),
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                ProfileReference(
+                                                                    talkList[index].user.USER_ID)));
+                                                  },
+                                                ),
                                           ),
-                                        ),
-                                        talkList[index].unReadCnt == 0
-                                            ? Container()
-                                            : Container(
-                                                alignment: Alignment.center,
-                                                width: 25.0,
-                                                height: 25.0,
-                                                decoration: BoxDecoration(
-                                                  color: Colors.green,
-                                                  shape: BoxShape.circle,
-                                                ),
-                                                child: Text(
-                                                  talkList[index]
-                                                      .unReadCnt
-                                                      .toString(),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Container(
+                                                    child: Text(
+                                                        talkList[index].user.NICK_NAME,
+                                                        style: TextStyle(
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight.bold))),
+                                                Container(
+                                                    child: Text(
+                                                  talkList[index].lastMessage,
                                                   style: TextStyle(
-                                                      color: Colors.white,
-                                                      fontSize: 18),
+                                                      color: Colors.grey, fontSize: 13),
+                                                  overflow: TextOverflow.ellipsis,
+                                                  maxLines: 2,
+                                                ))
+                                              ],
+                                            ),
+                                          ),
+                                          talkList[index].unReadCnt == 0
+                                              ? Container()
+                                              : Container(
+                                                  alignment: Alignment.center,
+                                                  width: 25.0,
+                                                  height: 25.0,
+                                                  decoration: BoxDecoration(
+                                                    color: Colors.green,
+                                                    shape: BoxShape.circle,
+                                                  ),
+                                                  child: Text(
+                                                    talkList[index]
+                                                        .unReadCnt
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontSize: 18),
+                                                  ),
                                                 ),
-                                              ),
-                                        SizedBox(
-                                          width: 10,
-                                        )
-                                      ],
+                                          SizedBox(
+                                            width: 10,
+                                          )
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ));
-                        });
-                  } else {
-                    return Center(child: CircularProgressIndicator());
-                  }
-                },
+                                ));
+                          });
+                    } else {
+                      return Center(child: CircularProgressIndicator());
+                    }
+                  },
+                ),
               ),
-            ),
-          ],
-        ));
+            ],
+          )),
+    );
   }
 }

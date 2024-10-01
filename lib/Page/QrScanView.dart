@@ -20,9 +20,8 @@ class QrScanView extends StatefulWidget {
 class _QrScanViewState extends State<QrScanView> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController? controller;
+  bool isProcessing = false; // 処理が進行中かどうかを管理するフラグ
 
-  // In order to get hot reload to work we need to pause the camera if the platform
-  // is android, or resume the camera if the platform is iOS.
   @override
   void reassemble() {
     super.reassemble();
@@ -52,13 +51,11 @@ class _QrScanViewState extends State<QrScanView> {
   }
 
   Widget _buildQrView(BuildContext context) {
-    // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
     var scanArea = (MediaQuery.of(context).size.width < 400 ||
-            MediaQuery.of(context).size.height < 400)
+        MediaQuery.of(context).size.height < 400)
         ? 150.0
         : 300.0;
-    // To ensure the Scanner view is properly sizes after rotation
-    // we need to listen for Flutter SizeChanged notification and update controller
+
     return QRView(
       key: qrKey,
       onQRViewCreated: _onQRViewCreated,
@@ -76,17 +73,24 @@ class _QrScanViewState extends State<QrScanView> {
    * QRコードを起動した時の動き
    */
   void _onQRViewCreated(QRViewController controller) {
-    //一度スキャンした相手のQRコードは読み込まない
-    //カメラを再起動することで読取可能
     List matchdList = [];
     setState(() {
       this.controller = controller;
     });
-    //読み込み時の処理
+
+    // 読み込み時の処理
     controller.scannedDataStream.listen((scanData) async {
-      //読み込んだ相手のID
+      // 既に処理中なら何もしない
+      if (isProcessing) return;
+
       String yourId = scanData.code!;
+
+      // まだ処理していないIDの場合のみ進む
       if (!matchdList.contains(yourId)) {
+        // カメラを停止して、処理が複数回呼ばれないようにする
+        controller.pauseCamera();
+        isProcessing = true;
+
         try {
           String ticketFlg = await FirestoreMethod.makeMatchByQrScan(yourId);
           if (ticketFlg == "0") {
@@ -94,35 +98,50 @@ class _QrScanViewState extends State<QrScanView> {
               SnackBar(content: Text('マッチング完了！')),
             );
             matchdList.add(yourId);
+
+            // マッチングが完了したらカメラ画面を閉じる
+            if (mounted) {
+              Navigator.of(context).pop();
+            }
           } else if (ticketFlg == "1") {
             if (appData.entitlementIsActive == true) {
               await showDialog(
-                  context: context,
-                  builder: (BuildContext context) => ShowDialogToDismiss(
-                        content: "チケットが不足しています。",
-                        buttonText: "はい",
-                      ));
+                context: context,
+                builder: (BuildContext context) => ShowDialogToDismiss(
+                  content: "チケットが不足しています。",
+                  buttonText: "はい",
+                ),
+              );
             } else {
               await showDialog(
-                  context: context,
-                  builder: (BuildContext context) => BillingShowDialogToDismiss(
-                      content: "チケットが不足しています。有料プランを確認しますか"));
+                context: context,
+                builder: (BuildContext context) => BillingShowDialogToDismiss(
+                  content: "チケットが不足しています。有料プランを確認しますか",
+                ),
+              );
             }
           } else {
             await showDialog(
-                context: context,
-                builder: (BuildContext context) => ShowDialogToDismiss(
-                      content: "対戦相手のチケットが不足しています。",
-                      buttonText: "はい",
-                    ));
+              context: context,
+              builder: (BuildContext context) => ShowDialogToDismiss(
+                content: "対戦相手のチケットが不足しています。",
+                buttonText: "はい",
+              ),
+            );
           }
         } catch (e) {
           await showDialog(
-              context: context,
-              builder: (BuildContext context) => ShowDialogToDismiss(
-                    content: e.toString(),
-                    buttonText: "はい",
-                  ));
+            context: context,
+            builder: (BuildContext context) => ShowDialogToDismiss(
+              content: e.toString(),
+              buttonText: "はい",
+            ),
+          );
+        } finally {
+          isProcessing = false;
+          if (mounted) {
+            controller.resumeCamera();
+          }
         }
       }
     });
@@ -137,3 +156,4 @@ class _QrScanViewState extends State<QrScanView> {
     }
   }
 }
+

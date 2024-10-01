@@ -59,7 +59,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
 
   @override
   Widget build(BuildContext context) {
-    HeaderConfig().init(context, "対戦結果参照");
+    HeaderConfig().init(context, "フィードバック入力");
     final deviceWidth = MediaQuery.of(context).size.width;
     opponent_id = widget.yourProfile.USER_ID;
     return GestureDetector(

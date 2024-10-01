@@ -3583,28 +3583,28 @@ class FirestoreMethod {
           .doc(skill.OPPONENT_ID)
           .collection('opponentList')
           .doc(auth.currentUser!.uid)
-          .update({
+          .set({
         'STROKE_FOREHAND': skill.STROKE_FOREHAND,
         'STROKE_BACKHAND': skill.STROKE_BACKHAND,
         'VOLLEY_FOREHAND': skill.VOLLEY_FOREHAND,
         'VOLLEY_BACKHAND': skill.VOLLEY_BACKHAND,
         'SERVE_1ST': skill.SERVE_1ST,
         'SERVE_2ND': skill.SERVE_2ND,
-      });
+      },SetOptions(merge: true));
       matchResultRef
           .doc(skill.OPPONENT_ID)
           .collection('opponentList')
           .doc(auth.currentUser!.uid)
           .collection('daily')
           .doc(dayKey)
-          .update({
+          .set({
         'STROKE_FOREHAND': skill.STROKE_FOREHAND,
         'STROKE_BACKHAND': skill.STROKE_BACKHAND,
         'VOLLEY_FOREHAND': skill.VOLLEY_FOREHAND,
         'VOLLEY_BACKHAND': skill.VOLLEY_BACKHAND,
         'SERVE_1ST': skill.SERVE_1ST,
         'SERVE_2ND': skill.SERVE_2ND,
-      });
+      },SetOptions(merge: true));
     } catch (e) {
       throw (e);
       print('スキルレベル登録に失敗しました --- $e');
@@ -3764,10 +3764,10 @@ class FirestoreMethod {
           .doc(myProfile.USER_ID)
           .collection('daily')
           .doc(dayKey)
-          .update({
+          .set({
         'FEEDBACK_COMMENT': feedBack.FEED_BACK,
         'FEEDBACK_FLG': true,
-      });
+      },SetOptions(merge: true));
       //profileDetail内のフィードバックカウントを加算
       final profileDetailVal =
           await profileDetailRef.doc(yourProfile.USER_ID).get();

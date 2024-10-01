@@ -50,39 +50,42 @@ class RankList extends StatelessWidget {
     return DefaultTabController(
       initialIndex: _screen,
       length: _tab.length,
-      child: Scaffold(
-        appBar: PreferredSize(
-            preferredSize: Size.fromHeight(80.0),
-            child: PreferredSize(
-              preferredSize: Size.fromHeight(40.0),
-              child: AppBar(
-                backgroundColor: HeaderConfig.backGroundColor,
-                title: HeaderConfig.appBarText,
-                iconTheme: IconThemeData(color: Colors.black),
-                bottom: TabBar(
-                  tabs: _tab,
-                  labelColor: Colors.black,
-                  unselectedLabelColor: Colors.black,
-                  indicatorColor: Colors.black,
+      child: PopScope(
+        canPop: false,
+        child: Scaffold(
+          appBar: PreferredSize(
+              preferredSize: Size.fromHeight(80.0),
+              child: PreferredSize(
+                preferredSize: Size.fromHeight(40.0),
+                child: AppBar(
+                  backgroundColor: HeaderConfig.backGroundColor,
+                  title: HeaderConfig.appBarText,
+                  iconTheme: IconThemeData(color: Colors.black),
+                  bottom: TabBar(
+                    tabs: _tab,
+                    labelColor: Colors.black,
+                    unselectedLabelColor: Colors.black,
+                    indicatorColor: Colors.black,
+                  ),
+                ),
+              )),
+          body: Stack(
+            children: [
+              Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
+              Padding(
+                padding: EdgeInsets.only(top: 40),
+                child: TabBarView(
+                  children: <Widget>[
+                    manSinglesRankList("ShokyuRank"),
+                    manSinglesRankList("ChukyuRank"),
+                    manSinglesRankList("JyokyuRank")
+                  ],
                 ),
               ),
-            )),
-        body: Stack(
-          children: [
-            Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
-            Padding(
-              padding: EdgeInsets.only(top: 40),
-              child: TabBarView(
-                children: <Widget>[
-                  manSinglesRankList("ShokyuRank"),
-                  manSinglesRankList("ChukyuRank"),
-                  manSinglesRankList("JyokyuRank")
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
+          drawer: DrawerConfig.drawer,
         ),
-        drawer: DrawerConfig.drawer,
       ),
     );
   }
