@@ -56,7 +56,13 @@ class _FindPageState extends State<FindPage> {
       torokuAge = profile.AGE;
     });
   }
-
+  @override
+  void dispose() {
+    // コントローラを解放
+    inputId.dispose();
+    inputShichouson.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     //必要コンフィグの初期化

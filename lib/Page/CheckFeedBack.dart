@@ -74,6 +74,12 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
       }
     });
   }
+  @override
+  void dispose() {
+    _scrollController.dispose(); // ScrollControllerを解放
+    super.dispose(); // 親クラスのdisposeを呼び出す
+  }
+
 
   Future<void> _loadMoreData() async {
     if (_isLoadingMore) return;

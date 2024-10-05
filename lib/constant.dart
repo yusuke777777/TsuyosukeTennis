@@ -21,12 +21,20 @@ const amazonApiKey = 'amazon_api_key';//使用なし
 //const String functionUrl = 'https://asia-northeast1-tsuyosuketest.cloudfunctions.net/sendMessage'; //開発
 const String functionUrl = 'https://asia-northeast1-tsuyosuketeniss.cloudfunctions.net/sendMessage'; //本番
 
-//広告(googleAds)
+//広告(googleAdsInterstitial)
 //Android
-//const googleAdsAndroid = 'ca-app-pub-3940256099942544/9214589741'; //開発
-const googleAdsAndroid = 'ca-app-pub-3940256099942544/9214589741'; //本番
+//const googleInterstitialAdsAndroid = 'ca-app-pub-3940256099942544/1033173712'; //開発
+const googleInterstitialAdsAndroid = 'ca-app-pub-3940256099942544/1033173712'; //本番
 //IOS
-//const googleAdsIos = 'ca-app-pub-3940256099942544/2435281174'; //開発
-const googleAdsIos = 'ca-app-pub-3940256099942544/2435281174'; //本番
+//const googleInterstitialAdsIos = 'ca-app-pub-3940256099942544/4411468910'; //開発
+const googleInterstitialAdsIos = 'ca-app-pub-3940256099942544/4411468910'; //本番
+
+//広告(googleAdsBanner)
+//Android
+//const googleAdsBannerAndroid = 'ca-app-pub-3940256099942544/9214589741'; //開発
+const googleAdsBannerAndroid = 'ca-app-pub-3940256099942544/9214589741'; //本番
+//IOS
+//const googleAdsBannerIos = 'ca-app-pub-3940256099942544/2435281174'; //開発
+const googleAdsBannerIos = 'ca-app-pub-3940256099942544/2435281174'; //本番
 
 

@@ -15,6 +15,14 @@ class _UnsubscribeState extends State<UnsubscribePage> {
   final TextEditingController _passwordController = TextEditingController();
 
   @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "退会");
     DrawerConfig().init(context);

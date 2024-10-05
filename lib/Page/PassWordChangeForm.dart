@@ -15,14 +15,24 @@ class _PassWordChangeFormState extends State<PassWordChangeForm> {
   final _auth = FirebaseAuth.instance;
   final _passWordController = TextEditingController();
   final _passWordController_comfirm = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode_2 = FocusNode();
+
+
+  @override
+  void dispose() {
+    _passWordController.dispose(); // TextEditingControllerの解放
+    _passWordController_comfirm.dispose(); // TextEditingControllerの解放
+    _focusNode.dispose(); // FocusNodeの解放
+    _focusNode_2.dispose(); // FocusNodeの解放
+    super.dispose(); // スーパークラスのdisposeを呼び出す
+  }
+
 
   @override
   Widget build(BuildContext context) {
     //必要コンフィグの初期化
     HeaderConfig().init(context, "パスワード変更");
-
-    final FocusNode _focusNode = FocusNode();
-    final FocusNode _focusNode_2 = FocusNode();
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(

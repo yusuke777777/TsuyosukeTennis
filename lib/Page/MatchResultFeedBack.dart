@@ -31,7 +31,7 @@ class MatchResultFeedBack extends StatefulWidget {
 
 class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
   InterstitialAd? _interstitialAd;
-  AdInterstitial adInterstitial = new AdInterstitial();
+  AdInterstitial adInterstitial = AdInterstitial(); // インタースティシャル広告のラッパークラス
   //評価数を格納
   late String opponent_id;
   double stroke_fore = 0;
@@ -48,13 +48,12 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
   void initState() {
     super.initState();
     adInterstitial.createAd();
-
-    @override
-    void dispose() {
-      super.dispose();
-      _interstitialAd?.dispose();
-    }
-
+  }
+  @override
+  void dispose() {
+    _interstitialAd?.dispose();
+    inputWord.dispose();
+    super.dispose();
   }
 
   @override

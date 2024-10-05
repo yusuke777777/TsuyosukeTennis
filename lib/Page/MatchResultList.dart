@@ -71,6 +71,12 @@ class _MatchResultListState extends State<MatchResultList> {
       }
     });
   }
+  @override
+  void dispose() {
+    _scrollController.dispose(); // スクロールコントローラーを解放
+    super.dispose(); // 親クラスのdisposeを呼び出す
+  }
+
 
   @override
   Widget build(BuildContext context) {

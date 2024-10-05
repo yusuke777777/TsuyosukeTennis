@@ -28,15 +28,18 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
+  late Future<CprofileDetail> myProfileDetail;
+  @override
+  void initState() {
+    super.initState();
+    myProfileDetail = FirestoreMethod.getMyDetailProfile(auth.currentUser!.uid);
+  }
 
   @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "ホーム");
     DrawerConfig().init(context);
     final deviceWidth = MediaQuery.of(context).size.width;
-
-    late Future<CprofileDetail> myProfileDetail =
-        FirestoreMethod.getMyDetailProfile(auth.currentUser!.uid);
 
     return PopScope(
       canPop: false,
@@ -964,5 +967,10 @@ class _HomePageState extends State<HomePage> {
             }),
       ),
     );
+  }
+  @override
+  void dispose() {
+    // 必要なリソースを解放する処理をここに追加
+    super.dispose();
   }
 }

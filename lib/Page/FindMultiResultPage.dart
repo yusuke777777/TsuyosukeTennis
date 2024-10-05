@@ -233,6 +233,12 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose(); // ScrollControllerを解放
+    super.dispose(); // 親クラスのdisposeも呼び出す
+  }
+
+  @override
   Widget build(BuildContext context) {
     //必要コンフィグの初期化
     HeaderConfig().init(context, "検索結果");
@@ -268,16 +274,43 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                     } else {
                       return InkWell(
                         onTap: () async {
-                          //トーク画面へ遷移
-                          TalkRoomModel room = await FirestoreMethod.makeRoom(
-                              auth.currentUser!.uid,
-                              searchResultListAll[index].USER_ID);
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(
+                                      searchResultListAll[index].NICK_NAME +
+                                          'さんとトークしてみますか'),
+                                  actions: <Widget>[
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
+                                      child: Text('はい'),
+                                      onPressed: () async{
+                                        //トーク画面へ遷移
+                                        TalkRoomModel room = await FirestoreMethod.makeRoom(
+                                            auth.currentUser!.uid,
+                                            searchResultListAll[index].USER_ID);
 
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => TalkRoom(room),
-                              ));
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => TalkRoom(room),
+                                            ));
+
+                                      },
+                                    ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
+                                      child: Text('いいえ'),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
                         },
                         child: Card(
                           color: Colors.white,

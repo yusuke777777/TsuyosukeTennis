@@ -80,6 +80,11 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
       }
     });
   }
+  @override
+  void dispose() {
+    _scrollController.dispose(); // ScrollControllerの解放
+    super.dispose();
+  }
 
   Future<void> _loadMoreData() async {
     if (_isLoadingMore) return;

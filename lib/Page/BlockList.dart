@@ -135,4 +135,10 @@ class _BlockListState extends State<BlockList> {
             )
     );
   }
+  @override
+  void dispose() {
+    // 必要なリソースを解放する処理をここに追加
+    super.dispose();
+  }
+
 }

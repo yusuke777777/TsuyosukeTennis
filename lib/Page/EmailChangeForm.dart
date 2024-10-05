@@ -14,13 +14,13 @@ class _EmailChangeFormState extends State<EmailChangeForm> {
   final _auth = FirebaseAuth.instance;
   final _emailController = TextEditingController();
   final _emailController_now = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
+  final FocusNode _focusNode_now = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     //必要コンフィグの初期化
     HeaderConfig().init(context, "メールアドレス変更");
-    final FocusNode _focusNode = FocusNode();
-    final FocusNode _focusNode_now = FocusNode();
     return GestureDetector(
       onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
       child: Scaffold(
@@ -138,5 +138,13 @@ class _EmailChangeFormState extends State<EmailChangeForm> {
         ),
       ),
     );
+  }
+  @override
+  void dispose() {
+    _emailController.dispose(); // EmailControllerを解放
+    _emailController_now.dispose(); // 現在のEmailControllerを解放
+    _focusNode.dispose(); // FocusNodeを解放
+    _focusNode_now.dispose(); // 現在のFocusNodeを解放
+    super.dispose(); // 親クラスのdisposeを呼び出す
   }
 }

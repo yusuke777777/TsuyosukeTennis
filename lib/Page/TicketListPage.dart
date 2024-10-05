@@ -33,6 +33,12 @@ class _TicketListState extends State<TicketList> {
   }
 
   @override
+  void dispose() {
+    // 必要なリソースがあればここで解放する
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
     HeaderConfig().init(context, "チケット管理");

@@ -45,6 +45,16 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   @override
+  void dispose() {
+    widget.mailController.dispose();
+    widget.passwordController.dispose();
+    widget.confirmController.dispose();
+    useridController.dispose();
+    super.dispose();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
     return WillPopScope(

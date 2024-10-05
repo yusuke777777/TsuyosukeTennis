@@ -22,6 +22,14 @@ class ScoreRefPageState extends State<ScoreRefPage> {
   String opponent_id;
 
   @override
+  void dispose() {
+    // 必要なリソースがあればここで解放する
+    super.dispose();
+  }
+
+
+
+  @override
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
     HeaderConfig().init(context, "対戦成績");

@@ -64,6 +64,12 @@ class _TalkRoomState extends State<TalkRoom> {
       }
     });
   }
+  @override
+  void dispose() {
+    _scrollController.dispose(); // スクロールコントローラーを破棄
+    super.dispose();
+  }
+
 
   Stream<List<QueryDocumentSnapshot>> _getMessagesStream() {
     return FirestoreMethod.roomRef

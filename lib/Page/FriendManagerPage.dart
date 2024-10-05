@@ -111,6 +111,13 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
     });
   }
 
+  @override
+  void dispose() {
+    _scrollController.dispose(); // ScrollControllerの解放
+    super.dispose();
+  }
+
+
   Future<void> _loadMoreData() async {
     if (_isLoadingMore) return;
 
@@ -343,56 +350,6 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                             BillingShowDialogToDismiss(
                                               content: "友人との対戦成績を確認するためには、有料プランへの加入が必要です。有料プランを確認しますか",
                                             ));
-                                    //
-                                    // showDialog(
-                                    //     context: context,
-                                    //     builder: (_) => AlertDialog(
-                                    //           content: Text(
-                                    //               "友人との対戦成績を確認するためには、有料プランへの加入が必要です。有料プランを確認しますか"),
-                                    //           actions: <Widget>[
-                                    //             ElevatedButton(
-                                    //               style:
-                                    //                   ElevatedButton.styleFrom(
-                                    //                       primary: Colors
-                                    //                           .lightGreenAccent,
-                                    //                       onPrimary:
-                                    //                           Colors.black),
-                                    //               child: Text('はい'),
-                                    //               onPressed: () async {
-                                    //                 final offerings =
-                                    //                     await Purchases
-                                    //                         .getOfferings();
-                                    //                 if (offerings == null ||
-                                    //                     offerings.current ==
-                                    //                         null) {
-                                    //                   // offerings are empty, show a message to your user
-                                    //                 } else {
-                                    //                   Navigator.pushReplacement(
-                                    //                     context,
-                                    //                     MaterialPageRoute(
-                                    //                         builder: (context) =>
-                                    //                             Billing(
-                                    //                                 offering:
-                                    //                                     offerings!
-                                    //                                         .current!)),
-                                    //                   );
-                                    //                 }
-                                    //               },
-                                    //             ),
-                                    //             ElevatedButton(
-                                    //               style:
-                                    //                   ElevatedButton.styleFrom(
-                                    //                       primary: Colors
-                                    //                           .lightGreenAccent,
-                                    //                       onPrimary:
-                                    //                           Colors.black),
-                                    //               child: Text('いいえ'),
-                                    //               onPressed: () {
-                                    //                 Navigator.pop(context);
-                                    //               },
-                                    //             ),
-                                    //           ],
-                                    //         ));
                                   }
                                 },
                               ),

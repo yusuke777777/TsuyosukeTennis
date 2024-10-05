@@ -79,7 +79,6 @@ class _MatchListState extends State<MatchList> {
 
       if (querySnapshot.docs.isNotEmpty) {
         lastDocument = querySnapshot.docs.last; // 最後のドキュメントを設定
-        print("eee");
       }
 
       setState(() {
@@ -105,6 +104,14 @@ class _MatchListState extends State<MatchList> {
       }
     });
   }
+
+  @override
+  void dispose() {
+    _scrollController.dispose(); // ScrollControllerの解放
+    super.dispose();
+  }
+
+
 
   Future<void> _loadMoreData() async {
     if (_isLoadingMore) return;
@@ -226,13 +233,48 @@ class _MatchListState extends State<MatchList> {
                               motion: DrawerMotion(),
                               children: [
                                 SlidableAction(
-                                  onPressed: (value) {
-                                    FirestoreMethod.delMatchList(
-                                        matchListAll[index].MATCH_ID, context);
-                                    // リストから削除して再描画
-                                    setState(() {
-                                      matchListAll.removeAt(index); // 項目をリストから削除
-                                    });
+                                  onPressed: (value) async {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text('本当に削除して宜しいですか'),
+                                            actions: <Widget>[
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    foregroundColor: Colors.black,
+                                                    backgroundColor: Colors.lightGreenAccent),
+                                                child: Text('はい'),
+                                                onPressed: () async {
+                                                  try {
+                                                    await FirestoreMethod.delMatchList(
+                                                        matchListAll[index].MATCH_ID);
+                                                    Navigator.pop(context);
+                                                    setState(() {
+                                                      matchListAll.removeAt(index);
+                                                    });
+                                                  } catch (e) {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext context) => ShowDialogToDismiss(
+                                                          content: "マッチングリストの削除に失敗しました",
+                                                          buttonText: "はい",
+                                                        ));
+                                                  }
+                                                },
+                                              ),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    foregroundColor: Colors.black,
+                                                    backgroundColor: Colors.lightGreenAccent),
+                                                child: Text('いいえ'),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        });
                                   },
                                   backgroundColor: Colors.red,
                                   icon: Icons.delete,

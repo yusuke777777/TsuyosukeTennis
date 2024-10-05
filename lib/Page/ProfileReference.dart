@@ -30,6 +30,10 @@ class _ProfileReferenceState extends State<ProfileReference> {
   //対象ユーザのプロフィールをユーザIDをキーに取得
   late Future<CprofileDetail> yourProfileDetail =
       FirestoreMethod.getYourDetailProfile(user_id);
+  @override
+  void dispose() {
+    super.dispose(); // 親クラスのdisposeを呼び出す
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -190,94 +190,6 @@ class _BillingState extends State<Billing> {
                                           ),
                                           onTap: () async {
                                             try {
-                                            //   //トーク上限数のリセット
-                                            //   await FirebaseFirestore.instance
-                                            //       .runTransaction(
-                                            //           (transaction) async {
-                                            //     //プレミアム会員登録時に、トークメッセージの上限数でリセット
-                                            //     // 現在のタイムスタンプを取得
-                                            //     Timestamp currentTimestamp =
-                                            //         Timestamp.now();
-                                            //
-                                            //     // Firestoreのユーザードキュメントを更新してリセット
-                                            //     DocumentReference
-                                            //         userLimitMgmtDocRef =
-                                            //         FirebaseFirestore.instance
-                                            //             .collection(
-                                            //                 'userLimitMgmt')
-                                            //             .doc(FirestoreMethod
-                                            //                 .auth
-                                            //                 .currentUser!
-                                            //                 .uid);
-                                            //
-                                            //     try {
-                                            //       await transaction.set(
-                                            //           userLimitMgmtDocRef,
-                                            //           {
-                                            //             'dailyMessageLimit':
-                                            //             messagePremiumLimit,
-                                            //             // リセット後のデフォルト上限を設定
-                                            //             'lastResetTimestamp':
-                                            //                 currentTimestamp,
-                                            //           },
-                                            //           SetOptions(merge: true));
-                                            //     } catch (e) {
-                                            //       throw ("メッセージ数のリセットに失敗しました $e");
-                                            //     }
-                                            //
-                                            //     //プレミアム会員登録時に、チケットの上限数でリセット
-                                            //     DocumentReference
-                                            //         userTicketMgmDocRef =
-                                            //         FirebaseFirestore.instance
-                                            //             .collection(
-                                            //                 'userTicketMgmt')
-                                            //             .doc(FirestoreMethod
-                                            //                 .auth
-                                            //                 .currentUser!
-                                            //                 .uid);
-                                            //
-                                            //     DateTime now = DateTime.now();
-                                            //     DateFormat outputFormat =
-                                            //         DateFormat('yyyy-MM-dd');
-                                            //     String today =
-                                            //         outputFormat.format(now);
-                                            //     int zengetsuTicketSu = 0;
-                                            //     DocumentSnapshot
-                                            //         userTicketMgmDoc =
-                                            //         await userTicketMgmDocRef
-                                            //             .get();
-                                            //
-                                            //     if (userTicketMgmDoc.exists) {
-                                            //       zengetsuTicketSu =
-                                            //           userTicketMgmDoc[
-                                            //               'zengetsuTicketSu'];
-                                            //     }
-                                            //     int ticketSuSum =
-                                            //         ticketPremiumLimit +
-                                            //             zengetsuTicketSu;
-                                            //     //当月のプレミアム会員のチケット数だけ更新する
-                                            //     try {
-                                            //       transaction.set(
-                                            //           userTicketMgmDocRef,
-                                            //           {
-                                            //             'ticketSu': ticketSuSum,
-                                            //             'togetsuTicketSu':
-                                            //                 ticketPremiumLimit,
-                                            //             'zengetsuTicketSu':
-                                            //                 zengetsuTicketSu,
-                                            //             'ticketKoushinYmd':
-                                            //                 today
-                                            //           },
-                                            //           SetOptions(merge: true));
-                                            //       // throw ("エラー");
-                                            //     } catch (e) {
-                                            //       throw ("TSPプレミアム会員のチケット発行に失敗しました $e");
-                                            //     }
-                                            //   }).then(
-                                            //           (value) => print(
-                                            //               "DocumentSnapshot successfully updated!"),
-                                            //           onError: (e) =>
-                                            //               throw ("課金処理の更新に失敗しました $e"));
                                               //処理
                                               CustomerInfo customerInfo =
                                                   await Purchases
@@ -317,86 +229,6 @@ class _BillingState extends State<Billing> {
                           ),
                   ],
                 ),
-                // ListView.builder(
-                //   itemCount: widget.offering.availablePackages.length,
-                //   itemBuilder: (BuildContext context, int index) {
-                //     var myProductList = widget.offering.availablePackages;
-                //     color:
-                //     Colors.black,
-                //     child: ListTile(
-                //     onTap: () async {
-                //     try {
-                //     bool beforeentitlementIsActive =
-                //     appData.entitlementIsActive;
-                //     CustomerInfo customerInfo =
-                //     await Purchases.purchasePackage(
-                //     myProductList[index]);
-                //     EntitlementInfo? entitlement =
-                //     customerInfo.entitlements.all[entitlementID];
-                //     appData.entitlementIsActive =
-                //     entitlement?.isActive ?? false;
-                //     //トーク上限数のリセット
-                //     print("beforeentitlementIsActive" +
-                //     beforeentitlementIsActive.toString());
-                //     print("entitlementIsActive" +
-                //     appData.entitlementIsActive.toString());
-                //
-                //     if (beforeentitlementIsActive == false &&
-                //     appData.entitlementIsActive == true) {
-                //     await FirebaseFirestore.instance.runTransaction(
-                //     (transaction) async {
-                //     //プレミアム会員登録時に、トークメッセージの上限数でリセット
-                //     await resetDailyMessageLimit(
-                //     FirestoreMethod.auth.currentUser!.uid);
-                //     //プレミアム会員登録時に、チケットの上限数でリセット
-                //     await billingUpdateTicket(
-                //     FirestoreMethod.auth.currentUser!.uid);
-                //     }).then(
-                //     (value) => print(
-                //     "DocumentSnapshot successfully updated!"),
-                //     onError: (e) =>
-                //     throw ("課金処理の更新に失敗しました $e"));
-                //     }
-                //     } catch (e) {
-                //     await showDialog(
-                //     context: context,
-                //     builder: (BuildContext context) =>
-                //     ShowDialogToDismiss(
-                //     content: e.toString(),
-                //     buttonText: "はい",
-                //     ));
-                //     }
-                //     setState(() {});
-                //     Navigator.pop(context);
-                //     },
-                //     title: Text(
-                //     myProductList[index].storeProduct.title,
-                //     style: TextStyle(
-                //     color: Colors.white,
-                //     fontWeight: FontWeight.bold,
-                //     fontSize: 18,
-                //     ),
-                //     ),
-                //     subtitle: Text(
-                //     myProductList[index].storeProduct.description,
-                //     style: TextStyle(
-                //     color: Colors.white,
-                //     fontWeight: FontWeight.normal,
-                //     fontSize: 16,
-                //     ).copyWith(fontSize: 10),
-                //     ),
-                //     trailing: Text(
-                //     myProductList[index].storeProduct.priceString,
-                //     style: TextStyle(
-                //     color: Colors.white,
-                //     fontWeight: FontWeight.bold,
-                //     fontSize: 18.0,
-                //     ))),
-                //     );
-                //   },
-                //   shrinkWrap: true,
-                //   physics: const ClampingScrollPhysics(),
-                // ),
                 const Padding(
                   padding: EdgeInsets.only(
                       top: 32, bottom: 16, left: 16.0, right: 16.0),
@@ -416,34 +248,14 @@ class _BillingState extends State<Billing> {
             ),
           ),
         )
-        // return Scaffold(
-        //   appBar: AppBar(
-        //       backgroundColor: HeaderConfig.backGroundColor,
-        //       title: HeaderConfig.appBarText,
-        //       iconTheme: IconThemeData(color: Colors.black),
-        //       leading: HeaderConfig.backIcon),
-        //   body: Column(
-        //     mainAxisAlignment: MainAxisAlignment.start,
-        //     crossAxisAlignment: CrossAxisAlignment.start,
-        //     children: [
-        //       ListTile(
-        //         title: Text('プレミアムプランへ加入',
-        //             style: TextStyle(fontSize: 20, color: Colors.black)),
-        //         onTap: () async{
-        //           final offerings = await Purchases.getOfferings();
-        //           final product = offerings.current?.monthly?.storeProduct;
-        //           final info = await Purchases.purchaseProduct('TSP0001'); // 1つのサブスクリプションプランしかない場合はproduct.idは固定文字列で指定しても問題ありません
-        //
-        //           final infoCus = await Purchases.getCustomerInfo();
-        //           final isSubscribing = infoCus.entitlements.all['TSPプレミアムプラン']?.isActive == true;
-        //
-        //         },
-        //       ),
-        //     ],
-        //   ),
-        // );
         );
   }
+  @override
+  void dispose() {
+    // 必要なリソースを解放する処理をここに追加
+    super.dispose();
+  }
+
   String parsePurchaseError(dynamic error) {
     if (error is PlatformException) {
       print(error.code);

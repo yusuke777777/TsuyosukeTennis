@@ -31,6 +31,12 @@ class _MySettingState extends State<MySetting> {
   }
 
   @override
+  void dispose() {
+    super.dispose(); // 親クラスのdisposeを呼び出す
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "設定");
     return Scaffold(

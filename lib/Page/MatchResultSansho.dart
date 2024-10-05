@@ -24,7 +24,15 @@ class MatchResultSansho extends StatefulWidget {
   _MatchResultSanshoState createState() => _MatchResultSanshoState();
 }
 
+
 class _MatchResultSanshoState extends State<MatchResultSansho> {
+
+  @override
+  void dispose() {
+    super.dispose(); // 親クラスのdisposeを呼び出す
+  }
+
+
   @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "対戦結果参照");

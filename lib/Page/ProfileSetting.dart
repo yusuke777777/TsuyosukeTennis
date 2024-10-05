@@ -171,6 +171,23 @@ class _ProfileSettingState extends State<ProfileSetting> {
   bool isDoubleUser = false;
 
   @override
+  void dispose() {
+    // TextEditingControllerの解放
+    nickName.dispose();
+    inputUserID.dispose();
+    curShichoson.dispose();
+    coment.dispose();
+
+    // activityListの中のTextEditingControllerも解放する
+    for (var item in activityList) {
+      item.SHICHOSON.dispose();
+    }
+
+    super.dispose();
+  }
+
+
+  @override
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
     HeaderConfig().init(context, "プロフィール設定");

@@ -4,9 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:tsuyosuke_tennis_ap/Page/bk_ProfileSetting.dart';
-
 import '../Common/CtalkRoom.dart';
+import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/GoogleAds.dart';
 import '../FireBase/NotificationMethod.dart';
@@ -42,12 +41,12 @@ class _TalkListState extends State<TalkList> {
     talkList =
         await FirestoreMethod.getRooms(FirestoreMethod.auth.currentUser!.uid);
   }
+
   @override
   void dispose() {
     _subscription.cancel(); // リスナーを破棄する
     super.dispose();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +54,7 @@ class _TalkListState extends State<TalkList> {
     HeaderConfig().init(context, "トーク一覧");
     DrawerConfig().init(context);
     return PopScope(
-     canPop: false,
+      canPop: false,
       child: Scaffold(
           appBar: AppBar(
             backgroundColor: HeaderConfig.backGroundColor,
@@ -65,7 +64,10 @@ class _TalkListState extends State<TalkList> {
           drawer: DrawerConfig.drawer,
           body: Stack(
             children: [
-              Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
+              Container(
+                  alignment: Alignment.center,
+                  height: 40,
+                  child: AdBanner(size: AdSize.banner)),
               Padding(
                 padding: EdgeInsets.only(top: 40),
                 child: FutureBuilder(
@@ -84,6 +86,7 @@ class _TalkListState extends State<TalkList> {
                                         FirestoreMethod.addBlockList(
                                             talkList[index].user.USER_ID);
                                         setState(() {
+                                          print("aaaaaa");
                                         });
                                       },
                                       backgroundColor: Colors.grey,
@@ -93,11 +96,52 @@ class _TalkListState extends State<TalkList> {
                                     ),
                                     SlidableAction(
                                       onPressed: (value) {
-                                        FirestoreMethod.delTalkRoom(
-                                            talkList[index].roomId, context);
                                         // リストから削除して再描画
-                                        setState(() {
-                                        });
+                                        showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return AlertDialog(
+                                                title: Text('本当に削除して宜しいですか'),
+                                                actions: <Widget>[
+                                                  ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                        foregroundColor:
+                                                            Colors.black,
+                                                        backgroundColor: Colors
+                                                            .lightGreenAccent),
+                                                    child: Text('はい'),
+                                                    onPressed: () async {
+                                                      try {
+                                                        await FirestoreMethod
+                                                            .delTalkRoom(
+                                                            talkList[index]
+                                                                .roomId);
+                                                        Navigator.pop(context);
+                                                        setState(() {});
+                                                      }catch(e){
+                                                        showDialog(
+                                                            context: context,
+                                                            builder: (BuildContext context) => ShowDialogToDismiss(
+                                                              content: "トークルームの削除に失敗しました",
+                                                              buttonText: "はい",
+                                                            ));
+                                                      }
+                                                    },
+                                                  ),
+                                                  ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                        foregroundColor:
+                                                            Colors.black,
+                                                        backgroundColor: Colors
+                                                            .lightGreenAccent),
+                                                    child: Text('いいえ'),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                ],
+                                              );
+                                            });
                                       },
                                       backgroundColor: Colors.red,
                                       icon: Icons.delete,
@@ -120,37 +164,45 @@ class _TalkListState extends State<TalkList> {
                                     child: Container(
                                       height: 70,
                                       child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
                                         children: [
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 8.0),
-                                            child:
-                                                InkWell(
-                                                  child: talkList[index].user.PROFILE_IMAGE == ''
-                                                      ? CircleAvatar(
-                                                          backgroundColor: Colors.white,
-                                                          backgroundImage: NetworkImage(
-                                                              "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                                          radius: 30,
-                                                        )
-                                                      : CircleAvatar(
-                                                          backgroundColor: Colors.white,
-                                                          backgroundImage: NetworkImage(
-                                                              talkList[index]
-                                                                  .user
-                                                                  .PROFILE_IMAGE),
-                                                          radius: 30,
-                                                        ),
-                                                  onTap: () {
-                                                    Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                ProfileReference(
-                                                                    talkList[index].user.USER_ID)));
-                                                  },
-                                                ),
+                                            child: InkWell(
+                                              child: talkList[index]
+                                                          .user
+                                                          .PROFILE_IMAGE ==
+                                                      ''
+                                                  ? CircleAvatar(
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      backgroundImage: NetworkImage(
+                                                          "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                                      radius: 30,
+                                                    )
+                                                  : CircleAvatar(
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                      backgroundImage:
+                                                          NetworkImage(talkList[
+                                                                  index]
+                                                              .user
+                                                              .PROFILE_IMAGE),
+                                                      radius: 30,
+                                                    ),
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            ProfileReference(
+                                                                talkList[index]
+                                                                    .user
+                                                                    .USER_ID)));
+                                              },
+                                            ),
                                           ),
                                           Expanded(
                                             child: Column(
@@ -159,17 +211,22 @@ class _TalkListState extends State<TalkList> {
                                               children: [
                                                 Container(
                                                     child: Text(
-                                                        talkList[index].user.NICK_NAME,
+                                                        talkList[index]
+                                                            .user
+                                                            .NICK_NAME,
                                                         style: TextStyle(
                                                             fontSize: 20,
                                                             fontWeight:
-                                                                FontWeight.bold))),
+                                                                FontWeight
+                                                                    .bold))),
                                                 Container(
                                                     child: Text(
                                                   talkList[index].lastMessage,
                                                   style: TextStyle(
-                                                      color: Colors.grey, fontSize: 13),
-                                                  overflow: TextOverflow.ellipsis,
+                                                      color: Colors.grey,
+                                                      fontSize: 13),
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   maxLines: 2,
                                                 ))
                                               ],

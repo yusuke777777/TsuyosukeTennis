@@ -91,16 +91,41 @@ class _FindResultPageState extends State<FindResultPage> {
                     } else {
                       return InkWell(
                         onTap: () async {
-                          //トーク画面へ遷移
-                          TalkRoomModel room = await FirestoreMethod.makeRoom(
-                              auth.currentUser!.uid,
-                              profileList[2]);
-
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => TalkRoom(room),
-                              ));
+                          showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: Text(
+                                      profileList[0] +
+                                          'さんとトークしてみますか'),
+                                  actions: <Widget>[
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
+                                      child: Text('はい'),
+                                      onPressed: () async{
+                                        //トーク画面へ遷移
+                                        TalkRoomModel room = await FirestoreMethod.makeRoom(
+                                            auth.currentUser!.uid,
+                                            profileList[2]);
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) => TalkRoom(room),
+                                            ));
+                                      },
+                                    ),
+                                    ElevatedButton(
+                                      style: ElevatedButton.styleFrom(
+                                          foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
+                                      child: Text('いいえ'),
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                    ),
+                                  ],
+                                );
+                              });
                         },
                         child: Card(
                           color: Colors.white,
@@ -195,4 +220,10 @@ class _FindResultPageState extends State<FindResultPage> {
       ),
     );
   }
+  @override
+  void dispose() {
+    // 使用しているリソースの解放
+    super.dispose();
+  }
+
 }

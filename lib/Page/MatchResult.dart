@@ -31,8 +31,8 @@ class MatchResult extends StatefulWidget {
 class _MatchResultState extends State<MatchResult> {
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
-  InterstitialAd? _interstitialAd;
-  AdInterstitial adInterstitial = new AdInterstitial();
+  InterstitialAd? _interstitialAd; // インタースティシャル広告
+  AdInterstitial adInterstitial = AdInterstitial(); // インタースティシャル広告のラッパークラス
 
   //アクティビィリスト
   List<CmatchResult> matchResultList = [
@@ -93,12 +93,13 @@ class _MatchResultState extends State<MatchResult> {
         FirestoreMethod.reviewFeatureEnabled = enabled;
       });
     });
-
-    @override
-    void dispose() {
-      super.dispose();
-      _interstitialAd?.dispose();
-    }
+  }
+  @override
+  void dispose() {
+    _interstitialAd?.dispose();
+    inputWord.dispose();
+    inputTitle.dispose();
+    super.dispose();
   }
 
   @override

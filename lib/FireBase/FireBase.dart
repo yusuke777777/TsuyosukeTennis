@@ -747,33 +747,12 @@ class FirestoreMethod {
   }
 
   //トークルーム削除
-  static void delTalkRoom(String delId, BuildContext context) async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('本当に削除して宜しいですか'),
-            actions: <Widget>[
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
-                child: Text('はい'),
-                onPressed: () {
-                  roomRef.doc(delId).delete();
-                  Navigator.pop(context);
-                },
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
-                child: Text('いいえ'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        });
+  static Future<void> delTalkRoom(String delId) async {
+    try {
+      await roomRef.doc(delId).delete();
+    } catch (e) {
+      throw(e);
+    }
   }
 
   /**
@@ -847,7 +826,6 @@ class FirestoreMethod {
         count = await NotificationMethod.unreadCountGet(yourUserId);
       } catch (e) {
         throw (e);
-        throw (e);
         print("未読メッセージ数を正しく取得できませんでした");
       }
       //ブロックリストに存在しない場合に表示する
@@ -864,9 +842,7 @@ class FirestoreMethod {
           roomList.add(room);
         } catch (e) {
           throw (e);
-          throw (e);
           print("トークルームの取得に失敗しました");
-          print(e);
         }
       }
     });
@@ -1712,80 +1688,13 @@ class FirestoreMethod {
     return ticketFlg;
   }
 
-  // static Future<List<MatchListModel>> getMatchList(String myUserId) async {
-  //   final snapshot = await matchRef.get();
-  //   List<MatchListModel> matchList = [];
-  //   await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-  //     if (doc.data()['RECIPIENT_ID'].contains(myUserId)) {
-  //       CprofileSetting yourProfile =
-  //           await getYourProfile(doc.data()['SENDER_ID']);
-  //       CprofileSetting myProfile =
-  //           await getYourProfile(doc.data()['RECIPIENT_ID']);
-  //
-  //       MatchListModel match = MatchListModel(
-  //         MATCH_ID: doc.data()['MATCH_ID'],
-  //         RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
-  //         SENDER_ID: doc.data()['SENDER_ID'],
-  //         SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
-  //         MATCH_FLG: doc.data()['MATCH_FLG'],
-  //         MY_USER: myProfile,
-  //         YOUR_USER: yourProfile,
-  //       );
-  //       matchList.add(match);
-  //     } else if (doc.data()['SENDER_ID'].contains(myUserId)) {
-  //       CprofileSetting yourProfile =
-  //           await getYourProfile(doc.data()['RECIPIENT_ID']);
-  //       CprofileSetting myProfile =
-  //           await getYourProfile(doc.data()['SENDER_ID']);
-  //       MatchListModel match = MatchListModel(
-  //         MATCH_ID: doc.data()['MATCH_ID'],
-  //         RECIPIENT_ID: doc.data()['RECIPIENT_ID'],
-  //         SENDER_ID: doc.data()['SENDER_ID'],
-  //         SAKUSEI_TIME: doc.data()['SAKUSEI_TIME'],
-  //         MATCH_FLG: doc.data()['MATCH_FLG'],
-  //         MY_USER: myProfile,
-  //         YOUR_USER: yourProfile,
-  //       );
-  //       matchList.add(match);
-  //     }
-  //     print(matchList.length);
-  //   });
-  //   matchList.sort((a, b) => b.SAKUSEI_TIME.compareTo(a.SAKUSEI_TIME));
-  //   return matchList;
-  // }
-
   //マッチング一覧削除
-  static void delMatchList(String delId, BuildContext context) async {
-    showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('本当に削除して宜しいですか'),
-            actions: <Widget>[
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
-                child: Text('はい'),
-                onPressed: () {
-                  try {
-                    matchRef.doc(delId).delete();
-                    Navigator.pop(context);
-                  } catch (e) {
-                    print("delMatchListエラー");
-                  }
-                },
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
-                child: Text('いいえ'),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
-            ],
-          );
-        });
+  static Future<void> delMatchList(String delId) async {
+    try {
+      await matchRef.doc(delId).delete();
+    } catch (e) {
+      throw(e);
+    }
   }
 
   //マッチング一覧削除(対戦結果入力時削除)
@@ -3284,7 +3193,8 @@ class FirestoreMethod {
             actions: <Widget>[
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.lightGreenAccent),
                 child: Text('はい'),
                 onPressed: () {
                   try {
@@ -3297,7 +3207,8 @@ class FirestoreMethod {
               ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
+                    foregroundColor: Colors.black,
+                    backgroundColor: Colors.lightGreenAccent),
                 child: Text('いいえ'),
                 onPressed: () {
                   Navigator.pop(context);
@@ -3590,7 +3501,7 @@ class FirestoreMethod {
         'VOLLEY_BACKHAND': skill.VOLLEY_BACKHAND,
         'SERVE_1ST': skill.SERVE_1ST,
         'SERVE_2ND': skill.SERVE_2ND,
-      },SetOptions(merge: true));
+      }, SetOptions(merge: true));
       matchResultRef
           .doc(skill.OPPONENT_ID)
           .collection('opponentList')
@@ -3604,7 +3515,7 @@ class FirestoreMethod {
         'VOLLEY_BACKHAND': skill.VOLLEY_BACKHAND,
         'SERVE_1ST': skill.SERVE_1ST,
         'SERVE_2ND': skill.SERVE_2ND,
-      },SetOptions(merge: true));
+      }, SetOptions(merge: true));
     } catch (e) {
       throw (e);
       print('スキルレベル登録に失敗しました --- $e');
@@ -3767,7 +3678,7 @@ class FirestoreMethod {
           .set({
         'FEEDBACK_COMMENT': feedBack.FEED_BACK,
         'FEEDBACK_FLG': true,
-      },SetOptions(merge: true));
+      }, SetOptions(merge: true));
       //profileDetail内のフィードバックカウントを加算
       final profileDetailVal =
           await profileDetailRef.doc(yourProfile.USER_ID).get();
