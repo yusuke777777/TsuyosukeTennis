@@ -49,12 +49,14 @@ class _FindPageState extends State<FindPage> {
 
   Future<void> _loadProfile() async {
     CprofileSetting profile = await FirestoreMethod.getProfile();
-    setState(() {
-      todofuken = profile.activityList[0].TODOFUKEN;
-      torokuRank = profile.TOROKU_RANK;
-      gender = profile.GENDER;
-      torokuAge = profile.AGE;
-    });
+    if (mounted) {
+      setState(() {
+        todofuken = profile.activityList[0].TODOFUKEN;
+        torokuRank = profile.TOROKU_RANK;
+        gender = profile.GENDER;
+        torokuAge = profile.AGE;
+      });
+    }
   }
   @override
   void dispose() {

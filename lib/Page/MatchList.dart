@@ -80,10 +80,11 @@ class _MatchListState extends State<MatchList> {
       if (querySnapshot.docs.isNotEmpty) {
         lastDocument = querySnapshot.docs.last; // 最後のドキュメントを設定
       }
-
-      setState(() {
-        matchListAll.addAll(matchList);
-      });
+      if (mounted) {
+        setState(() {
+          matchListAll.addAll(matchList);
+        });
+      }
     } catch (e) {
       print(e.toString());
     }
@@ -115,12 +116,13 @@ class _MatchListState extends State<MatchList> {
 
   Future<void> _loadMoreData() async {
     if (_isLoadingMore) return;
-
-    setState(() {
-      _isLoadingMore = true;
-      print("loadMoreData");
-      print(_isLoadingMore);
-    });
+    if (mounted) {
+      setState(() {
+        _isLoadingMore = true;
+        print("loadMoreData");
+        print(_isLoadingMore);
+      });
+    }
 
     try {
       final querySnapshot = await FirebaseFirestore.instance
@@ -175,16 +177,19 @@ class _MatchListState extends State<MatchList> {
       if (querySnapshot.docs.isNotEmpty) {
         lastDocument = querySnapshot.docs.last;
       }
-
-      setState(() {
-        matchListAll.addAll(matchList);
-        _isLoadingMore = false;
-      });
+      if (mounted) {
+        setState(() {
+          matchListAll.addAll(matchList);
+          _isLoadingMore = false;
+        });
+      }
     } catch (e) {
       print(e.toString());
-      setState(() {
-        _isLoadingMore = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoadingMore = false;
+        });
+      }
     }
   }
 

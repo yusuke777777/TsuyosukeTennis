@@ -55,10 +55,11 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
         lastDocument = querySnapshot.docs.last; // 最後のドキュメントを設定
         print("eee");
       }
-
-      setState(() {
-        RankModelList.addAll(rankList);
-      });
+      if (mounted) {
+        setState(() {
+          RankModelList.addAll(rankList);
+        });
+      }
     } catch (e) {
       print(e.toString());
     }
@@ -80,6 +81,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
       }
     });
   }
+
   @override
   void dispose() {
     _scrollController.dispose(); // ScrollControllerの解放
@@ -88,12 +90,13 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
 
   Future<void> _loadMoreData() async {
     if (_isLoadingMore) return;
-
-    setState(() {
-      _isLoadingMore = true;
-      print("loadMoreData");
-      print(_isLoadingMore);
-    });
+    if (mounted) {
+      setState(() {
+        _isLoadingMore = true;
+        print("loadMoreData");
+        print(_isLoadingMore);
+      });
+    }
 
     try {
       final querySnapshot = await FirebaseFirestore.instance
@@ -123,16 +126,19 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
       if (querySnapshot.docs.isNotEmpty) {
         lastDocument = querySnapshot.docs.last;
       }
-
-      setState(() {
-        RankModelList.addAll(rankList);
-        _isLoadingMore = false;
-      });
+      if (mounted) {
+        setState(() {
+          RankModelList.addAll(rankList);
+          _isLoadingMore = false;
+        });
+      }
     } catch (e) {
       print(e.toString());
-      setState(() {
-        _isLoadingMore = false;
-      });
+      if (mounted) {
+        setState(() {
+          _isLoadingMore = false;
+        });
+      }
     }
   }
 
@@ -173,7 +179,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                   ),
                   Container(
                     alignment: Alignment.center,
-                    width: deviceWidth * 0.38  ,
+                    width: deviceWidth * 0.38,
                     child: Text("ポイント",
                         style: TextStyle(fontSize: 20, color: Colors.black),
                         overflow: TextOverflow.ellipsis),
@@ -233,84 +239,103 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                   child: Container(
                                     alignment: Alignment.center,
                                     width: deviceWidth * 0.15,
-                                    padding:
-                                        const EdgeInsets.symmetric(horizontal: 4.0),
-                                    child:
-                                        RankModelList[index].user.PROFILE_IMAGE == ''
-                                            ? CircleAvatar(
-                                                backgroundColor: Colors.white,
-                                                backgroundImage: NetworkImage(
-                                                    "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                                radius: 20,
-                                              )
-                                            : CircleAvatar(
-                                                backgroundColor: Colors.white,
-                                                backgroundImage: NetworkImage(
-                                                    RankModelList[index]
-                                                        .user
-                                                        .PROFILE_IMAGE),
-                                                radius: 20,
-                                              ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 4.0),
+                                    child: RankModelList[index]
+                                                .user
+                                                .PROFILE_IMAGE ==
+                                            ''
+                                        ? CircleAvatar(
+                                            backgroundColor: Colors.white,
+                                            backgroundImage: NetworkImage(
+                                                "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                            radius: 20,
+                                          )
+                                        : CircleAvatar(
+                                            backgroundColor: Colors.white,
+                                            backgroundImage: NetworkImage(
+                                                RankModelList[index]
+                                                    .user
+                                                    .PROFILE_IMAGE),
+                                            radius: 20,
+                                          ),
                                   ),
                                   onTap: () {
                                     Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => ProfileReference(
-                                                RankModelList[index].user.USER_ID)));
+                                            builder: (context) =>
+                                                ProfileReference(
+                                                    RankModelList[index]
+                                                        .user
+                                                        .USER_ID)));
                                   },
                                 ),
-                          InkWell(
-                            child: Container(
-                              width: deviceWidth * 0.3,
-                              child: FittedBox(
-                                alignment: Alignment.bottomLeft,
-                                fit: BoxFit.scaleDown,
-                                // 子ウィジェットを親ウィジェットにフィットさせる
-                                child: Text(RankModelList[index].user.NICK_NAME,
-                                    style: TextStyle(
-                                        fontSize: 15, color: Colors.green)),
-                              ),
-                            ),
-                            onTap: ()  {
-                              showDialog(
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: Text(
-                                          RankModelList[index].user.NICK_NAME +
-                                              'さんとトークしてみますか'),
-                                      actions: <Widget>[
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
-                                          child: Text('はい'),
-                                          onPressed: () async{
-                                            TalkRoomModel room =
-                                                await FirestoreMethod.makeRoom(
-                                                auth.currentUser!.uid,
-                                                RankModelList[index].user.USER_ID);
+                                InkWell(
+                                  child: Container(
+                                    width: deviceWidth * 0.3,
+                                    child: FittedBox(
+                                      alignment: Alignment.bottomLeft,
+                                      fit: BoxFit.scaleDown,
+                                      // 子ウィジェットを親ウィジェットにフィットさせる
+                                      child: Text(
+                                          RankModelList[index].user.NICK_NAME,
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              color: Colors.green)),
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            title: Text(RankModelList[index]
+                                                    .user
+                                                    .NICK_NAME +
+                                                'さんとトークしてみますか'),
+                                            actions: <Widget>[
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    foregroundColor:
+                                                        Colors.black,
+                                                    backgroundColor: Colors
+                                                        .lightGreenAccent),
+                                                child: Text('はい'),
+                                                onPressed: () async {
+                                                  TalkRoomModel room =
+                                                      await FirestoreMethod
+                                                          .makeRoom(
+                                                              auth.currentUser!
+                                                                  .uid,
+                                                              RankModelList[
+                                                                      index]
+                                                                  .user
+                                                                  .USER_ID);
 
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        TalkRoom(room)));
-                                          },
-                                        ),
-                                        ElevatedButton(
-                                          style: ElevatedButton.styleFrom(
-                                              foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
-                                          child: Text('いいえ'),
-                                          onPressed: () {
-                                            Navigator.pop(context);
-                                          },
-                                        ),
-                                      ],
-                                    );
-                                  });
-                            },
-                          ),
+                                                  Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              TalkRoom(room)));
+                                                },
+                                              ),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    foregroundColor:
+                                                        Colors.black,
+                                                    backgroundColor: Colors
+                                                        .lightGreenAccent),
+                                                child: Text('いいえ'),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                            ],
+                                          );
+                                        });
+                                  },
+                                ),
                               ],
                             ),
                           ),

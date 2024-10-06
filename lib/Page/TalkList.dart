@@ -33,7 +33,9 @@ class _TalkListState extends State<TalkList> {
         .collection('talkNotification')
         .snapshots()
         .listen((snapshot) {
-      setState(() {});
+      if (mounted) {
+        setState(() {});
+      }
     });
   }
 
@@ -86,7 +88,6 @@ class _TalkListState extends State<TalkList> {
                                         FirestoreMethod.addBlockList(
                                             talkList[index].user.USER_ID);
                                         setState(() {
-                                          print("aaaaaa");
                                         });
                                       },
                                       backgroundColor: Colors.grey,
