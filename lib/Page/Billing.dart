@@ -263,12 +263,24 @@ class _BillingState extends State<Billing> {
       print(error.message);
       // プラットフォームのエラー
       switch (error.code) {
+        case '1': // purchaseCancelledError のコード
+          return '購入がキャンセルされました。';
+        case '2': // purchaseNotAllowedError のコード
+          return 'このデバイスでは購入が許可されていません。';
+        case '3': // purchaseInvalidError のコード
+          return '無効な購入です。';
+        case '4': // productNotAvailableForPurchaseError のコード
+          return 'この商品は購入できません。';
+        case '5': // networkError のコード
+          return 'ネットワーク接続に失敗しました。後ほど再試行してください。';
         case '8':
           return "購入が無効です。レシートに購入された商品が見つかりませんでした。";
-        case 'storekit_invalid_purchase':
-          return "購入が無効です。StoreKitのバグによる問題が発生しました。";
+        case '15':
+          return '購入処理中です';
         case 'purchase_canceled':
           return "購入がキャンセルされました。";
+        case 'storekit_invalid_purchase':
+          return "購入が無効です。StoreKitのバグによる問題が発生しました。";
         case 'PurchaseAlreadyOwnedError':
           return '既に他のアカウントで購入済みです';
         default:

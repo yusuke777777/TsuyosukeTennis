@@ -104,14 +104,8 @@ class _TalkRoomState extends State<TalkRoom> {
 
   @override
   Widget build(BuildContext context) {
-      return PopScope(
-        canPop: true,
-        onPopInvoked: (bool didPop) async{
-          // 戻るボタンが押された時の処理
-          await NotificationMethod.unreadCountRest(
-              widget.room.user.USER_ID);
-        },
-        child: Scaffold(
+      return
+        Scaffold(
             backgroundColor: const Color(0xFFF2FFE4),
             appBar: AppBar(
                 backgroundColor: Color(0xFF3CB371),
@@ -123,8 +117,6 @@ class _TalkRoomState extends State<TalkRoom> {
                       size: 40.0,
                     ),
                     onPressed: () async {
-                      await NotificationMethod.unreadCountRest(
-                          widget.room.user.USER_ID);
                       Navigator.pop(context);
                       // await Navigator.push(
                       //     context,
@@ -723,7 +715,7 @@ class _TalkRoomState extends State<TalkRoom> {
                   ),
                 )
               ],
-            )),
+            )
       );
   }
 

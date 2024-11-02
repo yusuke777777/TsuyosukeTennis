@@ -4,9 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_badger/flutter_app_badger.dart';
+import 'package:flutter_app_badge/flutter_app_badge.dart';
 import 'package:overlay_support/overlay_support.dart';
+import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/HomePage.dart';
 
@@ -16,7 +18,7 @@ import 'Common/CtalkRoom.dart';
 import 'Component/native_dialog.dart';
 import 'FireBase/FireBase.dart';
 import 'FireBase/NotificationMethod.dart';
-import 'FireBase/Notification_badge.dart';
+import 'FireBase/NotificationProvider.dart';
 import 'FireBase/singletons_data.dart';
 import 'Page/MatchList.dart';
 import 'Page/RankList.dart';
@@ -30,14 +32,6 @@ import 'package:intl/intl.dart';
 /**
  * 下部メニューの動きを制御するクラス
  */
-
-Future _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  await Firebase.initializeApp();
-  print("Handling a background message: ${message.messageId}");
-  // 通知を受信して行いたい処理
-  //残メッセージ数を取得メソッドを作成する
-  //メッセージ送信時に送信者のIDを持たせられないか検討(payloadを用いればできる)
-}
 
 class UnderMenuMove extends StatefulWidget {
   // const UnderMenuMove({Key? key}) : super(key: key);
@@ -93,7 +87,6 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
   void requestAndRegisterNotification() async {
     await Firebase.initializeApp();
     _messaging = FirebaseMessaging.instance;
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
     NotificationSettings settings = await _messaging.requestPermission(
       alert: true,
       badge: true,
@@ -107,35 +100,55 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
       sound: true,
     );
 
-    if (settings.authorizationStatus == AuthorizationStatus.authorized) {
-      print('User granted permission');
       String? myTokenId = await NotificationMethod.getMyTokenId();
       await NotificationMethod.registerTokenID(myTokenId!);
 
       print("The token is " + myTokenId!);
 
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) async{
         CPushNotification notification = CPushNotification(
           title: message.notification?.title,
           body: message.notification?.body,
         );
         setState(() {
           _notificationInfo = notification;
-          // int _totalNotifications = 5;
-          // //残メッセージ数を取得メソッドを作成する
-          // FlutterAppBadger.updateBadgeCount(_totalNotifications);
         });
       });
-    }
   }
 
   // 通知メッセージに応じて画面遷移
   Future<void> notificationMove(BuildContext context, String? senderId) async {
     TalkRoomModel room = await FirestoreMethod.getRoomBySearchResult(
         FirestoreMethod.auth.currentUser!.uid, senderId.toString());
-    Navigator.push(
+    await Navigator.push(
         context, MaterialPageRoute(builder: (context) => TalkRoom(room)));
+
+    await NotificationMethod.unreadCountRest(
+        senderId.toString());
   }
+
+  void checkForInitialMessage() async {
+    // アプリが通知から起動された場合、そのメッセージを取得
+    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+
+    if (initialMessage != null) {
+      // 通知からアプリが起動された際の処理を実装
+      print('Notification clicked while app was terminated: ${initialMessage.messageId}');
+      // 例: 通知内容に応じて特定の画面を表示
+      CPushNotification notification = CPushNotification(
+        title: initialMessage.notification?.title,
+        body: initialMessage.notification?.body,
+      );
+      setState(() {
+        _notificationInfo = notification;
+        String? senderId = initialMessage.data['senderUid'];
+        notificationMove(context, senderId);
+      });
+    }
+  }
+
+
+
 
   @override
   void initState() {
@@ -146,13 +159,12 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
         title: message.notification?.title,
         body: message.notification?.body,
       );
+
       setState(() {
         _notificationInfo = notification;
         String? senderId = message.data['senderUid'];
         print(senderId);
         notificationMove(context, senderId);
-        // _totalNotifications++;
-        // FlutterAppBadger.updateBadgeCount(_totalNotifications);
       });
     });
     //課金処理
@@ -160,6 +172,9 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     // _totalNotifications = 0;
     //トラッキングチェック処理
     super.initState();
+    // アプリの初期化時に、通知からの起動をチェック
+    checkForInitialMessage();
+
     WidgetsFlutterBinding.ensureInitialized()
         .addPostFrameCallback((_) => initPlugin());
   }

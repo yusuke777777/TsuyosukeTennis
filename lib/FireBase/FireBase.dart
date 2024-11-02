@@ -309,7 +309,7 @@ class FirestoreMethod {
           'SHICHOSON_LIST': shichosonList,
           'TODOFUKEN_SHICHOSON_LIST': todofukenShichosonList,
           'FIRST_TODOFUKEN_SICHOSON': todofukenShichoson,
-          'BILLING_FLG': appData.entitlementIsActive == true ? "1" : "0"
+          'BILLING_FLG': appData.entitlementIsActive == true ? "1" : "0",
         });
       } else {
         //KOUSHIN_TIME更新あり(初回)
@@ -354,6 +354,7 @@ class FirestoreMethod {
           'SERVE_1ST_AVE': 0.0,
           'SERVE_2ND_AVE': 0.0,
           //ランクNoの結果
+          'RANK_TOROKU_RANK': profile.TOROKU_RANK, //ランキング更新時の登録ランキング
           'RANK_NO': 0,
           'TITLE': profile.TITLE,
           'FEEDBACK_COUNT': 0,
@@ -607,6 +608,7 @@ class FirestoreMethod {
         FIRST_TODOFUKEN_SICHOSON: snapShot.data()!['FIRST_TODOFUKEN_SICHOSON'],
         KOUSHIN_TIME: snapShot.data()!['KOUSHIN_TIME'],
         RANK_NO: snapShot.data()!['RANK_NO'],
+        RANK_TOROKU_RANK: snapShot.data()!['RANK_TOROKU_RANK'],
         TITLE: returnTitle,
         REVIEW_ENABLED: snapShot.data()?['REVIEW_ENABLED'] ?? true,
       );
@@ -683,6 +685,7 @@ class FirestoreMethod {
         FIRST_TODOFUKEN_SICHOSON: snapShot.data()!['FIRST_TODOFUKEN_SICHOSON'],
         KOUSHIN_TIME: snapShot.data()!['KOUSHIN_TIME'],
         RANK_NO: snapShot.data()!['RANK_NO'],
+        RANK_TOROKU_RANK: snapShot.data()!['RANK_TOROKU_RANK'],
         TITLE: returnTitle,
         REVIEW_ENABLED: snapShot.data()?['REVIEW_ENABLED'] ?? true,
       );
@@ -794,8 +797,6 @@ class FirestoreMethod {
         try {
           count = await NotificationMethod.unreadCountGet(yourUserId);
         } catch (e) {
-          throw (e);
-          throw (e);
           print("未読メッセージ数を正しく取得できませんでした");
         }
         room = TalkRoomModel(
@@ -1032,7 +1033,7 @@ class FirestoreMethod {
           tokenId!, "対戦結果が入力されました！", myProfile.NICK_NAME);
     }
     //未読メッセージ数の更新
-    await NotificationMethod.unreadCount(room.user.USER_ID);
+     await NotificationMethod.unreadCount(room.user.USER_ID);
   }
 
   //対戦結果入力メッセージ(フィードバック入力希望の場合)
@@ -1134,7 +1135,7 @@ class FirestoreMethod {
             tokenId!, "評価・フィードバックを入力しました！", myProfile.NICK_NAME);
       }
       //未読メッセージ数の更新
-      await NotificationMethod.unreadCount(room.user.USER_ID);
+       await NotificationMethod.unreadCount(room.user.USER_ID);
     } catch (e) {
       print("sendMatchResultFeedMessageReturnエラー");
     }
@@ -1340,7 +1341,7 @@ class FirestoreMethod {
             tokenId!, "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！", myProfile.NICK_NAME);
       }
       //未読メッセージ数の更新
-      await NotificationMethod.unreadCount(room.user.USER_ID);
+       await NotificationMethod.unreadCount(room.user.USER_ID);
     } catch (e) {
       print("matchAcceptエラー");
     }
@@ -1378,7 +1379,7 @@ class FirestoreMethod {
             tokenId!, "チケットが不足しています\nチケット購入お願いします！", myProfile.NICK_NAME);
       }
       //未読メッセージ数の更新
-      await NotificationMethod.unreadCount(room.user.USER_ID);
+       await NotificationMethod.unreadCount(room.user.USER_ID);
     } catch (e) {
       print("matchAcceptエラー");
     }
@@ -1649,7 +1650,6 @@ class FirestoreMethod {
             );
           }
           //マッチング処理を実施
-          try {
             // マッチング処理をトランザクション内で実行
             // 新しいドキュメントを追加し、そのIDを取得
             DocumentReference newDocMatchRef = matchRef.doc();
@@ -1666,10 +1666,6 @@ class FirestoreMethod {
                 'MATCH_ID': newDocId
               },
             );
-            // throw("マッチングに失敗しました");//エラーテスト用
-          } catch (e) {
-            throw (e);
-          }
           ticketFlg = "0";
         } else {
           if (myTicketSu < 1) {
@@ -1679,11 +1675,11 @@ class FirestoreMethod {
           }
         }
       } else {
-        throw ("チケット数の更新に失敗しました");
+        throw ("QRコードの読み取りに失敗しました");
       }
     }).then(
       (value) => print("DocumentSnapshot successfully updated!"),
-      onError: (e) => throw (e),
+      onError: (e) => throw ("QRコードの読み取りに失敗しました"),
     );
     return ticketFlg;
   }

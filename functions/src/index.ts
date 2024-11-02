@@ -179,9 +179,10 @@ async function getRankTable(): Promise<void> {
               });
           await profileDetailRef
               .doc(shokyuRanks[index].USER_ID)
-              .update({
+              .set({
                 RANK_NO: shokyuRankNo,
-              });
+                RANK_TOROKU_RANK: "初級",
+              }, {merge: true});
           console.log("初級追加");
         } catch (e) {
           console.log("ランキング作成に失敗しました --- $e");
@@ -200,9 +201,10 @@ async function getRankTable(): Promise<void> {
               });
           await profileDetailRef
               .doc(shokyuRanks[index].USER_ID)
-              .update({
+              .set({
                 RANK_NO: index + 1,
-              });
+                RANK_TOROKU_RANK: "初級",
+              }, {merge: true});
           console.log("初級追加");
         } catch (e) {
           console.log("ランキング作成に失敗しました --- $e");
@@ -222,9 +224,10 @@ async function getRankTable(): Promise<void> {
             });
         await profileDetailRef
             .doc(shokyuRanks[index].USER_ID)
-            .update({
+            .set({
               RANK_NO: index + 1,
-            });
+              RANK_TOROKU_RANK: "初級",
+            }, {merge: true});
         console.log("初級追加");
       } catch (e) {
         console.log("ランキング作成に失敗しました --- $e");
@@ -250,9 +253,10 @@ async function getRankTable(): Promise<void> {
               });
           await profileDetailRef
               .doc(chukyuRanks[index].USER_ID)
-              .update({
+              .set({
                 RANK_NO: chukyuRankNo,
-              });
+                RANK_TOROKU_RANK: "中級",
+              }, {merge: true});
           console.log("中級追加");
         } catch (e) {
           console.log("ランキング作成に失敗しました --- $e");
@@ -271,9 +275,10 @@ async function getRankTable(): Promise<void> {
               });
           await profileDetailRef
               .doc(chukyuRanks[index].USER_ID)
-              .update({
+              .set({
                 RANK_NO: index + 1,
-              });
+                RANK_TOROKU_RANK: "中級",
+              }, {merge: true});
           console.log("中級追加");
         } catch (e) {
           console.log("ランキング作成に失敗しました --- $e");
@@ -293,9 +298,10 @@ async function getRankTable(): Promise<void> {
             });
         await profileDetailRef
             .doc(chukyuRanks[index].USER_ID)
-            .update({
+            .set({
               RANK_NO: index + 1,
-            });
+              RANK_TOROKU_RANK: "中級",
+            }, {merge: true});
         console.log("中級追加");
       } catch (e) {
         console.log("ランキング作成に失敗しました --- $e");
@@ -321,9 +327,10 @@ async function getRankTable(): Promise<void> {
               });
           await profileDetailRef
               .doc(jyokyuRanks[index].USER_ID)
-              .update({
+              .set({
                 RANK_NO: jokyuRankNo,
-              });
+                RANK_TOROKU_RANK: "上級",
+              }, {merge: true});
           console.log("上級追加");
         } catch (e) {
           console.log("ランキング作成に失敗しました --- $e");
@@ -342,9 +349,10 @@ async function getRankTable(): Promise<void> {
               });
           await profileDetailRef
               .doc(jyokyuRanks[index].USER_ID)
-              .update({
+              .set({
                 RANK_NO: index + 1,
-              });
+                RANK_TOROKU_RANK: "上級",
+              }, {merge: true});
           console.log("上級追加");
         } catch (e) {
           console.log("ランキング作成に失敗しました --- $e");
@@ -364,9 +372,10 @@ async function getRankTable(): Promise<void> {
             });
         await profileDetailRef
             .doc(jyokyuRanks[index].USER_ID)
-            .update({
+            .set({
               RANK_NO: index + 1,
-            });
+              RANK_TOROKU_RANK: "上級",
+            }, {merge: true});
         console.log("上級追加");
       } catch (e) {
         console.log("ランキング作成に失敗しました --- $e");

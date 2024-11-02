@@ -52,7 +52,7 @@ class _QrScanViewState extends State<QrScanView> {
 
   Widget _buildQrView(BuildContext context) {
     var scanArea = (MediaQuery.of(context).size.width < 400 ||
-        MediaQuery.of(context).size.height < 400)
+            MediaQuery.of(context).size.height < 400)
         ? 150.0
         : 300.0;
 
@@ -90,7 +90,6 @@ class _QrScanViewState extends State<QrScanView> {
         // カメラを停止して、処理が複数回呼ばれないようにする
         controller.pauseCamera();
         isProcessing = true;
-
         try {
           String ticketFlg = await FirestoreMethod.makeMatchByQrScan(yourId);
           if (ticketFlg == "0") {
@@ -133,7 +132,7 @@ class _QrScanViewState extends State<QrScanView> {
           await showDialog(
             context: context,
             builder: (BuildContext context) => ShowDialogToDismiss(
-              content: e.toString(),
+              content: "QRコードの読み取りに失敗しました",
               buttonText: "はい",
             ),
           );
@@ -156,4 +155,3 @@ class _QrScanViewState extends State<QrScanView> {
     }
   }
 }
-

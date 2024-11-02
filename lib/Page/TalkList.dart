@@ -118,6 +118,11 @@ class _TalkListState extends State<TalkList> {
                                                             talkList[index]
                                                                 .roomId);
                                                         Navigator.pop(context);
+                                                        // 戻ってきたら未読数をリセット
+                                                        await NotificationMethod.unreadCountRest(
+                                                            talkList[index].user.USER_ID);
+                                                        // トークリストを更新
+                                                        await createRooms();
                                                         setState(() {});
                                                       }catch(e){
                                                         showDialog(
@@ -159,6 +164,11 @@ class _TalkListState extends State<TalkList> {
                                                 TalkRoom(talkList[index])));
                                     await NotificationMethod.unreadCountRest(
                                         talkList[index].user.USER_ID);
+                                    // トークリストを再取得してリフレッシュ
+                                    setState(() {
+                                      // 最新のトークルームリストを再取得
+                                      createRooms();
+                                    });
                                   },
                                   child: Card(
                                     color: Colors.white,

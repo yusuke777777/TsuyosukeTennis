@@ -6,10 +6,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:googleapis_auth/auth_io.dart' as GoogleAuth;
 import 'package:http/http.dart' as http;
-import 'package:flutter_app_badger/flutter_app_badger.dart';
+import 'package:flutter_app_badge/flutter_app_badge.dart';
 
 import '../constant.dart';
-
 
 class NotificationMethod {
   static final Firebase_Auth.FirebaseAuth auth =
@@ -17,15 +16,14 @@ class NotificationMethod {
 
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
   static final userTokenListRef =
-  _firestoreInstance.collection('userTokenList');
+      _firestoreInstance.collection('userTokenList');
 
   //通知テーブル
-  static final MyNotificationRef = _firestoreInstance.collection(
-      'myNotification');
-  static final MyNotificationSnap = MyNotificationRef
-      .doc(auth.currentUser!.uid)
-      .collection('talkNotification').snapshots();
-
+  static final MyNotificationRef =
+      _firestoreInstance.collection('myNotification');
+  static final MyNotificationSnap = MyNotificationRef.doc(auth.currentUser!.uid)
+      .collection('talkNotification')
+      .snapshots();
 
   static Future<String?> getMyTokenId() async {
     late final FirebaseMessaging _messaging;
@@ -103,12 +101,11 @@ class NotificationMethod {
 
 // Crude counter to make messages unique
 
-  static String constructFCMPayload(String? token,String message, String name) {
+  static String constructFCMPayload(
+      String? token, String message, String name) {
     return jsonEncode({
       'token': token,
       'data': {
-        // 'via': 'FlutterFire Cloud Messaging!!!',
-        // 'count': _messageCount.toString(),
         'senderUid': auth.currentUser!.uid,
       },
       'notification': {
@@ -118,8 +115,8 @@ class NotificationMethod {
     });
   }
 
-
-  static Future<void> sendMessage(String recipientToken,String message,String name) async {
+  static Future<void> sendMessage(
+      String recipientToken, String message, String name) async {
     if (recipientToken == null) {
       print('Unable to send FCM message, no token exists.');
       return;
@@ -131,7 +128,7 @@ class NotificationMethod {
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
-        body: constructFCMPayload(recipientToken,message,name),
+        body: constructFCMPayload(recipientToken, message, name),
       );
       if (response.statusCode == 200) {
         print('Message sent successfully');
@@ -182,147 +179,203 @@ class NotificationMethod {
   //   print(response.body);
   // }
 
-    //メッセージ通知_新規フラグ取得(GET)
-    static Future<String> newFlgNotification(String senderId) async {
+  //メッセージ通知_新規フラグ取得(GET)
+  static Future<String> newFlgNotification(String senderId) async {
     final snapshot = await MyNotificationRef.get();
     String NEW_FLG = "1";
     for (final doc in snapshot.docs) {
-    if (doc.id == auth.currentUser!.uid) {
-    final mySnapshot = await MyNotificationRef
-        .doc(auth.currentUser!.uid)
-        .collection('talkNotification')
-        .get();
-    for (final doc in mySnapshot.docs) {
-    if (doc.id == senderId) {
-    NEW_FLG = "0";
-    }
-    }
-    }
+      if (doc.id == auth.currentUser!.uid) {
+        final mySnapshot = await MyNotificationRef.doc(auth.currentUser!.uid)
+            .collection('talkNotification')
+            .get();
+        for (final doc in mySnapshot.docs) {
+          if (doc.id == senderId) {
+            NEW_FLG = "0";
+          }
+        }
+      }
     }
     return NEW_FLG;
-    }
+  }
 
-    //メッセージ通知_新規フラグ取得(SEND)
-    static Future<String> newFlgSendNotification(String senderId) async {
+  //メッセージ通知_新規フラグ取得(SEND)
+  static Future<String> newFlgSendNotification(String senderId) async {
     String NEW_FLG = "1";
-    final snapshot = await _firestoreInstance.collection('myNotification').get();
-    List<QueryDocumentSnapshot> documents = snapshot.docs;
-
-
-    int documentCount = snapshot.size;
-    print("documentCount" + documentCount.toString());
-
-    if (snapshot.docs.isNotEmpty) {
-    print("bbbb");
-    }else{
-    print("cccc");
-    }
+    final snapshot =
+        await _firestoreInstance.collection('myNotification').get();
 
     await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-    print("aaaaa");
-
-    if (doc.id == senderId) {
-    final mySnapshot = await MyNotificationRef
-        .doc(senderId)
-        .collection('talkNotification')
-        .get();
-    print(doc.id);
-    await Future.forEach<dynamic>(mySnapshot.docs, (childDoc) async {
-    if (childDoc.id == auth.currentUser!.uid) {
-    NEW_FLG = "0";
-    print("childDoc" + childDoc.id);
-    return;
-    }
-    });
-    }else{
-    return;
-    }
+      if (doc.id == senderId) {
+        final mySnapshot = await MyNotificationRef.doc(senderId)
+            .collection('talkNotification')
+            .get();
+        print(doc.id);
+        await Future.forEach<dynamic>(mySnapshot.docs, (childDoc) async {
+          if (childDoc.id == auth.currentUser!.uid) {
+            NEW_FLG = "0";
+            print("childDoc" + childDoc.id);
+            return;
+          }
+        });
+      } else {
+        return;
+      }
     });
     return NEW_FLG;
-    }
+  }
 
-    //メッセージ受信時に送信相手の通知数をカウントアップする
-    //トークルームから戻るとき、入るときにリセットできるようにする
-    static Future<int> unreadCount(String recipientId) async {
+  // //メッセージ受信時に自分の通知数をカウントアップする
+  // static Future<void> unreadCountTotal() async {
+  //   int unreadCountTotal = 0;
+  //   try {
+  //     final snapShot_notification =
+  //     await MyNotificationRef.doc(auth.currentUser!.uid).get();
+  //
+  //     if (snapShot_notification.exists) {
+  //       unreadCountTotal = await snapShot_notification.data()!['TALK_UNREAD_COUNT_TOTAL'] ?? 0;
+  //       unreadCountTotal++;
+  //     }else{
+  //       unreadCountTotal++;
+  //     }
+  //   } catch (e) {
+  //     print('未読数のカウント数取得に失敗しました --- $e');
+  //   }
+  //   print("unreadCountTotal" + unreadCountTotal.toString());
+  //   //未読数を更新して登録する
+  //   try {
+  //     //自分の通知数の未読数を更新する
+  //     await MyNotificationRef.doc(auth.currentUser!.uid)
+  //         .set({'USER_ID': auth.currentUser!.uid,
+  //       'TALK_UNREAD_COUNT_TOTAL': unreadCountTotal,
+  //     });
+  //   } catch (e) {
+  //     print('未読数のカウント登録に失敗しました --- $e');
+  //   }
+  //   FlutterAppBadge.count(unreadCountTotal);
+  // }
+
+  //メッセージ送信時に送信相手の通知数をカウントアップする
+  static Future<int> unreadCount(String recipientId) async {
     int unreadCount = 0;
     //新規フラグチェック
     String newFlg = "0";
     newFlg = await newFlgSendNotification(recipientId);
     print("newFlg" + newFlg);
     if (newFlg == "1") {
-    unreadCount++;
+      unreadCount++;
     } else {
-    try {
-    final snapShot_notification = await MyNotificationRef
-        .doc(recipientId)
-        .collection('talkNotification')
-        .doc(auth.currentUser!.uid)
-        .get();
-    unreadCount = await snapShot_notification.data()!['UNREAD_COUNT'];
-    unreadCount++;
-    } catch (e) {
-    print('未読数のカウント数取得に失敗しました --- $e');
-    }
+      try {
+        final snapShot_notification = await MyNotificationRef
+            .doc(recipientId)
+            .collection('talkNotification')
+            .doc(auth.currentUser!.uid)
+            .get();
+        unreadCount = await snapShot_notification.data()!['UNREAD_COUNT'];
+        unreadCount++;
+      } catch (e) {
+        print('未読数のカウント数取得に失敗しました --- $e');
+      }
     }
     print("unreadCount" + unreadCount.toString());
     //未読数を更新して登録する
     try {
-    await MyNotificationRef
-        .doc(recipientId)
-        .collection('talkNotification')
-        .doc(auth.currentUser!.uid)
-        .set({
-    'UNREAD_COUNT': unreadCount,
-    });
-    await MyNotificationRef
-        .doc(recipientId)
-        .set({
-    'USER_ID': recipientId
-    });
-    await FlutterAppBadger.updateBadgeCount(unreadCount);
+      await MyNotificationRef
+          .doc(recipientId)
+          .collection('talkNotification')
+          .doc(auth.currentUser!.uid)
+          .set({
+        'UNREAD_COUNT': unreadCount,
+      });
+      await MyNotificationRef
+          .doc(recipientId)
+          .set({
+        'USER_ID': recipientId
+      });
     } catch (e) {
-    print('未読数のカウント登録に失敗しました --- $e');
+      print('未読数のカウント登録に失敗しました --- $e');
     }
     return unreadCount;
-    }
+  }
 
-    static Future<int> unreadCountGet(String senderId) async {
+  static Future<int> unreadCountGet(String senderId) async {
     int unreadCount = 0;
     //新規フラグチェック
     String newFlg = "0";
     newFlg = await newFlgNotification(senderId);
 
     if (newFlg == "1") {
-    unreadCount = 0;
+      unreadCount = 0;
     } else {
-    try {
-    final snapShot_notification = await MyNotificationRef
-        .doc(auth.currentUser!.uid)
-        .collection('talkNotification')
-        .doc(senderId)
-        .get();
-    unreadCount = await snapShot_notification.data()!['UNREAD_COUNT'];
-    } catch (e) {
-    print('未読数のカウント数取得に失敗しました --- $e');
-    }
+      try {
+        final snapShot_notificationSender =
+            await MyNotificationRef.doc(auth.currentUser!.uid)
+                .collection('talkNotification')
+                .doc(senderId)
+                .get();
+        unreadCount = await snapShot_notificationSender.data()!['UNREAD_COUNT']  ?? 0;
+      } catch (e) {
+        print('未読数のカウント数取得に失敗しました --- $e');
+      }
     }
     return unreadCount;
-    }
+  }
 
-    //未読メッセージを既読状態にする
-    static Future<void> unreadCountRest(String yourUserId) async {
-    int unreadCount = 0;
+  //未読メッセージを既読状態にする
+  static Future<void> unreadCountRest(String yourUserId) async {
+    int unreadCountReset = 0;
+    // int unreadCount = 0;
+    // int unreadCountTotal = 0;
+    // int unreadCountTotalNew = 0;
     try {
-    await MyNotificationRef
-        .doc(auth.currentUser!.uid)
-        .collection('talkNotification')
-        .doc(yourUserId)
-        .set({
-    'UNREAD_COUNT': unreadCount,
-    });
-    await FlutterAppBadger.updateBadgeCount(unreadCount);
+      // //対戦相手の未読数を取得
+      // final snapShot_notificationSender =
+      // await MyNotificationRef.doc(auth.currentUser!.uid)
+      //     .collection('talkNotification')
+      //     .doc(yourUserId)
+      //     .get();
+
+      //
+      // if (snapShot_notificationSender.exists) {
+      //   unreadCount = await snapShot_notificationSender.data()!['UNREAD_COUNT'] ?? 0;
+      // }
+
+      // //自分の未読数のトータルを取得
+      // final snapShot_notification =
+      // await MyNotificationRef.doc(auth.currentUser!.uid).get();
+      // if (snapShot_notification.exists) {
+      //   unreadCountTotal = await snapShot_notification.data()!['TALK_UNREAD_COUNT_TOTAL'] ?? 0;
+      // }
+      //対戦相手の未読数をリセット
+      await MyNotificationRef.doc(auth.currentUser!.uid)
+          .collection('talkNotification')
+          .doc(yourUserId)
+          .set({
+        'UNREAD_COUNT': unreadCountReset,
+      });
+      // //自分の未読数のトータルを減算する
+      // unreadCountTotalNew = unreadCountTotal - unreadCount;
+      // if(unreadCountTotalNew<0){
+      //   unreadCountTotalNew = 0;
+      // }
+      // await MyNotificationRef.doc(auth.currentUser!.uid)
+      //     .set({'USER_ID': auth.currentUser!.uid,
+      //   'TALK_UNREAD_COUNT_TOTAL': unreadCountTotalNew,
+      // });
     } catch (e) {
-    print('未読数のリセット登録に失敗しました --- $e');
-    }
+      print('未読数のリセット登録に失敗しました --- $e');
     }
   }
+
+  void setting() async {
+    NotificationSettings settings = await FirebaseMessaging.instance
+        .requestPermission(
+      alert: true,
+      announcement: false,
+      badge: true,
+      carPlay: false,
+      criticalAlert: false,
+      provisional: false,
+      sound: true,
+    );
+  }
+}

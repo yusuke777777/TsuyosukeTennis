@@ -56,7 +56,7 @@ class _HomePageState extends State<HomePage> {
               ),
               onPressed: () async {
                 CprofileSetting myProfile = await FirestoreMethod.getProfile();
-                Navigator.pushReplacement(
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ProfileSetting.Edit(myProfile),
@@ -131,7 +131,8 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                   ),
-                                  profileDetailList.RANK_NO == 0
+                                  profileDetailList.RANK_NO == 0 || (profileDetailList.RANK_TOROKU_RANK !=
+                                      profileDetailList.TOROKU_RANK)
                                       ? Row(
                                           children: [
                                             Container(

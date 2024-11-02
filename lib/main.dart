@@ -2,38 +2,52 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:purchases_flutter/models/purchases_configuration.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:tsuyosuke_tennis_ap/FireBase/Notification_badge.dart';
 import 'Common/CPushNotification.dart';
 import 'FireBase/FireBase.dart';
 import 'FireBase/GoogleAds.dart';
 import 'FireBase/NotificationMethod.dart';
+import 'FireBase/NotificationProvider.dart';
 import 'FireBase/singletons_data.dart';
 import 'Page/ProfileSetting.dart';
 import 'Page/ReLoginMessagePage.dart';
 import 'Page/SigninPage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'UnderMenuMove.dart';
-import 'package:flutter_app_badger/flutter_app_badger.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:provider/provider.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
 import 'constant.dart';
+import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
+import 'package:firebase_app_installations/firebase_app_installations.dart';
+
+@pragma('vm:entry-point')
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("ここ");
+  await Firebase.initializeApp();
+  // If you're going to use other Firebase services in the background, such as Firestore,
+  // make sure you call `initializeApp` before using other Firebase services.
+  print('Handling a background message ${message.messageId}');
+}
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   WidgetsFlutterBinding.ensureInitialized();
-  MobileAds.instance.initialize();
   await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  MobileAds.instance.initialize();
+
   if (FirebaseAuth.instance.currentUser != null) {
     await FirestoreMethod.isProfile();
     await FirestoreMethod.checkUserAuth();
@@ -44,8 +58,8 @@ void main() async {
   ));
   if (FirebaseAuth.instance.currentUser != null) {
     final configuration = PurchasesConfiguration(
-      Platform.isAndroid ? 'androidRevenueCatKey' : appleApiKey
-    )..appUserID = FirebaseAuth.instance.currentUser!.uid;
+        Platform.isAndroid ? 'androidRevenueCatKey' : appleApiKey)
+      ..appUserID = FirebaseAuth.instance.currentUser!.uid;
     await Purchases.configure(configuration);
     appData.appUserID = await Purchases.appUserID;
     print("main Login" + appData.appUserID.toString());
@@ -66,14 +80,18 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _appBadgeSupported = 'Unknown';
+  // String _appBadgeSupported = 'Unknown';
 
   // This widget is the root of your application.
   @override
   void initState() {
     super.initState();
-    initPlatformState();
+    // initPlatformState();
     initialization();
+    NotificationMethod().setting();
+    /// Firebase ID取得(テスト用)
+    FirebaseInAppMessagingService().getFID();
+
   }
 
   void initialization() async {
@@ -81,29 +99,24 @@ class _MyAppState extends State<MyApp> {
     // the splash screen is displayed.  Remove the following example because
     // delaying the user experience is a bad design practice!
     // ignore_for_file: avoid_print
-    print('ready in 3...');
-    await Future.delayed(const Duration(seconds: 1));
-    print('ready in 2...');
-    await Future.delayed(const Duration(seconds: 1));
-    print('ready in 1...');
     await Future.delayed(const Duration(seconds: 1));
     print('go!');
     FlutterNativeSplash.remove();
   }
 
-  initPlatformState() async {
-    String appBadgeSupported;
-    try {
-      bool res = await FlutterAppBadger.isAppBadgeSupported();
-      if (res) {
-        appBadgeSupported = 'Supported';
-      } else {
-        appBadgeSupported = 'Not supported';
-      }
-    } on PlatformException {
-      appBadgeSupported = 'Failed to get badge support.';
-    }
-  }
+  // initPlatformState() async {
+  //   String appBadgeSupported;
+  //   try {
+  //     bool res = await FlutterAppBadger.isAppBadgeSupported();
+  //     if (res) {
+  //       appBadgeSupported = 'Supported';
+  //     } else {
+  //       appBadgeSupported = 'Not supported';
+  //     }
+  //   } on PlatformException {
+  //     appBadgeSupported = 'Failed to get badge support.';
+  //   }
+  // }
 
   // void _addBadge() {
   //   FlutterAppBadger.updateBadgeCount(1);
@@ -130,13 +143,18 @@ class _MyAppState extends State<MyApp> {
       home: FirebaseAuth.instance.currentUser == null
           ? SignInPage()
           :
-            //メール承認を終えていない場合は承認待機画面へ
-            !FirestoreMethod.isAuth
+          //メール承認を終えていない場合は承認待機画面へ
+          !FirestoreMethod.isAuth
               ? ReLoginMessagePage()
-           :
-          FirestoreMethod.isprofile == true
-              ? UnderMenuMove.make(0)
-              : ProfileSetting.Make(),
+              : FirestoreMethod.isprofile == true
+                  ? UnderMenuMove.make(0)
+                  : ProfileSetting.Make(),
     );
+  }
+}
+class FirebaseInAppMessagingService {
+  void getFID() async {
+    String id = await FirebaseInstallations.instance.getId();
+    print('id : $id');
   }
 }

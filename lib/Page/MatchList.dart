@@ -11,6 +11,7 @@ import '../Common/CprofileSetting.dart';
 import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/GoogleAds.dart';
+import '../FireBase/NotificationMethod.dart';
 import '../PropSetCofig.dart';
 import 'TalkRoom.dart';
 
@@ -111,8 +112,6 @@ class _MatchListState extends State<MatchList> {
     _scrollController.dispose(); // ScrollControllerの解放
     super.dispose();
   }
-
-
 
   Future<void> _loadMoreData() async {
     if (_isLoadingMore) return;
@@ -247,31 +246,41 @@ class _MatchListState extends State<MatchList> {
                                             actions: <Widget>[
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
-                                                    foregroundColor: Colors.black,
-                                                    backgroundColor: Colors.lightGreenAccent),
+                                                    foregroundColor:
+                                                        Colors.black,
+                                                    backgroundColor: Colors
+                                                        .lightGreenAccent),
                                                 child: Text('はい'),
                                                 onPressed: () async {
                                                   try {
-                                                    await FirestoreMethod.delMatchList(
-                                                        matchListAll[index].MATCH_ID);
+                                                    await FirestoreMethod
+                                                        .delMatchList(
+                                                            matchListAll[index]
+                                                                .MATCH_ID);
                                                     Navigator.pop(context);
                                                     setState(() {
-                                                      matchListAll.removeAt(index);
+                                                      matchListAll
+                                                          .removeAt(index);
                                                     });
                                                   } catch (e) {
                                                     showDialog(
                                                         context: context,
-                                                        builder: (BuildContext context) => ShowDialogToDismiss(
-                                                          content: "マッチングリストの削除に失敗しました",
-                                                          buttonText: "はい",
-                                                        ));
+                                                        builder: (BuildContext
+                                                                context) =>
+                                                            ShowDialogToDismiss(
+                                                              content:
+                                                                  "マッチングリストの削除に失敗しました",
+                                                              buttonText: "はい",
+                                                            ));
                                                   }
                                                 },
                                               ),
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
-                                                    foregroundColor: Colors.black,
-                                                    backgroundColor: Colors.lightGreenAccent),
+                                                    foregroundColor:
+                                                        Colors.black,
+                                                    backgroundColor: Colors
+                                                        .lightGreenAccent),
                                                 child: Text('いいえ'),
                                                 onPressed: () {
                                                   Navigator.pop(context);
@@ -315,11 +324,12 @@ class _MatchListState extends State<MatchList> {
                                                       radius: 30,
                                                     )
                                                   : CircleAvatar(
-                                                      backgroundColor:
-                                                          Colors.white,
+                                                      backgroundColor: Colors
+                                                          .white,
                                                       backgroundImage:
                                                           NetworkImage(
-                                                              matchListAll[index]
+                                                              matchListAll[
+                                                                      index]
                                                                   .YOUR_USER
                                                                   .PROFILE_IMAGE),
                                                       radius: 30),
@@ -378,92 +388,100 @@ class _MatchListState extends State<MatchList> {
                                                         .data()?['LOCK_USER'] ??
                                                     '';
 
-                                                if(matchSnapshot.exists) {
+                                                if (matchSnapshot.exists) {
                                                   // 自分がロックしている、もしくはロックされていない場合
                                                   if (LOCK_FLG == '0' ||
                                                       LOCK_USER ==
-                                                          FirestoreMethod.auth
-                                                              .currentUser!.uid ||
+                                                          FirestoreMethod
+                                                              .auth
+                                                              .currentUser!
+                                                              .uid ||
                                                       LOCK_USER == '') {
                                                     // 自分のUIDでロック設定
                                                     await FirebaseFirestore
                                                         .instance
                                                         .collection('matchList')
                                                         .doc(matchListAll[index]
-                                                        .MATCH_ID)
+                                                            .MATCH_ID)
                                                         .set({
                                                       'LOCK_FLG': '1',
-                                                      'LOCK_USER': FirestoreMethod
-                                                          .auth.currentUser!.uid,
+                                                      'LOCK_USER':
+                                                          FirestoreMethod.auth
+                                                              .currentUser!.uid,
                                                     }, SetOptions(merge: true));
                                                     //対戦結果入力画面へ遷移
                                                     await Navigator.push(
                                                         context,
                                                         MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                MatchResult(
-                                                                    matchListAll[
-                                                                    index]
-                                                                        .MY_USER,
-                                                                    matchListAll[
-                                                                    index]
-                                                                        .YOUR_USER,
-                                                                    matchListAll[
-                                                                    index]
-                                                                        .MATCH_ID)));
+                                                            builder: (context) => MatchResult(
+                                                                matchListAll[
+                                                                        index]
+                                                                    .MY_USER,
+                                                                matchListAll[
+                                                                        index]
+                                                                    .YOUR_USER,
+                                                                matchListAll[
+                                                                        index]
+                                                                    .MATCH_ID)));
                                                     // 画面から戻ってきたときに対象のドキュメントが存在するか確認
                                                     final matchDoc =
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection('matchList')
-                                                        .doc(matchListAll[index]
-                                                        .MATCH_ID)
-                                                        .get();
+                                                        await FirebaseFirestore
+                                                            .instance
+                                                            .collection(
+                                                                'matchList')
+                                                            .doc(matchListAll[
+                                                                    index]
+                                                                .MATCH_ID)
+                                                            .get();
 
                                                     if (matchDoc.exists) {
                                                       // ドキュメントが存在する場合にのみロックを解除
                                                       await FirebaseFirestore
                                                           .instance
-                                                          .collection('matchList')
-                                                          .doc(matchListAll[index]
-                                                          .MATCH_ID)
-                                                          .set({
-                                                        'LOCK_FLG': '0',
-                                                        'LOCK_USER': '',
-                                                      }, SetOptions(merge: true));
+                                                          .collection(
+                                                              'matchList')
+                                                          .doc(matchListAll[
+                                                                  index]
+                                                              .MATCH_ID)
+                                                          .set(
+                                                              {
+                                                            'LOCK_FLG': '0',
+                                                            'LOCK_USER': '',
+                                                          },
+                                                              SetOptions(
+                                                                  merge: true));
                                                     }
                                                   } else {
                                                     showDialog(
                                                         context: context,
                                                         builder: (BuildContext
-                                                        context) =>
+                                                                context) =>
                                                             ShowDialogToDismiss(
                                                               content:
-                                                              '現在、他のユーザーが登録中です',
+                                                                  '現在、他のユーザーが登録中です',
                                                               buttonText: "はい",
                                                             ));
                                                   }
-                                                }else{
+                                                } else {
                                                   showDialog(
                                                       context: context,
                                                       builder: (BuildContext
-                                                      context) =>
+                                                              context) =>
                                                           ShowDialogToDismiss(
                                                             content:
-                                                            'この対戦は既に他ユーザーが登録済。又は削除されています',
+                                                                'この対戦は既に他ユーザーが登録済。又は削除されています',
                                                             buttonText: "はい",
                                                           ));
                                                 }
                                               } catch (e) {
                                                 showDialog(
                                                     context: context,
-                                                    builder:
-                                                        (BuildContext context) =>
-                                                            ShowDialogToDismiss(
-                                                              content:
-                                                                  'エラーが発生しました',
-                                                              buttonText: "はい",
-                                                            ));
+                                                    builder: (BuildContext
+                                                            context) =>
+                                                        ShowDialogToDismiss(
+                                                          content: 'エラーが発生しました',
+                                                          buttonText: "はい",
+                                                        ));
                                               }
                                             },
                                           ),
@@ -496,11 +514,16 @@ class _MatchListState extends State<MatchList> {
                                             //             .RECIPIENT_ID,
                                             //         matchList[index].SENDER_ID,
                                             //         matchList[index].YOUR_USER);
-                                            Navigator.push(
+                                            await Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
                                                     builder: (context) =>
                                                         TalkRoom(room)));
+                                            await NotificationMethod
+                                                .unreadCountRest(
+                                                    matchListAll[index]
+                                                        .YOUR_USER
+                                                        .USER_ID);
                                           }),
                                     )
                                   ],

@@ -4,6 +4,7 @@ import '../Common/CSinglesRankModel.dart';
 import '../Common/CtalkRoom.dart';
 import '../FireBase/FireBase.dart';
 import 'package:intl/intl.dart';
+import '../FireBase/NotificationMethod.dart';
 import 'ProfileReference.dart';
 import 'TalkRoom.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
@@ -312,12 +313,17 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                                                       index]
                                                                   .user
                                                                   .USER_ID);
-
-                                                  Navigator.push(
+                                                  Navigator.pop(context);
+                                                  await Navigator.push(
                                                       context,
                                                       MaterialPageRoute(
                                                           builder: (context) =>
                                                               TalkRoom(room)));
+                                                  await NotificationMethod
+                                                      .unreadCountRest(
+                                                          RankModelList[index]
+                                                              .user
+                                                              .USER_ID);
                                                 },
                                               ),
                                               ElevatedButton(

@@ -12,6 +12,7 @@ import '../Common/CprofileSetting.dart';
 import '../Common/CtalkRoom.dart';
 import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
+import '../FireBase/NotificationMethod.dart';
 import '../PropSetCofig.dart';
 import '../UnderMenuMove.dart';
 import 'Billing.dart';
@@ -116,7 +117,6 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
     _scrollController.dispose(); // ScrollControllerの解放
     super.dispose();
   }
-
 
   Future<void> _loadMoreData() async {
     if (_isLoadingMore) return;
@@ -230,7 +230,7 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                 friendsListAll[index].FRIENDS_ID, context);
                             // リストから削除して再描画
                             setState(() {
-                               friendsListAll.removeAt(index); // 項目をリストから削除
+                              friendsListAll.removeAt(index); // 項目をリストから削除
                             });
                           },
                           backgroundColor: Colors.red,
@@ -286,25 +286,15 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                       ),
                                     ),
                                     InkWell(
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                                friendsListAll[index]
-                                                    .YOUR_USER
-                                                    .NICK_NAME,
-                                                style: TextStyle(
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.bold)),
-                                            Text(
-                                                friendsListAll[index]
-                                                    .SAKUSEI_TIME,
-                                                style: TextStyle(
-                                                    color: Colors.grey),
-                                                overflow: TextOverflow.ellipsis)
-                                          ],
+                                        child: Container(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                              friendsListAll[index]
+                                                  .YOUR_USER
+                                                  .NICK_NAME,
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.bold)),
                                         ),
                                         onTap: () async {
                                           //トーク画面へ
@@ -316,11 +306,16 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                                       .SENDER_ID,
                                                   friendsListAll[index]
                                                       .YOUR_USER);
-                                          Navigator.push(
+                                          await Navigator.push(
                                               context,
                                               MaterialPageRoute(
                                                   builder: (context) =>
                                                       TalkRoom(room)));
+                                          await NotificationMethod
+                                              .unreadCountRest(
+                                                  friendsListAll[index]
+                                                      .YOUR_USER
+                                                      .USER_ID);
                                         })
                                   ],
                                 )),
@@ -348,7 +343,8 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                         context: context,
                                         builder: (BuildContext context) =>
                                             BillingShowDialogToDismiss(
-                                              content: "友人との対戦成績を確認するためには、有料プランへの加入が必要です。有料プランを確認しますか",
+                                              content:
+                                                  "友人との対戦成績を確認するためには、有料プランへの加入が必要です。有料プランを確認しますか",
                                             ));
                                   }
                                 },

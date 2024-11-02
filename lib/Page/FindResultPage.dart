@@ -7,6 +7,7 @@ import '../FireBase/FireBase.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 
 import '../FireBase/GoogleAds.dart';
+import '../FireBase/NotificationMethod.dart';
 import '../PropSetCofig.dart';
 import 'ProfileReference.dart';
 import 'TalkRoom.dart';
@@ -108,11 +109,14 @@ class _FindResultPageState extends State<FindResultPage> {
                                         TalkRoomModel room = await FirestoreMethod.makeRoom(
                                             auth.currentUser!.uid,
                                             profileList[2]);
-                                        Navigator.push(
+                                        Navigator.pop(context);
+                                        await Navigator.push(
                                             context,
                                             MaterialPageRoute(
                                               builder: (context) => TalkRoom(room),
                                             ));
+                                        await NotificationMethod.unreadCountRest(
+                                            profileList[2]);
                                       },
                                     ),
                                     ElevatedButton(
