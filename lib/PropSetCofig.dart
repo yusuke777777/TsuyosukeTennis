@@ -17,6 +17,7 @@ import 'Page/FriendManagerPage.dart';
 import 'Page/Manual.dart';
 import 'Page/MatchResultList.dart';
 import 'Page/MySetting.dart';
+import 'Page/PasswordResetPage.dart';
 import 'Page/ProfileReference.dart';
 import 'Page/SigninPage.dart';
 import 'Page/TalkRoom.dart';
@@ -164,7 +165,7 @@ class DrawerConfig {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PassWordChangeForm(),
+                  builder: (context) => PasswordResetPage(),
                 ),
               );
             },
