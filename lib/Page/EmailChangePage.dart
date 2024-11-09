@@ -55,6 +55,16 @@ class _EmailChangePageState extends State<EmailChangePage> {
   }
 
   @override
+  void dispose() {
+    // コントローラを解放
+    _newEmailController.dispose();
+    _newPasswordController.dispose();
+    _passwordController.dispose();
+    _confirmEmailController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(

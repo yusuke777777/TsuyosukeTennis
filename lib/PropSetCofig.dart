@@ -12,7 +12,6 @@ import 'FireBase/FireBase.dart';
 import 'FireBase/native_dialog.dart';
 import 'FireBase/singletons_data.dart';
 import 'Page/BlockList.dart';
-import 'Page/EmailChangeForm.dart';
 import 'Page/FriendManagerPage.dart';
 import 'Page/Manual.dart';
 import 'Page/MatchResultList.dart';

@@ -46,6 +46,13 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
   }
 
   @override
+  void dispose() {
+    // コントローラを解放
+    _emailController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
