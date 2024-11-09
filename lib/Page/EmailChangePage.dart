@@ -36,11 +36,20 @@ class _EmailChangePageState extends State<EmailChangePage> {
       } on FirebaseAuthException catch (e) {
         // エラー処理
         print(e.message);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('パスワードが誤っているか既に使用されているアドレスです。'),
-          ),
-        );
+        if(e.message.toString() == 'The supplied credentials do not correspond to the previously signed in user.'){
+          ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('変更不可。再ログインをしてから変更してください。'),
+              ),
+          );
+        }
+        else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('パスワードが誤っているか既に使用されているアドレスです。'),
+            ),
+          );
+        }
       }
     }
   }
