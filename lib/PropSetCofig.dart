@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:tsuyosuke_tennis_ap/Page/EmailChangePage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/TicketListPage.dart';
 
 import 'Common/CtalkRoom.dart';
@@ -147,7 +148,7 @@ class DrawerConfig {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => EmailChangeForm(),
+                  builder: (context) => EmailChangePage(),
                 ),
               );
             },
