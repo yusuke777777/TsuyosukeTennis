@@ -164,6 +164,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
     }
 
     if (koushinFlg == "1") {
+      print("更新フラグが1なのでウィジットから称号を取得");
       myTitleMap = widget.myProfile.TITLE!;
     }
   }
@@ -195,6 +196,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
         .width;
     HeaderConfig().init(context, "プロフィール設定");
     if (widget.koushinFlg == '0') {
+      print("更新フラグが0なので称号取得処理を通ります");
       getMyInitTitle(myTitleMap);
     }
     return Scaffold(

@@ -532,6 +532,9 @@ async function checkTitleState(): Promise<void> {
     const feedbackCount = Number(docs.data()["FEEDBACK_COUNT"]);
     const strokeForeAve = Number(docs.data()["STROKE_FOREHAND_AVE"]);
     const strokeBackAve = Number(docs.data()["STROKE_BACKHAND_AVE"]);
+    const volleyForeAve = Number(docs.data()["VOLLEY_FOREHAND_AVE"]);
+    const volleyBackAve = Number(docs.data()["VOLLEY_BACKHAND_AVE"]);
+    const serve1stAve = Number(docs.data()["SERVE_1ST_AVE"]);
     console.log(typeof titleData);
     // 更新確認(No1の確認)!!!!!!!!!!!!!!!!!!!!!
     let mapVal1 = "0";
@@ -754,6 +757,271 @@ async function checkTitleState(): Promise<void> {
       myObjectData.set("10", mapVal10);
     }
     // No10確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No11の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal11 = "0";
+    if (titleData.get("11") !== undefined) {
+      console.log("No11存在します");
+      mapVal11 = titleData.get("11") as string;
+      console.log(mapVal11);
+    } else {
+      console.log("No11存在しません");
+    }
+    // myObjectDataの11キーを更新
+    if (mapVal11 == "0") {
+      console.log("No11が0");
+      if (feedbackCount >= 10 && volleyForeAve >= 1.0) {
+        console.log("No11条件達成！");
+        myObjectData.set("11", "1");
+      } else {
+        myObjectData.set("11", "0");
+      }
+    } else {
+      myObjectData.set("11", mapVal11);
+    }
+    // No11確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No12の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal12 = "0";
+    if (titleData.get("12") !== undefined) {
+      console.log("No12存在します");
+      mapVal12 = titleData.get("12") as string;
+      console.log(mapVal12);
+    } else {
+      console.log("No12存在しません");
+    }
+    // myObjectDataの12キーを更新
+    if (mapVal12 == "0") {
+      console.log("No12が0");
+      if (feedbackCount >= 15 && volleyForeAve >= 2.0) {
+        console.log("No12条件達成！");
+        myObjectData.set("12", "1");
+      } else {
+        myObjectData.set("12", "0");
+      }
+    } else {
+      myObjectData.set("12", mapVal12);
+    }
+    // No12確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No13の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal13 = "0";
+    if (titleData.get("13") !== undefined) {
+      console.log("No13存在します");
+      mapVal13 = titleData.get("13") as string;
+      console.log(mapVal13);
+    } else {
+      console.log("No13存在しません");
+    }
+    // myObjectDataの13キーを更新
+    if (mapVal13 == "0") {
+      console.log("No13が0");
+      if (feedbackCount >= 30 && volleyForeAve >= 4.0) {
+        console.log("No13条件達成！");
+        myObjectData.set("13", "1");
+      } else {
+        myObjectData.set("13", "0");
+      }
+    } else {
+      myObjectData.set("13", mapVal13);
+    }
+    // No13確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No14の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal14 = "0";
+    if (titleData.get("14") !== undefined) {
+      console.log("No14存在します");
+      mapVal14 = titleData.get("14") as string;
+      console.log(mapVal14);
+    } else {
+      console.log("No14存在しません");
+    }
+    // myObjectDataの14キーを更新
+    if (mapVal14 == "0") {
+      console.log("No14が0");
+      if (feedbackCount >= 50 && volleyForeAve >= 4.1) {
+        console.log("No14条件達成！");
+        myObjectData.set("14", "1");
+      } else {
+        myObjectData.set("14", "0");
+      }
+    } else {
+      myObjectData.set("14", mapVal14);
+    }
+    // No14確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No15の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal15 = "0";
+    if (titleData.get("15") !== undefined) {
+      console.log("No15存在します");
+      mapVal15 = titleData.get("15") as string;
+      console.log(mapVal15);
+    } else {
+      console.log("No15存在しません");
+    }
+    // myObjectDataの15キーを更新
+    if (mapVal15 == "0") {
+      console.log("No15が0");
+      if (feedbackCount >= 10 && volleyBackAve >= 1.0) {
+        console.log("No15条件達成！");
+        myObjectData.set("15", "1");
+      } else {
+        myObjectData.set("15", "0");
+      }
+    } else {
+      myObjectData.set("15", mapVal15);
+    }
+    // No15確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No16の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal16 = "0";
+    if (titleData.get("16") !== undefined) {
+      console.log("No16存在します");
+      mapVal16 = titleData.get("16") as string;
+      console.log(mapVal16);
+    } else {
+      console.log("No16存在しません");
+    }
+    // myObjectDataの16キーを更新
+    if (mapVal16 == "0") {
+      console.log("No16が0");
+      if (feedbackCount >= 15 && volleyBackAve >= 2.0) {
+        console.log("No16条件達成！");
+        myObjectData.set("16", "1");
+      } else {
+        myObjectData.set("16", "0");
+      }
+    } else {
+      myObjectData.set("16", mapVal16);
+    }
+    // No16確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No17の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal17 = "0";
+    if (titleData.get("17") !== undefined) {
+      console.log("No17存在します");
+      mapVal17 = titleData.get("17") as string;
+      console.log(mapVal17);
+    } else {
+      console.log("No17存在しません");
+    }
+    // myObjectDataの17キーを更新
+    if (mapVal17 == "0") {
+      console.log("No17が0");
+      if (feedbackCount >= 30 && volleyBackAve >= 4.0) {
+        console.log("No17条件達成！");
+        myObjectData.set("17", "1");
+      } else {
+        myObjectData.set("17", "0");
+      }
+    } else {
+      myObjectData.set("17", mapVal17);
+    }
+    // No17確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No18の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal18 = "0";
+    if (titleData.get("18") !== undefined) {
+      console.log("No18存在します");
+      mapVal18 = titleData.get("18") as string;
+      console.log(mapVal18);
+    } else {
+      console.log("No18存在しません");
+    }
+    // myObjectDataの18キーを更新
+    if (mapVal18 == "0") {
+      console.log("No18が0");
+      if (feedbackCount >= 50 && volleyBackAve >= 4.1) {
+        console.log("No18条件達成！");
+        myObjectData.set("18", "1");
+      } else {
+        myObjectData.set("18", "0");
+      }
+    } else {
+      myObjectData.set("18", mapVal18);
+    }
+    // No18確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No19の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal19 = "0";
+    if (titleData.get("19") !== undefined) {
+      console.log("No19存在します");
+      mapVal19 = titleData.get("19") as string;
+      console.log(mapVal19);
+    } else {
+      console.log("No19存在しません");
+    }
+    // myObjectDataの19キーを更新
+    if (mapVal19 == "0") {
+      console.log("No19が0");
+      if (feedbackCount >= 10 && serve1stAveAve >= 1.0) {
+        console.log("No19条件達成！");
+        myObjectData.set("19", "1");
+      } else {
+        myObjectData.set("19", "0");
+      }
+    } else {
+      myObjectData.set("19", mapVal19);
+    }
+    // No19確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No20の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal20 = "0";
+    if (titleData.get("20") !== undefined) {
+      console.log("No20存在します");
+      mapVal20 = titleData.get("20") as string;
+      console.log(mapVal20);
+    } else {
+      console.log("No20存在しません");
+    }
+    // myObjectDataの20キーを更新
+    if (mapVal20 == "0") {
+      console.log("No20が0");
+      if (feedbackCount >= 15 && serve1stAveAve >= 2.0) {
+        console.log("No20条件達成！");
+        myObjectData.set("20", "1");
+      } else {
+        myObjectData.set("20", "0");
+      }
+    } else {
+      myObjectData.set("20", mapVal20);
+    }
+    // No20確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No21の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal21 = "0";
+    if (titleData.get("21") !== undefined) {
+      console.log("No21存在します");
+      mapVal21 = titleData.get("21") as string;
+      console.log(mapVal21);
+    } else {
+      console.log("No21存在しません");
+    }
+    // myObjectDataの21キーを更新
+    if (mapVal21 == "0") {
+      console.log("No21が0");
+      if (feedbackCount >= 30 && serve1stAveAve >= 4.0) {
+        console.log("No21条件達成！");
+        myObjectData.set("21", "1");
+      } else {
+        myObjectData.set("21", "0");
+      }
+    } else {
+      myObjectData.set("21", mapVal21);
+    }
+    // No21確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No22の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal22 = "0";
+    if (titleData.get("22") !== undefined) {
+      console.log("No22存在します");
+      mapVal22 = titleData.get("22") as string;
+      console.log(mapVal22);
+    } else {
+      console.log("No22存在しません");
+    }
+    // myObjectDataの22キーを更新
+    if (mapVal22 == "0") {
+      console.log("No22が0");
+      if (feedbackCount >= 50 && serve1stAveAve >= 4.1) {
+        console.log("No22条件達成！");
+        myObjectData.set("22", "1");
+      } else {
+        myObjectData.set("22", "0");
+      }
+    } else {
+      myObjectData.set("22", mapVal21);
+    }
+    // No22確認終了＝＝＝＝＝＝＝＝＝＝
+
     // 結果をマップに詰める
     const updateMap = {
       "1": myObjectData.get("1"),
@@ -766,6 +1034,18 @@ async function checkTitleState(): Promise<void> {
       "8": myObjectData.get("8"),
       "9": myObjectData.get("9"),
       "10": myObjectData.get("10"),
+      "11": myObjectData.get("11"),
+      "12": myObjectData.get("12"),
+      "13": myObjectData.get("13"),
+      "14": myObjectData.get("14"),
+      "15": myObjectData.get("15"),
+      "16": myObjectData.get("16"),
+      "17": myObjectData.get("17"),
+      "18": myObjectData.get("18"),
+      "19": myObjectData.get("19"),
+      "20": myObjectData.get("20"),
+      "21": myObjectData.get("21"),
+      "22": myObjectData.get("22"),
     };
     await profileDetailRef.doc(docs.id).update({"TITLE": updateMap});
     console.log("称号更新を行う");
