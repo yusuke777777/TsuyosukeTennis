@@ -74,7 +74,7 @@ export const deleteOldMessages = functions
     .region("asia-northeast1")
     .pubsub.schedule("0 0 * * *")
     .timeZone("Asia/Tokyo") // タイムゾーンを日本に設定
-    .onRun(async (context) => {
+    .onRun(async () => {
       const now = admin.firestore.Timestamp.now();
       const oneYearAgo =
         new admin.firestore.Timestamp(now.seconds -
@@ -945,7 +945,7 @@ async function checkTitleState(): Promise<void> {
     // myObjectDataの19キーを更新
     if (mapVal19 == "0") {
       console.log("No19が0");
-      if (feedbackCount >= 10 && serve1stAveAve >= 1.0) {
+      if (feedbackCount >= 10 && serve1stAve >= 1.0) {
         console.log("No19条件達成！");
         myObjectData.set("19", "1");
       } else {
@@ -967,7 +967,7 @@ async function checkTitleState(): Promise<void> {
     // myObjectDataの20キーを更新
     if (mapVal20 == "0") {
       console.log("No20が0");
-      if (feedbackCount >= 15 && serve1stAveAve >= 2.0) {
+      if (feedbackCount >= 15 && serve1stAve >= 2.0) {
         console.log("No20条件達成！");
         myObjectData.set("20", "1");
       } else {
@@ -989,7 +989,7 @@ async function checkTitleState(): Promise<void> {
     // myObjectDataの21キーを更新
     if (mapVal21 == "0") {
       console.log("No21が0");
-      if (feedbackCount >= 30 && serve1stAveAve >= 4.0) {
+      if (feedbackCount >= 30 && serve1stAve >= 4.0) {
         console.log("No21条件達成！");
         myObjectData.set("21", "1");
       } else {
@@ -1011,7 +1011,7 @@ async function checkTitleState(): Promise<void> {
     // myObjectDataの22キーを更新
     if (mapVal22 == "0") {
       console.log("No22が0");
-      if (feedbackCount >= 50 && serve1stAveAve >= 4.1) {
+      if (feedbackCount >= 50 && serve1stAve >= 4.1) {
         console.log("No22条件達成！");
         myObjectData.set("22", "1");
       } else {
