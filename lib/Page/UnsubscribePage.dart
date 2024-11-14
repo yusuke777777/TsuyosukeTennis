@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tsuyosuke_tennis_ap/Page/ThankYouPage.dart';
 
 import '../PropSetCofig.dart';
 import 'SigninPage.dart';
@@ -105,7 +107,7 @@ class _UnsubscribeState extends State<UnsubscribePage> {
                   // ログアウト後の画面に遷移
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) =>  SignInPage()),
+                    MaterialPageRoute(builder: (context) =>  ThankYouPage()),
                         (Route<dynamic> route) => false,
                   );
                 } else {
@@ -135,6 +137,7 @@ class _UnsubscribeState extends State<UnsubscribePage> {
 
       // 現在のユーザーを取得
       User? user = FirebaseAuth.instance.currentUser;
+      FirebaseFirestore storeInst = FirebaseFirestore.instance;
       String userId = user!.uid;
 
       // パスワードで再認証
@@ -142,24 +145,131 @@ class _UnsubscribeState extends State<UnsubscribePage> {
       await user?.reauthenticateWithCredential(credential);
 
       //コレクションの該当データを削除
-      // //myProfileDetail
-      // final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_myProfileDetail =
-      // await FirebaseFirestore.instance.collection('myProfileDetail').doc(userId).get();
-      // if(documentSnapshot_myProfileDetail.exists){
-      //   FirebaseFirestore.instance.collection('myProfileDetail').doc(userId).delete();
-      // }
-      // //MySetting
-      // final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_MySetting =
-      // await FirebaseFirestore.instance.collection('MySetting').doc(userId).get();
-      // if(documentSnapshot_MySetting.exists){
-      //   FirebaseFirestore.instance.collection('MySetting').doc(userId).delete();
-      // }
-      // //blockList
-      // final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_blockList =
-      // await FirebaseFirestore.instance.collection('blockList').doc(userId).get();
-      // if(documentSnapshot_blockList.exists){
-      //   FirebaseFirestore.instance.collection('blockList').doc(userId).delete();
-      // }
+      //MySetting
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_MySetting =
+      await storeInst.collection('MySetting').doc(userId).get();
+      if(documentSnapshot_MySetting.exists){
+        storeInst.collection('MySetting').doc(userId).delete();
+      }
+      //blockList
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_blockList =
+      await storeInst.collection('blockList').doc(userId).get();
+      if(documentSnapshot_blockList.exists){
+        storeInst.collection('blockList').doc(userId).delete();
+      }
+      //friendList
+      final collection_friendList = storeInst.collection('friendsList');
+      try {
+        final snapshot_friendList = await collection_friendList.where('FRIEND_USER_LIST', arrayContains: userId).get();
+        for (var doc in snapshot_friendList.docs) {
+          await doc.reference.delete();
+        }
+      }
+      catch(e) {
+        print("友人リスト削除に失敗" + userId + "を含むデータ");
+        print(e);
+      }
+      //manSinglesRank
+      //初級
+      try {
+        final subcollection_ShokyuRank_doc = storeInst.collection('manSinglesRank')
+            .doc("ShokyuRank").collection("RankList").doc(userId);
+        await subcollection_ShokyuRank_doc.delete();
+      }
+      catch(e) {
+        print("初級データ削除に失敗" + userId + "を含むデータ");
+        print(e);
+      }
+      //中級
+      try {
+        final subcollection_ChukyuRank_doc = storeInst.collection('manSinglesRank')
+            .doc("ChukyuRank").collection("RankList").doc(userId);
+        await subcollection_ChukyuRank_doc.delete();
+      }
+      catch(e) {
+        print("中級データ削除に失敗" + userId + "を含むデータ");
+        print(e);
+      }
+      //上級
+      try {
+        final subcollection_JyokyuRank_doc = storeInst.collection('manSinglesRank')
+            .doc("JyokyuRank").collection("RankList").doc(userId);
+        await subcollection_JyokyuRank_doc.delete();
+      }
+      catch(e) {
+        print("上級データ削除に失敗" + userId + "を含むデータ");
+        print(e);
+      }
+      //matchList
+      final collection_matchList = storeInst.collection('matchList');
+      try {
+        final snapshot_matchList = await collection_matchList.where('MATCH_USER_LIST', arrayContains: userId).get();
+        for (var doc in snapshot_matchList.docs) {
+          await doc.reference.delete();
+        }
+      }
+      catch(e) {
+        print("マッチリスト削除に失敗" + userId + "を含むデータ");
+        print(e);
+      }
+      //myNotification
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_myNotification =
+      await storeInst.collection('myNotification').doc(userId).get();
+      if(documentSnapshot_myNotification.exists){
+        storeInst.collection('myNotification').doc(userId).delete();
+      }
+      //myProfile
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_myProfile =
+      await storeInst.collection('myProfile').doc(userId).get();
+      if(documentSnapshot_myProfile.exists){
+        storeInst.collection('myProfile').doc(userId).delete();
+      }
+      //myProfileDetail
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_myProfileDetail =
+      await storeInst.collection('myProfileDetail').doc(userId).get();
+      if(documentSnapshot_myProfileDetail.exists){
+        storeInst.collection('myProfileDetail').doc(userId).delete();
+      }
+      //talkRoom
+      final collection_talkRoom = storeInst.collection('talkRoom');
+      try {
+        final snapshot_talkRoom = await collection_talkRoom.where('joined_user_ids', arrayContains: userId).get();
+        for (var doc in snapshot_talkRoom.docs) {
+          await doc.reference.delete();
+        }
+      }
+      catch(e) {
+        print("トークリスト削除に失敗" + userId + "を含むデータ");
+        print(e);
+      }
+      //userLimitMgmt
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_userLimitMgmt =
+      await storeInst.collection('userLimitMgmt').doc(userId).get();
+      if(documentSnapshot_userLimitMgmt.exists){
+        storeInst.collection('userLimitMgmt').doc(userId).delete();
+      }
+      //userTicketMgmt
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_userTicketMgmt =
+      await storeInst.collection('userTicketMgmt').doc(userId).get();
+      if(documentSnapshot_userTicketMgmt.exists){
+        storeInst.collection('userTicketMgmt').doc(userId).delete();
+      }
+      //userTokenList
+      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_userTokenList =
+      await storeInst.collection('userTokenList').doc(userId).get();
+      if(documentSnapshot_userTokenList.exists){
+        storeInst.collection('userTokenList').doc(userId).delete();
+      }
+      //ストレージ配下のプロフィール画像削除
+      final storageRef = FirebaseStorage.instance.ref();
+      final deleteRef = storageRef.child("/myProfileImage/" + userId.toString() +"/photos/");
+      final listResult = await deleteRef.listAll();
+      // 各画像ファイルを削除
+      for (final item in listResult.items) {
+        await item.delete();
+      }
+      print('File deleted successfully.');
+
 
       // ユーザーアカウントを削除
       await user?.delete();
