@@ -61,11 +61,20 @@ class _MySettingState extends State<MySetting> {
                 },
               ),
               ListTile(
+                title: Text('プライバシーポリシー',
+                    style: TextStyle(fontSize: 20, color: Colors.black)),
+                onTap: () {
+                  //プライバシーポリシーを記入する
+                  UrlMove().UrlMoving(
+                      'https://spectacled-lan-4ae.notion.site/09dca252ef2e4ba7bd692f1e0228acc1?pvs=4');
+                },
+              ),
+              ListTile(
                 title: Text('問い合わせ',
                     style: TextStyle(fontSize: 20, color: Colors.black)),
                 onTap: () {
                   //問い合わせホームを作成する
-                  UrlMove().UrlMoving('https://docs.google.com/forms/d/e/1FAIpQLSfxw77z17RwulR7oXD146E1XaxARDFIjd25nDg7l7dFH9A1bQ/viewform  ');
+                  UrlMove().UrlMoving('https://docs.google.com/forms/d/e/1FAIpQLSfxw77z17RwulR7oXD146E1XaxARDFIjd25nDg7l7dFH9A1bQ/viewform');
                 },
               ),
               ListTile(

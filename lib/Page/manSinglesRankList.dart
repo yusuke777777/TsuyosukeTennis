@@ -287,59 +287,64 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                     ),
                                   ),
                                   onTap: () {
-                                    showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            title: Text(RankModelList[index]
-                                                    .user
-                                                    .NICK_NAME +
-                                                'さんとトークしてみますか'),
-                                            actions: <Widget>[
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                    foregroundColor:
-                                                        Colors.black,
-                                                    backgroundColor: Colors
-                                                        .lightGreenAccent),
-                                                child: Text('はい'),
-                                                onPressed: () async {
-                                                  TalkRoomModel room =
-                                                      await FirestoreMethod
-                                                          .makeRoom(
-                                                              auth.currentUser!
-                                                                  .uid,
-                                                              RankModelList[
-                                                                      index]
-                                                                  .user
-                                                                  .USER_ID);
-                                                  Navigator.pop(context);
-                                                  await Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                          builder: (context) =>
-                                                              TalkRoom(room)));
-                                                  await NotificationMethod
-                                                      .unreadCountRest(
-                                                          RankModelList[index]
-                                                              .user
-                                                              .USER_ID);
-                                                },
-                                              ),
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                    foregroundColor:
-                                                        Colors.black,
-                                                    backgroundColor: Colors
-                                                        .lightGreenAccent),
-                                                child: Text('いいえ'),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                            ],
-                                          );
-                                        });
+                                    if (RankModelList[index].user.USER_ID !=
+                                        auth.currentUser!.uid) {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              title: Text(RankModelList[index]
+                                                      .user
+                                                      .NICK_NAME +
+                                                  'さんとトークしてみますか'),
+                                              actions: <Widget>[
+                                                ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                      foregroundColor:
+                                                          Colors.black,
+                                                      backgroundColor: Colors
+                                                          .lightGreenAccent),
+                                                  child: Text('はい'),
+                                                  onPressed: () async {
+                                                    TalkRoomModel room =
+                                                        await FirestoreMethod
+                                                            .makeRoom(
+                                                                auth.currentUser!
+                                                                    .uid,
+                                                                RankModelList[
+                                                                        index]
+                                                                    .user
+                                                                    .USER_ID);
+                                                    Navigator.pop(context);
+                                                    await Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (context) =>
+                                                                    TalkRoom(
+                                                                        room)));
+                                                    await NotificationMethod
+                                                        .unreadCountRest(
+                                                            RankModelList[index]
+                                                                .user
+                                                                .USER_ID);
+                                                  },
+                                                ),
+                                                ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                      foregroundColor:
+                                                          Colors.black,
+                                                      backgroundColor: Colors
+                                                          .lightGreenAccent),
+                                                  child: Text('いいえ'),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                              ],
+                                            );
+                                          });
+                                    }
                                   },
                                 ),
                               ],
