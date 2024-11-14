@@ -153,26 +153,43 @@ class _MatchResultListState extends State<MatchResultList> {
                                                 "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
                                             radius: 30,
                                           )
-                                        : CircleAvatar(
-                                            backgroundColor: Colors.white,
-                                            //画像を取得できない場合はデフォ画像を取得
-                                            backgroundImage: NetworkImage(
-                                                (_matchResultDocList[index]
-                                                            .data()
-                                                        as Map<String, dynamic>)[
-                                                    'opponentProfileImage']),
-                                            radius: 30,
-                                            onBackgroundImageError:
-                                                (exception, stackTrace) {
-                                              // エラーが発生した場合の処理
-                                              print(
-                                                  '画像の読み込みに失敗しました: $exception');
-                                            }),
+                                        : Image.network(
+                                      (_matchResultDocList[index].data() as Map<String, dynamic>)['opponentProfileImage'],
+                                      width: 60, // CircleAvatar の直径に合わせて調整
+                                      height: 60,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return const CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          backgroundImage: AssetImage('images/upper_body-2.png'),
+                                          radius: 30,
+                                        );
+                                      },
+                                    ),
+                                    // CircleAvatar(
+                                    //         backgroundColor: Colors.white,
+                                    //         //画像を取得できない場合はデフォ画像を取得
+                                    //         backgroundImage: NetworkImage(
+                                    //             (_matchResultDocList[index]
+                                    //                         .data()
+                                    //                     as Map<String, dynamic>)[
+                                    //                 'opponentProfileImage']),
+                                    //         radius: 30,
+                                    //         onBackgroundImageError:
+                                    //             (exception, stackTrace) {
+                                    //           // エラーが発生した場合の処理
+                                    //           print(
+                                    //               '画像の読み込みに失敗しました: $exception');
+                                    //         }),
                                     onTap: () async {
                                       print(_matchResultDocList[index].data()
                                           as Map<String, dynamic>);
 
                                       //対戦相手もしくは入力者が退会済みの場合エラーメッセ
+                                      print(await isUserExist(
+                                          (_matchResultDocList[index].data()
+                                          as Map<String, dynamic>)[
+                                          'userId'] as String));
                                       if (await isUserExist(
                                           (_matchResultDocList[index].data()
                                                   as Map<String, dynamic>)[

@@ -212,6 +212,15 @@ class _UnsubscribeState extends State<UnsubscribePage> {
         print("マッチリスト削除に失敗" + userId + "を含むデータ");
         print(e);
       }
+      //matchResult
+      try {
+        final subcollection_matchResult_doc = storeInst.collection('matchResult').doc(userId);
+        await subcollection_matchResult_doc.delete();
+      }
+      catch(e) {
+        print("matchResultデータ削除に失敗" + userId + "を含むデータ");
+        print(e);
+      }
       //myNotification
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_myNotification =
       await storeInst.collection('myNotification').doc(userId).get();
@@ -225,6 +234,7 @@ class _UnsubscribeState extends State<UnsubscribePage> {
         storeInst.collection('myProfile').doc(userId).delete();
       }
       //myProfileDetail
+      //なぜかRANK_NOとRANK_TOROKU_RANKが残る
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_myProfileDetail =
       await storeInst.collection('myProfileDetail').doc(userId).get();
       if(documentSnapshot_myProfileDetail.exists){
