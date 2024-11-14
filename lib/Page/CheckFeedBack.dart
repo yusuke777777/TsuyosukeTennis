@@ -174,7 +174,9 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
                             child: feedBackList[index].OPPONENT_IMAGE == ""
                                 ? Image.asset('images/upper_body-2.png',
                                     fit: BoxFit.cover)
-                                : Image.network(
+                                : ClipOval(
+                                    child:
+                                Image.network(
                                     feedBackList[index]
                                         .OPPONENT_IMAGE
                                         .toString(),
@@ -186,6 +188,7 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
                                       return Image.asset('images/upper_body-2.png'); // エラー時の画像
                               },
                                   ),
+                            ),
                           ),
                         ),
                         title: Text(

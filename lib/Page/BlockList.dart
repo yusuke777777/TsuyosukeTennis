@@ -25,120 +25,142 @@ class BlockList extends StatefulWidget {
 
 class _BlockListState extends State<BlockList> {
   List<BlockListModel> blockList = [];
+
   Future<void> createBlockList() async {
     blockList = await FirestoreMethod.getBlockList(
         FirestoreMethod.auth.currentUser!.uid);
+  }
+
+  Future<bool> isUserExist(String uid) async {
+    final docSnapshot = await FirebaseFirestore.instance
+        .collection('myProfileDetail') // コレクション名を変更してください
+        .doc(uid)
+        .get();
+
+    return docSnapshot.exists;
   }
 
   @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "ブロックリスト");
 
-
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: HeaderConfig.backGroundColor,
-        title: HeaderConfig.appBarText,
-        iconTheme: IconThemeData(color: Colors.black),
-          leading: HeaderConfig.backIcon
-      ),
-
-      body:
-             FutureBuilder(
-              future: createBlockList(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  return ListView.builder(
-                      itemCount: blockList.length,
-                      itemBuilder: (context, index) {
-                        return Slidable(
-                            endActionPane: ActionPane(
-                              motion: DrawerMotion(),
-                              children: [
-                                SlidableAction(
-                                  onPressed: (value) async{
-                                    await FirestoreMethod.delBlockList(blockList[index].BLOCK_USER_ID);
-                                    setState(() {
-                                    });
-                                  },
-                                  backgroundColor: Colors.red,
-                                  icon: Icons.delete,
-                                  label: '解除',
-                                ),
-                              ],
+        appBar: AppBar(
+            backgroundColor: HeaderConfig.backGroundColor,
+            title: HeaderConfig.appBarText,
+            iconTheme: IconThemeData(color: Colors.black),
+            leading: HeaderConfig.backIcon),
+        body: FutureBuilder(
+          future: createBlockList(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.done) {
+              return ListView.builder(
+                  itemCount: blockList.length,
+                  itemBuilder: (context, index) {
+                    return Slidable(
+                        endActionPane: ActionPane(
+                          motion: DrawerMotion(),
+                          children: [
+                            SlidableAction(
+                              onPressed: (value) async {
+                                await FirestoreMethod.delBlockList(
+                                    blockList[index].BLOCK_USER_ID);
+                                setState(() {});
+                              },
+                              backgroundColor: Colors.red,
+                              icon: Icons.delete,
+                              label: '解除',
                             ),
-                            child: Card(
-                              color: Colors.white,
-                              child: Container(
-                                height: 70,
-                                child: Row(
-                                  crossAxisAlignment:
-                                  CrossAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
-                                      child: InkWell(
-                                        child: blockList[index]
-                                            .YOUR_USER
-                                            .PROFILE_IMAGE ==
+                          ],
+                        ),
+                        child: Card(
+                          color: Colors.white,
+                          child: Container(
+                            height: 70,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8.0),
+                                  //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
+                                  child: InkWell(
+                                    child: blockList[index]
+                                                .YOUR_USER
+                                                .PROFILE_IMAGE ==
                                             ''
-                                            ? CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          backgroundImage: NetworkImage(
-                                              "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                          radius: 30,
-                                        )
-                                            : CircleAvatar(
+                                        ? CircleAvatar(
                                             backgroundColor: Colors.white,
                                             backgroundImage: NetworkImage(
-                                                blockList[index]
-                                                    .YOUR_USER
-                                                    .PROFILE_IMAGE),
-                                            radius: 30),
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ProfileReference(
-                                                          blockList[index]
-                                                              .YOUR_USER
-                                                              .USER_ID)
-                                              )
-                                          );
-                                        },
-                                      ),
-                                    ),
-                                   Container(
-
-                             child:
-                                            Text(
-                                                blockList[index]
-                                                    .YOUR_USER
-                                                    .NICK_NAME,
-                                                style: TextStyle(
-                                                    fontSize: 20,
-                                                    fontWeight:
-                                                    FontWeight.bold)),
-                                        )
-                                  ],
+                                                "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                            radius: 30,
+                                          )
+                                        : ClipOval(
+                                            child: Image.network(
+                                              blockList[index]
+                                                  .YOUR_USER
+                                                  .PROFILE_IMAGE,
+                                              width:
+                                                  60, // CircleAvatar の直径に合わせて調整
+                                              height: 60,
+                                              fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (context, error, stackTrace) {
+                                                return const CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: AssetImage(
+                                                      'images/upper_body-2.png'),
+                                                  radius: 30,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                    onTap: () async {
+                                      print(blockList[index].YOUR_USER.USER_ID.toString());
+                                      print(await isUserExist(blockList[index].YOUR_USER.USER_ID.toString()));
+                                      if(await isUserExist(blockList[index].YOUR_USER.USER_ID.toString())) {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ProfileReference(
+                                                        blockList[index]
+                                                            .YOUR_USER
+                                                            .USER_ID)));
+                                      }
+                                      else {
+                                        showDialog(
+                                            context: context,
+                                            builder: (_) => AlertDialog(
+                                              title: Text("エラー"),
+                                              content: Text("退会済みユーザーです"),
+                                            ));
+                                      }
+                                    },
+                                  ),
                                 ),
-                              ),
-                            ));
-                      });
-                } else {
-                  return Center(child: CircularProgressIndicator());
-                }
-              },
-            )
-    );
+                                Container(
+                                  child: Text(
+                                      blockList[index].YOUR_USER.NICK_NAME,
+                                      style: TextStyle(
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold)),
+                                )
+                              ],
+                            ),
+                          ),
+                        ));
+                  });
+            } else {
+              return Center(child: CircularProgressIndicator());
+            }
+          },
+        ));
   }
+
   @override
   void dispose() {
     // 必要なリソースを解放する処理をここに追加
     super.dispose();
   }
-
 }
