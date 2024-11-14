@@ -40,8 +40,11 @@ class _TalkListState extends State<TalkList> {
   }
 
   Future<void> createRooms() async {
+    print("aaa");
     talkList =
         await FirestoreMethod.getRooms(FirestoreMethod.auth.currentUser!.uid);
+    print(talkList.length);
+    print("bbb");
   }
 
   @override

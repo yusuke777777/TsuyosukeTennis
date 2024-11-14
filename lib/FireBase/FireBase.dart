@@ -826,8 +826,8 @@ class FirestoreMethod {
       try {
         count = await NotificationMethod.unreadCountGet(yourUserId);
       } catch (e) {
-        throw (e);
         print("未読メッセージ数を正しく取得できませんでした");
+        throw (e);
       }
       //ブロックリストに存在しない場合に表示する
       String blockUserChk = await getBlockListChk(yourUserId);
@@ -842,8 +842,8 @@ class FirestoreMethod {
               updated_time: doc.data()['updated_time'] ?? '');
           roomList.add(room);
         } catch (e) {
-          throw (e);
           print("トークルームの取得に失敗しました");
+          throw (e);
         }
       }
     });
