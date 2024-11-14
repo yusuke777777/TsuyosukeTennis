@@ -194,6 +194,7 @@ class FirestoreMethod {
   static Future<void> makeProfileDetail(
       CprofileSetting profile, String koushinFlg) async {
     try {
+      print("===makeProfileDetail開始===");
       DateTime now = DateTime.now();
       DateFormat outputFormat = DateFormat('yyyy-MM-dd');
       DateFormat outputFormat2 = DateFormat('yyyy/MM/dd HH:mm');
@@ -245,6 +246,7 @@ class FirestoreMethod {
         }
       }
       if (koushinFlg == "1") {
+        print("makeDetailにて更新フラグは１");
         // await profileDetailRef.doc(auth.currentUser!.uid).set({
         //   'USER_ID': auth.currentUser!.uid,
         //   'PROFILE_IMAGE': profile.PROFILE_IMAGE,
@@ -365,8 +367,10 @@ class FirestoreMethod {
           //課金フラグ
           'BILLING_FLG': appData.entitlementIsActive == true ? "1" : "0"
         });
+        print("detail登録段階での称号は？"+profile.TITLE.toString());
       }
     } catch (e) {
+      print("===makeProfileDetail失敗===");
       throw (e);
       print('ユーザー情報の詳細登録に失敗しました --- $e');
       throw ('ユーザー情報の詳細登録に失敗しました --- $e');

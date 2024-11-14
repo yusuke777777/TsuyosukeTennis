@@ -59,7 +59,7 @@ class _ReLoginMessagePageState extends State<ReLoginMessagePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '登録メールアドレスに承認メールを送信しました。\n承認後、再ログインをしてください。',
+              '登録メールアドレスに承認メールを送信しました。\n承認後、下記ボタンを押してください。',
               style: TextStyle(
                 fontSize: 15,
                 color: Colors.red,
@@ -126,14 +126,9 @@ class _ReLoginMessagePageState extends State<ReLoginMessagePage> {
                 try {
                   await Purchases.logOut();
                   appData.appUserID = await Purchases.appUserID;
-                  print("ログアウト"+appData.appUserID );
+                  print("ログアウト　"+appData.appUserID );
                 } on PlatformException catch (e) {
-                  await showDialog(
-                      context: context,
-                      builder: (BuildContext context) => ShowDialogToDismiss(
-                          title: "Error",
-                          content: e.message ?? "Unknown error",
-                          buttonText: 'OK'));
+                  print(e);
                 }
                 // ログアウト後の画面に遷移
                 Navigator.pushAndRemoveUntil(

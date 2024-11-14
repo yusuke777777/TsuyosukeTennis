@@ -181,6 +181,10 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
                                     width: 50,
                                     height: 50,
                                     fit: BoxFit.fill,
+                                    errorBuilder: (context, error, stackTrace) {
+                                      // 画像取得エラー時の処理
+                                      return Image.asset('images/upper_body-2.png'); // エラー時の画像
+                              },
                                   ),
                           ),
                         ),

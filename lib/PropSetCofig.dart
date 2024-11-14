@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:tsuyosuke_tennis_ap/Page/PassWordChangeForm.dart';
+import 'package:tsuyosuke_tennis_ap/Page/EmailChangePage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/TicketListPage.dart';
 
 import 'Common/CtalkRoom.dart';
@@ -12,11 +12,11 @@ import 'FireBase/FireBase.dart';
 import 'FireBase/native_dialog.dart';
 import 'FireBase/singletons_data.dart';
 import 'Page/BlockList.dart';
-import 'Page/EmailChangeForm.dart';
 import 'Page/FriendManagerPage.dart';
 import 'Page/Manual.dart';
 import 'Page/MatchResultList.dart';
 import 'Page/MySetting.dart';
+import 'Page/PasswordResetPage.dart';
 import 'Page/ProfileReference.dart';
 import 'Page/SigninPage.dart';
 import 'Page/TalkRoom.dart';
@@ -147,7 +147,7 @@ class DrawerConfig {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => EmailChangeForm(),
+                  builder: (context) => EmailChangePage(),
                 ),
               );
             },
@@ -164,7 +164,7 @@ class DrawerConfig {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => PassWordChangeForm(),
+                  builder: (context) => PasswordResetPage(),
                 ),
               );
             },
