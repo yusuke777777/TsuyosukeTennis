@@ -509,47 +509,66 @@ class FirestoreMethod {
         .collection('myProfile')
         .doc(userId)
         .get();
+    if(snapShot.data()?.length == null){
+      String USER_ID = userId;
+      String PROFILE_IMAGE = '';
+      String NICK_NAME = "削除済みユーザー";
 
-    String USER_ID = userId;
-    String PROFILE_IMAGE = snapShot.data()!['PROFILE_IMAGE'];
-    String NICK_NAME = snapShot.data()!['NICK_NAME'];
-    String TOROKU_RANK = snapShot.data()!['TOROKU_RANK'];
-    String AGE = snapShot.data()!['AGE'];
-    String GENDER = snapShot.data()!['GENDER'];
-    String COMENT = snapShot.data()!['COMENT'];
-    String MY_USER_ID = snapShot.data()!['MY_USER_ID'];
+      CprofileSetting cprofileSet = await CprofileSetting(
+          USER_ID: USER_ID,
+          PROFILE_IMAGE: PROFILE_IMAGE,
+          NICK_NAME: NICK_NAME,
+          TOROKU_RANK: '',
+          activityList: activityList,
+          AGE: '',
+          GENDER: '',
+          COMENT: '',
+          MY_USER_ID: '');
 
-    try {
-      final snapShotActivity = await FirebaseFirestore.instance
-          .collection('myProfile')
-          .doc(userId)
-          .collection("activityList")
-          .get();
-
-      await Future.forEach<dynamic>(snapShotActivity.docs, (doc) async {
-        activityList.add(CativityList(
-          No: doc.data()!['No'],
-          TODOFUKEN: doc.data()!['TODOFUKEN'],
-          SHICHOSON: TextEditingController(text: doc.data()!['SHICHOSON']),
-        ));
-      });
-    } catch (e) {
-      throw (e);
-      print("アクティビティリストの登録に失敗しました");
+      return cprofileSet;
     }
+    else {
+      String USER_ID = userId;
+      String PROFILE_IMAGE = snapShot.data()!['PROFILE_IMAGE'];
+      String NICK_NAME = snapShot.data()!['NICK_NAME'];
+      String TOROKU_RANK = snapShot.data()!['TOROKU_RANK'];
+      String AGE = snapShot.data()!['AGE'];
+      String GENDER = snapShot.data()!['GENDER'];
+      String COMENT = snapShot.data()!['COMENT'];
+      String MY_USER_ID = snapShot.data()!['MY_USER_ID'];
 
-    CprofileSetting cprofileSet = await CprofileSetting(
-        USER_ID: USER_ID,
-        PROFILE_IMAGE: PROFILE_IMAGE,
-        NICK_NAME: NICK_NAME,
-        TOROKU_RANK: TOROKU_RANK,
-        activityList: activityList,
-        AGE: AGE,
-        GENDER: GENDER,
-        COMENT: COMENT,
-        MY_USER_ID: MY_USER_ID);
+      try {
+        final snapShotActivity = await FirebaseFirestore.instance
+            .collection('myProfile')
+            .doc(userId)
+            .collection("activityList")
+            .get();
 
-    return cprofileSet;
+        await Future.forEach<dynamic>(snapShotActivity.docs, (doc) async {
+          activityList.add(CativityList(
+            No: doc.data()!['No'],
+            TODOFUKEN: doc.data()!['TODOFUKEN'],
+            SHICHOSON: TextEditingController(text: doc.data()!['SHICHOSON']),
+          ));
+        });
+      } catch (e) {
+        throw (e);
+        print("アクティビティリストの登録に失敗しました");
+      }
+
+      CprofileSetting cprofileSet = await CprofileSetting(
+          USER_ID: USER_ID,
+          PROFILE_IMAGE: PROFILE_IMAGE,
+          NICK_NAME: NICK_NAME,
+          TOROKU_RANK: TOROKU_RANK,
+          activityList: activityList,
+          AGE: AGE,
+          GENDER: GENDER,
+          COMENT: COMENT,
+          MY_USER_ID: MY_USER_ID);
+
+      return cprofileSet;
+    }
   }
 
   static Future<CprofileDetail> getYourDetailProfile(String userId) async {

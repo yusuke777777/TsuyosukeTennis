@@ -258,14 +258,6 @@ class _MatchResultListState extends State<MatchResultList> {
                                     ],
                                   ),
                                   onTap: () async {
-                                    if (await isUserExist(
-                                            (_matchResultDocList[index].data()
-                                                    as Map<String, dynamic>)[
-                                                'opponentId'] as String) &&
-                                        await isUserExist(
-                                            (_matchResultDocList[index].data()
-                                                    as Map<String, dynamic>)[
-                                                'userId'] as String)) {
                                       //対戦結果入力画面へ遷移
                                       //フィードバック結果を取得する
                                       String feedBackComment =
@@ -322,15 +314,7 @@ class _MatchResultListState extends State<MatchResultList> {
                                                       feedBackComment,
                                                       skillLevel,
                                                       matchTitle)));
-                                    } else {
-                                      showDialog(
-                                          context: context,
-                                          builder: (_) => AlertDialog(
-                                                title: Text("エラー"),
-                                                content: Text("退会済みユーザーです"),
-                                              ));
                                     }
-                                  },
                                 ),
                               )
                             ],
