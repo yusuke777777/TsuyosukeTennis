@@ -512,7 +512,7 @@ class FirestoreMethod {
     if(snapShot.data()?.length == null){
       String USER_ID = userId;
       String PROFILE_IMAGE = '';
-      String NICK_NAME = "削除済みユーザー";
+      String NICK_NAME = "退会済みユーザー";
 
       CprofileSetting cprofileSet = await CprofileSetting(
           USER_ID: USER_ID,
