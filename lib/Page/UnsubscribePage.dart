@@ -214,7 +214,35 @@ class _UnsubscribeState extends State<UnsubscribePage> {
       }
       //matchResult
       try {
+        //matchResult
         final subcollection_matchResult_doc = storeInst.collection('matchResult').doc(userId);
+        //opponentList
+        final CollectionReference<Map<String, dynamic>> documentSnapshot_opponentList =
+        await storeInst.collection('matchResult').doc(userId).collection("opponentList");
+        final opponentListDocument = documentSnapshot_opponentList.get();
+        QuerySnapshot<Map<String, dynamic>> opponentList = await opponentListDocument;
+
+        //サブコレ対応
+        opponentList.docs.forEach((doc) async {
+          //daily取得
+          final CollectionReference<Map<String, dynamic>> documentSnapshot_daily =
+          doc.reference.collection('daily');
+          final dailyDocument = documentSnapshot_daily.get();
+          QuerySnapshot<Map<String, dynamic>> daily = await dailyDocument;
+          //dailyを回しmatchDetailを取得
+          daily.docs.forEach((doc_daily) async {
+            //matchDetail取得
+            final CollectionReference<Map<String, dynamic>> documentSnapshot_matchDetail =
+            doc_daily.reference.collection('matchDetail');
+            final matchDetailDocument = documentSnapshot_matchDetail.get();
+            QuerySnapshot<Map<String, dynamic>> matchDetail = await matchDetailDocument;
+            matchDetail.docs.forEach((doc_matchDetail) async {
+              doc_matchDetail.reference.delete();
+            });
+            doc_daily.reference.delete();
+          });
+          doc.reference.delete();
+        });
         await subcollection_matchResult_doc.delete();
       }
       catch(e) {
@@ -224,17 +252,33 @@ class _UnsubscribeState extends State<UnsubscribePage> {
       //myNotification
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_myNotification =
       await storeInst.collection('myNotification').doc(userId).get();
+      final CollectionReference<Map<String, dynamic>> documentSnapshot_myNotificationSub =
+      await storeInst.collection('myNotification').doc(userId).collection("talkNotification");
+      final talkNotificationDocument = documentSnapshot_myNotificationSub.get();
+      QuerySnapshot<Map<String, dynamic>> talkNotification = await talkNotificationDocument;
       if(documentSnapshot_myNotification.exists){
+        //サブコレ削除
+        talkNotification.docs.forEach((doc) {
+          doc.reference.delete();
+        });
         storeInst.collection('myNotification').doc(userId).delete();
       }
       //myProfile
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_myProfile =
       await storeInst.collection('myProfile').doc(userId).get();
+      final CollectionReference<Map<String, dynamic>> documentSnapshot_myProfileSub =
+      await storeInst.collection('myProfile').doc(userId).collection("activityList");
+      final activListDocument = documentSnapshot_myProfileSub.get();
       if(documentSnapshot_myProfile.exists){
+        //activityList削除
+        QuerySnapshot<Map<String, dynamic>> activList = await activListDocument;
+        activList.docs.forEach((doc) {
+          doc.reference.delete();
+        });
+        //myProfileのdoc削除
         storeInst.collection('myProfile').doc(userId).delete();
       }
       //myProfileDetail
-      //なぜかRANK_NOとRANK_TOROKU_RANKが残る
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_myProfileDetail =
       await storeInst.collection('myProfileDetail').doc(userId).get();
       if(documentSnapshot_myProfileDetail.exists){
