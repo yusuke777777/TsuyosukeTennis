@@ -13,6 +13,7 @@ import '../FireBase/GoogleAds.dart';
 import '../PropSetCofig.dart';
 import 'FriendManagerPage.dart';
 import 'ProfileSetting.dart';
+
 // import 'package:marquee/marquee.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
@@ -29,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
   late Future<CprofileDetail> myProfileDetail;
+
   @override
   void initState() {
     super.initState();
@@ -85,7 +87,10 @@ class _HomePageState extends State<HomePage> {
                     child: SingleChildScrollView(
                         //プロフィール画像
                         child: Column(children: [
-                          Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
+                  Container(
+                      alignment: Alignment.center,
+                      height: 40,
+                      child: AdBanner(size: AdSize.banner)),
                   Container(
                       height: 230,
                       width: deviceWidth,
@@ -131,8 +136,9 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                     ),
                                   ),
-                                  profileDetailList.RANK_NO == 0 || (profileDetailList.RANK_TOROKU_RANK !=
-                                      profileDetailList.TOROKU_RANK)
+                                  profileDetailList.RANK_NO == 0 ||
+                                          (profileDetailList.RANK_TOROKU_RANK !=
+                                              profileDetailList.TOROKU_RANK)
                                       ? Row(
                                           children: [
                                             Container(
@@ -160,11 +166,11 @@ class _HomePageState extends State<HomePage> {
                                                   children: [
                                                     Container(
                                                       width: deviceWidth * 0.12,
-                                                      alignment:
-                                                          Alignment.bottomCenter,
+                                                      alignment: Alignment
+                                                          .bottomCenter,
                                                       child: FittedBox(
-                                                        alignment:
-                                                            Alignment.bottomLeft,
+                                                        alignment: Alignment
+                                                            .bottomLeft,
                                                         fit: BoxFit.scaleDown,
                                                         child: Text(
                                                           NumberFormat('#,###')
@@ -182,8 +188,8 @@ class _HomePageState extends State<HomePage> {
                                                       alignment:
                                                           Alignment.bottomLeft,
                                                       child: FittedBox(
-                                                        alignment:
-                                                            Alignment.bottomLeft,
+                                                        alignment: Alignment
+                                                            .bottomLeft,
                                                         fit: BoxFit.scaleDown,
                                                         child: Text(
                                                           "TSP RANKING",
@@ -210,8 +216,8 @@ class _HomePageState extends State<HomePage> {
                                                                       .TS_POINT)
                                                               .toString() +
                                                           " p)",
-                                                      style:
-                                                          TextStyle(fontSize: 15),
+                                                      style: TextStyle(
+                                                          fontSize: 15),
                                                     ),
                                                   ),
                                                 ),
@@ -233,22 +239,23 @@ class _HomePageState extends State<HomePage> {
                                                               profileDetailList
                                                                   .RANK_NO)
                                                           .toString(),
-                                                      style:
-                                                          TextStyle(fontSize: 40),
+                                                      style: TextStyle(
+                                                          fontSize: 40),
                                                     ),
                                                   ),
                                                 ),
                                                 Container(
                                                   width: deviceWidth * 0.25,
-                                                  alignment: Alignment.bottomLeft,
+                                                  alignment:
+                                                      Alignment.bottomLeft,
                                                   child: FittedBox(
                                                     alignment:
                                                         Alignment.bottomLeft,
                                                     fit: BoxFit.scaleDown,
                                                     child: Text(
                                                       "TSP RANKING",
-                                                      style:
-                                                          TextStyle(fontSize: 30),
+                                                      style: TextStyle(
+                                                          fontSize: 30),
                                                     ),
                                                   ),
                                                 ),
@@ -283,21 +290,19 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(fontSize: 25),
                             )),
                       ])),
-                  Container(
-                    height: 120,
-                    width: deviceWidth * 0.8,
-                    child: Column(
-                      children: [
-                        Row(
+                  Column(
+                    children: [
+                      FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Row(
                           children: [
                             Container(
-                                alignment: Alignment.bottomLeft,
                                 child: Text(
-                                  profileDetailList.TITLE == ''
-                                      ? '称号設定なし'
-                                      : profileDetailList.TITLE,
-                                  style: TextStyle(fontSize: 20),
-                                )),
+                              profileDetailList.TITLE == ''
+                                  ? '称号設定なし'
+                                  : profileDetailList.TITLE,
+                              style: TextStyle(fontSize: 20),
+                            )),
                             IconButton(
                               icon: const Icon(
                                 Icons.read_more,
@@ -315,48 +320,48 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ],
                         ),
-                        Container(
-                            alignment: Alignment.bottomLeft,
-                            width: deviceWidth * 0.8,
-                            child: Column(
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      alignment: Alignment.bottomLeft,
-                                      child: Text(
-                                        "年齢：" + profileDetailList.AGE,
-                                        style: TextStyle(fontSize: 15),
-                                      ),
+                      ),
+                      Container(
+                          alignment: Alignment.bottomLeft,
+                          width: deviceWidth * 0.8,
+                          child: Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    alignment: Alignment.bottomLeft,
+                                    child: Text(
+                                      "年齢：" + profileDetailList.AGE,
+                                      style: TextStyle(fontSize: 15),
                                     ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Container(
-                                      alignment: Alignment.bottomRight,
-                                      child: Text(
-                                        "性別：" + profileDetailList.GENDER,
-                                        style: TextStyle(fontSize: 15),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  alignment: Alignment.bottomLeft,
-                                  child: Text(
-                                    '活動場所：' +
-                                        profileDetailList
-                                            .FIRST_TODOFUKEN_SICHOSON,
-                                    style: TextStyle(fontSize: 15),
-                                    overflow: TextOverflow.ellipsis,
-                                    // テキストが指定領域を超えた場合の挙動を設定
-                                    maxLines: 2, // 表示する行数を指定
                                   ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Container(
+                                    alignment: Alignment.bottomRight,
+                                    child: Text(
+                                      "性別：" + profileDetailList.GENDER,
+                                      style: TextStyle(fontSize: 15),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Container(
+                                alignment: Alignment.bottomLeft,
+                                child: Text(
+                                  '活動場所：' +
+                                      profileDetailList
+                                          .FIRST_TODOFUKEN_SICHOSON,
+                                  style: TextStyle(fontSize: 15),
+                                  overflow: TextOverflow.ellipsis,
+                                  // テキストが指定領域を超えた場合の挙動を設定
+                                  maxLines: 2, // 表示する行数を指定
                                 ),
-                              ],
-                            )),
-                      ],
-                    ),
+                              ),
+                            ],
+                          )),
+                    ],
                   ),
                   Container(
                     height: 180,
@@ -429,9 +434,8 @@ class _HomePageState extends State<HomePage> {
                                                             .toString() +
                                                         '勝 ' +
                                                         NumberFormat('#,###')
-                                                            .format(
-                                                                profileDetailList
-                                                                    .SHOKYU_LOSE_SU)
+                                                            .format(profileDetailList
+                                                                .SHOKYU_LOSE_SU)
                                                             .toString() +
                                                         '敗',
                                                     style: TextStyle(
@@ -517,9 +521,8 @@ class _HomePageState extends State<HomePage> {
                                                             .toString() +
                                                         '勝 ' +
                                                         NumberFormat('#,###')
-                                                            .format(
-                                                                profileDetailList
-                                                                    .CHUKYU_LOSE_SU)
+                                                            .format(profileDetailList
+                                                                .CHUKYU_LOSE_SU)
                                                             .toString() +
                                                         '敗',
                                                     style: TextStyle(
@@ -605,9 +608,8 @@ class _HomePageState extends State<HomePage> {
                                                             .toString() +
                                                         '勝 ' +
                                                         NumberFormat('#,###')
-                                                            .format(
-                                                                profileDetailList
-                                                                    .JYOKYU_LOSE_SU)
+                                                            .format(profileDetailList
+                                                                .JYOKYU_LOSE_SU)
                                                             .toString() +
                                                         '敗',
                                                     style: TextStyle(
@@ -664,7 +666,8 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                           width: 60,
@@ -679,8 +682,8 @@ class _HomePageState extends State<HomePage> {
                                       RatingBar.builder(
                                         ignoreGestures: true,
                                         allowHalfRating: true,
-                                        initialRating:
-                                            profileDetailList.STROKE_FOREHAND_AVE,
+                                        initialRating: profileDetailList
+                                            .STROKE_FOREHAND_AVE,
                                         itemBuilder: (context, index) =>
                                             const Icon(
                                           Icons.star,
@@ -694,7 +697,8 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                           width: 60,
@@ -709,8 +713,8 @@ class _HomePageState extends State<HomePage> {
                                       RatingBar.builder(
                                         ignoreGestures: true,
                                         allowHalfRating: true,
-                                        initialRating:
-                                            profileDetailList.STROKE_BACKHAND_AVE,
+                                        initialRating: profileDetailList
+                                            .STROKE_BACKHAND_AVE,
                                         itemBuilder: (context, index) =>
                                             const Icon(
                                           Icons.star,
@@ -735,7 +739,8 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                           width: 60,
@@ -750,8 +755,8 @@ class _HomePageState extends State<HomePage> {
                                       RatingBar.builder(
                                         ignoreGestures: true,
                                         allowHalfRating: true,
-                                        initialRating:
-                                            profileDetailList.VOLLEY_FOREHAND_AVE,
+                                        initialRating: profileDetailList
+                                            .VOLLEY_FOREHAND_AVE,
                                         itemBuilder: (context, index) =>
                                             const Icon(
                                           Icons.star,
@@ -765,7 +770,8 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                           width: 60,
@@ -780,8 +786,8 @@ class _HomePageState extends State<HomePage> {
                                       RatingBar.builder(
                                         ignoreGestures: true,
                                         allowHalfRating: true,
-                                        initialRating:
-                                            profileDetailList.VOLLEY_BACKHAND_AVE,
+                                        initialRating: profileDetailList
+                                            .VOLLEY_BACKHAND_AVE,
                                         itemBuilder: (context, index) =>
                                             const Icon(
                                           Icons.star,
@@ -808,7 +814,8 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                           width: 60,
@@ -838,7 +845,8 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                   Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment: CrossAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
                                     children: [
                                       Container(
                                           width: 60,
@@ -969,6 +977,7 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+
   @override
   void dispose() {
     // 必要なリソースを解放する処理をここに追加
