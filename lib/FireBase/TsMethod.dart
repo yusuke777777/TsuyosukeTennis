@@ -61,7 +61,7 @@ class TsMethod {
           RankTsPoint = RankTsPoint + 50;
         }
         //TOP10以上の相手に勝利した場合は100ポイント
-        if (yourRank > 0 && yourRank <= 10) {
+        if ((yourRank > 0 && yourRank <= 10) && (yourRank < myRank)) {
           RankTsPoint = RankTsPoint + 100;
         }
       }
