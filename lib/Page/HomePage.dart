@@ -290,20 +290,32 @@ class _HomePageState extends State<HomePage> {
                               style: TextStyle(fontSize: 25),
                             )),
                       ])),
-                  Column(
-                    children: [
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Row(
-                          children: [
-                            Container(
-                                child: Text(
-                              profileDetailList.TITLE == ''
-                                  ? '称号設定なし'
-                                  : profileDetailList.TITLE,
-                              style: TextStyle(fontSize: 20),
-                            )),
-                            IconButton(
+                  //称号と称号ボタンのコンテナ
+                  Container(
+                    alignment: Alignment.bottomLeft,
+                    width: deviceWidth * 0.8,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child:
+                          //Column(
+                          //children: [
+                          Row(
+                        children: [
+                          Container(
+                              //fit: BoxFit.scaleDown,
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                profileDetailList.TITLE == ''
+                                    ? '称号設定なし'
+                                    : profileDetailList.TITLE,
+                                style: TextStyle(fontSize: 20),
+                              )),
+                          Container(
+                            //fit: BoxFit.scaleDown,
+                            alignment: Alignment.bottomLeft,
+                            //width: deviceWidth * 0.8,
+                            child: IconButton(
+                              alignment: Alignment.bottomRight,
                               icon: const Icon(
                                 Icons.read_more,
                                 color: Colors.black,
@@ -318,51 +330,53 @@ class _HomePageState extends State<HomePage> {
                                     ));
                               },
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Container(
-                          alignment: Alignment.bottomLeft,
-                          width: deviceWidth * 0.8,
-                          child: Column(
+                    ),
+                  ),
+                  Container(
+                      alignment: Alignment.bottomLeft,
+                      width: deviceWidth * 0.8,
+                      child: Column(
+                        children: [
+                          Row(
                             children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Text(
-                                      "年齢：" + profileDetailList.AGE,
-                                      style: TextStyle(fontSize: 15),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                    alignment: Alignment.bottomRight,
-                                    child: Text(
-                                      "性別：" + profileDetailList.GENDER,
-                                      style: TextStyle(fontSize: 15),
-                                    ),
-                                  ),
-                                ],
-                              ),
                               Container(
                                 alignment: Alignment.bottomLeft,
                                 child: Text(
-                                  '活動場所：' +
-                                      profileDetailList
-                                          .FIRST_TODOFUKEN_SICHOSON,
+                                  "年齢：" + profileDetailList.AGE,
                                   style: TextStyle(fontSize: 15),
-                                  overflow: TextOverflow.ellipsis,
-                                  // テキストが指定領域を超えた場合の挙動を設定
-                                  maxLines: 2, // 表示する行数を指定
+                                ),
+                              ),
+                              SizedBox(
+                                width: 10,
+                              ),
+                              Container(
+                                alignment: Alignment.bottomRight,
+                                child: Text(
+                                  "性別：" + profileDetailList.GENDER,
+                                  style: TextStyle(fontSize: 15),
                                 ),
                               ),
                             ],
-                          )),
-                    ],
-                  ),
+                          ),
+                          Container(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              '活動場所：' +
+                                  profileDetailList.FIRST_TODOFUKEN_SICHOSON,
+                              style: TextStyle(fontSize: 15),
+                              overflow: TextOverflow.ellipsis,
+                              // テキストが指定領域を超えた場合の挙動を設定
+                              maxLines: 2, // 表示する行数を指定
+                            ),
+                          ),
+                        ],
+                      )),
+                  //],
+                  // ),
+                  //),
                   Container(
                     height: 180,
                     width: deviceWidth * 0.8,
