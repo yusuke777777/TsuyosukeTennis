@@ -29,7 +29,7 @@ exports.updateMetaFunction = functions
 
 exports.tspRevocationFunction = functions
     .region("asia-northeast1")
-    .pubsub.schedule("0 0 1 * *")
+    .pubsub.schedule("0 0 2 * *")
     .timeZone("Asia/Tokyo")
     .onRun(async () => {
       console.log("失効TSPポイント再計算");
@@ -487,6 +487,10 @@ async function getTspRevocation(): Promise<void> {
       const myMatchResult = await admin.firestore()
           .collection("matchResult")
           .doc(doc1.id);
+      const myProfileDetail = await admin.firestore()
+          .collection("myProfileDetail")
+          .doc(doc1.id);
+
       console.log("shokyuTspPointNew" + shokyuTspPointNew);
       console.log("chukyuTspPointCur" + chukyuTspPointCur);
       console.log("chukyuTspPointNew" + chukyuTspPointNew);
@@ -499,6 +503,12 @@ async function getTspRevocation(): Promise<void> {
             "JYOKYU_TS_POINT": jyokyuTspPointNew,
             "TS_POINT": shokyuTspPointNew,
           });
+          await myProfileDetail.set({
+            "SHOKYU_TS_POINT": shokyuTspPointNew,
+            "CHUKYU_TS_POINT": chukyuTspPointNew,
+            "JYOKYU_TS_POINT": jyokyuTspPointNew,
+            "TS_POINT": shokyuTspPointNew,
+          }, {merge: true});
           break;
         case "中級":
           await myMatchResult.update({
@@ -507,6 +517,12 @@ async function getTspRevocation(): Promise<void> {
             "JYOKYU_TS_POINT": jyokyuTspPointNew,
             "TS_POINT": chukyuTspPointNew,
           });
+          await myProfileDetail.set({
+            "SHOKYU_TS_POINT": shokyuTspPointNew,
+            "CHUKYU_TS_POINT": chukyuTspPointNew,
+            "JYOKYU_TS_POINT": jyokyuTspPointNew,
+            "TS_POINT": chukyuTspPointNew,
+          }, {merge: true});
           break;
         case "上級":
           await myMatchResult.update({
@@ -515,6 +531,12 @@ async function getTspRevocation(): Promise<void> {
             "JYOKYU_TS_POINT": jyokyuTspPointNew,
             "TS_POINT": jyokyuTspPointNew,
           });
+          await myProfileDetail.set({
+            "SHOKYU_TS_POINT": shokyuTspPointNew,
+            "CHUKYU_TS_POINT": chukyuTspPointNew,
+            "JYOKYU_TS_POINT": jyokyuTspPointNew,
+            "TS_POINT": jyokyuTspPointNew,
+          }, {merge: true});
           break;
       }
     }
