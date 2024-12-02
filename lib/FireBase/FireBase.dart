@@ -298,6 +298,11 @@ class FirestoreMethod {
         // });
         //KOUSHIN_TIME更新なし
 
+        //末尾が「、」だった場合除去する
+        if(todofukenShichoson.endsWith("、")){
+          todofukenShichoson = todofukenShichoson.substring(0, todofukenShichoson.length - 1);
+        }
+
         await profileDetailRef.doc(auth.currentUser!.uid).update({
           'USER_ID': auth.currentUser!.uid,
           'PROFILE_IMAGE': profile.PROFILE_IMAGE,

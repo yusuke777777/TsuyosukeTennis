@@ -377,7 +377,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               Container(
                                 width: deviceWidth * 0.75,
                                 padding: const EdgeInsets.all(5.0),
-                                child: Text(
+                                child: const Text(
                                   '都道府県',
                                   style: TextStyle(
                                       fontSize: 20, color: Colors.black),
@@ -396,15 +396,15 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                         borderRadius:
                                         BorderRadius.circular(20)),
                                     child: Text(
-                                      '${activityList[index].TODOFUKEN}',
-                                      style: TextStyle(
+                                      activityList[index].TODOFUKEN,
+                                      style: const TextStyle(
                                           fontSize: 20, color: Colors.black),
                                     ),
                                   ),
                                   Container(
                                     width: deviceWidth * 0.1,
                                     child: IconButton(
-                                      icon: Icon(
+                                      icon: const Icon(
                                           Icons.arrow_drop_down_circle_rounded),
                                       onPressed: () {
                                         _showModalLocationPicker(
@@ -420,7 +420,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               Container(
                                 width: deviceWidth * 0.75,
                                 padding: const EdgeInsets.all(5.0),
-                                child: Text(
+                                child: const Text(
                                   '市区町村',
                                   style: TextStyle(
                                       fontSize: 20, color: Colors.black),
@@ -437,12 +437,12 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                       borderRadius:
                                       BorderRadius.circular(20)),
                                   child: TextField(
-                                    decoration: InputDecoration.collapsed(
+                                    decoration: const InputDecoration.collapsed(
                                         border: InputBorder.none,
                                         hintText: ''),
                                     controller:
                                     activityList[index].SHICHOSON,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 20, color: Colors.black),
                                   ))
                             ],
@@ -452,7 +452,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.add),
+                          icon: const Icon(Icons.add),
                           onPressed: () {
                             //登録Noを更新
                             todofukenTourokuNo = todofukenTourokuNo + 1;
@@ -466,14 +466,14 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      title: Text('都道府県の設定は5つまで可能です'),
+                                      title: const Text('都道府県の設定は5つまで可能です'),
                                       actions: <Widget>[
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                               foregroundColor: Colors.black,
                                               backgroundColor: Colors
                                                   .lightGreenAccent),
-                                          child: Text('OK'),
+                                          child: const Text('OK'),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
@@ -484,7 +484,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             }
                           },
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 40,
                         ),
                       ],
@@ -492,7 +492,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     Container(
                       padding: const EdgeInsets.all(5.0),
                       width: deviceWidth * 0.8,
-                      child: Text(
+                      child: const Text(
                         '●年齢',
                         style: TextStyle(fontSize: 20, color: Colors.black),
                       ),
@@ -510,7 +510,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               borderRadius: BorderRadius.circular(20)),
                           child: Text(
                             age,
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                            style: const TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
                         Container(
@@ -708,14 +708,14 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: Text('必須項目を入力してください'),
+                                    title: const Text('必須項目を入力してください'),
                                     actions: <Widget>[
                                       ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                             foregroundColor: Colors.black,
                                             backgroundColor: Colors
                                                 .lightGreenAccent),
-                                        child: Text('OK'),
+                                        child: const Text('OK'),
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },
