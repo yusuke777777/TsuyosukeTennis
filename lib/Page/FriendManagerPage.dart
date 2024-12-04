@@ -201,11 +201,11 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
         appBar: AppBar(
             backgroundColor: HeaderConfig.backGroundColor,
             title: HeaderConfig.appBarText,
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
             leading: HeaderConfig.backIcon),
         body: ListView.builder(
             controller: _scrollController,
-            physics: RangeMaintainingScrollPhysics(),
+            physics: const RangeMaintainingScrollPhysics(),
             shrinkWrap: true,
             reverse: false,
             itemCount: friendsListAll.length + 1,
@@ -213,16 +213,14 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
               if (index == friendsListAll.length) {
                 // ページネーションアイテムの場合
                 if (_isLoadingMore) {
-                  print(_isLoadingMore);
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 } else {
-                  print("ss");
-                  return SizedBox();
+                  return const SizedBox();
                 }
               } else {
                 return Slidable(
                     endActionPane: ActionPane(
-                      motion: DrawerMotion(),
+                      motion: const DrawerMotion(),
                       children: [
                         SlidableAction(
                           onPressed: (value) {
@@ -239,7 +237,30 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                         ),
                       ],
                     ),
-                    child: Card(
+                    child: InkWell(
+                      onTap: () async {
+                        //トーク画面へ
+                        TalkRoomModel room =
+                        await FirestoreMethod.getRoom(
+                            friendsListAll[index]
+                                .RECIPIENT_ID,
+                            friendsListAll[index]
+                                .SENDER_ID,
+                            friendsListAll[index]
+                                .YOUR_USER);
+                        await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    TalkRoom(room)));
+                        await NotificationMethod
+                            .unreadCountRest(
+                            friendsListAll[index]
+                                .YOUR_USER
+                                .USER_ID);
+                      },
+                      child:
+                    Card(
                       color: Colors.white,
                       child: Container(
                         height: 70,
@@ -260,7 +281,7 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                                     .YOUR_USER
                                                     .PROFILE_IMAGE ==
                                                 ''
-                                            ? CircleAvatar(
+                                            ? const CircleAvatar(
                                                 backgroundColor: Colors.white,
                                                 backgroundImage: NetworkImage(
                                                     "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
@@ -292,7 +313,7 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                               friendsListAll[index]
                                                   .YOUR_USER
                                                   .NICK_NAME,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.bold)),
                                         ),
@@ -342,7 +363,7 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                     await showDialog(
                                         context: context,
                                         builder: (BuildContext context) =>
-                                            BillingShowDialogToDismiss(
+                                            const BillingShowDialogToDismiss(
                                               content:
                                                   "友人との対戦成績を確認するためには、有料プランへの加入が必要です。有料プランを確認しますか",
                                             ));
@@ -353,6 +374,7 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                           ],
                         ),
                       ),
+                    ),
                     ));
               }
             }));
