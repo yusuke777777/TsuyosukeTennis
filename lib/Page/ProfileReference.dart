@@ -2,10 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import '../Common/CprofileDetail.dart';
-import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
-import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 /**
@@ -50,12 +48,12 @@ class _ProfileReferenceState extends State<ProfileReference> {
           future: yourProfileDetail,
           builder: (BuildContext context, AsyncSnapshot snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
-              return new Align(
+              return const Align(
                   child: Center(
-                child: new CircularProgressIndicator(),
+                child: const CircularProgressIndicator(),
               ));
             } else if (snapshot.hasError) {
-              return new Text('Error: ${snapshot.error!}');
+              return Text('Error: ${snapshot.error!}');
             } else if (snapshot.hasData) {
               CprofileDetail profileDetailList = snapshot.data;
               return Scrollbar(
@@ -64,7 +62,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                       child: Column(children: [
                 Container(
                     height: 230,
-                    decoration: BoxDecoration(
+                    decoration: const BoxDecoration(
                       image: DecorationImage(
                         image: AssetImage('images/kori.jpg'),
                         fit: BoxFit.cover,
@@ -74,7 +72,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                       Row(
                         children: [
                           Container(
-                            padding: EdgeInsets.only(left: 40, top: 20),
+                            padding: const EdgeInsets.only(left: 40, top: 20),
                             alignment: Alignment.bottomCenter,
                             width: deviceWidth * 0.55,
                             child: Column(
@@ -89,7 +87,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                     // 子ウィジェットを親ウィジェットにフィットさせる
                                     child: Text(
                                       profileDetailList.NICK_NAME,
-                                      style: TextStyle(fontSize: 40),
+                                      style: const TextStyle(fontSize: 40),
                                     ),
                                   ),
                                 ),
@@ -101,7 +99,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                           Container(
                                             width: deviceWidth * 0.1,
                                             alignment: Alignment.bottomLeft,
-                                            child: Text(
+                                            child: const Text(
                                               "NO ",
                                               style: TextStyle(fontSize: 18),
                                             ),
@@ -109,7 +107,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                           Container(
                                             width: deviceWidth * 0.32,
                                             alignment: Alignment.bottomLeft,
-                                            child: Text(
+                                            child: const Text(
                                               "TSP RANKING",
                                               style: TextStyle(fontSize: 18),
                                             ),
@@ -135,7 +133,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                                 profileDetailList
                                                                     .RANK_NO)
                                                             .toString(),
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             fontSize: 40),
                                                       ),
                                                     ),
@@ -144,7 +142,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                     width: deviceWidth * 0.32,
                                                     alignment:
                                                         Alignment.bottomLeft,
-                                                    child: FittedBox(
+                                                    child: const FittedBox(
                                                       alignment:
                                                           Alignment.bottomLeft,
                                                       fit: BoxFit.scaleDown,
@@ -174,7 +172,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                             .toString() +
                                                         " p)",
                                                     style:
-                                                        TextStyle(fontSize: 15),
+                                                        const TextStyle(fontSize: 15),
                                                   ),
                                                 ),
                                               ),
@@ -204,7 +202,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                               Container(
                                                 width: deviceWidth * 0.25,
                                                 alignment: Alignment.bottomLeft,
-                                                child: FittedBox(
+                                                child: const FittedBox(
                                                   alignment:
                                                       Alignment.bottomLeft,
                                                   fit: BoxFit.scaleDown,
@@ -223,7 +221,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                           Container(
                             width: deviceWidth * 0.4,
                             child: profileDetailList.PROFILE_IMAGE == ''
-                                ? CircleAvatar(
+                                ? const CircleAvatar(
                                     backgroundColor: Colors.white,
                                     backgroundImage: NetworkImage(
                                         "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
@@ -243,7 +241,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                           padding: EdgeInsets.only(right: 23),
                           child: Text(
                             'Category:' + profileDetailList.TOROKU_RANK,
-                            style: TextStyle(fontSize: 25),
+                            style: const TextStyle(fontSize: 25),
                           )),
                     ])),
                 Container(
@@ -259,7 +257,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                 profileDetailList.TITLE == ''
                                     ? '称号設定なし'
                                     : profileDetailList.TITLE,
-                                style: TextStyle(fontSize: 20),
+                                style: const TextStyle(fontSize: 20),
                               )),
                         ],
                       ),
@@ -277,7 +275,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                       style: TextStyle(fontSize: 15),
                                     ),
                                   ),
-                                  SizedBox(
+                                  const SizedBox(
                                     width: 10,
                                   ),
                                   Container(
@@ -295,7 +293,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                   '活動場所：' +
                                       profileDetailList
                                           .FIRST_TODOFUKEN_SICHOSON,
-                                  style: TextStyle(fontSize: 15),
+                                  style: const TextStyle(fontSize: 15),
                                   overflow: TextOverflow.ellipsis,
                                   // テキストが指定領域を超えた場合の挙動を設定
                                   maxLines: 2, // 表示する行数を指定
@@ -313,7 +311,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                     children: [
                       Container(
                         alignment: Alignment.bottomLeft,
-                        child: Text(
+                        child: const Text(
                           '勝率',
                           style: TextStyle(fontSize: 30),
                         ),
@@ -330,8 +328,8 @@ class _ProfileReferenceState extends State<ProfileReference> {
                               children: [
                                 Container(
                                   width: deviceWidth * 0.25,
-                                  padding: EdgeInsets.only(left: 20),
-                                  child: Text('初級'),
+                                  padding: const EdgeInsets.only(left: 20),
+                                  child: const Text('初級'),
                                 ),
                                 SizedBox(
                                   width: deviceWidth * 0.25,
@@ -352,12 +350,12 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                   profileDetailList
                                                       .SHOKYU_WIN_RATE
                                                       .toString(),
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
-                                                Text(
+                                                const Text(
                                                   '%',
                                                   style: TextStyle(
                                                     fontSize: 12,
@@ -382,7 +380,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                                   .SHOKYU_LOSE_SU)
                                                           .toString() +
                                                       '敗',
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     fontSize: 12,
                                                   ),
                                                 ),
@@ -417,9 +415,9 @@ class _ProfileReferenceState extends State<ProfileReference> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  padding: EdgeInsets.only(left: 20),
+                                  padding: const EdgeInsets.only(left: 20),
                                   width: deviceWidth * 0.25,
-                                  child: Text('中級'),
+                                  child: const Text('中級'),
                                 ),
                                 SizedBox(
                                   width: deviceWidth * 0.25,
@@ -440,12 +438,12 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                   profileDetailList
                                                       .CHUKYU_WIN_RATE
                                                       .toString(),
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
-                                                Text(
+                                                const Text(
                                                   '%',
                                                   style: TextStyle(
                                                     fontSize: 12,
@@ -470,7 +468,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                                   .CHUKYU_LOSE_SU)
                                                           .toString() +
                                                       '敗',
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     fontSize: 12,
                                                   ),
                                                 ),
@@ -505,9 +503,9 @@ class _ProfileReferenceState extends State<ProfileReference> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(
-                                  padding: EdgeInsets.only(left: 20),
+                                  padding: const EdgeInsets.only(left: 20),
                                   width: deviceWidth * 0.25,
-                                  child: Text('上級'),
+                                  child: const Text('上級'),
                                 ),
                                 SizedBox(
                                   width: deviceWidth * 0.25,
@@ -528,12 +526,12 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                   profileDetailList
                                                       .JYOKYU_WIN_RATE
                                                       .toString(),
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       fontSize: 16,
                                                       fontWeight:
                                                           FontWeight.bold),
                                                 ),
-                                                Text(
+                                                const Text(
                                                   '%',
                                                   style: TextStyle(
                                                     fontSize: 12,
@@ -558,7 +556,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                                                   .JYOKYU_LOSE_SU)
                                                           .toString() +
                                                       '敗',
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     fontSize: 12,
                                                   ),
                                                 ),
@@ -603,7 +601,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                           children: [
                             Container(
                               alignment: Alignment.bottomLeft,
-                              child: Text(
+                              child: const Text(
                                 'ストローク',
                                 style: TextStyle(fontSize: 25),
                               ),
@@ -616,14 +614,14 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                   children: [
                                     Container(
                                         width: 60,
-                                        child: Text('フォア',
+                                        child: const Text('フォア',
                                             style: TextStyle(fontSize: 17))),
                                     SizedBox(width: 20),
                                     Text(
                                         profileDetailList.STROKE_FOREHAND_AVE
                                                 .toString() +
                                             ' ',
-                                        style: TextStyle(fontSize: 12)),
+                                        style: const TextStyle(fontSize: 12)),
                                     RatingBar.builder(
                                       ignoreGestures: true,
                                       allowHalfRating: true,
@@ -646,14 +644,14 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                   children: [
                                     Container(
                                         width: 60,
-                                        child: Text('バック',
+                                        child: const Text('バック',
                                             style: TextStyle(fontSize: 17))),
-                                    SizedBox(width: 20),
+                                    const SizedBox(width: 20),
                                     Text(
                                         profileDetailList.STROKE_BACKHAND_AVE
                                                 .toString() +
                                             ' ',
-                                        style: TextStyle(fontSize: 12)),
+                                        style: const TextStyle(fontSize: 12)),
                                     RatingBar.builder(
                                       ignoreGestures: true,
                                       allowHalfRating: true,
@@ -674,7 +672,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                             ),
                             Container(
                               alignment: Alignment.bottomLeft,
-                              child: Text(
+                              child: const Text(
                                 'ボレー',
                                 style: TextStyle(fontSize: 25),
                               ),
@@ -687,14 +685,14 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                   children: [
                                     Container(
                                         width: 60,
-                                        child: Text('フォア',
+                                        child: const Text('フォア',
                                             style: TextStyle(fontSize: 17))),
-                                    SizedBox(width: 20),
+                                    const SizedBox(width: 20),
                                     Text(
                                         profileDetailList.VOLLEY_FOREHAND_AVE
                                                 .toString() +
                                             ' ',
-                                        style: TextStyle(fontSize: 12)),
+                                        style: const TextStyle(fontSize: 12)),
                                     RatingBar.builder(
                                       ignoreGestures: true,
                                       allowHalfRating: true,
@@ -717,14 +715,14 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                   children: [
                                     Container(
                                         width: 60,
-                                        child: Text('バック',
+                                        child: const Text('バック',
                                             style: TextStyle(fontSize: 17))),
-                                    SizedBox(width: 20),
+                                    const SizedBox(width: 20),
                                     Text(
                                         profileDetailList.VOLLEY_BACKHAND_AVE
                                                 .toString() +
                                             ' ',
-                                        style: TextStyle(fontSize: 12)),
+                                        style: const TextStyle(fontSize: 12)),
                                     RatingBar.builder(
                                       ignoreGestures: true,
                                       allowHalfRating: true,
@@ -745,7 +743,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                             ),
                             Container(
                               alignment: Alignment.bottomLeft,
-                              child: Text(
+                              child: const Text(
                                 'サーブ',
                                 style: TextStyle(
                                   fontSize: 25,
@@ -760,14 +758,14 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                   children: [
                                     Container(
                                         width: 60,
-                                        child: Text('１st',
+                                        child: const Text('１st',
                                             style: TextStyle(fontSize: 17))),
-                                    SizedBox(width: 20),
+                                    const SizedBox(width: 20),
                                     Text(
                                         profileDetailList.SERVE_1ST_AVE
                                                 .toString() +
                                             ' ',
-                                        style: TextStyle(fontSize: 12)),
+                                        style: const TextStyle(fontSize: 12)),
                                     RatingBar.builder(
                                       ignoreGestures: true,
                                       allowHalfRating: true,
@@ -790,14 +788,14 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                   children: [
                                     Container(
                                         width: 60,
-                                        child: Text('２nd',
+                                        child: const Text('２nd',
                                             style: TextStyle(fontSize: 17))),
                                     SizedBox(width: 20),
                                     Text(
                                         profileDetailList.SERVE_2ND_AVE
                                                 .toString() +
                                             ' ',
-                                        style: TextStyle(fontSize: 12)),
+                                        style: const TextStyle(fontSize: 12)),
                                     RatingBar.builder(
                                       ignoreGestures: true,
                                       allowHalfRating: true,
@@ -827,7 +825,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                     children: [
                       Container(
                         alignment: Alignment.bottomLeft,
-                        child: Text(
+                        child: const Text(
                           'コメント',
                           style: TextStyle(fontSize: 30),
                         ),
@@ -845,7 +843,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                             profileDetailList.COMENT,
                             textAlign: TextAlign.start,
                             softWrap: true,
-                            style: TextStyle(fontSize: 14, color: Colors.black),
+                            style: const TextStyle(fontSize: 14, color: Colors.black),
                           ),
                         ),
                       ),
@@ -854,7 +852,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                 )
               ])));
             } else {
-              return Text("データが存在しません");
+              return const Text("データが存在しません");
             }
           }),
     );

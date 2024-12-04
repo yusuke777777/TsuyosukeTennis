@@ -1,10 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
-import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
-import '../Common/CFeedBackCommentSetting.dart';
 import '../Common/CmatchResult.dart';
 import '../Common/CprofileSetting.dart';
 import '../PropSetCofig.dart';
@@ -43,7 +40,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
               appBar: AppBar(
                 backgroundColor: HeaderConfig.backGroundColor,
                 title: HeaderConfig.appBarText,
-                iconTheme: IconThemeData(color: Colors.black),
+                iconTheme: const IconThemeData(color: Colors.black),
                 leading: HeaderConfig.backIcon
               ),
               body: Scrollbar(
@@ -51,7 +48,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           width: 80,
                         ),
                         Center(
@@ -62,7 +59,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                             child: Text(
                               widget.matchTitle,
                               style:
-                                  TextStyle(fontSize: 20, color: Colors.black),
+                                  const TextStyle(fontSize: 20, color: Colors.black),
                             ),
                           ),
                         ),
@@ -70,7 +67,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              padding: EdgeInsets.only(right: 10),
+                              padding: const EdgeInsets.only(right: 10),
                               width: deviceWidth * 0.3,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -79,7 +76,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                     alignment: Alignment.center,
                                     width: deviceWidth * 0.3,
                                     child: widget.myProfile.PROFILE_IMAGE == ''
-                                        ? CircleAvatar(
+                                        ? const CircleAvatar(
                                       backgroundColor: Colors.white,
                                       backgroundImage: NetworkImage(
                                           "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
@@ -100,7 +97,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                       fit:BoxFit.scaleDown,
                                       child: Text(
                                         widget.myProfile.NICK_NAME,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 20, color: Colors.black),
                                       ),
                                     ),
@@ -125,14 +122,14 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                         ),
                                           child: Text(
                                             '${matchResult.myGamePoint}',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontSize: 20,
                                                 color: Colors.black),
                                           ),
                                       ),
                                       Container(
                                         width: deviceWidth * 0.1,
-                                        child: Center(
+                                        child: const Center(
                                           child: Text(
                                             "-",
                                             style: TextStyle(
@@ -151,7 +148,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                         ),
                                           child: Text(
                                             '${matchResult.yourGamePoint}',
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontSize: 20,
                                                 color: Colors.black),
                                           ),
@@ -162,7 +159,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                               )).toList(),
                             ),
                             Container(
-                              padding: EdgeInsets.only(left: 10),
+                              padding: const EdgeInsets.only(left: 10),
                               width: deviceWidth * 0.3,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -171,7 +168,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                     alignment: Alignment.center,
                                     width: deviceWidth * 0.3,
                                     child: widget.yourProfile.PROFILE_IMAGE == ''
-                                        ? CircleAvatar(
+                                        ? const CircleAvatar(
                                       backgroundColor: Colors.white,
                                       backgroundImage: NetworkImage(
                                           "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
@@ -192,7 +189,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                       fit:BoxFit.scaleDown,
                                       child: Text(
                                         widget.yourProfile.NICK_NAME,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 20, color: Colors.black),
                                       ),
                                     ),
@@ -205,12 +202,12 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                         //レビュー集計機能
                         Column(
                           children: [
-                            Text('------------------------',
+                            const Text('------------------------',
                                 style: TextStyle(fontSize: 20)),
                             const SizedBox(
                               height: 20,
                             ),
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text('ストローク', style: TextStyle(fontSize: 20)),
@@ -219,7 +216,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('フォア：', style: TextStyle(fontSize: 20)),
+                                const Text('フォア：', style: TextStyle(fontSize: 20)),
                                 RatingBar.builder(
                                   ignoreGestures: true,
                                   allowHalfRating: true,
@@ -240,7 +237,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('バック：', style: TextStyle(fontSize: 20)),
+                                const Text('バック：', style: TextStyle(fontSize: 20)),
                                 RatingBar.builder(
                                   ignoreGestures: true,
                                   allowHalfRating: true,
@@ -262,7 +259,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                               height: 20,
                             ),
                             //ボレー
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text('ボレー', style: TextStyle(fontSize: 20)),
@@ -271,7 +268,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('フォア：', style: TextStyle(fontSize: 20)),
+                                const Text('フォア：', style: TextStyle(fontSize: 20)),
                                 RatingBar.builder(
                                   ignoreGestures: true,
                                   allowHalfRating: true,
@@ -292,7 +289,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('バック：', style: TextStyle(fontSize: 20)),
+                                const Text('バック：', style: TextStyle(fontSize: 20)),
                                 RatingBar.builder(
                                   ignoreGestures: true,
                                   allowHalfRating: true,
@@ -315,7 +312,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                               height: 20,
                             ),
                             //サーブ
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text('サーブ', style: TextStyle(fontSize: 20)),
@@ -324,7 +321,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('１ｓｔ：', style: TextStyle(fontSize: 20)),
+                                const Text('１ｓｔ：', style: TextStyle(fontSize: 20)),
                                 RatingBar.builder(
                                   ignoreGestures: true,
                                   allowHalfRating: true,
@@ -345,7 +342,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('２ｎｄ：', style: TextStyle(fontSize: 20)),
+                                const Text('２ｎｄ：', style: TextStyle(fontSize: 20)),
                                 RatingBar.builder(
                                   ignoreGestures: true,
                                   allowHalfRating: true,
@@ -371,7 +368,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                         Container(
                           alignment: Alignment.center,
                           child:
-                            Text('感想・フィードバック', style: TextStyle(fontSize: 20)),
+                            const Text('感想・フィードバック', style: TextStyle(fontSize: 20)),
                         ),
                             Container(
                               alignment: Alignment.topLeft,

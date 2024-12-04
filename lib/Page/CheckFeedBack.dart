@@ -138,12 +138,12 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
         appBar: AppBar(
             backgroundColor: HeaderConfig.backGroundColor,
             title: HeaderConfig.appBarText,
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
             leading: HeaderConfig.backIcon),
         body: ListView.builder(
             controller: _scrollController,
             shrinkWrap: true,
-            physics: RangeMaintainingScrollPhysics(),
+            physics: const RangeMaintainingScrollPhysics(),
             itemCount: feedBackList.length + 1,
             // padding: const EdgeInsets.all(8),
             itemBuilder: (BuildContext context, int index) {
@@ -151,9 +151,9 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
                 // ページネーションアイテムの場合
                 if (_isLoadingMore) {
                   print(_isLoadingMore);
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 } else {
-                  return SizedBox();
+                  return const SizedBox();
                 }
               } else {
                 //共通リストタイルの呼出
@@ -193,7 +193,7 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
                         ),
                         title: Text(
                           feedBackList[index].FEED_BACK.toString(),
-                          style: TextStyle(fontSize: 16),
+                          style: const TextStyle(fontSize: 16),
                         ),
                         subtitle: Text(
                           "タイトル：" +
@@ -205,7 +205,7 @@ class _CheckFeedBackState extends State<CheckFeedBack> {
                                   .DATE_TIME
                                   .toString()
                                   .substring(0, 16),
-                          style: TextStyle(fontSize: 12),
+                          style: const TextStyle(fontSize: 12),
                         )));
               }
             }));

@@ -38,7 +38,7 @@ class _BillingState extends State<Billing> {
         appBar: AppBar(
             backgroundColor: HeaderConfig.backGroundColor,
             title: HeaderConfig.appBarText,
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
             leading: HeaderConfig.backIcon),
         body: SingleChildScrollView(
           child: SafeArea(
@@ -52,7 +52,7 @@ class _BillingState extends State<Billing> {
                             alignment: Alignment.bottomLeft,
                             width: deviceWidth * 0.95,
                             child:
-                                Text("現在のプラン", style: TextStyle(fontSize: 18))),
+                                const Text("現在のプラン", style: TextStyle(fontSize: 18))),
                         appData.entitlementIsActive == true
                             ? Card(
                                 child: Container(
@@ -65,7 +65,7 @@ class _BillingState extends State<Billing> {
                                     alignment: Alignment.centerLeft,
                                     child: Text(
                                         widget.tspPlan.storeProduct.title,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 18,
                                             color: Colors.white))),
                               )
@@ -78,14 +78,14 @@ class _BillingState extends State<Billing> {
                                     width: deviceWidth * 0.9,
                                     height: 50,
                                     alignment: Alignment.centerLeft,
-                                    child: Text("ベーシック(無料)",
+                                    child: const Text("ベーシック(無料)",
                                         style: TextStyle(
                                             fontSize: 18,
                                             color: Colors.white))),
                               )
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
                     appData.entitlementIsActive == true
@@ -94,12 +94,12 @@ class _BillingState extends State<Billing> {
                               Container(
                                 width: deviceWidth * 0.95,
                                 alignment: Alignment.centerLeft,
-                                child: Text("TSPプレミアム",
+                                child: const Text("TSPプレミアム",
                                     style: TextStyle(fontSize: 18)),
                               ),
                               Card(
                                 child: Container(
-                                  padding: EdgeInsets.all(10),
+                                  padding: const EdgeInsets.all(10),
                                   child: Column(
                                     children: [
                                       Container(
@@ -107,11 +107,11 @@ class _BillingState extends State<Billing> {
                                           alignment: Alignment.bottomLeft,
                                           child: Text(
                                               widget.tspPlan.storeProduct.title,
-                                              style: TextStyle(fontSize: 20))),
+                                              style: const TextStyle(fontSize: 20))),
                                       Container(
                                         width: deviceWidth * 0.9,
                                         alignment: Alignment.bottomLeft,
-                                        child: Text("チケット増量に加え、友人対戦管理機能も利用可能に！",
+                                        child: const Text("チケット増量に加え、友人対戦管理機能も利用可能に！",
                                             style: TextStyle(fontSize: 18)),
                                       ),
                                       Card(
@@ -125,7 +125,7 @@ class _BillingState extends State<Billing> {
                                             width: deviceWidth * 0.5,
                                             height: 50,
                                             alignment: Alignment.center,
-                                            child: Text(
+                                            child: const Text(
                                               "解約する",
                                               style: TextStyle(
                                                   fontSize: 18,
@@ -150,7 +150,7 @@ class _BillingState extends State<Billing> {
                               Container(
                                 width: deviceWidth * 0.95,
                                 alignment: Alignment.centerLeft,
-                                child: Text("TSPプレミアム",
+                                child: const Text("TSPプレミアム",
                                     style: TextStyle(fontSize: 18)),
                               ),
                               Card(
@@ -163,11 +163,11 @@ class _BillingState extends State<Billing> {
                                           alignment: Alignment.bottomLeft,
                                           child: Text(
                                               widget.tspPlan.storeProduct.title,
-                                              style: TextStyle(fontSize: 20))),
+                                              style: const TextStyle(fontSize: 20))),
                                       Container(
                                         width: deviceWidth * 0.9,
                                         alignment: Alignment.bottomLeft,
-                                        child: Text("チケット増量に加え、友人対戦管理機能も利用可能に！",
+                                        child: const Text("チケット増量に加え、友人対戦管理機能も利用可能に！",
                                             style: TextStyle(fontSize: 18)),
                                       ),
                                       Card(
@@ -181,7 +181,7 @@ class _BillingState extends State<Billing> {
                                             width: deviceWidth * 0.5,
                                             height: 50,
                                             alignment: Alignment.center,
-                                            child: Text(
+                                            child: const Text(
                                               "加入する",
                                               style: TextStyle(
                                                   fontSize: 18,

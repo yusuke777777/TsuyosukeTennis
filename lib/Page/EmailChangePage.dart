@@ -29,7 +29,7 @@ class _EmailChangePageState extends State<EmailChangePage> {
         await user.verifyBeforeUpdateEmail(newEmail);
         print('確認メールを送信しました。');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('新しいメールアドレスに承認メールを送信しました。'),
           ),
         );
@@ -38,14 +38,14 @@ class _EmailChangePageState extends State<EmailChangePage> {
         print(e.message);
         if(e.message.toString() == 'The supplied credentials do not correspond to the previously signed in user.'){
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Text('変更不可。再ログインをしてから変更してください。'),
               ),
           );
         }
         else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('パスワードが誤っているか既に使用されているアドレスです。'),
             ),
           );
@@ -68,7 +68,7 @@ class _EmailChangePageState extends State<EmailChangePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('メールアドレス変更'),
+        title: const Text('メールアドレス変更'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -77,18 +77,18 @@ class _EmailChangePageState extends State<EmailChangePage> {
             TextField(
               controller: _newPasswordController,
               obscureText: true,
-              decoration: InputDecoration(labelText
+              decoration: const InputDecoration(labelText
                   : '現在のパスワード'),
             ),
             TextField(
               controller: _newEmailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(labelText: '新しいメールアドレス'),
+              decoration: const InputDecoration(labelText: '新しいメールアドレス'),
             ),
             TextField(
               controller: _confirmEmailController,
               keyboardType: TextInputType.emailAddress,
-              decoration: InputDecoration(labelText: '新しいメールアドレス（確認）'),
+              decoration: const InputDecoration(labelText: '新しいメールアドレス（確認）'),
             ),
             ElevatedButton(
               onPressed: () async {

@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
@@ -10,12 +9,8 @@ import '../Common/CmatchResult.dart';
 import '../Common/CprofileSetting.dart';
 import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
-import '../FireBase/FireBase.dart';
 import '../FireBase/GoogleAds.dart';
-import '../FireBase/ProfileImage.dart';
-import '../FireBase/TsMethod.dart';
 import '../PropSetCofig.dart';
-import 'MatchList.dart';
 
 class MatchResult extends StatefulWidget {
   late CprofileSetting myProfile;
@@ -29,8 +24,6 @@ class MatchResult extends StatefulWidget {
 }
 
 class _MatchResultState extends State<MatchResult> {
-  static final Firebase_Auth.FirebaseAuth auth =
-      Firebase_Auth.FirebaseAuth.instance;
   InterstitialAd? _interstitialAd; // インタースティシャル広告
   AdInterstitial adInterstitial = AdInterstitial(); // インタースティシャル広告のラッパークラス
 
@@ -127,7 +120,7 @@ class _MatchResultState extends State<MatchResult> {
                         height: 100,
                         child: TextField(
                           cursorColor: Colors.green,
-                          decoration: InputDecoration(
+                          decoration: const InputDecoration(
                               focusedBorder: UnderlineInputBorder(
                                 borderSide: BorderSide(color: Colors.green),
                               ),
@@ -135,7 +128,7 @@ class _MatchResultState extends State<MatchResult> {
                               labelStyle:
                                   TextStyle(color: Colors.black, fontSize: 20),
                               hintText: "(例)◯◯市民大会の1回戦"),
-                          style: TextStyle(fontSize: 20, color: Colors.black),
+                          style: const TextStyle(fontSize: 20, color: Colors.black),
                           controller: inputTitle,
                           maxLength: 20,
                         ),
@@ -145,7 +138,7 @@ class _MatchResultState extends State<MatchResult> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          padding: EdgeInsets.only(right: 10),
+                          padding: const EdgeInsets.only(right: 10),
                           width: deviceWidth * 0.3,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -154,7 +147,7 @@ class _MatchResultState extends State<MatchResult> {
                                 alignment: Alignment.center,
                                 width: deviceWidth * 0.3,
                                 child: widget.myProfile.PROFILE_IMAGE == ''
-                                    ? CircleAvatar(
+                                    ? const CircleAvatar(
                                         backgroundColor: Colors.white,
                                         backgroundImage: NetworkImage(
                                             "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
@@ -175,7 +168,7 @@ class _MatchResultState extends State<MatchResult> {
                                   fit: BoxFit.scaleDown,
                                   child: Text(
                                     widget.myProfile.NICK_NAME,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 20, color: Colors.black),
                                   ),
                                 ),
@@ -202,7 +195,7 @@ class _MatchResultState extends State<MatchResult> {
                                             child: TextButton(
                                               child: Text(
                                                 '${matchResult.myGamePoint}',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     fontSize: 20,
                                                     color: Colors.black),
                                               ),
@@ -215,7 +208,7 @@ class _MatchResultState extends State<MatchResult> {
                                           ),
                                           Container(
                                             width: deviceWidth * 0.1,
-                                            child: Center(
+                                            child: const Center(
                                               child: Text(
                                                 "-",
                                                 style: TextStyle(
@@ -235,7 +228,7 @@ class _MatchResultState extends State<MatchResult> {
                                             child: TextButton(
                                               child: Text(
                                                 '${matchResult.yourGamePoint}',
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     fontSize: 20,
                                                     color: Colors.black),
                                               ),
@@ -254,7 +247,7 @@ class _MatchResultState extends State<MatchResult> {
                               .toList(),
                         ),
                         Container(
-                          padding: EdgeInsets.only(left: 10),
+                          padding: const EdgeInsets.only(left: 10),
                           width: deviceWidth * 0.3,
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -263,7 +256,7 @@ class _MatchResultState extends State<MatchResult> {
                                 alignment: Alignment.center,
                                 width: deviceWidth * 0.3,
                                 child: widget.yourProfile.PROFILE_IMAGE == ''
-                                    ? CircleAvatar(
+                                    ? const CircleAvatar(
                                         backgroundColor: Colors.white,
                                         backgroundImage: NetworkImage(
                                             "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
@@ -284,7 +277,7 @@ class _MatchResultState extends State<MatchResult> {
                                   fit: BoxFit.scaleDown,
                                   child: Text(
                                     widget.yourProfile.NICK_NAME,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 20, color: Colors.black),
                                   ),
                                 ),
@@ -298,7 +291,7 @@ class _MatchResultState extends State<MatchResult> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.add),
+                          icon: const Icon(Icons.add),
                           onPressed: () {
                             //登録Noを更新
                             // curTourokuNo = curTourokuNo + 1;
@@ -307,7 +300,7 @@ class _MatchResultState extends State<MatchResult> {
                             setState(() {});
                           },
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 40,
                         ),
                       ],
@@ -317,9 +310,9 @@ class _MatchResultState extends State<MatchResult> {
                         ? Column(children: [
                             Column(
                               children: [
-                                Text('------------------------',
+                                const Text('------------------------',
                                     style: TextStyle(fontSize: 20)),
-                                Text('対戦相手へフィードバックを送ろう',
+                                const Text('対戦相手へフィードバックを送ろう',
                                     style: TextStyle(
                                       fontSize: 15,
                                       fontWeight: FontWeight.bold,
@@ -328,7 +321,7 @@ class _MatchResultState extends State<MatchResult> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Text('フィードバックを入力しない',
+                                    const Text('フィードバックを入力しない',
                                         style: TextStyle(fontSize: 10)),
                                     Checkbox(
                                       activeColor: Colors.blue,
@@ -339,7 +332,7 @@ class _MatchResultState extends State<MatchResult> {
                                   ],
                                 ),
                                 //ストローク
-                                Row(
+                                const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text('ストローク',
@@ -349,7 +342,7 @@ class _MatchResultState extends State<MatchResult> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text('フォア：',
+                                    const Text('フォア：',
                                         style: TextStyle(fontSize: 20)),
                                     RatingBar.builder(
                                       allowHalfRating: true,
@@ -368,7 +361,7 @@ class _MatchResultState extends State<MatchResult> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text('バック：',
+                                    const Text('バック：',
                                         style: TextStyle(fontSize: 20)),
                                     RatingBar.builder(
                                       allowHalfRating: true,
@@ -387,7 +380,7 @@ class _MatchResultState extends State<MatchResult> {
                                   height: 20,
                                 ),
                                 //ボレー
-                                Row(
+                                const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text('ボレー', style: TextStyle(fontSize: 20)),
@@ -396,7 +389,7 @@ class _MatchResultState extends State<MatchResult> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text('フォア：',
+                                    const Text('フォア：',
                                         style: TextStyle(fontSize: 20)),
                                     RatingBar.builder(
                                       allowHalfRating: true,
@@ -414,7 +407,7 @@ class _MatchResultState extends State<MatchResult> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text('バック：',
+                                    const Text('バック：',
                                         style: TextStyle(fontSize: 20)),
                                     RatingBar.builder(
                                       allowHalfRating: true,
@@ -434,7 +427,7 @@ class _MatchResultState extends State<MatchResult> {
                                   height: 20,
                                 ),
                                 //サーブ
-                                Row(
+                                const Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Text('サーブ', style: TextStyle(fontSize: 20)),
@@ -443,7 +436,7 @@ class _MatchResultState extends State<MatchResult> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text('１ｓｔ：',
+                                    const Text('１ｓｔ：',
                                         style: TextStyle(fontSize: 20)),
                                     RatingBar.builder(
                                       allowHalfRating: true,
@@ -461,7 +454,7 @@ class _MatchResultState extends State<MatchResult> {
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text('２ｎｄ：',
+                                    const Text('２ｎｄ：',
                                         style: TextStyle(fontSize: 20)),
                                     RatingBar.builder(
                                       allowHalfRating: true,
@@ -484,7 +477,7 @@ class _MatchResultState extends State<MatchResult> {
                             Container(
                               width: deviceWidth * 0.8,
                               alignment: Alignment.center,
-                              child: Text('感想・フィードバック',
+                              child: const Text('感想・フィードバック',
                                   style: TextStyle(fontSize: 20)),
                             ),
                             Container(
@@ -495,7 +488,7 @@ class _MatchResultState extends State<MatchResult> {
                                 cursorColor: Colors.green,
                                 controller: inputWord,
                                 maxLines: 20,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   fillColor: Colors.white,
                                   filled: true,
                                   focusedBorder: UnderlineInputBorder(
@@ -513,7 +506,7 @@ class _MatchResultState extends State<MatchResult> {
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Text('フィードバックを希望しますか？',
+                              const Text('フィードバックを希望しますか？',
                                   style: TextStyle(fontSize: 16)),
                               Checkbox(
                                 activeColor: Colors.blue, // Onになった時の色を指定
@@ -528,7 +521,7 @@ class _MatchResultState extends State<MatchResult> {
                     ),
                     Center(
                       child: Container(
-                        padding: EdgeInsets.only(bottom: 20),
+                        padding: const EdgeInsets.only(bottom: 20),
                         width: deviceWidth * 0.8,
                         child: TextButton(
                           style: TextButton.styleFrom(
@@ -538,7 +531,7 @@ class _MatchResultState extends State<MatchResult> {
                                   BorderRadius.all(Radius.circular(80)),
                             ),
                           ),
-                          child: Center(
+                          child: const Center(
                             child: Text(
                               '登録',
                               style:
@@ -547,12 +540,10 @@ class _MatchResultState extends State<MatchResult> {
                           ),
                           onPressed: () async {
                             String errorFlg = "0";
-                            String deleteFlg = "0";
                             matchResultList.forEach((matchList) {
                               if (matchResultList.length != 1 &&
                                   matchList.myGamePoint == 0 &&
                                   matchList.yourGamePoint == 0) {
-                                deleteFlg = "1";
                               } else if (matchList.myGamePoint ==
                                   matchList.yourGamePoint) {
                                 errorFlg = "1";
@@ -563,12 +554,12 @@ class _MatchResultState extends State<MatchResult> {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      title: Text('対戦結果に引き分けは入力できません'),
+                                      title: const Text('対戦結果に引き分けは入力できません'),
                                       actions: <Widget>[
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                               foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
-                                          child: Text('OK'),
+                                          child: const Text('OK'),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
@@ -588,7 +579,7 @@ class _MatchResultState extends State<MatchResult> {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      title: Text(
+                                      title: const Text(
                                           'フィードバックが未記入です。\nフィードバックをしない場合は「フィードバックを入力しない」にチェックをつけてください。'),
                                       actions: <Widget>[
                                         ElevatedButton(
@@ -609,13 +600,13 @@ class _MatchResultState extends State<MatchResult> {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      title: Text(
+                                      title: const Text(
                                           'フィードバックが未記入です。\nフィードバックをしない場合は「フィードバックを入力しない」にチェックをつけてください。'),
                                       actions: <Widget>[
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                               foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
-                                          child: Text('OK'),
+                                          child: const Text('OK'),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
@@ -629,12 +620,12 @@ class _MatchResultState extends State<MatchResult> {
                                     context: context,
                                     builder: (context) {
                                       return AlertDialog(
-                                        title: Text('タイトルが未記入です'),
+                                        title: const Text('タイトルが未記入です'),
                                         actions: <Widget>[
                                           ElevatedButton(
                                             style: ElevatedButton.styleFrom(
                                                 foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
-                                            child: Text('OK'),
+                                            child: const Text('OK'),
                                             onPressed: () {
                                               Navigator.pop(context);
                                             },
@@ -810,7 +801,7 @@ class _MatchResultState extends State<MatchResult> {
     if (int.parse(No) >= 5) {
       showDialog(
           context: context,
-          builder: (BuildContext context) => ShowDialogToDismiss(
+          builder: (BuildContext context) => const ShowDialogToDismiss(
                 content: "一度に5セット以上の対戦結果の入力はできません",
                 buttonText: "はい",
               ));

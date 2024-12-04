@@ -17,7 +17,7 @@ class ForgetPasswordPage extends StatelessWidget {
         create: (_) => ForgetPasswordModel(),
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(40.0),
+            preferredSize: const Size.fromHeight(40.0),
             child: AppBar(
               backgroundColor: Colors.green,
             ),
@@ -56,17 +56,17 @@ class ForgetPasswordPage extends StatelessWidget {
                                   ? null
                                   : model.errorMail,
                               labelText: 'メールアドレス',
-                              border: OutlineInputBorder(),
+                              border: const OutlineInputBorder(),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                           SizedBox(
                             width: double.infinity,
                             height: 50,
                             child: ElevatedButton(
-                              child: Text(
+                              child: const Text(
                                 '再設定する',
                                 style: TextStyle(color: Colors.white),
                               ),
@@ -97,7 +97,7 @@ class ForgetPasswordPage extends StatelessWidget {
                                   : null,
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 16,
                           ),
                           TextButton(
@@ -123,11 +123,11 @@ class ForgetPasswordPage extends StatelessWidget {
                   model.isLoading
                       ? Container(
                           color: Colors.black.withOpacity(0.3),
-                          child: Center(
+                          child: const Center(
                             child: CircularProgressIndicator(),
                           ),
                         )
-                      : SizedBox()
+                      : const SizedBox()
                 ],
               );
             },

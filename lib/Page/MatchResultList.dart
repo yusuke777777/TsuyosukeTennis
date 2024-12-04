@@ -1,19 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:tsuyosuke_tennis_ap/Common/CtalkRoom.dart';
-import 'package:tsuyosuke_tennis_ap/Page/MatchResult.dart';
 import 'package:tsuyosuke_tennis_ap/Page/ProfileReference.dart';
-import 'package:tsuyosuke_tennis_ap/Page/ProfileSetting.dart';
 import '../Common/CSkilLevelSetting.dart';
-import '../Common/CmatchList.dart';
 import '../Common/CmatchResult.dart';
-import '../Common/CmatchResultsList.dart';
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
 import 'MatchResultSansho.dart';
-import 'TalkRoom.dart';
 
 class MatchResultList extends StatefulWidget {
   const MatchResultList({Key? key}) : super(key: key);
@@ -90,14 +83,13 @@ class _MatchResultListState extends State<MatchResultList> {
   @override
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
-    bool errorFlg = true;
     //必要コンフィグの初期化
     HeaderConfig().init(context, "対戦履歴");
     return Scaffold(
         appBar: AppBar(
             backgroundColor: HeaderConfig.backGroundColor,
             title: HeaderConfig.appBarText,
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
             leading: HeaderConfig.backIcon),
         body: StreamBuilder<List<QueryDocumentSnapshot>>(
             stream: _matchResultListStream,
@@ -108,7 +100,7 @@ class _MatchResultListState extends State<MatchResultList> {
                 );
               }
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
+                return const Center(
                   child: CircularProgressIndicator(),
                 );
               }
@@ -123,9 +115,9 @@ class _MatchResultListState extends State<MatchResultList> {
                     itemBuilder: (context, index) {
                       if (index == _matchResultDocList.length) {
                         if (_isLoadingMore) {
-                          return Center(child: CircularProgressIndicator());
+                          return const Center(child: CircularProgressIndicator());
                         } else {
-                          return SizedBox();
+                          return const SizedBox();
                         }
                       }
                       return Card(
@@ -148,7 +140,7 @@ class _MatchResultListState extends State<MatchResultList> {
                                                     'opponentProfileImage']
                                                 as String ==
                                             ''
-                                        ? CircleAvatar(
+                                        ? const CircleAvatar(
                                             backgroundColor: Colors.white,
                                             backgroundImage: NetworkImage(
                                                 "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
@@ -205,7 +197,7 @@ class _MatchResultListState extends State<MatchResultList> {
                                       } else {
                                         showDialog(
                                             context: context,
-                                            builder: (_) => AlertDialog(
+                                            builder: (_) => const AlertDialog(
                                                   title: Text("エラー"),
                                                   content: Text("退会済みユーザーです"),
                                                 ));
@@ -230,7 +222,7 @@ class _MatchResultListState extends State<MatchResultList> {
                                                 'matchTitle'] as String,
                                             overflow: TextOverflow.ellipsis,
                                             // テキストが指定領域を超えた場合の挙動を設定CO
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontSize: 20,
                                                 fontWeight: FontWeight.bold)),
                                       ),
@@ -250,7 +242,7 @@ class _MatchResultListState extends State<MatchResultList> {
                                                                 dynamic>)[
                                                         'dailyId'] as String)
                                                     .substring(0, 16),
-                                            style: TextStyle(
+                                            style: const TextStyle(
                                                 fontSize: 12,
                                                 fontWeight: FontWeight.bold,
                                                 color: Colors.grey)),
@@ -323,7 +315,7 @@ class _MatchResultListState extends State<MatchResultList> {
                       );
                     });
               } else {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               }
             }));
   }

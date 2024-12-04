@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:tsuyosuke_tennis_ap/Page/HomePage.dart';
 
 import '../Common/CTitle.dart';
 import '../FireBase/FireBase.dart';
@@ -45,19 +44,19 @@ class MyTitlePage extends StatelessWidget {
       appBar: AppBar(
           backgroundColor: HeaderConfig.backGroundColor,
           title: HeaderConfig.appBarText,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
           leading: HeaderConfig.backIcon),
       body: FutureBuilder(
           future: futureList,
           builder:
               (BuildContext context, AsyncSnapshot<List<CTitle>> snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
-              return new Align(
+              return const Align(
                   child: Center(
-                child: new CircularProgressIndicator(),
+                child: CircularProgressIndicator(),
               ));
             } else if (snapshot.hasError) {
-              return new Text('Error!!: ${snapshot.error!}');
+              return Text('Error!!: ${snapshot.error!}');
             } else if (snapshot.hasData) {
               List<CTitle>? titleList = snapshot.data;
               return ListView.builder(
@@ -80,7 +79,7 @@ class MyTitlePage extends StatelessWidget {
                                 showDialog(
                                     context: context,
                                     builder: (_) => AlertDialog(
-                                      content: Text(
+                                      content: const Text(
                                           "称号を設定しました"),
                                       actions: <Widget>[
                                         // OKボタン
@@ -98,7 +97,7 @@ class MyTitlePage extends StatelessWidget {
                                     )
                                 );
                               },
-                              child: Text('設定'),
+                              child: const Text('設定'),
                             )
                           : ElevatedButton(
                               style: ElevatedButton.styleFrom(
@@ -107,18 +106,18 @@ class MyTitlePage extends StatelessWidget {
                               onPressed: () {
                                 showDialog(
                                     context: context,
-                                    builder: (_) => AlertDialog(
+                                    builder: (_) => const AlertDialog(
                                       title: Text("エラー"),
                                       content: Text(
                                           "取得していない称号は設定できません"),
                                     ));
                               },
-                              child: Text('設定'),
+                              child: const Text('設定'),
                             ));
                 },
               );
             } else {
-              return Text("データが存在しません");
+              return const Text("データが存在しません");
             }
           }),
     );

@@ -1,19 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
-import 'package:tsuyosuke_tennis_ap/Page/ProfileReference.dart';
 
-import '../Common/CblockList.dart';
-import '../Common/CfriendsList.dart';
-import '../Common/CtalkRoom.dart';
 import '../Common/CticketList.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/userTicketMgmt.dart';
 import '../PropSetCofig.dart';
-import '../UnderMenuMove.dart';
-import 'ProfileSetting.dart';
-import 'TalkRoom.dart';
 
 /**
  * チケット管理画面です
@@ -47,7 +38,7 @@ class _TicketListState extends State<TicketList> {
         appBar: AppBar(
             backgroundColor: HeaderConfig.backGroundColor,
             title: HeaderConfig.appBarText,
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
             leading: HeaderConfig.backIcon),
         body: FutureBuilder(
           future: createTicketList(),
@@ -56,7 +47,7 @@ class _TicketListState extends State<TicketList> {
               return Column(
                 children: [
                   Container(
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     height: 100,
                     decoration: BoxDecoration(
                       border: Border.all(
@@ -67,33 +58,33 @@ class _TicketListState extends State<TicketList> {
                     child: Column(
                       children: [
                         Container(
-                          padding: EdgeInsets.only(left: 5),
+                          padding: const EdgeInsets.only(left: 5),
                           alignment: Alignment.bottomLeft,
                           child: Text(
                               "総チケット数： " + myTicketSuList.TICKET_SU.toString(),
-                              style: TextStyle(fontSize: 20)),
+                              style: const TextStyle(fontSize: 20)),
                         ),
                         Container(
-                            padding: EdgeInsets.only(left: 20),
+                            padding: const EdgeInsets.only(left: 20),
                             alignment: Alignment.bottomLeft,
                             child: Text(
                                 "当月発行チケット数： " +
                                     myTicketSuList.TOGETSU_TICKET_SU.toString(),
-                                style: TextStyle(fontSize: 15))),
+                                style: const TextStyle(fontSize: 15))),
                         Container(
-                          padding: EdgeInsets.only(left: 20),
+                          padding: const EdgeInsets.only(left: 20),
                           alignment: Alignment.bottomLeft,
                           child: Text(
                               "前月発行チケット数： " +
                                   myTicketSuList.ZENGETSU_TICKET_SU.toString(),
-                              style: TextStyle(fontSize: 15)),
+                              style: const TextStyle(fontSize: 15)),
                         )
                       ],
                     ),
                   ),
                   Column(
                     children: [
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       Container(
@@ -104,23 +95,23 @@ class _TicketListState extends State<TicketList> {
                       Container(
                         padding: EdgeInsets.only(left: 10),
                         alignment: Alignment.bottomLeft,
-                        child: Text(
+                        child: const Text(
                           '・毎月1日に入会しているプランに応じてチケット発行されます',
                           style: TextStyle(fontSize: 12),
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.only(left: 10),
+                        padding: const EdgeInsets.only(left: 10),
                         alignment: Alignment.bottomLeft,
-                        child: Text(
+                        child: const Text(
                           '・毎月1日に前月発行チケットは失効されます',
                           style: TextStyle(fontSize: 12),
                         ),
                       ),
                       Container(
-                        padding: EdgeInsets.only(left: 10),
+                        padding: const EdgeInsets.only(left: 10),
                         alignment: Alignment.bottomLeft,
-                        child: Text(
+                        child: const Text(
                           '・1試合のマッチングに付き、両者から1枚チケットが使用されます',
                           style: TextStyle(fontSize: 12),
                         ),
@@ -130,7 +121,7 @@ class _TicketListState extends State<TicketList> {
                 ],
               );
             } else {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
           },
         ));

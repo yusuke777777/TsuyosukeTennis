@@ -21,14 +21,14 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
         );
         // パスワードリセットメール送信成功
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('パスワードリセットメールを送信しました。'),
           ),
         );
       }
       else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Eメールが異なります。'),
           ),
         );
@@ -56,7 +56,7 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('パスワード再設定'),
+        title: const Text('パスワード再設定'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -64,11 +64,11 @@ class _PasswordResetPageState extends State<PasswordResetPage> {
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'メールアドレス'),
+              decoration: const InputDecoration(labelText: 'メールアドレス'),
             ),
             ElevatedButton(
               onPressed: resetPassword,
-              child: Text('パスワード再設定'),
+              child: const Text('パスワード再設定'),
             ),
           ],
         ),

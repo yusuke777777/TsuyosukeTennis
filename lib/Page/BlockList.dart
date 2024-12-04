@@ -48,7 +48,7 @@ class _BlockListState extends State<BlockList> {
         appBar: AppBar(
             backgroundColor: HeaderConfig.backGroundColor,
             title: HeaderConfig.appBarText,
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
             leading: HeaderConfig.backIcon),
         body: FutureBuilder(
           future: createBlockList(),
@@ -59,7 +59,7 @@ class _BlockListState extends State<BlockList> {
                   itemBuilder: (context, index) {
                     return Slidable(
                         endActionPane: ActionPane(
-                          motion: DrawerMotion(),
+                          motion: const DrawerMotion(),
                           children: [
                             SlidableAction(
                               onPressed: (value) async {
@@ -89,7 +89,7 @@ class _BlockListState extends State<BlockList> {
                                                 .YOUR_USER
                                                 .PROFILE_IMAGE ==
                                             ''
-                                        ? CircleAvatar(
+                                        ? const CircleAvatar(
                                             backgroundColor: Colors.white,
                                             backgroundImage: NetworkImage(
                                                 "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
@@ -131,7 +131,7 @@ class _BlockListState extends State<BlockList> {
                                       else {
                                         showDialog(
                                             context: context,
-                                            builder: (_) => AlertDialog(
+                                            builder: (_) => const AlertDialog(
                                               title: Text("エラー"),
                                               content: Text("退会済みユーザーです"),
                                             ));
@@ -152,7 +152,7 @@ class _BlockListState extends State<BlockList> {
                         ));
                   });
             } else {
-              return Center(child: CircularProgressIndicator());
+              return const Center(child: CircularProgressIndicator());
             }
           },
         ));

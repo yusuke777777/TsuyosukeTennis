@@ -59,25 +59,25 @@ class _FindResultPageState extends State<FindResultPage> {
       appBar: AppBar(
           backgroundColor: HeaderConfig.backGroundColor,
           title: HeaderConfig.appBarText,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
           leading: HeaderConfig.backIcon),
       body: Stack(
         children: [
           Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
           Padding(
-            padding: EdgeInsets.only(top: 40),
+            padding: const EdgeInsets.only(top: 40),
             child: FutureBuilder(
               future: futureList,
               builder: (BuildContext context, AsyncSnapshot<List<String>> snapshot) {
                 {
                   if (snapshot.connectionState != ConnectionState.done) {
-                    return new Align(
+                    return const Align(
                         child: Center(
-                      child: new CircularProgressIndicator(),
+                      child: CircularProgressIndicator(),
                     ));
                   } else if (snapshot.hasError) {
                     print('Error: ${snapshot.error!}');
-                    return new Text("対象ユーザーは存在しません");
+                    return const Text("対象ユーザーは存在しません");
                   } else if (snapshot.hasData) {
                     //取得したい値をリスト型で格納
                     List<String>? profileList = snapshot.data;
@@ -86,7 +86,7 @@ class _FindResultPageState extends State<FindResultPage> {
                     if (profileList!.isEmpty) {
                       return ListView(
                           padding: const EdgeInsets.all(8),
-                          children: <Widget>[
+                          children: const <Widget>[
                             ListTile(title: Text("対象ユーザーは存在しません")),
                           ]);
                     } else {
@@ -103,7 +103,7 @@ class _FindResultPageState extends State<FindResultPage> {
                                     ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                           foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
-                                      child: Text('はい'),
+                                      child: const Text('はい'),
                                       onPressed: () async{
                                         //トーク画面へ遷移
                                         TalkRoomModel room = await FirestoreMethod.makeRoom(
@@ -122,7 +122,7 @@ class _FindResultPageState extends State<FindResultPage> {
                                     ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                           foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
-                                      child: Text('いいえ'),
+                                      child: const Text('いいえ'),
                                       onPressed: () {
                                         Navigator.pop(context);
                                       },
@@ -137,7 +137,7 @@ class _FindResultPageState extends State<FindResultPage> {
                                 future: _calculateTextHeight(profileList[3], TextStyle(fontSize: 12)),
                               builder: (context,snapshot) {
                                 if (snapshot.connectionState == ConnectionState.waiting) {
-                                  return CircularProgressIndicator(); // テキストの高さ計算中にローディング表示
+                                  return const CircularProgressIndicator(); // テキストの高さ計算中にローディング表示
                                 }
                                 if (snapshot.hasError) {
                                   return Text('Error: ${snapshot.error}');
@@ -156,7 +156,7 @@ class _FindResultPageState extends State<FindResultPage> {
                                         child: InkWell(
                                           child:
                                           profileList[1] == ''
-                                              ? CircleAvatar(
+                                              ? const CircleAvatar(
                                             backgroundColor: Colors.white,
                                             backgroundImage: NetworkImage(
                                                 "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
@@ -189,7 +189,7 @@ class _FindResultPageState extends State<FindResultPage> {
                                                 softWrap: true,
                                                 overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
                                                 maxLines: 1,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     fontSize: 20, fontWeight: FontWeight.bold)
                                             ),
                                           ),
@@ -200,7 +200,7 @@ class _FindResultPageState extends State<FindResultPage> {
                                                 softWrap: true,
                                                 overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
                                                 maxLines: (textHeight/12).floor()> 5 ? 5 :(textHeight/12).floor(),
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                     fontSize: 12)),
                                           ),
                                         ],
@@ -214,7 +214,7 @@ class _FindResultPageState extends State<FindResultPage> {
                       );
                     }
                   } else {
-                    return Text("データが存在しません");
+                    return const Text("データが存在しません");
                   }
                 }
               },
