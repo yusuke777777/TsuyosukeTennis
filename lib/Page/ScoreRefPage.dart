@@ -4,7 +4,6 @@ import 'package:tsuyosuke_tennis_ap/Common/CScoreRef.dart';
 
 import '../FireBase/FireBase.dart';
 import '../PropSetCofig.dart';
-import 'FriendManagerPage.dart';
 
 class ScoreRefPage extends StatefulWidget {
   ScoreRefPage(this.opponent_id);
@@ -43,16 +42,16 @@ class ScoreRefPageState extends State<ScoreRefPage> {
       appBar: AppBar(
           backgroundColor: HeaderConfig.backGroundColor,
           title: HeaderConfig.appBarText,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
           leading: HeaderConfig.backIcon),
       body: SingleChildScrollView(
         child: FutureBuilder(
           future: futureList,
           builder: (BuildContext context, AsyncSnapshot<CScoreRef> snapshot) {
             if (snapshot.connectionState != ConnectionState.done) {
-              return new Align(
+              return const Align(
                   child: Center(
-                child: new CircularProgressIndicator(),
+                child: CircularProgressIndicator(),
               ));
             } else if (snapshot.hasError) {
               return new Text('Error!!: ${snapshot.error!}');
@@ -70,7 +69,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                       children: <Widget>[
                         Text(
                           "勝率 : " + scoreRef!.WIN_LATE.toString() + "%",
-                          style: TextStyle(fontSize: 30),
+                          style: const TextStyle(fontSize: 30),
                         ),
                       ]),
                   const SizedBox(
@@ -82,7 +81,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                     height: 140,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: Colors.teal, //色
                           spreadRadius: 5,
@@ -98,7 +97,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: <Widget>[
-                          Text(
+                          const Text(
                             "試合数",
                             style: TextStyle(
                                 fontSize: 25,
@@ -109,7 +108,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                             fit: BoxFit.scaleDown,
                             child: Text(
                               scoreRef!.MATCH_COUNT.toString(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 25,
                                   color: Colors.white70,
                                   fontWeight: FontWeight.bold),
@@ -129,7 +128,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                               color: Colors.orangeAccent,
                               style: BorderStyle.solid,
                               width: 3),
-                          boxShadow: [
+                          boxShadow: const [
                             BoxShadow(
                               color: Colors.red, //色
                               spreadRadius: 5,
@@ -141,7 +140,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text(
+                              const Text(
                                 "勝利数",
                                 style: TextStyle(
                                     fontSize: 25,
@@ -152,7 +151,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                                 fit: BoxFit.scaleDown,
                                 child: Text(
                                   scoreRef!.WIN_COUNT.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 25,
                                       color: Colors.white70,
                                       fontWeight: FontWeight.bold),
@@ -160,7 +159,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                               ),
                             ]),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 20,
                       ),
                       Container(
@@ -172,7 +171,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                               color: Colors.lightBlueAccent,
                               style: BorderStyle.solid,
                               width: 3),
-                          boxShadow: [
+                          boxShadow: const [
                             BoxShadow(
                               color: Colors.blueAccent, //色
                               spreadRadius: 5,
@@ -184,7 +183,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Text(
+                              const Text(
                                 "敗北数",
                                 style: TextStyle(
                                     fontSize: 25,
@@ -195,7 +194,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                                 fit: BoxFit.scaleDown,
                                 child: Text(
                                   scoreRef!.LOSE_COUNT.toString(),
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 25,
                                       color: Colors.white70,
                                       fontWeight: FontWeight.bold),
@@ -216,13 +215,13 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                             children: [
                               Container(
                                 alignment: Alignment.center,
-                                child: Text(
+                                child: const Text(
                                   "直近対戦結果",
                                   style: TextStyle(fontSize: 25),
                                 ),
                               ),
                               Container(
-                                padding: EdgeInsets.only(bottom: 20),
+                                padding: const EdgeInsets.only(bottom: 20),
                                 width: deviceWidth * 0.95,
                                 child: Column(
                                   children: scoreRef.HISTORYLIST
@@ -235,7 +234,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                                                       fit: BoxFit.scaleDown,
                                                       child: Text(
                                                           historyItem.TITLE + "(" + historyItem.KOUSHIN_TIME + ")",
-                                                          style: TextStyle(
+                                                          style: const TextStyle(
                                                               fontSize: 14)),
                                                     ),
                                                   ),
@@ -250,10 +249,10 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                                                       .SCORE_POINT
                                                       .map((score) => Container(
                                                             padding:
-                                                                EdgeInsets.all(
+                                                                const EdgeInsets.all(
                                                                     3),
                                                             child: Text(score,
-                                                                style: TextStyle(
+                                                                style: const TextStyle(
                                                                     fontSize:
                                                                         14)),
                                                           ))
@@ -266,7 +265,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                                                         Container(
                                                           alignment: Alignment
                                                               .bottomLeft,
-                                                          child: Text(
+                                                          child: const Text(
                                                             "レビューコメント",
                                                             style: TextStyle(
                                                                 fontSize: 14),
@@ -288,14 +287,14 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                                                               color: Colors
                                                                   .white70),
                                                           padding:
-                                                              EdgeInsets.only(
+                                                              const EdgeInsets.only(
                                                                   left: 5),
                                                           child: SingleChildScrollView(
                                                             child: Text(
                                                               historyItem
                                                                   .FEEDBACK_COMMENT
                                                                   .toString(),
-                                                              style: TextStyle(
+                                                              style: const TextStyle(
                                                                   fontSize: 12),
                                                               textAlign:
                                                                   TextAlign.start,
@@ -318,7 +317,7 @@ class ScoreRefPageState extends State<ScoreRefPage> {
                 ]),
               );
             } else {
-              return Text("データが存在しません");
+              return const Text("データが存在しません");
             }
           },
         ),

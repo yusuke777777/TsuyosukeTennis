@@ -79,7 +79,7 @@ class _FindPageState extends State<FindPage> {
             appBar: AppBar(
               backgroundColor: HeaderConfig.backGroundColor,
               title: HeaderConfig.appBarText,
-              iconTheme: IconThemeData(color: Colors.black),
+              iconTheme: const IconThemeData(color: Colors.black),
             ),
             //ドロアーの定義
             drawer: DrawerConfig.drawer,
@@ -93,14 +93,14 @@ class _FindPageState extends State<FindPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
-                      SizedBox(
+                      const SizedBox(
                         height: 20,
                       ),
                       //アカウントID入力欄
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             width: 50,
                           ),
                           Container(
@@ -116,7 +116,7 @@ class _FindPageState extends State<FindPage> {
                                     borderSide:
                                         const BorderSide(color: Colors.grey)),
                                 contentPadding:
-                                    EdgeInsets.symmetric(horizontal: 16),
+                                    const EdgeInsets.symmetric(horizontal: 16),
                                 fillColor: Colors.white,
                                 filled: true,
                               ),
@@ -126,12 +126,12 @@ class _FindPageState extends State<FindPage> {
                           //検索アイコン実装
                           const SizedBox(width: 10),
                           IconButton(
-                            icon: Icon(Icons.search),
+                            icon: const Icon(Icons.search),
                             onPressed: () {
                               inputId.text == ""
                                   ? showDialog(
                                       context: context,
-                                      builder: (_) => AlertDialog(
+                                      builder: (_) => const AlertDialog(
                                             title: Text("入力エラー!"),
                                             content: Text("アカウントIDを入力してください"),
                                           ))
@@ -148,7 +148,7 @@ class _FindPageState extends State<FindPage> {
 
                       const SizedBox(height: 10),
                       BorderedText(
-                        child: Text('条件検索はこちら',
+                        child: const Text('条件検索はこちら',
                             style: TextStyle(
                               fontSize: 20,
                               color: Colors.green,
@@ -162,7 +162,7 @@ class _FindPageState extends State<FindPage> {
                       Row(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             width: 50,
                           ),
                           Container(
@@ -174,14 +174,14 @@ class _FindPageState extends State<FindPage> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(20)),
                             child: todofuken == ''
-                                ? Text(
+                                ? const Text(
                                     "都道府県",
                                     style: TextStyle(
                                         fontSize: 20, color: Colors.grey),
                                   )
                                 : Text(
                                     todofuken,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 20, color: Colors.black),
                                   ),
                           ),
@@ -195,7 +195,7 @@ class _FindPageState extends State<FindPage> {
                       ),
 
                       //行間の幅調整
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
 
@@ -203,7 +203,7 @@ class _FindPageState extends State<FindPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             width: 50,
                           ),
                           Container(
@@ -217,7 +217,7 @@ class _FindPageState extends State<FindPage> {
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(20)),
                                   contentPadding:
-                                      EdgeInsets.symmetric(horizontal: 16),
+                                      const EdgeInsets.symmetric(horizontal: 16),
                                   fillColor: Colors.white,
                                   filled: true),
                             ),
@@ -226,12 +226,12 @@ class _FindPageState extends State<FindPage> {
                       ),
 
                       //行間の幅調整
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
 
                       //行間の幅調整
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
 
@@ -239,7 +239,7 @@ class _FindPageState extends State<FindPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             width: 50,
                           ),
                           Container(
@@ -251,19 +251,19 @@ class _FindPageState extends State<FindPage> {
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(20)),
                             child: gender == ''
-                                ? Text(
+                                ? const Text(
                                     "性別",
                                     style: TextStyle(
                                         fontSize: 20, color: Colors.grey),
                                   )
                                 : Text(
                                     gender,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 20, color: Colors.black),
                                   ),
                           ),
                           IconButton(
-                            icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                            icon: const Icon(Icons.arrow_drop_down_circle_rounded),
                             onPressed: () {
                               _showModalGenderPicker(context);
                             },
@@ -272,12 +272,12 @@ class _FindPageState extends State<FindPage> {
                       ),
 
                       //行間の幅調整
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
 
                       //行間の幅調整
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
 
@@ -285,7 +285,7 @@ class _FindPageState extends State<FindPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             width: 50,
                           ),
                           Container(
@@ -297,14 +297,14 @@ class _FindPageState extends State<FindPage> {
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(20)),
                               child: torokuRank == ''
-                                  ? Text("登録ランク",
+                                  ? const Text("登録ランク",
                                       style: TextStyle(
                                           fontSize: 20, color: Colors.grey))
                                   : Text(torokuRank,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 20, color: Colors.black))),
                           IconButton(
-                            icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                            icon: const Icon(Icons.arrow_drop_down_circle_rounded),
                             onPressed: () {
                               _showModalRankPicker(context);
                             },
@@ -313,11 +313,11 @@ class _FindPageState extends State<FindPage> {
                       ),
 
                       //行間の幅調整
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
 
-                      SizedBox(
+                      const SizedBox(
                         height: 5,
                       ),
 
@@ -325,7 +325,7 @@ class _FindPageState extends State<FindPage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             width: 50,
                           ),
                           Container(
@@ -337,18 +337,18 @@ class _FindPageState extends State<FindPage> {
                                   color: Colors.white,
                                   borderRadius: BorderRadius.circular(20)),
                               child: torokuAge == ''
-                                  ? Text(
+                                  ? const Text(
                                       "年齢",
                                       style: TextStyle(
                                           fontSize: 20, color: Colors.grey),
                                     )
                                   : Text(
                                       torokuAge,
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontSize: 20, color: Colors.black),
                                     )),
                           IconButton(
-                            icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                            icon: const Icon(Icons.arrow_drop_down_circle_rounded),
                             onPressed: () {
                               _showModalAgePicker(context);
                             },
@@ -364,7 +364,7 @@ class _FindPageState extends State<FindPage> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           IconButton(
-                            icon: Icon(Icons.search),
+                            icon: const Icon(Icons.search),
                             onPressed: () async{
                               List<String> blockList = await FirestoreMethod.getBlockUserList(auth.currentUser!.uid);
                               todofuken == "" &&
@@ -374,7 +374,7 @@ class _FindPageState extends State<FindPage> {
                                       inputShichouson.text == ""
                                   ? showDialog(
                                       context: context,
-                                      builder: (_) => AlertDialog(
+                                      builder: (_) => const AlertDialog(
                                             title: Text("入力エラー!"),
                                             content: Text(
                                                 "都道府県、性別、登録ランク、年齢、市町村のいずれかは入力してください"),

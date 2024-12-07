@@ -2,16 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/SigninModel.dart';
 import '../FireBase/TextDaialog.dart';
 import '../FireBase/WillPopScope.dart';
 
-import '../FireBase/native_dialog.dart';
-import '../FireBase/singletons_data.dart';
 import '../UnderMenuMove.dart';
-import '../constant.dart';
 import 'ProfileSetting.dart';
 import 'ReLoginMessagePage.dart';
 import 'SignupPage.dart';
@@ -35,7 +31,7 @@ class SignInPage extends StatelessWidget {
         create: (_) => SignInModel(),
         child: Scaffold(
           appBar: PreferredSize(
-            preferredSize: Size.fromHeight(40.0),
+            preferredSize: const Size.fromHeight(40.0),
             child: AppBar(backgroundColor: Colors.green),
           ),
           body: Consumer<SignInModel>(
@@ -59,7 +55,7 @@ class SignInPage extends StatelessWidget {
                         padding: const EdgeInsets.all(16.0),
                         child: Column(
                           children: <Widget>[
-                            SizedBox(
+                            const SizedBox(
                               height: 16.0,
                             ),
                             TextFormField(
@@ -75,10 +71,10 @@ class SignInPage extends StatelessWidget {
                                     ? null
                                     : model.errorMail,
                                 labelText: 'メールアドレス',
-                                border: OutlineInputBorder(),
+                                border: const OutlineInputBorder(),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 16,
                             ),
                             TextFormField(
@@ -95,17 +91,17 @@ class SignInPage extends StatelessWidget {
                                     ? null
                                     : model.errorPassword,
                                 labelText: 'パスワード',
-                                border: OutlineInputBorder(),
+                                border: const OutlineInputBorder(),
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 16,
                             ),
                             SizedBox(
                               width: double.infinity,
                               height: 50,
                               child: ElevatedButton(
-                                child: Text(
+                                child: const Text(
                                   'ログイン',
                                   style: TextStyle(
                                     color: Colors.white,
@@ -114,7 +110,7 @@ class SignInPage extends StatelessWidget {
                                 style: ButtonStyle(
                                   backgroundColor:
                                       MaterialStateProperty.all<Color>(
-                                          Color(0xFF4CAF50)),
+                                          const Color(0xFF4CAF50)),
                                 ),
                                 onPressed: model.isMailValid &&
                                         model.isPasswordValid
@@ -153,11 +149,11 @@ class SignInPage extends StatelessWidget {
                                     : null,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 16,
                             ),
                             TextButton(
-                              child: Text(
+                              child: const Text(
                                 '新規登録はこちら',
                                 style: TextStyle(color: Colors.white),
                               ),
@@ -171,7 +167,7 @@ class SignInPage extends StatelessWidget {
                               },
                             ),
                             TextButton(
-                              child: Text(
+                              child: const Text(
                                 'パスワードを忘れた場合',
                                 style: TextStyle(color: Colors.white),
                               ),
@@ -192,7 +188,7 @@ class SignInPage extends StatelessWidget {
                   model.isLoading
                       ? Container(
                           color: Colors.black.withOpacity(0.3),
-                          child: Center(
+                          child: const Center(
                             child: CircularProgressIndicator(),
                           ),
                         )

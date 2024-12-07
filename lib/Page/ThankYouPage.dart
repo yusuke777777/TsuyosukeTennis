@@ -12,14 +12,14 @@ class ThankYouPage extends StatelessWidget {
       appBar: AppBar(
           backgroundColor: HeaderConfig.backGroundColor,
           title: HeaderConfig.appBarText,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
           leading: HeaderConfig.backIcon
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('ご利用いただき、ありがとうございました。'),
+            const Text('ご利用いただき、ありがとうございました。'),
             ElevatedButton(
               onPressed: () {
                 Navigator.pushReplacement(
@@ -29,7 +29,7 @@ class ThankYouPage extends StatelessWidget {
                   ),
                 );
               },
-              child: Text('閉じる'),
+              child: const Text('閉じる'),
             ),
           ],
         ),

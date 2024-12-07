@@ -5,8 +5,12 @@ class RankModel{
   late int rankNo;
   late CprofileSetting user;
   late int tpPoint;
+  late bool searchEnableFlg;
 
   RankModel({
-    required this.rankNo,required this.user,required this.tpPoint
+    required this.rankNo,
+    required this.user,
+    required this.tpPoint,
+    required this.searchEnableFlg
   });
 }

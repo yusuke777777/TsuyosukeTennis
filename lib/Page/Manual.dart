@@ -1,11 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
-import '../FireBase/FireBase.dart';
 import '../FireBase/urlMove.dart';
 import '../PropSetCofig.dart';
-import 'Billing.dart';
-import 'UnsubscribePage.dart';
 
 class Manual extends StatefulWidget {
   const Manual({Key? key}) : super(key: key);
@@ -27,7 +23,7 @@ class _ManualState extends State<Manual> {
       appBar: AppBar(
           backgroundColor: HeaderConfig.backGroundColor,
           title: HeaderConfig.appBarText,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
           leading: HeaderConfig.backIcon),
       body: Scrollbar(
         child: SingleChildScrollView(
@@ -36,7 +32,7 @@ class _ManualState extends State<Manual> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               ListTile(
-                title: Text('ユーザー登録方法',
+                title: const Text('ユーザー登録方法',
                     style: TextStyle(fontSize: 20, color: Colors.black)),
                 onTap: () {
                   //利用規約を記入する
@@ -45,7 +41,7 @@ class _ManualState extends State<Manual> {
                 },
               ),
               ListTile(
-                title: Text('ホーム画面参照方法',
+                title: const Text('ホーム画面参照方法',
                     style: TextStyle(fontSize: 20, color: Colors.black)),
                 onTap: () {
                   //利用規約を記入する
@@ -54,7 +50,7 @@ class _ManualState extends State<Manual> {
                 },
               ),
               ListTile(
-                title: Text('マッチング方法',
+                title: const Text('マッチング方法',
                     style: TextStyle(fontSize: 20, color: Colors.black)),
                 onTap: () {
                   //利用規約を記入する

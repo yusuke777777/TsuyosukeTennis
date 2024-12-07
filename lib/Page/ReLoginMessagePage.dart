@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 
 import '../FireBase/FireBase.dart';
-import '../FireBase/SigninModel.dart';
 import '../FireBase/singletons_data.dart';
 import '../PropSetCofig.dart';
 import 'ProfileSetting.dart';
@@ -46,19 +45,18 @@ class _ReLoginMessagePageState extends State<ReLoginMessagePage> {
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "");
     DrawerConfig().init(context);
-    final deviceWidth = MediaQuery.of(context).size.width;
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: HeaderConfig.backGroundColor,
         title: HeaderConfig.appBarText,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
+            const Text(
               '登録メールアドレスに承認メールを送信しました。\n承認後、下記ボタンを押してください。',
               style: TextStyle(
                 fontSize: 15,
@@ -69,7 +67,7 @@ class _ReLoginMessagePageState extends State<ReLoginMessagePage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green, // 背景色を設定
               ),
-              child: Text(
+              child: const Text(
                 '承認しました',
                 style: TextStyle(
                     color: Colors.white,
@@ -92,7 +90,7 @@ class _ReLoginMessagePageState extends State<ReLoginMessagePage> {
                   else{
                     await showDialog(
                         context: context,
-                        builder: (BuildContext context) => ShowDialogToDismiss(
+                        builder: (BuildContext context) => const ShowDialogToDismiss(
                             title: "承認されていません",
                             buttonText: 'OK',
                             content: 'メアド承認が済んでいる場合は再度ボタンを押してください',));
@@ -107,14 +105,14 @@ class _ReLoginMessagePageState extends State<ReLoginMessagePage> {
                 }
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green, // 背景色を設定
               ),
-              child: Text(
+              child: const Text(
                 'ログイン画面に戻る',
                 style: TextStyle(
                     color: Colors.white,
@@ -138,7 +136,7 @@ class _ReLoginMessagePageState extends State<ReLoginMessagePage> {
                 );
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 16,
             ),
             ElevatedButton(
@@ -148,9 +146,9 @@ class _ReLoginMessagePageState extends State<ReLoginMessagePage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green, // 背景色を設定
               ),
-              child: Text('承認メールを再度送信する'),
+              child: const Text('承認メールを再度送信する'),
             ),
-            Text(
+            const Text(
               '※再送信メールが送信されない場合は\n5分以上間隔をあけ、再度ボタンを押してください。',
               style: TextStyle(
                 fontSize: 15,

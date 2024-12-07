@@ -64,7 +64,7 @@ class _TalkListState extends State<TalkList> {
           appBar: AppBar(
             backgroundColor: HeaderConfig.backGroundColor,
             title: HeaderConfig.appBarText,
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
           ),
           drawer: DrawerConfig.drawer,
           body: Stack(
@@ -84,7 +84,7 @@ class _TalkListState extends State<TalkList> {
                           itemBuilder: (context, index) {
                             return Slidable(
                                 endActionPane: ActionPane(
-                                  motion: DrawerMotion(),
+                                  motion: const DrawerMotion(),
                                   children: [
                                     SlidableAction(
                                       onPressed: (value) {
@@ -105,7 +105,7 @@ class _TalkListState extends State<TalkList> {
                                             context: context,
                                             builder: (context) {
                                               return AlertDialog(
-                                                title: Text('本当に削除して宜しいですか'),
+                                                title: const Text('本当に削除して宜しいですか'),
                                                 actions: <Widget>[
                                                   ElevatedButton(
                                                     style: ElevatedButton.styleFrom(
@@ -113,7 +113,7 @@ class _TalkListState extends State<TalkList> {
                                                             Colors.black,
                                                         backgroundColor: Colors
                                                             .lightGreenAccent),
-                                                    child: Text('はい'),
+                                                    child: const Text('はい'),
                                                     onPressed: () async {
                                                       try {
                                                         await FirestoreMethod
@@ -130,7 +130,7 @@ class _TalkListState extends State<TalkList> {
                                                       }catch(e){
                                                         showDialog(
                                                             context: context,
-                                                            builder: (BuildContext context) => ShowDialogToDismiss(
+                                                            builder: (BuildContext context) => const ShowDialogToDismiss(
                                                               content: "トークルームの削除に失敗しました",
                                                               buttonText: "はい",
                                                             ));
@@ -143,7 +143,7 @@ class _TalkListState extends State<TalkList> {
                                                             Colors.black,
                                                         backgroundColor: Colors
                                                             .lightGreenAccent),
-                                                    child: Text('いいえ'),
+                                                    child: const Text('いいえ'),
                                                     onPressed: () {
                                                       Navigator.pop(context);
                                                     },
@@ -189,7 +189,7 @@ class _TalkListState extends State<TalkList> {
                                                           .user
                                                           .PROFILE_IMAGE ==
                                                       ''
-                                                  ? CircleAvatar(
+                                                  ? const CircleAvatar(
                                                       backgroundColor:
                                                           Colors.white,
                                                       backgroundImage: NetworkImage(
@@ -228,7 +228,7 @@ class _TalkListState extends State<TalkList> {
                                                         talkList[index]
                                                             .user
                                                             .NICK_NAME,
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             fontSize: 20,
                                                             fontWeight:
                                                                 FontWeight
@@ -236,7 +236,7 @@ class _TalkListState extends State<TalkList> {
                                                 Container(
                                                     child: Text(
                                                   talkList[index].lastMessage,
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                       color: Colors.grey,
                                                       fontSize: 13),
                                                   overflow:
@@ -252,7 +252,7 @@ class _TalkListState extends State<TalkList> {
                                                   alignment: Alignment.center,
                                                   width: 25.0,
                                                   height: 25.0,
-                                                  decoration: BoxDecoration(
+                                                  decoration: const BoxDecoration(
                                                     color: Colors.green,
                                                     shape: BoxShape.circle,
                                                   ),
@@ -260,12 +260,12 @@ class _TalkListState extends State<TalkList> {
                                                     talkList[index]
                                                         .unReadCnt
                                                         .toString(),
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         color: Colors.white,
                                                         fontSize: 18),
                                                   ),
                                                 ),
-                                          SizedBox(
+                                          const SizedBox(
                                             width: 10,
                                           )
                                         ],
@@ -275,7 +275,7 @@ class _TalkListState extends State<TalkList> {
                                 ));
                           });
                     } else {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }
                   },
                 ),

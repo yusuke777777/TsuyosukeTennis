@@ -1,10 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
-import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
 import '../Common/CFeedBackCommentSetting.dart';
 import '../Common/CmatchResult.dart';
 import '../Common/CprofileSetting.dart';
@@ -67,14 +65,14 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
               appBar: AppBar(
                   backgroundColor: HeaderConfig.backGroundColor,
                   title: HeaderConfig.appBarText,
-                  iconTheme: IconThemeData(color: Colors.black),
+                  iconTheme: const IconThemeData(color: Colors.black),
                   leading: HeaderConfig.backIcon),
               body: Scrollbar(
                 child: SingleChildScrollView(
                   child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           width: 80,
                         ),
                         Center(
@@ -93,7 +91,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              padding: EdgeInsets.only(right: 10),
+                              padding: const EdgeInsets.only(right: 10),
                               width: deviceWidth * 0.3,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -102,7 +100,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                     alignment: Alignment.center,
                                     width: deviceWidth * 0.3,
                                     child: widget.myProfile.PROFILE_IMAGE == ''
-                                        ? CircleAvatar(
+                                        ? const CircleAvatar(
                                       backgroundColor: Colors.white,
                                       backgroundImage: NetworkImage(
                                           "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
@@ -123,7 +121,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                       fit:BoxFit.scaleDown,
                                       child: Text(
                                         widget.myProfile.NICK_NAME,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 20, color: Colors.black),
                                       ),
                                     ),
@@ -148,14 +146,14 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                         ),
                                         child: Text(
                                           '${matchResult.myGamePoint}',
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontSize: 20,
                                               color: Colors.black),
                                         ),
                                       ),
                                       Container(
                                         width: deviceWidth * 0.1,
-                                        child: Center(
+                                        child: const Center(
                                           child: Text(
                                             "-",
                                             style: TextStyle(
@@ -174,7 +172,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                         ),
                                         child: Text(
                                           '${matchResult.yourGamePoint}',
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontSize: 20,
                                               color: Colors.black),
                                         ),
@@ -185,7 +183,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                               )).toList(),
                             ),
                             Container(
-                              padding: EdgeInsets.only(left: 10),
+                              padding: const EdgeInsets.only(left: 10),
                               width: deviceWidth * 0.3,
                               child: Column(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -194,7 +192,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                     alignment: Alignment.center,
                                     width: deviceWidth * 0.3,
                                     child: widget.yourProfile.PROFILE_IMAGE == ''
-                                        ? CircleAvatar(
+                                        ? const CircleAvatar(
                                       backgroundColor: Colors.white,
                                       backgroundImage: NetworkImage(
                                           "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
@@ -215,7 +213,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                       fit:BoxFit.scaleDown,
                                       child: Text(
                                         widget.yourProfile.NICK_NAME,
-                                        style: TextStyle(
+                                        style: const TextStyle(
                                             fontSize: 20, color: Colors.black),
                                       ),
                                     ),
@@ -229,16 +227,16 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                         //レビュー集計機能
                         Column(
                           children: [
-                            Text('------------------------',
+                            const Text('------------------------',
                                 style: TextStyle(fontSize: 20)),
-                            Text('対戦相手へフィードバックを送ろう',
+                            const Text('対戦相手へフィードバックを送ろう',
                                 style: TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                   decoration: TextDecoration.underline,
                                 )),
                             //ストローク
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text('ストローク', style: TextStyle(fontSize: 20)),
@@ -247,7 +245,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('フォア：', style: TextStyle(fontSize: 20)),
+                                const Text('フォア：', style: TextStyle(fontSize: 20)),
                                 RatingBar.builder(
                                   allowHalfRating: true,
                                   itemBuilder: (context, index) => const Icon(
@@ -264,7 +262,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('バック：', style: TextStyle(fontSize: 20)),
+                                const Text('バック：', style: TextStyle(fontSize: 20)),
                                 RatingBar.builder(
                                   allowHalfRating: true,
                                   itemBuilder: (context, index) => const Icon(
@@ -281,7 +279,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                               height: 20,
                             ),
                             //ボレー
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text('ボレー', style: TextStyle(fontSize: 20)),
@@ -290,7 +288,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('フォア：', style: TextStyle(fontSize: 20)),
+                                const Text('フォア：', style: TextStyle(fontSize: 20)),
                                 RatingBar.builder(
                                   allowHalfRating: true,
                                   itemBuilder: (context, index) => const Icon(
@@ -306,7 +304,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('バック：', style: TextStyle(fontSize: 20)),
+                                const Text('バック：', style: TextStyle(fontSize: 20)),
                                 RatingBar.builder(
                                   allowHalfRating: true,
                                   itemBuilder: (context, index) => const Icon(
@@ -323,7 +321,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                               height: 20,
                             ),
                             //サーブ
-                            Row(
+                            const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text('サーブ', style: TextStyle(fontSize: 20)),
@@ -332,7 +330,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('１ｓｔ：', style: TextStyle(fontSize: 20)),
+                                const Text('１ｓｔ：', style: TextStyle(fontSize: 20)),
                                 RatingBar.builder(
                                   allowHalfRating: true,
                                   itemBuilder: (context, index) => const Icon(
@@ -348,7 +346,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('２ｎｄ：', style: TextStyle(fontSize: 20)),
+                                const Text('２ｎｄ：', style: TextStyle(fontSize: 20)),
                                 RatingBar.builder(
                                   allowHalfRating: true,
                                   itemBuilder: (context, index) => const Icon(
@@ -369,7 +367,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                         Container(
                           width: deviceWidth * 0.8,
                           alignment: Alignment.center,
-                          child:Text('感想・フィードバック',
+                          child:const Text('感想・フィードバック',
                               style: TextStyle(fontSize: 20)),
                         ),
                             Container(
@@ -380,7 +378,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                 cursorColor: Colors.green,
                                 controller: inputWord,
                                 maxLines: 20,
-                                decoration: InputDecoration(
+                                decoration: const InputDecoration(
                                   fillColor: Colors.white,
                                   filled: true,
                                   focusedBorder: UnderlineInputBorder(
@@ -403,7 +401,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                         BorderRadius.all(Radius.circular(80)),
                                   ),
                                 ),
-                                child: Center(
+                                child: const Center(
                                   child: Text(
                                     '登録',
                                     style: TextStyle(
@@ -439,12 +437,12 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                         context: context,
                                         builder: (context) {
                                           return AlertDialog(
-                                            title: Text('フィードバックを入力して下さい'),
+                                            title: const Text('フィードバックを入力して下さい'),
                                             actions: <Widget>[
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
                                                     foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
-                                                child: Text('OK'),
+                                                child: const Text('OK'),
                                                 onPressed: () {
                                                   Navigator.pop(context);
                                                 },

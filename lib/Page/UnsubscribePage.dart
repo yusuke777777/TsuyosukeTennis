@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:tsuyosuke_tennis_ap/Page/ThankYouPage.dart';
 
 import '../PropSetCofig.dart';
-import 'SigninPage.dart';
 
 class UnsubscribePage extends StatefulWidget {
   @override
@@ -33,7 +32,7 @@ class _UnsubscribeState extends State<UnsubscribePage> {
       appBar: AppBar(
         backgroundColor: HeaderConfig.backGroundColor,
         title: HeaderConfig.appBarText,
-        iconTheme: IconThemeData(color: Colors.black),
+        iconTheme: const IconThemeData(color: Colors.black),
       ),
       body: Center(
         child: Column(
@@ -44,9 +43,9 @@ class _UnsubscribeState extends State<UnsubscribePage> {
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.green, // 背景色を設定
               ),
-              child: Text('アカウント削除を行う'),
+              child: const Text('アカウント削除を行う'),
             ),
-            Text(
+            const Text(
               '⚠️退会するとこれまでのデータは失われます！',
               style: TextStyle(
                 fontSize: 15,
@@ -65,13 +64,13 @@ class _UnsubscribeState extends State<UnsubscribePage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('アカウント削除の確認'),
+          title: const Text('アカウント削除の確認'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: _emailController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'メールアドレス',
                   labelStyle: TextStyle(
                     color: Colors.green, // labelTextのテキスト色を設定
@@ -81,7 +80,7 @@ class _UnsubscribeState extends State<UnsubscribePage> {
               TextField(
                 controller: _passwordController,
                 obscureText: true,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'パスワード',
                   labelStyle: TextStyle(
                     color: Colors.green, // labelTextのテキスト色を設定
@@ -94,7 +93,7 @@ class _UnsubscribeState extends State<UnsubscribePage> {
               onPressed: () {
                 Navigator.of(context).pop(); // ダイアログを閉じる
               },
-              child: Text('キャンセル',
+              child: const Text('キャンセル',
                   style: TextStyle(
                     color: Colors.green, // 文字色を設定
                   ),),
@@ -113,13 +112,13 @@ class _UnsubscribeState extends State<UnsubscribePage> {
                 } else {
                   // 認証失敗時の処理
                   ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
+                    const SnackBar(
                       content: Text('メールアドレスまたはパスワードが正しくありません'),
                     ),
                   );
                 }
               },
-              child: Text('削除',
+              child: const Text('削除',
                 style: TextStyle(
         color: Colors.green, // 文字色を設定
         ),),

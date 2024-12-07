@@ -5,7 +5,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CtalkRoom.dart';
 import 'package:tsuyosuke_tennis_ap/Page/MatchResult.dart';
 import 'package:tsuyosuke_tennis_ap/Page/ProfileReference.dart';
-import 'package:tsuyosuke_tennis_ap/Page/ProfileSetting.dart';
 import '../Common/CmatchList.dart';
 import '../Common/CprofileSetting.dart';
 import '../Component/native_dialog.dart';
@@ -204,7 +203,7 @@ class _MatchListState extends State<MatchList> {
           appBar: AppBar(
             backgroundColor: HeaderConfig.backGroundColor,
             title: HeaderConfig.appBarText,
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
           ),
           drawer: DrawerConfig.drawer,
           body: Stack(
@@ -212,12 +211,12 @@ class _MatchListState extends State<MatchList> {
               Container(
                   alignment: Alignment.center,
                   height: 40,
-                  child: AdBanner(size: AdSize.banner)),
+                  child: const AdBanner(size: AdSize.banner)),
               Padding(
-                padding: EdgeInsets.only(top: 40),
+                padding: const EdgeInsets.only(top: 40),
                 child: ListView.builder(
                     controller: _scrollController,
-                    physics: RangeMaintainingScrollPhysics(),
+                    physics: const RangeMaintainingScrollPhysics(),
                     shrinkWrap: true,
                     reverse: false,
                     itemCount: matchListAll.length + 1,
@@ -226,15 +225,15 @@ class _MatchListState extends State<MatchList> {
                         // ページネーションアイテムの場合
                         if (_isLoadingMore) {
                           print(_isLoadingMore);
-                          return Center(child: CircularProgressIndicator());
+                          return const Center(child: CircularProgressIndicator());
                         } else {
                           print("ss");
-                          return SizedBox();
+                          return const SizedBox();
                         }
                       } else {
                         return Slidable(
                             endActionPane: ActionPane(
-                              motion: DrawerMotion(),
+                              motion: const DrawerMotion(),
                               children: [
                                 SlidableAction(
                                   onPressed: (value) async {
@@ -242,7 +241,7 @@ class _MatchListState extends State<MatchList> {
                                         context: context,
                                         builder: (context) {
                                           return AlertDialog(
-                                            title: Text('本当に削除して宜しいですか'),
+                                            title: const Text('本当に削除して宜しいですか'),
                                             actions: <Widget>[
                                               ElevatedButton(
                                                 style: ElevatedButton.styleFrom(
@@ -250,7 +249,7 @@ class _MatchListState extends State<MatchList> {
                                                         Colors.black,
                                                     backgroundColor: Colors
                                                         .lightGreenAccent),
-                                                child: Text('はい'),
+                                                child: const Text('はい'),
                                                 onPressed: () async {
                                                   try {
                                                     await FirestoreMethod
@@ -267,7 +266,7 @@ class _MatchListState extends State<MatchList> {
                                                         context: context,
                                                         builder: (BuildContext
                                                                 context) =>
-                                                            ShowDialogToDismiss(
+                                                            const ShowDialogToDismiss(
                                                               content:
                                                                   "マッチングリストの削除に失敗しました",
                                                               buttonText: "はい",
@@ -281,7 +280,7 @@ class _MatchListState extends State<MatchList> {
                                                         Colors.black,
                                                     backgroundColor: Colors
                                                         .lightGreenAccent),
-                                                child: Text('いいえ'),
+                                                child: const Text('いいえ'),
                                                 onPressed: () {
                                                   Navigator.pop(context);
                                                 },
@@ -296,7 +295,125 @@ class _MatchListState extends State<MatchList> {
                                 ),
                               ],
                             ),
-                            child: Card(
+                            child:
+                            InkWell(
+                                onTap: () async {
+                                  try {
+                                    // ドキュメントのロック状態を取得
+                                    final matchSnapshot =
+                                    await FirebaseFirestore
+                                        .instance
+                                        .collection('matchList')
+                                        .doc(matchListAll[index]
+                                        .MATCH_ID)
+                                        .get();
+
+                                    String LOCK_FLG = matchSnapshot
+                                        .data()?['LOCK_FLG'] ??
+                                        "0";
+                                    String LOCK_USER = matchSnapshot
+                                        .data()?['LOCK_USER'] ??
+                                        '';
+
+                                    if (matchSnapshot.exists) {
+                                      // 自分がロックしている、もしくはロックされていない場合
+                                      if (LOCK_FLG == '0' ||
+                                          LOCK_USER ==
+                                              FirestoreMethod
+                                                  .auth
+                                                  .currentUser!
+                                                  .uid ||
+                                          LOCK_USER == '') {
+                                        // 自分のUIDでロック設定
+                                        await FirebaseFirestore
+                                            .instance
+                                            .collection('matchList')
+                                            .doc(matchListAll[index]
+                                            .MATCH_ID)
+                                            .set({
+                                          'LOCK_FLG': '1',
+                                          'LOCK_USER':
+                                          FirestoreMethod.auth
+                                              .currentUser!.uid,
+                                        }, SetOptions(merge: true));
+                                        //対戦結果入力画面へ遷移
+                                        await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => MatchResult(
+                                                    matchListAll[
+                                                    index]
+                                                        .MY_USER,
+                                                    matchListAll[
+                                                    index]
+                                                        .YOUR_USER,
+                                                    matchListAll[
+                                                    index]
+                                                        .MATCH_ID)));
+                                        // 画面から戻ってきたときに対象のドキュメントが存在するか確認
+                                        final matchDoc =
+                                        await FirebaseFirestore
+                                            .instance
+                                            .collection(
+                                            'matchList')
+                                            .doc(matchListAll[
+                                        index]
+                                            .MATCH_ID)
+                                            .get();
+
+                                        if (matchDoc.exists) {
+                                          // ドキュメントが存在する場合にのみロックを解除
+                                          await FirebaseFirestore
+                                              .instance
+                                              .collection(
+                                              'matchList')
+                                              .doc(matchListAll[
+                                          index]
+                                              .MATCH_ID)
+                                              .set(
+                                              {
+                                                'LOCK_FLG': '0',
+                                                'LOCK_USER': '',
+                                              },
+                                              SetOptions(
+                                                  merge: true));
+                                        }
+                                      } else {
+                                        showDialog(
+                                            context: context,
+                                            builder: (BuildContext
+                                            context) =>
+                                            const ShowDialogToDismiss(
+                                              content:
+                                              '現在、他のユーザーが登録中です',
+                                              buttonText: "はい",
+                                            ));
+                                      }
+                                    } else {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext
+                                          context) =>
+                                          const ShowDialogToDismiss(
+                                            content:
+                                            'この対戦は既に他ユーザーが登録済。又は削除されています',
+                                            buttonText: "はい",
+                                          ));
+                                    }
+                                  } catch (e) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (BuildContext
+                                        context) =>
+                                        const ShowDialogToDismiss(
+                                          content: 'エラーが発生しました',
+                                          buttonText: "はい",
+                                        ));
+                                  }
+                                },
+
+                              child:
+                            Card(
                               color: Colors.white,
                               child: Container(
                                 height: 70,
@@ -316,7 +433,7 @@ class _MatchListState extends State<MatchList> {
                                                           .YOUR_USER
                                                           .PROFILE_IMAGE ==
                                                       ''
-                                                  ? CircleAvatar(
+                                                  ? const CircleAvatar(
                                                       backgroundColor:
                                                           Colors.white,
                                                       backgroundImage: NetworkImage(
@@ -357,133 +474,19 @@ class _MatchListState extends State<MatchList> {
                                                     matchListAll[index]
                                                         .YOUR_USER
                                                         .NICK_NAME,
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         fontSize: 20,
                                                         fontWeight:
                                                             FontWeight.bold)),
                                                 Text(
                                                     matchListAll[index]
                                                         .SAKUSEI_TIME,
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         color: Colors.grey),
                                                     overflow:
                                                         TextOverflow.ellipsis)
                                               ],
                                             ),
-                                            onTap: () async {
-                                              try {
-                                                // ドキュメントのロック状態を取得
-                                                final matchSnapshot =
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection('matchList')
-                                                        .doc(matchListAll[index]
-                                                            .MATCH_ID)
-                                                        .get();
-
-                                                String LOCK_FLG = matchSnapshot
-                                                        .data()?['LOCK_FLG'] ??
-                                                    "0";
-                                                String LOCK_USER = matchSnapshot
-                                                        .data()?['LOCK_USER'] ??
-                                                    '';
-
-                                                if (matchSnapshot.exists) {
-                                                  // 自分がロックしている、もしくはロックされていない場合
-                                                  if (LOCK_FLG == '0' ||
-                                                      LOCK_USER ==
-                                                          FirestoreMethod
-                                                              .auth
-                                                              .currentUser!
-                                                              .uid ||
-                                                      LOCK_USER == '') {
-                                                    // 自分のUIDでロック設定
-                                                    await FirebaseFirestore
-                                                        .instance
-                                                        .collection('matchList')
-                                                        .doc(matchListAll[index]
-                                                            .MATCH_ID)
-                                                        .set({
-                                                      'LOCK_FLG': '1',
-                                                      'LOCK_USER':
-                                                          FirestoreMethod.auth
-                                                              .currentUser!.uid,
-                                                    }, SetOptions(merge: true));
-                                                    //対戦結果入力画面へ遷移
-                                                    await Navigator.push(
-                                                        context,
-                                                        MaterialPageRoute(
-                                                            builder: (context) => MatchResult(
-                                                                matchListAll[
-                                                                        index]
-                                                                    .MY_USER,
-                                                                matchListAll[
-                                                                        index]
-                                                                    .YOUR_USER,
-                                                                matchListAll[
-                                                                        index]
-                                                                    .MATCH_ID)));
-                                                    // 画面から戻ってきたときに対象のドキュメントが存在するか確認
-                                                    final matchDoc =
-                                                        await FirebaseFirestore
-                                                            .instance
-                                                            .collection(
-                                                                'matchList')
-                                                            .doc(matchListAll[
-                                                                    index]
-                                                                .MATCH_ID)
-                                                            .get();
-
-                                                    if (matchDoc.exists) {
-                                                      // ドキュメントが存在する場合にのみロックを解除
-                                                      await FirebaseFirestore
-                                                          .instance
-                                                          .collection(
-                                                              'matchList')
-                                                          .doc(matchListAll[
-                                                                  index]
-                                                              .MATCH_ID)
-                                                          .set(
-                                                              {
-                                                            'LOCK_FLG': '0',
-                                                            'LOCK_USER': '',
-                                                          },
-                                                              SetOptions(
-                                                                  merge: true));
-                                                    }
-                                                  } else {
-                                                    showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext
-                                                                context) =>
-                                                            ShowDialogToDismiss(
-                                                              content:
-                                                                  '現在、他のユーザーが登録中です',
-                                                              buttonText: "はい",
-                                                            ));
-                                                  }
-                                                } else {
-                                                  showDialog(
-                                                      context: context,
-                                                      builder: (BuildContext
-                                                              context) =>
-                                                          ShowDialogToDismiss(
-                                                            content:
-                                                                'この対戦は既に他ユーザーが登録済。又は削除されています',
-                                                            buttonText: "はい",
-                                                          ));
-                                                }
-                                              } catch (e) {
-                                                showDialog(
-                                                    context: context,
-                                                    builder: (BuildContext
-                                                            context) =>
-                                                        ShowDialogToDismiss(
-                                                          content: 'エラーが発生しました',
-                                                          buttonText: "はい",
-                                                        ));
-                                              }
-                                            },
                                           ),
                                         ],
                                       ),
@@ -529,7 +532,7 @@ class _MatchListState extends State<MatchList> {
                                   ],
                                 ),
                               ),
-                            ));
+                            )));
                       }
                     }),
               ),

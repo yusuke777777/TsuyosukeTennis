@@ -201,11 +201,11 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
         appBar: AppBar(
             backgroundColor: HeaderConfig.backGroundColor,
             title: HeaderConfig.appBarText,
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
             leading: HeaderConfig.backIcon),
         body: ListView.builder(
             controller: _scrollController,
-            physics: RangeMaintainingScrollPhysics(),
+            physics: const RangeMaintainingScrollPhysics(),
             shrinkWrap: true,
             reverse: false,
             itemCount: friendsListAll.length + 1,
@@ -213,16 +213,14 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
               if (index == friendsListAll.length) {
                 // ページネーションアイテムの場合
                 if (_isLoadingMore) {
-                  print(_isLoadingMore);
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 } else {
-                  print("ss");
-                  return SizedBox();
+                  return const SizedBox();
                 }
               } else {
                 return Slidable(
                     endActionPane: ActionPane(
-                      motion: DrawerMotion(),
+                      motion: const DrawerMotion(),
                       children: [
                         SlidableAction(
                           onPressed: (value) {
@@ -239,118 +237,115 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                         ),
                       ],
                     ),
-                    child: Card(
-                      color: Colors.white,
-                      child: Container(
-                        height: 70,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            Container(
-                                width: deviceWidth * 0.8,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 8.0),
-                                      //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
-                                      child: InkWell(
-                                        child: friendsListAll[index]
-                                                    .YOUR_USER
-                                                    .PROFILE_IMAGE ==
-                                                ''
-                                            ? CircleAvatar(
-                                                backgroundColor: Colors.white,
-                                                backgroundImage: NetworkImage(
-                                                    "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                                radius: 30,
-                                              )
-                                            : CircleAvatar(
-                                                backgroundColor: Colors.white,
-                                                backgroundImage: NetworkImage(
-                                                    friendsListAll[index]
-                                                        .YOUR_USER
-                                                        .PROFILE_IMAGE),
-                                                radius: 30),
-                                        onTap: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ProfileReference(
-                                                          friendsListAll[index]
-                                                              .YOUR_USER
-                                                              .USER_ID)));
-                                        },
+                    child: InkWell(
+                      onTap: () async {
+                        //トーク画面へ
+                        TalkRoomModel room = await FirestoreMethod.getRoom(
+                            friendsListAll[index].RECIPIENT_ID,
+                            friendsListAll[index].SENDER_ID,
+                            friendsListAll[index].YOUR_USER);
+                        await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => TalkRoom(room)));
+                        await NotificationMethod.unreadCountRest(
+                            friendsListAll[index].YOUR_USER.USER_ID);
+                      },
+                      child: Card(
+                        color: Colors.white,
+                        child: Container(
+                          height: 70,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Container(
+                                  width: deviceWidth * 0.8,
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0),
+                                        //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
+                                        child: InkWell(
+                                          child: friendsListAll[index]
+                                                      .YOUR_USER
+                                                      .PROFILE_IMAGE ==
+                                                  ''
+                                              ? const CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: NetworkImage(
+                                                      "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                                  radius: 30,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: NetworkImage(
+                                                      friendsListAll[index]
+                                                          .YOUR_USER
+                                                          .PROFILE_IMAGE),
+                                                  radius: 30),
+                                          onTap: () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        ProfileReference(
+                                                            friendsListAll[
+                                                                    index]
+                                                                .YOUR_USER
+                                                                .USER_ID)));
+                                          },
+                                        ),
                                       ),
-                                    ),
-                                    InkWell(
+                                      InkWell(
                                         child: Container(
                                           alignment: Alignment.centerLeft,
                                           child: Text(
                                               friendsListAll[index]
                                                   .YOUR_USER
                                                   .NICK_NAME,
-                                              style: TextStyle(
+                                              style: const TextStyle(
                                                   fontSize: 18,
                                                   fontWeight: FontWeight.bold)),
                                         ),
-                                        onTap: () async {
-                                          //トーク画面へ
-                                          TalkRoomModel room =
-                                              await FirestoreMethod.getRoom(
-                                                  friendsListAll[index]
-                                                      .RECIPIENT_ID,
-                                                  friendsListAll[index]
-                                                      .SENDER_ID,
-                                                  friendsListAll[index]
-                                                      .YOUR_USER);
-                                          await Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      TalkRoom(room)));
-                                          await NotificationMethod
-                                              .unreadCountRest(
-                                                  friendsListAll[index]
-                                                      .YOUR_USER
-                                                      .USER_ID);
-                                        })
-                                  ],
-                                )),
-                            Container(
-                              width: deviceWidth * 0.1,
-                              alignment: Alignment.centerRight,
-                              child: IconButton(
-                                icon: const Icon(
-                                  Icons.scoreboard,
-                                  color: Colors.black,
-                                  size: 30.0,
+                                      )
+                                    ],
+                                  )),
+                              Container(
+                                width: deviceWidth * 0.1,
+                                alignment: Alignment.centerRight,
+                                child: IconButton(
+                                  icon: const Icon(
+                                    Icons.scoreboard,
+                                    color: Colors.black,
+                                    size: 30.0,
+                                  ),
+                                  onPressed: () async {
+                                    if (appData.entitlementIsActive == true) {
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ScoreRefPage(
+                                                friendsListAll[index]
+                                                    .YOUR_USER
+                                                    .USER_ID)),
+                                      );
+                                    } else {
+                                      await showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              const BillingShowDialogToDismiss(
+                                                content:
+                                                    "友人との対戦成績を確認するためには、有料プランへの加入が必要です。有料プランを確認しますか",
+                                              ));
+                                    }
+                                  },
                                 ),
-                                onPressed: () async {
-                                  if (appData.entitlementIsActive == true) {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => ScoreRefPage(
-                                              friendsListAll[index]
-                                                  .YOUR_USER
-                                                  .USER_ID)),
-                                    );
-                                  } else {
-                                    await showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) =>
-                                            BillingShowDialogToDismiss(
-                                              content:
-                                                  "友人との対戦成績を確認するためには、有料プランへの加入が必要です。有料プランを確認しますか",
-                                            ));
-                                  }
-                                },
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     ));

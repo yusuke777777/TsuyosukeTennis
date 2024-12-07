@@ -8,7 +8,6 @@ import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/singletons_data.dart';
 import '../PropSetCofig.dart';
-import 'HomePage.dart';
 
 class QrScanView extends StatefulWidget {
   const QrScanView({Key? key}) : super(key: key);
@@ -44,7 +43,7 @@ class _QrScanViewState extends State<QrScanView> {
       appBar: AppBar(
           backgroundColor: HeaderConfig.backGroundColor,
           title: HeaderConfig.appBarText,
-          iconTheme: IconThemeData(color: Colors.black),
+          iconTheme: const IconThemeData(color: Colors.black),
           leading: HeaderConfig.backIcon),
       body: _buildQrView(context),
     );
@@ -94,7 +93,7 @@ class _QrScanViewState extends State<QrScanView> {
           String ticketFlg = await FirestoreMethod.makeMatchByQrScan(yourId);
           if (ticketFlg == "0") {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('マッチング完了！')),
+              const SnackBar(content: Text('マッチング完了！')),
             );
             matchdList.add(yourId);
 
@@ -106,7 +105,7 @@ class _QrScanViewState extends State<QrScanView> {
             if (appData.entitlementIsActive == true) {
               await showDialog(
                 context: context,
-                builder: (BuildContext context) => ShowDialogToDismiss(
+                builder: (BuildContext context) => const ShowDialogToDismiss(
                   content: "チケットが不足しています。",
                   buttonText: "はい",
                 ),
@@ -114,7 +113,7 @@ class _QrScanViewState extends State<QrScanView> {
             } else {
               await showDialog(
                 context: context,
-                builder: (BuildContext context) => BillingShowDialogToDismiss(
+                builder: (BuildContext context) => const BillingShowDialogToDismiss(
                   content: "チケットが不足しています。有料プランを確認しますか",
                 ),
               );
@@ -122,7 +121,7 @@ class _QrScanViewState extends State<QrScanView> {
           } else {
             await showDialog(
               context: context,
-              builder: (BuildContext context) => ShowDialogToDismiss(
+              builder: (BuildContext context) => const ShowDialogToDismiss(
                 content: "対戦相手のチケットが不足しています。",
                 buttonText: "はい",
               ),
@@ -131,7 +130,7 @@ class _QrScanViewState extends State<QrScanView> {
         } catch (e) {
           await showDialog(
             context: context,
-            builder: (BuildContext context) => ShowDialogToDismiss(
+            builder: (BuildContext context) => const ShowDialogToDismiss(
               content: "QRコードの読み取りに失敗しました",
               buttonText: "はい",
             ),
@@ -150,7 +149,7 @@ class _QrScanViewState extends State<QrScanView> {
     log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
     if (!p) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('no Permission')),
+        const SnackBar(content: Text('no Permission')),
       );
     }
   }

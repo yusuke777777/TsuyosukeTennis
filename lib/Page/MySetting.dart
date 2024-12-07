@@ -97,7 +97,7 @@ class _MySettingState extends State<MySetting> {
                 },
               ),
               ListTile(
-                title: Text('有料プランへの加入',
+                title: const Text('有料プランへの加入',
                     style: TextStyle(fontSize: 20, color: Colors.black)),
                 onTap: () async {
                   final offerings = await Purchases.getOfferings();
@@ -119,7 +119,7 @@ class _MySettingState extends State<MySetting> {
                 },
               ),
               ListTile(
-                title: Text("レビュー機能（OFF/ON）",
+                title: const Text("レビュー機能（OFF/ON）",
                     style: TextStyle(fontSize: 20, color: Colors.black)),
                 trailing: CupertinoSwitch(
                   value: FirestoreMethod.reviewFeatureEnabled,
@@ -133,7 +133,7 @@ class _MySettingState extends State<MySetting> {
                 ),
               ),
               ListTile(
-                title: Text("マルチ検索機能（OFF/ON）",
+                title: const Text("ID以外での検索（OFF/ON）",
                     style: TextStyle(fontSize: 20, color: Colors.black)),
                 trailing: CupertinoSwitch(
                   value: FirestoreMethod.searchFeatureEnabled,
@@ -148,7 +148,7 @@ class _MySettingState extends State<MySetting> {
               ),
               ListTile(
                 title:
-                    Text('退会', style: TextStyle(fontSize: 20, color: Colors.black)),
+                    const Text('退会', style: TextStyle(fontSize: 20, color: Colors.black)),
                 onTap: () {
                   Navigator.push(
                       context,

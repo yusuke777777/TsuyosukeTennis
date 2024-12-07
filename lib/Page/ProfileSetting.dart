@@ -226,7 +226,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                   children: [
                     Center(
                       child: Column(children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 30,
                         ),
                         InkWell(
@@ -254,7 +254,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               profileImage = await result;
                               setState(() {});
                             }),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Container(
@@ -268,10 +268,10 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(20)),
                                 contentPadding:
-                                EdgeInsets.symmetric(horizontal: 16),
+                                const EdgeInsets.symmetric(horizontal: 16),
                                 fillColor: Colors.white,
                                 filled: true),
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                            style: const TextStyle(fontSize: 20, color: Colors.black),
                             inputFormatters: [
                               LengthLimitingTextInputFormatter(10)
                             ],
@@ -296,10 +296,10 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(20)),
                                 contentPadding:
-                                EdgeInsets.symmetric(horizontal: 16),
+                                const EdgeInsets.symmetric(horizontal: 16),
                                 fillColor: Colors.white,
                                 filled: true),
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                            style: const TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
 
@@ -308,13 +308,13 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 30,
                           ),
                           Container(
                             padding: const EdgeInsets.all(5.0),
                             width: deviceWidth * 0.8,
-                            child: Text(
+                            child: const Text(
                               '●登録ランク',
                               style: TextStyle(
                                   fontSize: 20, color: Colors.black),
@@ -333,7 +333,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                     borderRadius: BorderRadius.circular(20)),
                                 child: Text(
                                   torokuRank,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 20, color: Colors.black),
                                 ),
                               ),
@@ -341,7 +341,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                 width: deviceWidth * 0.1,
                                 child: IconButton(
                                   icon:
-                                  Icon(Icons.arrow_drop_down_circle_rounded),
+                                  const Icon(Icons.arrow_drop_down_circle_rounded),
                                   onPressed: () {
                                     _showModalRankPicker(context);
                                   },
@@ -353,20 +353,20 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     // Column(
                     //   crossAxisAlignment: CrossAxisAlignment.start,
                     //   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 30,
                     ),
                     Container(
                       padding: const EdgeInsets.all(5.0),
                       width: deviceWidth * 0.8,
-                      child: Text(
+                      child: const Text(
                         '●主な活動場所',
                         style: TextStyle(fontSize: 20, color: Colors.black),
                       ),
                     ),
                     ListView.builder(
                         shrinkWrap: true,
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         padding: const EdgeInsets.all(8),
                         // ②配列のデータ数分カード表示を行う
                         itemCount: activityList.length,
@@ -377,7 +377,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               Container(
                                 width: deviceWidth * 0.75,
                                 padding: const EdgeInsets.all(5.0),
-                                child: Text(
+                                child: const Text(
                                   '都道府県',
                                   style: TextStyle(
                                       fontSize: 20, color: Colors.black),
@@ -396,15 +396,15 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                         borderRadius:
                                         BorderRadius.circular(20)),
                                     child: Text(
-                                      '${activityList[index].TODOFUKEN}',
-                                      style: TextStyle(
+                                      activityList[index].TODOFUKEN,
+                                      style: const TextStyle(
                                           fontSize: 20, color: Colors.black),
                                     ),
                                   ),
                                   Container(
                                     width: deviceWidth * 0.1,
                                     child: IconButton(
-                                      icon: Icon(
+                                      icon: const Icon(
                                           Icons.arrow_drop_down_circle_rounded),
                                       onPressed: () {
                                         _showModalLocationPicker(
@@ -420,7 +420,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               Container(
                                 width: deviceWidth * 0.75,
                                 padding: const EdgeInsets.all(5.0),
-                                child: Text(
+                                child: const Text(
                                   '市区町村',
                                   style: TextStyle(
                                       fontSize: 20, color: Colors.black),
@@ -437,12 +437,12 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                       borderRadius:
                                       BorderRadius.circular(20)),
                                   child: TextField(
-                                    decoration: InputDecoration.collapsed(
+                                    decoration: const InputDecoration.collapsed(
                                         border: InputBorder.none,
                                         hintText: ''),
                                     controller:
                                     activityList[index].SHICHOSON,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontSize: 20, color: Colors.black),
                                   ))
                             ],
@@ -452,7 +452,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.add),
+                          icon: const Icon(Icons.add),
                           onPressed: () {
                             //登録Noを更新
                             todofukenTourokuNo = todofukenTourokuNo + 1;
@@ -466,14 +466,14 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      title: Text('都道府県の設定は5つまで可能です'),
+                                      title: const Text('都道府県の設定は5つまで可能です'),
                                       actions: <Widget>[
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                               foregroundColor: Colors.black,
                                               backgroundColor: Colors
                                                   .lightGreenAccent),
-                                          child: Text('OK'),
+                                          child: const Text('OK'),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
@@ -484,7 +484,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             }
                           },
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 40,
                         ),
                       ],
@@ -492,7 +492,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                     Container(
                       padding: const EdgeInsets.all(5.0),
                       width: deviceWidth * 0.8,
-                      child: Text(
+                      child: const Text(
                         '●年齢',
                         style: TextStyle(fontSize: 20, color: Colors.black),
                       ),
@@ -510,13 +510,13 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               borderRadius: BorderRadius.circular(20)),
                           child: Text(
                             age,
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                            style: const TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
                         Container(
                           width: deviceWidth * 0.1,
                           child: IconButton(
-                            icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                            icon: const Icon(Icons.arrow_drop_down_circle_rounded),
                             onPressed: () {
                               _showModalAgePicker(context);
                             },
@@ -524,13 +524,13 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Container(
                       padding: const EdgeInsets.all(5.0),
                       width: deviceWidth * 0.8,
-                      child: Text(
+                      child: const Text(
                         '●性別',
                         style: TextStyle(fontSize: 20, color: Colors.black),
                       ),
@@ -548,13 +548,13 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               borderRadius: BorderRadius.circular(20)),
                           child: Text(
                             gender,
-                            style: TextStyle(fontSize: 20, color: Colors.black),
+                            style: const TextStyle(fontSize: 20, color: Colors.black),
                           ),
                         ),
                         Container(
                           width: deviceWidth * 0.1,
                           child: IconButton(
-                            icon: Icon(Icons.arrow_drop_down_circle_rounded),
+                            icon: const Icon(Icons.arrow_drop_down_circle_rounded),
                             onPressed: () {
                               _showModalGenderPicker(context);
                             },
@@ -562,13 +562,13 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Container(
                       padding: const EdgeInsets.all(5.0),
                       width: deviceWidth * 0.8,
-                      child: Text(
+                      child: const Text(
                         '●コメント',
                         style: TextStyle(fontSize: 20, color: Colors.black),
                       ),
@@ -586,20 +586,20 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               borderRadius: BorderRadius.circular(20)),
                           child: TextField(
                             maxLines: 20,
-                            decoration: InputDecoration.collapsed(
+                            decoration: const InputDecoration.collapsed(
                                 border: InputBorder.none, hintText: ''),
                             controller: coment,
-                            style: TextStyle(fontSize: 14, color: Colors.black),
+                            style: const TextStyle(fontSize: 14, color: Colors.black),
                           ),
                         ),
                       ],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     Container(
                       alignment: Alignment.centerRight,
-                      padding: EdgeInsets.only(right: 40),
+                      padding: const EdgeInsets.only(right: 40),
                       child: TextButton(
                         style: TextButton.styleFrom(
                           backgroundColor: Colors.lightGreenAccent,
@@ -608,7 +608,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             BorderRadius.all(Radius.circular(100)),
                           ),
                         ),
-                        child: Text(
+                        child: const Text(
                           "登録",
                           style: TextStyle(color: Colors.black),
                         ),
@@ -626,9 +626,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
                           //必須入力項目のチェック
                           if (nickName.text.isNotEmpty &&
                               inputUserID.text.isNotEmpty) {
-                            print(nickName.text);
-                            print(inputUserID.text);
-                            print(widget.koushinFlg);
                             bool isDoubleMyUserId = await FirestoreMethod
                                 .checkDoubleMyUserID(inputUserID.text,
                                 isDoubleUser);
@@ -638,14 +635,14 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      title: Text('このユーザーIDは既に使用されています'),
+                                      title: const Text('このユーザーIDは既に使用されています'),
                                       actions: <Widget>[
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
                                               foregroundColor: Colors.black,
                                               backgroundColor: Colors
                                                   .lightGreenAccent),
-                                          child: Text('OK'),
+                                          child: const Text('OK'),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
@@ -660,7 +657,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                   context: context,
                                   builder: (context) {
                                     return AlertDialog(
-                                      title: Text(
+                                      title: const Text(
                                           'ユーザーIDは5文字以上20文字以内です'),
                                       actions: <Widget>[
                                         ElevatedButton(
@@ -668,7 +665,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                               foregroundColor: Colors.black,
                                               backgroundColor: Colors
                                                   .lightGreenAccent),
-                                          child: Text('OK'),
+                                          child: const Text('OK'),
                                           onPressed: () {
                                             Navigator.pop(context);
                                           },
@@ -679,10 +676,8 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             }
                             else {
                               try {
-                                print("ffff");
                                 print(auth.currentUser!.uid);
                                 await FirestoreMethod.makeProfile(myProfile);
-                                print("eeee");
                                 await FirestoreMethod.makeProfileDetail(
                                     myProfile, widget.koushinFlg);
                                 await FirestoreMethod.putReviewFeatureEnabled(
@@ -695,7 +690,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               } catch (e) {
                                 print("XXXXXXここでエラーに対する処理を入れるXXXXXX");
                               }
-                              print("dddd");
                               Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
@@ -708,14 +702,14 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                 context: context,
                                 builder: (context) {
                                   return AlertDialog(
-                                    title: Text('必須項目を入力してください'),
+                                    title: const Text('必須項目を入力してください'),
                                     actions: <Widget>[
                                       ElevatedButton(
                                         style: ElevatedButton.styleFrom(
                                             foregroundColor: Colors.black,
                                             backgroundColor: Colors
                                                 .lightGreenAccent),
-                                        child: Text('OK'),
+                                        child: const Text('OK'),
                                         onPressed: () {
                                           Navigator.pop(context);
                                         },

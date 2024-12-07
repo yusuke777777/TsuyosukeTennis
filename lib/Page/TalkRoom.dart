@@ -1,6 +1,3 @@
-import 'dart:ffi';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,16 +13,11 @@ import '../Common/CtalkRoom.dart';
 import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/GoogleAds.dart';
-import '../FireBase/NotificationMethod.dart';
 import '../FireBase/singletons_data.dart';
 import '../FireBase/userLimitMgmt.dart';
 import '../FireBase/userTicketMgmt.dart';
-import '../PropSetCofig.dart';
-import '../UnderMenuMove.dart';
 import 'MatchResultFeedBack.dart';
 import 'MatchResultSansho.dart';
-import 'TalkList.dart';
-import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 
 class TalkRoom extends StatefulWidget {
   final TalkRoomModel room;
@@ -153,7 +145,7 @@ class _TalkRoomState extends State<TalkRoom> {
       Scaffold(
           backgroundColor: const Color(0xFFF2FFE4),
           appBar: AppBar(
-              backgroundColor: Color(0xFF3CB371),
+              backgroundColor: const Color(0xFF3CB371),
               title: Text(widget.room.user.NICK_NAME),
               leading: IconButton(
                   icon: const Icon(
@@ -172,7 +164,7 @@ class _TalkRoomState extends State<TalkRoom> {
             children: [
               Container(alignment: Alignment.center,
                   height: 40,
-                  child: AdBanner(size: AdSize.banner)),
+                  child: const AdBanner(size: AdSize.banner)),
               Padding(
                 padding: EdgeInsets.only(top: 40, bottom: menuHeight),
                 child: StreamBuilder<List<QueryDocumentSnapshot>>(
@@ -184,7 +176,7 @@ class _TalkRoomState extends State<TalkRoom> {
                         );
                       }
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(
+                        return const Center(
                           child: CircularProgressIndicator(),
                         );
                       }
@@ -199,10 +191,10 @@ class _TalkRoomState extends State<TalkRoom> {
                             itemBuilder: (context, index) {
                               if (index == _messages.length) {
                                 if (_isLoadingMore) {
-                                  return Center(
+                                  return const Center(
                                       child: CircularProgressIndicator());
                                 } else {
-                                  return SizedBox();
+                                  return const SizedBox();
                                 }
                               }
                               Message _messageDetail = Message(
@@ -263,11 +255,11 @@ class _TalkRoomState extends State<TalkRoom> {
                                             .size
                                             .width *
                                             0.6),
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         horizontal: 10.0,
                                         vertical: 6.0),
                                     decoration: BoxDecoration(
-                                        color: Color(0xFFF1FFE4),
+                                        color: const Color(0xFFF1FFE4),
                                         borderRadius:
                                         BorderRadius.circular(20)),
                                   )
@@ -292,12 +284,12 @@ class _TalkRoomState extends State<TalkRoom> {
                                                     .size
                                                     .width *
                                                     0.6),
-                                            padding: EdgeInsets.symmetric(
+                                            padding: const EdgeInsets.symmetric(
                                                 horizontal: 10.0,
                                                 vertical: 6.0),
                                             decoration: BoxDecoration(
                                                 color: _messageDetail.isMe
-                                                    ? Color(0xFF3CB371)
+                                                    ? const Color(0xFF3CB371)
                                                     : Colors.white,
                                                 borderRadius:
                                                 BorderRadius.circular(
@@ -350,7 +342,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                   context: context,
                                                                   builder: (
                                                                       BuildContext context) =>
-                                                                      ShowDialogToDismiss(
+                                                                      const ShowDialogToDismiss(
                                                                         content: "チケットが不足しています。",
                                                                         buttonText: "はい",
                                                                       ));
@@ -359,7 +351,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                   context: context,
                                                                   builder: (
                                                                       BuildContext context) =>
-                                                                      BillingShowDialogToDismiss(
+                                                                      const BillingShowDialogToDismiss(
                                                                           content: "チケットが不足しています。有料プランを確認しますか"
                                                                       ));
                                                             }
@@ -368,7 +360,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                 context: context,
                                                                 builder: (
                                                                     BuildContext context) =>
-                                                                    ShowDialogToDismiss(
+                                                                    const ShowDialogToDismiss(
                                                                       content: "対戦相手のチケットが不足しています。",
                                                                       buttonText: "はい",
                                                                     ));
@@ -399,7 +391,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                         });
                                                       }
                                                     },
-                                                    child: Text(
+                                                    child: const Text(
                                                       "受け入れる",
                                                       style: TextStyle(
                                                           color: Colors
@@ -437,7 +429,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                             showDialog(
                                                                 context: context,
                                                                 builder: (_) =>
-                                                                    AlertDialog(
+                                                                    const AlertDialog(
                                                                       content: Text(
                                                                           "すでに友人登録済みです"),
                                                                     ));
@@ -473,7 +465,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                         });
                                                       }
                                                     },
-                                                    child: Text(
+                                                    child: const Text(
                                                       "受け入れる",
                                                       style: TextStyle(
                                                           color:
@@ -497,7 +489,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                       //受け入れ済なこと伝えるダイアログ出す？
                                                     },
                                                     child:
-                                                    Text(
+                                                    const Text(
                                                       "受け入れ済",
                                                       style:
                                                       TextStyle(
@@ -606,7 +598,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                       }
                                                     },
                                                     child:
-                                                    Text(
+                                                    const Text(
                                                       "確認する",
                                                       style: TextStyle(
                                                           color: Colors.purple),
@@ -691,7 +683,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                       }
                                                     },
                                                     child:
-                                                    Text(
+                                                    const Text(
                                                       "フィードバックする",
                                                       style: TextStyle(
                                                           color: Colors.purple),
@@ -790,7 +782,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                         });
                                                       }
                                                     },
-                                                    child: Text(
+                                                    child: const Text(
                                                       "確認する",
                                                       style: TextStyle(
                                                           color: Colors.purple),
@@ -802,7 +794,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                         Text(
                                           intl.DateFormat('HH:mm')
                                               .format(sendtime),
-                                          style: TextStyle(fontSize: 12),
+                                          style: const TextStyle(fontSize: 12),
                                         )
                                       ],
                                     ),
@@ -811,7 +803,7 @@ class _TalkRoomState extends State<TalkRoom> {
                               );
                             });
                       } else {
-                        return Center(child: CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       }
                     }),
               ),
@@ -832,8 +824,9 @@ class _TalkRoomState extends State<TalkRoom> {
                             color: Colors.black,
                             child: IconButton(
                               color: Colors.white,
-                              icon: Icon(Icons.add),
-                              onPressed: ()  {
+                              icon: const Icon(Icons.add),
+                              onPressed: () {
+                                //試合申請・友達申請・チーム招待(追々)
                                 addControl();
                               },
                             ),
@@ -865,7 +858,7 @@ class _TalkRoomState extends State<TalkRoom> {
                             color: Colors.black,
                             child: IconButton(
                               color: Colors.white,
-                              icon: Icon(Icons.send),
+                              icon: const Icon(Icons.send),
                               onPressed: () async {
                                 await handleSendMessage();
                               },
@@ -903,14 +896,14 @@ class _TalkRoomState extends State<TalkRoom> {
           await showDialog(
               context: context,
               builder: (BuildContext context) =>
-                  ShowDialogToDismiss(
+                  const ShowDialogToDismiss(
                     content: "1日の上限メッセージ数を超えました。", buttonText: 'はい',
                   ));
         } else {
           await showDialog(
               context: context,
               builder: (BuildContext context) =>
-                  BillingShowDialogToDismiss(
+                  const BillingShowDialogToDismiss(
                     content: "1日の上限メッセージ数を超えました。上限数を上げたい場合、有料プランへの加入が必要です。有料プランを確認しますか ",
                   ));
         }
@@ -921,12 +914,12 @@ class _TalkRoomState extends State<TalkRoom> {
   void addControl() {
     if (addFlg == "0") {
       setState(() {
-        menuHeight = menuHeight + 50.0;
+        menuHeight = menuHeight + addHeight;
         addFlg = "1";
       });
     } else {
       setState(() {
-        menuHeight = menuHeight - 50.0;
+        menuHeight = menuHeight - addHeight;
         addFlg = "0";
       });
     }
@@ -940,7 +933,7 @@ class _TalkRoomState extends State<TalkRoom> {
             height: addHeight,
             color: Colors.black,
             child: TextButton(
-                child: Column(
+                child: const Column(
                   children: [
                     Icon(
                       Icons.wifi_protected_setup_sharp,
@@ -970,7 +963,7 @@ class _TalkRoomState extends State<TalkRoom> {
                       await showDialog(
                           context: context,
                           builder: (BuildContext context) =>
-                              ShowDialogToDismiss(
+                              const ShowDialogToDismiss(
                                 content: "チケットが不足してるため、対戦申し込みができません",
                                 buttonText: "はい",
                               ));
@@ -978,7 +971,7 @@ class _TalkRoomState extends State<TalkRoom> {
                       await showDialog(
                           context: context,
                           builder: (BuildContext context) =>
-                              BillingShowDialogToDismiss(
+                              const BillingShowDialogToDismiss(
                                   content: "チケットが不足してるため、対戦申し込みができません。有料プランを確認しますか"
                               ));
                     }
@@ -989,7 +982,7 @@ class _TalkRoomState extends State<TalkRoom> {
             height: addHeight,
             color: Colors.black,
             child: TextButton(
-                child: Column(
+                child: const Column(
                   children: [
                     Icon(
                       Icons.people_rounded,
@@ -1015,7 +1008,7 @@ class _TalkRoomState extends State<TalkRoom> {
                     showDialog(
                         context: context,
                         builder: (_) =>
-                            AlertDialog(
+                            const AlertDialog(
                               content: Text(
                                   "すでに友人登録済みです"),
                             ));
@@ -1025,7 +1018,7 @@ class _TalkRoomState extends State<TalkRoom> {
                   }
                 }),
           ),
-          SizedBox(
+          const SizedBox(
             width: 20,
           ),
         ]),

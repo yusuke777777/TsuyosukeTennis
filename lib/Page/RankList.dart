@@ -7,7 +7,7 @@ import 'manSinglesRankList.dart';
 
 class RankList extends StatelessWidget {
   final _tab = <Tab>[
-    Tab(
+    const Tab(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -16,7 +16,7 @@ class RankList extends StatelessWidget {
         ],
       ),
     ),
-    Tab(
+    const Tab(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -25,7 +25,7 @@ class RankList extends StatelessWidget {
         ],
       ),
     ),
-    Tab(
+    const Tab(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -54,13 +54,13 @@ class RankList extends StatelessWidget {
         canPop: false,
         child: Scaffold(
           appBar: PreferredSize(
-              preferredSize: Size.fromHeight(80.0),
+              preferredSize: const Size.fromHeight(80.0),
               child: PreferredSize(
-                preferredSize: Size.fromHeight(40.0),
+                preferredSize: const Size.fromHeight(40.0),
                 child: AppBar(
                   backgroundColor: HeaderConfig.backGroundColor,
                   title: HeaderConfig.appBarText,
-                  iconTheme: IconThemeData(color: Colors.black),
+                  iconTheme: const IconThemeData(color: Colors.black),
                   bottom: TabBar(
                     tabs: _tab,
                     labelColor: Colors.black,
@@ -73,7 +73,7 @@ class RankList extends StatelessWidget {
             children: [
               Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
               Padding(
-                padding: EdgeInsets.only(top: 40),
+                padding: const EdgeInsets.only(top: 40),
                 child: TabBarView(
                   children: <Widget>[
                     manSinglesRankList("ShokyuRank"),

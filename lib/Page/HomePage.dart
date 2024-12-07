@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                   Container(
                       height: 230,
                       width: deviceWidth,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         image: DecorationImage(
                           image: AssetImage('images/kori.jpg'),
                           fit: BoxFit.cover,
@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                         Row(
                           children: [
                             Container(
-                              padding: EdgeInsets.only(left: 40, top: 20),
+                              padding: const EdgeInsets.only(left: 40, top: 20),
                               alignment: Alignment.bottomCenter,
                               width: deviceWidth * 0.55,
                               child: Column(
@@ -119,7 +119,7 @@ class _HomePageState extends State<HomePage> {
                                       // 子ウィジェットを親ウィジェットにフィットさせる
                                       child: Text(
                                         profileDetailList.NICK_NAME,
-                                        style: TextStyle(fontSize: 40),
+                                        style: const TextStyle(fontSize: 40),
                                       ),
                                     ),
                                   ),
@@ -132,7 +132,7 @@ class _HomePageState extends State<HomePage> {
                                         "   ID: " +
                                             profileDetailList.MY_USER_ID
                                                 .toString(),
-                                        style: TextStyle(fontSize: 15),
+                                        style: const TextStyle(fontSize: 15),
                                       ),
                                     ),
                                   ),
@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                                             Container(
                                               width: deviceWidth * 0.1,
                                               alignment: Alignment.bottomLeft,
-                                              child: Text(
+                                              child: const Text(
                                                 "NO ",
                                                 style: TextStyle(fontSize: 18),
                                               ),
@@ -152,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                                             Container(
                                               width: deviceWidth * 0.32,
                                               alignment: Alignment.bottomLeft,
-                                              child: Text(
+                                              child: const Text(
                                                 "TSP RANKING",
                                                 style: TextStyle(fontSize: 18),
                                               ),
@@ -178,7 +178,7 @@ class _HomePageState extends State<HomePage> {
                                                                   profileDetailList
                                                                       .RANK_NO)
                                                               .toString(),
-                                                          style: TextStyle(
+                                                          style: const TextStyle(
                                                               fontSize: 40),
                                                         ),
                                                       ),
@@ -187,7 +187,7 @@ class _HomePageState extends State<HomePage> {
                                                       width: deviceWidth * 0.32,
                                                       alignment:
                                                           Alignment.bottomLeft,
-                                                      child: FittedBox(
+                                                      child: const FittedBox(
                                                         alignment: Alignment
                                                             .bottomLeft,
                                                         fit: BoxFit.scaleDown,
@@ -216,7 +216,7 @@ class _HomePageState extends State<HomePage> {
                                                                       .TS_POINT)
                                                               .toString() +
                                                           " p)",
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                           fontSize: 15),
                                                     ),
                                                   ),
@@ -239,7 +239,7 @@ class _HomePageState extends State<HomePage> {
                                                               profileDetailList
                                                                   .RANK_NO)
                                                           .toString(),
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                           fontSize: 40),
                                                     ),
                                                   ),
@@ -248,7 +248,7 @@ class _HomePageState extends State<HomePage> {
                                                   width: deviceWidth * 0.25,
                                                   alignment:
                                                       Alignment.bottomLeft,
-                                                  child: FittedBox(
+                                                  child: const FittedBox(
                                                     alignment:
                                                         Alignment.bottomLeft,
                                                     fit: BoxFit.scaleDown,
@@ -267,7 +267,7 @@ class _HomePageState extends State<HomePage> {
                             Container(
                               width: deviceWidth * 0.4,
                               child: profileDetailList.PROFILE_IMAGE == ''
-                                  ? CircleAvatar(
+                                  ? const CircleAvatar(
                                       backgroundColor: Colors.white,
                                       backgroundImage: NetworkImage(
                                           "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
@@ -284,26 +284,38 @@ class _HomePageState extends State<HomePage> {
                         ),
                         Container(
                             alignment: Alignment.bottomRight,
-                            padding: EdgeInsets.only(right: 23),
+                            padding: const EdgeInsets.only(right: 23),
                             child: Text(
                               'Category:' + profileDetailList.TOROKU_RANK,
-                              style: TextStyle(fontSize: 25),
+                              style: const TextStyle(fontSize: 25),
                             )),
                       ])),
-                  Column(
-                    children: [
-                      FittedBox(
-                        fit: BoxFit.scaleDown,
-                        child: Row(
-                          children: [
-                            Container(
-                                child: Text(
-                              profileDetailList.TITLE == ''
-                                  ? '称号設定なし'
-                                  : profileDetailList.TITLE,
-                              style: TextStyle(fontSize: 20),
-                            )),
-                            IconButton(
+                  //称号と称号ボタンのコンテナ
+                  Container(
+                    alignment: Alignment.bottomLeft,
+                    width: deviceWidth * 0.8,
+                    child: FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child:
+                          //Column(
+                          //children: [
+                          Row(
+                        children: [
+                          Container(
+                              //fit: BoxFit.scaleDown,
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                profileDetailList.TITLE == ''
+                                    ? '称号設定なし'
+                                    : profileDetailList.TITLE,
+                                style: const TextStyle(fontSize: 20),
+                              )),
+                          Container(
+                            //fit: BoxFit.scaleDown,
+                            alignment: Alignment.bottomLeft,
+                            //width: deviceWidth * 0.8,
+                            child: IconButton(
+                              alignment: Alignment.bottomRight,
                               icon: const Icon(
                                 Icons.read_more,
                                 color: Colors.black,
@@ -318,51 +330,50 @@ class _HomePageState extends State<HomePage> {
                                     ));
                               },
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      Container(
-                          alignment: Alignment.bottomLeft,
-                          width: deviceWidth * 0.8,
-                          child: Column(
+                    ),
+                  ),
+                  Container(
+                      alignment: Alignment.bottomLeft,
+                      width: deviceWidth * 0.8,
+                      child: Column(
+                        children: [
+                          Row(
                             children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    alignment: Alignment.bottomLeft,
-                                    child: Text(
-                                      "年齢：" + profileDetailList.AGE,
-                                      style: TextStyle(fontSize: 15),
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Container(
-                                    alignment: Alignment.bottomRight,
-                                    child: Text(
-                                      "性別：" + profileDetailList.GENDER,
-                                      style: TextStyle(fontSize: 15),
-                                    ),
-                                  ),
-                                ],
-                              ),
                               Container(
                                 alignment: Alignment.bottomLeft,
                                 child: Text(
-                                  '活動場所：' +
-                                      profileDetailList
-                                          .FIRST_TODOFUKEN_SICHOSON,
-                                  style: TextStyle(fontSize: 15),
-                                  overflow: TextOverflow.ellipsis,
-                                  // テキストが指定領域を超えた場合の挙動を設定
-                                  maxLines: 2, // 表示する行数を指定
+                                  "年齢：" + profileDetailList.AGE,
+                                  style: const TextStyle(fontSize: 15),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Container(
+                                alignment: Alignment.bottomRight,
+                                child: Text(
+                                  "性別：" + profileDetailList.GENDER,
+                                  style: const TextStyle(fontSize: 15),
                                 ),
                               ),
                             ],
-                          )),
-                    ],
-                  ),
+                          ),
+                          Container(
+                            alignment: Alignment.bottomLeft,
+                            child: Text(
+                              '活動場所：' +
+                                  profileDetailList.FIRST_TODOFUKEN_SICHOSON,
+                              style: const TextStyle(fontSize: 15),
+                              overflow: TextOverflow.ellipsis,
+                              // テキストが指定領域を超えた場合の挙動を設定
+                              maxLines: 2, // 表示する行数を指定
+                            ),
+                          ),
+                        ],
+                      )),
                   Container(
                     height: 180,
                     width: deviceWidth * 0.8,
@@ -370,7 +381,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Container(
                           alignment: Alignment.bottomLeft,
-                          child: Text(
+                          child: const Text(
                             '勝率',
                             style: TextStyle(fontSize: 30),
                           ),
@@ -387,8 +398,8 @@ class _HomePageState extends State<HomePage> {
                                 children: [
                                   Container(
                                     width: deviceWidth * 0.25,
-                                    padding: EdgeInsets.only(left: 20),
-                                    child: Text('初級'),
+                                    padding: const EdgeInsets.only(left: 20),
+                                    child: const Text('初級'),
                                   ),
                                   SizedBox(
                                     width: deviceWidth * 0.25,
@@ -409,12 +420,12 @@ class _HomePageState extends State<HomePage> {
                                                     profileDetailList
                                                         .SHOKYU_WIN_RATE
                                                         .toString(),
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
-                                                  Text(
+                                                  const Text(
                                                     '%',
                                                     style: TextStyle(
                                                       fontSize: 12,
@@ -438,7 +449,7 @@ class _HomePageState extends State<HomePage> {
                                                                 .SHOKYU_LOSE_SU)
                                                             .toString() +
                                                         '敗',
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 12,
                                                     ),
                                                   ),
@@ -473,9 +484,9 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Container(
-                                    padding: EdgeInsets.only(left: 20),
+                                    padding: const EdgeInsets.only(left: 20),
                                     width: deviceWidth * 0.25,
-                                    child: Text('中級'),
+                                    child: const Text('中級'),
                                   ),
                                   SizedBox(
                                     width: deviceWidth * 0.25,
@@ -496,12 +507,12 @@ class _HomePageState extends State<HomePage> {
                                                     profileDetailList
                                                         .CHUKYU_WIN_RATE
                                                         .toString(),
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
-                                                  Text(
+                                                  const Text(
                                                     '%',
                                                     style: TextStyle(
                                                       fontSize: 12,
@@ -525,7 +536,7 @@ class _HomePageState extends State<HomePage> {
                                                                 .CHUKYU_LOSE_SU)
                                                             .toString() +
                                                         '敗',
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 12,
                                                     ),
                                                   ),
@@ -560,9 +571,9 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Container(
-                                    padding: EdgeInsets.only(left: 20),
+                                    padding: const EdgeInsets.only(left: 20),
                                     width: deviceWidth * 0.25,
-                                    child: Text('上級'),
+                                    child: const Text('上級'),
                                   ),
                                   SizedBox(
                                     width: deviceWidth * 0.25,
@@ -583,12 +594,12 @@ class _HomePageState extends State<HomePage> {
                                                     profileDetailList
                                                         .JYOKYU_WIN_RATE
                                                         .toString(),
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                         fontSize: 16,
                                                         fontWeight:
                                                             FontWeight.bold),
                                                   ),
-                                                  Text(
+                                                  const Text(
                                                     '%',
                                                     style: TextStyle(
                                                       fontSize: 12,
@@ -612,7 +623,7 @@ class _HomePageState extends State<HomePage> {
                                                                 .JYOKYU_LOSE_SU)
                                                             .toString() +
                                                         '敗',
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 12,
                                                     ),
                                                   ),
@@ -657,7 +668,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Container(
                                 alignment: Alignment.bottomLeft,
-                                child: Text(
+                                child: const Text(
                                   'ストローク',
                                   style: TextStyle(fontSize: 25),
                                 ),
@@ -671,14 +682,14 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Container(
                                           width: 60,
-                                          child: Text('フォア',
+                                          child: const Text('フォア',
                                               style: TextStyle(fontSize: 17))),
-                                      SizedBox(width: 20),
+                                      const SizedBox(width: 20),
                                       Text(
                                           profileDetailList.STROKE_FOREHAND_AVE
                                                   .toString() +
                                               ' ',
-                                          style: TextStyle(fontSize: 12)),
+                                          style: const TextStyle(fontSize: 12)),
                                       RatingBar.builder(
                                         ignoreGestures: true,
                                         allowHalfRating: true,
@@ -702,14 +713,14 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Container(
                                           width: 60,
-                                          child: Text('バック',
+                                          child: const Text('バック',
                                               style: TextStyle(fontSize: 17))),
-                                      SizedBox(width: 20),
+                                      const SizedBox(width: 20),
                                       Text(
                                           profileDetailList.STROKE_BACKHAND_AVE
                                                   .toString() +
                                               ' ',
-                                          style: TextStyle(fontSize: 12)),
+                                          style: const TextStyle(fontSize: 12)),
                                       RatingBar.builder(
                                         ignoreGestures: true,
                                         allowHalfRating: true,
@@ -730,7 +741,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               Container(
                                 alignment: Alignment.bottomLeft,
-                                child: Text(
+                                child: const Text(
                                   'ボレー',
                                   style: TextStyle(fontSize: 25),
                                 ),
@@ -744,14 +755,14 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Container(
                                           width: 60,
-                                          child: Text('フォア',
+                                          child: const Text('フォア',
                                               style: TextStyle(fontSize: 17))),
-                                      SizedBox(width: 20),
+                                      const SizedBox(width: 20),
                                       Text(
                                           profileDetailList.VOLLEY_FOREHAND_AVE
                                                   .toString() +
                                               ' ',
-                                          style: TextStyle(fontSize: 12)),
+                                          style: const TextStyle(fontSize: 12)),
                                       RatingBar.builder(
                                         ignoreGestures: true,
                                         allowHalfRating: true,
@@ -775,14 +786,14 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Container(
                                           width: 60,
-                                          child: Text('バック',
+                                          child: const Text('バック',
                                               style: TextStyle(fontSize: 17))),
-                                      SizedBox(width: 20),
+                                      const SizedBox(width: 20),
                                       Text(
                                           profileDetailList.VOLLEY_BACKHAND_AVE
                                                   .toString() +
                                               ' ',
-                                          style: TextStyle(fontSize: 12)),
+                                          style: const TextStyle(fontSize: 12)),
                                       RatingBar.builder(
                                         ignoreGestures: true,
                                         allowHalfRating: true,
@@ -803,7 +814,7 @@ class _HomePageState extends State<HomePage> {
                               ),
                               Container(
                                 alignment: Alignment.bottomLeft,
-                                child: Text(
+                                child: const Text(
                                   'サーブ',
                                   style: TextStyle(
                                     fontSize: 25,
@@ -819,14 +830,14 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Container(
                                           width: 60,
-                                          child: Text('１st',
+                                          child: const Text('１st',
                                               style: TextStyle(fontSize: 17))),
-                                      SizedBox(width: 20),
+                                      const SizedBox(width: 20),
                                       Text(
                                           profileDetailList.SERVE_1ST_AVE
                                                   .toString() +
                                               ' ',
-                                          style: TextStyle(fontSize: 12)),
+                                          style: const TextStyle(fontSize: 12)),
                                       RatingBar.builder(
                                         ignoreGestures: true,
                                         allowHalfRating: true,
@@ -850,14 +861,14 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Container(
                                           width: 60,
-                                          child: Text('２nd',
+                                          child: const Text('２nd',
                                               style: TextStyle(fontSize: 17))),
-                                      SizedBox(width: 20),
+                                      const SizedBox(width: 20),
                                       Text(
                                           profileDetailList.SERVE_2ND_AVE
                                                   .toString() +
                                               ' ',
-                                          style: TextStyle(fontSize: 12)),
+                                          style: const TextStyle(fontSize: 12)),
                                       RatingBar.builder(
                                         ignoreGestures: true,
                                         allowHalfRating: true,
@@ -888,7 +899,7 @@ class _HomePageState extends State<HomePage> {
                             children: [
                               Container(
                                 width: deviceWidth * 0.8,
-                                child: FittedBox(
+                                child: const FittedBox(
                                   alignment: Alignment.bottomLeft,
                                   fit: BoxFit.scaleDown,
                                   child: Text('-----------------------------',
@@ -905,7 +916,7 @@ class _HomePageState extends State<HomePage> {
                                     width: deviceWidth * 0.5,
                                     alignment: Alignment.center,
                                     child: TextButton(
-                                        child: FittedBox(
+                                        child: const FittedBox(
                                           alignment: Alignment.bottomLeft,
                                           fit: BoxFit.scaleDown,
                                           child: Text(
@@ -920,7 +931,7 @@ class _HomePageState extends State<HomePage> {
                                               context,
                                               MaterialPageRoute(
                                                 builder: (context) =>
-                                                    CheckFeedBack(),
+                                                    const CheckFeedBack(),
                                               ));
                                         }),
                                   ),
@@ -937,7 +948,7 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         Container(
                           alignment: Alignment.bottomCenter,
-                          child: FittedBox(
+                          child: const FittedBox(
                             alignment: Alignment.bottomLeft,
                             fit: BoxFit.scaleDown,
                             child: Text(
@@ -957,12 +968,12 @@ class _HomePageState extends State<HomePage> {
                           size: 90.0,
                         ),
                         IconButton(
-                          icon: Icon(Icons.camera_alt),
+                          icon: const Icon(Icons.camera_alt),
                           onPressed: () {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => QrScanView(),
+                                  builder: (context) => const QrScanView(),
                                 ));
                           },
                         ),
@@ -971,7 +982,7 @@ class _HomePageState extends State<HomePage> {
                   )
                 ])));
               } else {
-                return Text("データが存在しません");
+                return const Text("データが存在しません");
               }
             }),
       ),

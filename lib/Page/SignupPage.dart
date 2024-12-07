@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
-import 'package:purchases_flutter/purchases_flutter.dart';
-import 'package:tsuyosuke_tennis_ap/FireBase/SigninModel.dart';
 import 'package:tsuyosuke_tennis_ap/Page/ReLoginMessagePage.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:provider/provider.dart';
@@ -10,8 +8,6 @@ import '../FireBase/FireBase.dart';
 import '../FireBase/SignupModel.dart';
 import '../FireBase/TextDaialog.dart';
 import '../FireBase/WillPopScope.dart';
-import 'HomePage.dart';
-import 'ProfileSetting.dart';
 import 'SigninPage.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -64,7 +60,7 @@ class _SignUpPageState extends State<SignUpPage> {
           child: Scaffold(
             resizeToAvoidBottomInset: false,
             appBar: PreferredSize(
-              preferredSize: Size.fromHeight(40.0),
+              preferredSize: const Size.fromHeight(40.0),
               child: AppBar(
                 backgroundColor: Colors.green,
               ),
@@ -88,7 +84,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(padding: EdgeInsets.all(50)),
+                        const Padding(padding: EdgeInsets.all(50)),
                         Column(
                           children: [
                             Center(
@@ -102,7 +98,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                         model.changeMail(text);
                                       },
                                       maxLines: 1,
-                                      style: TextStyle(fontSize: 16),
+                                      style: const TextStyle(fontSize: 16),
                                       decoration: InputDecoration(
                                         fillColor: Colors.white,
                                         filled: true,
@@ -110,10 +106,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                             ? null
                                             : model.errorMail,
                                         labelText: 'メールアドレス',
-                                        border: OutlineInputBorder(),
+                                        border: const OutlineInputBorder(),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 8,
                                     ),
                                     TextFormField(
@@ -123,7 +119,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                       },
                                       obscureText: true,
                                       maxLines: 1,
-                                      style: TextStyle(fontSize: 16),
+                                      style: const TextStyle(fontSize: 16),
                                       decoration: InputDecoration(
                                         fillColor: Colors.white,
                                         filled: true,
@@ -131,10 +127,10 @@ class _SignUpPageState extends State<SignUpPage> {
                                             ? null
                                             : model.errorPassword,
                                         labelText: 'パスワード',
-                                        border: OutlineInputBorder(),
+                                        border: const OutlineInputBorder(),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       height: 8,
                                     ),
                                     TextFormField(
@@ -144,7 +140,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                       },
                                       obscureText: true,
                                       maxLines: 1,
-                                      style: TextStyle(fontSize: 16),
+                                      style: const TextStyle(fontSize: 16),
                                       decoration: InputDecoration(
                                         fillColor: Colors.white,
                                         filled: true,
@@ -152,7 +148,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                         errorText: model.errorConfirm == ''
                                             ? null
                                             : model.errorConfirm,
-                                        border: OutlineInputBorder(),
+                                        border: const OutlineInputBorder(),
                                       ),
                                     ),
                                     Column(
@@ -176,13 +172,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                                 value: model.agreeGuideline,
                                               ),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               width: 8,
                                             ),
                                             Flexible(
                                               child: RichText(
                                                 text: TextSpan(
-                                                  style: TextStyle(
+                                                  style: const TextStyle(
                                                     color: Colors.grey,
                                                     fontSize: 12.0,
                                                     fontWeight: FontWeight.bold,
@@ -190,7 +186,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                                   children: [
                                                     TextSpan(
                                                       text: '利用規約',
-                                                      style: TextStyle(
+                                                      style: const TextStyle(
                                                         color:
                                                             Color(0xFF4CAF50),
                                                         decoration:
@@ -205,7 +201,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                                               _SignUprulesURL();
                                                             },
                                                     ),
-                                                    TextSpan(
+                                                    const TextSpan(
                                                         text: ' を読んで同意しました。',
                                                         style: TextStyle(
                                                             color:
@@ -224,7 +220,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                                     BorderRadius.circular(
                                                         5), //角の丸み
                                               ),
-                                              label: Text('新規登録'),
+                                              label: const Text('新規登録'),
                                               backgroundColor:
                                                   const Color(0xFF4CAF50),
                                               onPressed: model.agreeGuideline
@@ -251,7 +247,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                                   : null,
                                             ),
                                             TextButton(
-                                              child: Text(
+                                              child: const Text(
                                                 'ログイン画面に戻る',
                                                 style: TextStyle(
                                                     color: Colors.white),

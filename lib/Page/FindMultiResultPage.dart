@@ -189,7 +189,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
           if (blockList.contains(doc.data()['USER_ID'])) {
             print("ブロックリストに含まれています");
           } else {
-            double COMENT_HEIGHT = await _calculateTextHeight(doc.data()['COMENT'], TextStyle(fontSize: 12));
+            double COMENT_HEIGHT = await _calculateTextHeight(doc.data()['COMENT'], const TextStyle(fontSize: 12));
             CFindMultiResultPage FindMultiResult = CFindMultiResultPage(
                 USER_ID: doc.data()['USER_ID'],
                 NICK_NAME: doc.data()['NICK_NAME'],
@@ -249,16 +249,16 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
         appBar: AppBar(
             backgroundColor: HeaderConfig.backGroundColor,
             title: HeaderConfig.appBarText,
-            iconTheme: IconThemeData(color: Colors.black),
+            iconTheme: const IconThemeData(color: Colors.black),
             leading: HeaderConfig.backIcon),
         body: Stack(
           children: [
             Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
             Padding(
-              padding: EdgeInsets.only(top: 40),
+              padding: const EdgeInsets.only(top: 40),
               child: searchResultListAll.length == 0 ? new Text("対象ユーザーは存在しません") : ListView.builder(
                   controller: _scrollController,
-                  physics: RangeMaintainingScrollPhysics(),
+                  physics: const RangeMaintainingScrollPhysics(),
                   shrinkWrap: true,
                   reverse: false,
                   itemCount: searchResultListAll.length + 1,
@@ -267,10 +267,10 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                       // ページネーションアイテムの場合
                       if (_isLoadingMore) {
                         print(_isLoadingMore);
-                        return Center(child: CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       } else {
                         print("aaa");
-                        return SizedBox();
+                        return const SizedBox();
                       }
                     } else {
                       return InkWell(
@@ -286,7 +286,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                                     ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                           foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
-                                      child: Text('はい'),
+                                      child: const Text('はい'),
                                       onPressed: () async{
                                         //トーク画面へ遷移
                                         TalkRoomModel room = await FirestoreMethod.makeRoom(
@@ -305,7 +305,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                                     ElevatedButton(
                                       style: ElevatedButton.styleFrom(
                                           foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
-                                      child: Text('いいえ'),
+                                      child: const Text('いいえ'),
                                       onPressed: () {
                                         Navigator.pop(context);
                                       },
@@ -328,7 +328,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                                   child: InkWell(
                                     child:
                                         searchResultListAll[index].PROFILE_IMAGE == ''
-                                            ? CircleAvatar(
+                                            ? const CircleAvatar(
                                                 backgroundColor: Colors.white,
                                                 backgroundImage: NetworkImage(
                                                     "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
@@ -362,7 +362,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                                           softWrap: true,
                                           overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
                                           maxLines: 1,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontSize: 20, fontWeight: FontWeight.bold)),
                                     ),
                                     Container(
@@ -372,7 +372,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                                           softWrap: true,
                                           overflow: TextOverflow.ellipsis, // テキストが指定領域を超えた場合の挙動を設定CO
                                           maxLines: (searchResultListAll[index].COMENT_HEIGHT/12).floor() > 5 ? 5 :(searchResultListAll[index].COMENT_HEIGHT/12).floor()  ,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontSize: 12)),
                                     ),
                                   ],

@@ -37,6 +37,7 @@ class CprofileDetail {
   late String RANK_TOROKU_RANK;
   late String TITLE;
   late bool? REVIEW_ENABLED;
+  late bool? SEARCH_ENABLE;
 
   CprofileDetail(
       {required this.USER_ID,
@@ -74,5 +75,6 @@ class CprofileDetail {
       required this.RANK_NO,
       required this.RANK_TOROKU_RANK,
       required this.TITLE,
+        this.SEARCH_ENABLE,
       this.REVIEW_ENABLED});
 }
