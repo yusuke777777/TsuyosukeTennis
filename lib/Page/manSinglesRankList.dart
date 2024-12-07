@@ -42,11 +42,13 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
       for (final doc in querySnapshot.docs) {
         final userId = doc.data()['USER_ID'];
         final yourProfile = await FirestoreMethod.getYourProfile(userId);
+        final yourProfileDetail = await FirestoreMethod.getYourDetailProfile(userId);
 
         final rankListWork = RankModel(
           rankNo: doc.data()['RANK_NO'],
           user: yourProfile,
           tpPoint: doc.data()['TS_POINT'],
+          searchEnableFlg: yourProfileDetail.SEARCH_ENABLE ?? true
         );
 
         rankList.add(rankListWork);
@@ -114,11 +116,14 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
       for (final doc in querySnapshot.docs) {
         final userId = doc.data()['USER_ID'];
         final yourProfile = await FirestoreMethod.getYourProfile(userId);
+        final yourProfileDetail = await FirestoreMethod.getYourDetailProfile(userId);
+        print("ぎゃあああ" + yourProfileDetail.SEARCH_ENABLE.toString());
 
         final rankListWork = RankModel(
           rankNo: doc.data()['RANK_NO'],
           user: yourProfile,
           tpPoint: doc.data()['TS_POINT'],
+          searchEnableFlg: yourProfileDetail.SEARCH_ENABLE ?? true,
         );
 
         rankList.add(rankListWork);
@@ -262,14 +267,16 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                           ),
                                   ),
                                   onTap: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                ProfileReference(
-                                                    RankModelList[index]
-                                                        .user
-                                                        .USER_ID)));
+                                    if(RankModelList[index].searchEnableFlg){
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  ProfileReference(
+                                                      RankModelList[index]
+                                                          .user
+                                                          .USER_ID)));
+                                    }
                                   },
                                 ),
                                 InkWell(
@@ -288,7 +295,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                   ),
                                   onTap: () {
                                     if (RankModelList[index].user.USER_ID !=
-                                        auth.currentUser!.uid) {
+                                        auth.currentUser!.uid && RankModelList[index].searchEnableFlg) {
                                       showDialog(
                                           context: context,
                                           builder: (context) {

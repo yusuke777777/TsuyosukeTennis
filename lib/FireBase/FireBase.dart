@@ -639,6 +639,7 @@ class FirestoreMethod {
         RANK_TOROKU_RANK: snapShot.data()!['RANK_TOROKU_RANK'],
         TITLE: returnTitle,
         REVIEW_ENABLED: snapShot.data()?['REVIEW_ENABLED'] ?? true,
+        SEARCH_ENABLE: snapShot.data()?['SEARCH_ENABLED'] ?? true,
       );
     } catch (e) {
       throw (e);

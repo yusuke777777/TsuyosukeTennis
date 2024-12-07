@@ -133,7 +133,7 @@ class _MySettingState extends State<MySetting> {
                 ),
               ),
               ListTile(
-                title: const Text("マルチ検索機能（OFF/ON）",
+                title: const Text("ID以外での検索（OFF/ON）",
                     style: TextStyle(fontSize: 20, color: Colors.black)),
                 trailing: CupertinoSwitch(
                   value: FirestoreMethod.searchFeatureEnabled,
