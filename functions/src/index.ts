@@ -29,7 +29,7 @@ exports.updateMetaFunction = functions
 
 exports.tspRevocationFunction = functions
     .region("asia-northeast1")
-    .pubsub.schedule("0 0 2 * *")
+    .pubsub.schedule("0 0 1 * *")
     .timeZone("Asia/Tokyo")
     .onRun(async () => {
       console.log("失効TSPポイント再計算");

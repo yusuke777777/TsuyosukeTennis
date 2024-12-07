@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -37,7 +38,6 @@ class TalkRoom extends StatefulWidget {
 
 
 class _TalkRoomState extends State<TalkRoom> {
-  TextEditingController controller = TextEditingController();
   late ScrollController _scrollController;
   late Stream<List<QueryDocumentSnapshot>> _messagesStream;
   List<QueryDocumentSnapshot> _messages = [];
@@ -47,11 +47,23 @@ class _TalkRoomState extends State<TalkRoom> {
 
   //プラスボタンを押した時に試合申請ボタン・友人申請ボタンを表示する
   String addFlg = "0";
-  double menuHeight = 70.0;
+
+  final TextEditingController _controller = TextEditingController();
+  final ScrollController _scrollMessageController = ScrollController();
+
+  double menuHeight = 50; // デフォルト高さ
+  int _currentLineCount = 1;
+  final double baseHeight = 50; // メニューの基本高さ
+  final double addHeight = 50; // メニューの基本高さ
+  final double lineHeight = 24; // 1行分の高さ
+  final int maxLines = 5; // 最大行数
+
+
 
   @override
   void initState() {
     super.initState();
+    _controller.addListener(_adjustHeight);
     //メッセージの上限数を制御する
     checkAndResetDailyLimitIfNeeded(FirestoreMethod.auth.currentUser!.uid);
     _scrollController = ScrollController();
@@ -67,8 +79,38 @@ class _TalkRoomState extends State<TalkRoom> {
 
   @override
   void dispose() {
+    _controller.dispose();
     _scrollController.dispose(); // スクロールコントローラーを破棄
+    _scrollMessageController.dispose();
     super.dispose();
+  }
+
+  Future<void> _adjustHeight() async {
+      final text = _controller.text;
+      final lineCount = '\n'
+          .allMatches(text)
+          .length + 1;
+
+      if (lineCount != _currentLineCount) {
+        setState(() {
+          _currentLineCount = lineCount;
+          if (_currentLineCount <= maxLines) {
+            // 高さを調整
+            if(addFlg == "1") {
+              menuHeight = addHeight + baseHeight + (_currentLineCount - 1) * lineHeight;
+            }else{
+              menuHeight = baseHeight + (_currentLineCount - 1) * lineHeight;
+            }
+          } else {
+            // 最大行数を超えた場合は高さを固定
+            if(addFlg == "1") {
+              menuHeight =  addHeight + baseHeight + (maxLines - 1) * lineHeight;
+            }else{
+              menuHeight = baseHeight + (maxLines - 1) * lineHeight;
+            }
+          }
+        });
+      }
   }
 
 
@@ -777,36 +819,49 @@ class _TalkRoomState extends State<TalkRoom> {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   color: Colors.black,
-                  height: menuHeight,
+                  height: menuHeight+10,
+                  padding: EdgeInsets.all(5),
                   child: Column(
                     children: [
-                      _buildButton(),
+                      _buildButton(), // 他のボタンやウィジェット
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.center, // ボタンとテキストフィールドの高さを揃える
                         children: [
                           Container(
-                            height: 60,
+                            // height: baseHeight,
                             color: Colors.black,
                             child: IconButton(
                               color: Colors.white,
                               icon: Icon(Icons.add),
-                              onPressed: () {
-                                //試合申請・友達申請・チーム招待(追々)
+                              onPressed: ()  {
                                 addControl();
                               },
                             ),
                           ),
                           Expanded(
-                              child: TextField(
-                                style: TextStyle(color: Colors.white),
-                                controller: controller,
-                                decoration: InputDecoration(
-                                  hintText: "メッセージを入力",
-                                  hintStyle: TextStyle(color: Colors.white),
-                                  border: OutlineInputBorder(),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                maxHeight: lineHeight * maxLines, // 最大高さ
+                              ),
+                                child: SingleChildScrollView(
+                                  controller: _scrollMessageController,
+                                  child: TextField(
+                                    style: TextStyle(color: Colors.white),
+                                    controller: _controller,
+                                    decoration: InputDecoration(
+                                      hintText: "メッセージを入力",
+                                      hintStyle: TextStyle(color: Colors.white),
+                                      border: OutlineInputBorder(),
+                                      contentPadding: EdgeInsets.all(8.0),
+                                    ),
+                                    keyboardType: TextInputType.multiline,
+                                    maxLines: null, // 自由に改行を許可
+                                  ),
                                 ),
-                              )),
+                            ),
+                          ),
                           Container(
-                            height: 60,
+                            // height: baseHeight,
                             color: Colors.black,
                             child: IconButton(
                               color: Colors.white,
@@ -828,8 +883,8 @@ class _TalkRoomState extends State<TalkRoom> {
   }
 
   Future<void> handleSendMessage() async {
-    String sendMessage = controller.text;
-    controller.clear();
+    String sendMessage = _controller.text;
+    _controller.clear();
 
     if (sendMessage.isNotEmpty) {
       // 上限数を減算してから更新する
@@ -866,12 +921,12 @@ class _TalkRoomState extends State<TalkRoom> {
   void addControl() {
     if (addFlg == "0") {
       setState(() {
-        menuHeight = 130.0;
+        menuHeight = menuHeight + 50.0;
         addFlg = "1";
       });
     } else {
       setState(() {
-        menuHeight = 70.0;
+        menuHeight = menuHeight - 50.0;
         addFlg = "0";
       });
     }
@@ -882,7 +937,7 @@ class _TalkRoomState extends State<TalkRoom> {
       return Center(
         child: Row(children: [
           Container(
-            height: 50,
+            height: addHeight,
             color: Colors.black,
             child: TextButton(
                 child: Column(
@@ -930,11 +985,8 @@ class _TalkRoomState extends State<TalkRoom> {
                   }
                 }),
           ),
-          SizedBox(
-            width: 20,
-          ),
           Container(
-            height: 50,
+            height: addHeight,
             color: Colors.black,
             child: TextButton(
                 child: Column(
@@ -979,8 +1031,8 @@ class _TalkRoomState extends State<TalkRoom> {
         ]),
       );
     } else {
-      return SizedBox(
-        height: 2,
+      return const SizedBox(
+        height: 0,
       );
     }
   }
