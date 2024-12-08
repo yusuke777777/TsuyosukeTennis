@@ -194,21 +194,6 @@ class _MatchListState extends State<MatchList> {
     }
   }
 
-  static Future<bool> isBlock(String myUid, String yourUid) async {
-    final blockUserListRef =
-        blockListRef.doc(myUid).collection('blockUserList');
-
-    // クエリを実行し、結果をリストに格納
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
-        await blockUserListRef.where('BLOCK_USER', isEqualTo: yourUid).get();
-
-    //スナップショットが空でないということは対象をブロックしている
-    if (querySnapshot.docs.isNotEmpty) {
-      return false;
-    }
-    return true;
-  }
-
   @override
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
@@ -316,7 +301,7 @@ class _MatchListState extends State<MatchList> {
                             ),
                             child: InkWell(
                                 onTap: () async {
-                                  bool blockFlg = await isBlock(
+                                  bool blockFlg = await FirestoreMethod.isBlock(
                                       matchListAll[index].MY_USER.USER_ID,
                                       matchListAll[index].YOUR_USER.USER_ID);
                                   if (!blockFlg) {
@@ -526,7 +511,7 @@ class _MatchListState extends State<MatchList> {
                                                 size: 30.0,
                                               ),
                                               onPressed: () async {
-                                                bool BlockFlg = await isBlock(
+                                                bool BlockFlg = await FirestoreMethod.isBlock(
                                                     matchListAll[index]
                                                         .MY_USER
                                                         .USER_ID,

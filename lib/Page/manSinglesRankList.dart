@@ -94,20 +94,6 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
     super.dispose();
   }
 
-  static Future<bool> isBlock(String myUid, String yourUid) async {
-    final blockUserListRef = blockListRef.doc(myUid).collection('blockUserList');
-
-    // クエリを実行し、結果をリストに格納
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
-    await blockUserListRef.where('BLOCK_USER', isEqualTo: yourUid).get();
-
-    //スナップショットが空でないということは対象をブロックしている
-    if(querySnapshot.docs.isNotEmpty){
-      return false;
-    }
-    return true;
-  }
-
   Future<void> _loadMoreData() async {
     if (_isLoadingMore) return;
     if (mounted) {
@@ -134,7 +120,6 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
         final userId = doc.data()['USER_ID'];
         final yourProfile = await FirestoreMethod.getYourProfile(userId);
         final yourProfileDetail = await FirestoreMethod.getYourDetailProfile(userId);
-        print("ぎゃあああ" + yourProfileDetail.SEARCH_ENABLE.toString());
 
         final rankListWork = RankModel(
           rankNo: doc.data()['RANK_NO'],
@@ -311,7 +296,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                     ),
                                   ),
                                   onTap: () async {
-                                    bool test = await isBlock(auth.currentUser!.uid, RankModelList[index].user.USER_ID);
+                                    bool test = await FirestoreMethod.isBlock(auth.currentUser!.uid, RankModelList[index].user.USER_ID);
                                     if (!test){
                                       return showDialog(
                                       context: context,

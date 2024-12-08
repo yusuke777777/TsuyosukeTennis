@@ -4304,4 +4304,40 @@ class FirestoreMethod {
       return false;
     }
   }
+
+  /**
+   * 自分のブロックリストを確認して相手がブロック対象か否か
+   */
+  static Future<bool> isBlock(String myUid, String yourUid) async {
+    final blockUserListRef =
+    blockListRef.doc(myUid).collection('blockUserList');
+
+    // クエリを実行し、結果をリストに格納
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+    await blockUserListRef.where('BLOCK_USER', isEqualTo: yourUid).get();
+
+    //スナップショットが空でないということは対象をブロックしている
+    if (querySnapshot.docs.isNotEmpty) {
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * 相手のブロックリストを確認して自分がブロック対象か否か
+   */
+  static Future<bool> isBlock_yours(String myUid, String yourUid) async {
+    final blockUserListRef = blockListRef.doc(yourUid).collection('blockUserList');
+
+    // クエリを実行し、結果をリストに格納
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+    await blockUserListRef.where('BLOCK_USER', isEqualTo: myUid).get();
+
+    //スナップショットが空でないということは対象をブロックしている
+    if(querySnapshot.docs.isNotEmpty){
+      return false;
+    }
+    return true;
+
+  }
 }

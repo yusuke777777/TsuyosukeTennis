@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:http/http.dart' as http;
 
 import '../constant.dart';
+import 'FireBase.dart';
 
 class NotificationMethod {
   static final Firebase_Auth.FirebaseAuth auth =
@@ -122,7 +123,7 @@ class NotificationMethod {
       print('Unable to send FCM message, no token exists.');
       return;
     }
-    bool blockFlg = await isBlock(myUid, yourUid);
+    bool blockFlg = await FirestoreMethod.isBlock_yours(myUid, yourUid);
 
     try {
       if(blockFlg){
@@ -147,21 +148,6 @@ class NotificationMethod {
     } catch (e) {
       print('Error sending message: $e');
     }
-  }
-
-  static Future<bool> isBlock(String myUid, String yourUid) async {
-    final blockUserListRef = blockListRef.doc(yourUid).collection('blockUserList');
-
-    // クエリを実行し、結果をリストに格納
-    QuerySnapshot<Map<String, dynamic>> querySnapshot =
-    await blockUserListRef.where('BLOCK_USER', isEqualTo: myUid).get();
-
-    //スナップショットが空でないということは対象をブロックしている
-    if(querySnapshot.docs.isNotEmpty){
-      return false;
-    }
-    return true;
-
   }
 
   // static Future<void> sendMessage(String recipientToken, String message,
