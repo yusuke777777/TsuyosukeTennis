@@ -981,12 +981,13 @@ class FirestoreMethod {
       CprofileSetting myProfile = await FirestoreMethod.getProfile();
       String? tokenId = await NotificationMethod.getTokenId(room.user.USER_ID);
       print(tokenId);
+      print("ROOMTEST" + room.user.USER_ID + " & " + myUid);
       if (tokenId == "") {
         //トークンIDが登録されていない場合
       } else {
         //トークンIDが登録されている場合
         await NotificationMethod.sendMessage(
-            tokenId!, message, myProfile.NICK_NAME);
+            tokenId!, message, myProfile.NICK_NAME, myUid, room.user.USER_ID);
       }
       //未読メッセージ数の更新
       await NotificationMethod.unreadCount(room.user.USER_ID);
@@ -1022,7 +1023,7 @@ class FirestoreMethod {
       } else {
         //トークンIDが登録されている場合
         await NotificationMethod.sendMessage(
-            tokenId!, "対戦お願いします！", myProfile.NICK_NAME);
+            tokenId!, "対戦お願いします！", myProfile.NICK_NAME, myUid, room.user.USER_ID);
       }
       //未読メッセージ数の更新
       await NotificationMethod.unreadCount(room.user.USER_ID);
@@ -1059,7 +1060,7 @@ class FirestoreMethod {
     } else {
       //トークンIDが登録されている場合
       await NotificationMethod.sendMessage(
-          tokenId!, "対戦結果が入力されました！", myProfile.NICK_NAME);
+          tokenId!, "対戦結果が入力されました！", myProfile.NICK_NAME, myUid, room.user.USER_ID);
     }
     //未読メッセージ数の更新
      await NotificationMethod.unreadCount(room.user.USER_ID);
@@ -1094,7 +1095,8 @@ class FirestoreMethod {
       } else {
         //トークンIDが登録されている場合
         await NotificationMethod.sendMessage(tokenId!,
-            "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！", myProfile.NICK_NAME);
+            "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！",
+            myProfile.NICK_NAME, myUid, room.user.USER_ID);
       }
       //未読メッセージ数の更新
       await NotificationMethod.unreadCount(room.user.USER_ID);
@@ -1125,7 +1127,7 @@ class FirestoreMethod {
     } else {
       //トークンIDが登録されている場合
       await NotificationMethod.sendMessage(
-          tokenId!, "友達登録お願いします！", myProfile.NICK_NAME);
+          tokenId!, "友達登録お願いします！", myProfile.NICK_NAME, myUid, room.user.USER_ID);
     }
     //未読メッセージ数の更新
     await NotificationMethod.unreadCount(room.user.USER_ID);
@@ -1161,7 +1163,7 @@ class FirestoreMethod {
       } else {
         //トークンIDが登録されている場合
         await NotificationMethod.sendMessage(
-            tokenId!, "評価・フィードバックを入力しました！", myProfile.NICK_NAME);
+            tokenId!, "評価・フィードバックを入力しました！", myProfile.NICK_NAME, myUid, room.user.USER_ID);
       }
       //未読メッセージ数の更新
        await NotificationMethod.unreadCount(room.user.USER_ID);
@@ -1367,7 +1369,7 @@ class FirestoreMethod {
       } else {
         //トークンIDが登録されている場合
         await NotificationMethod.sendMessage(
-            tokenId!, "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！", myProfile.NICK_NAME);
+            tokenId!, "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！", myProfile.NICK_NAME, myUid, room.user.USER_ID);
       }
       //未読メッセージ数の更新
        await NotificationMethod.unreadCount(room.user.USER_ID);
@@ -1405,7 +1407,8 @@ class FirestoreMethod {
       } else {
         //トークンIDが登録されている場合
         await NotificationMethod.sendMessage(
-            tokenId!, "チケットが不足しています\nチケット購入お願いします！", myProfile.NICK_NAME);
+            tokenId!, "チケットが不足しています\nチケット購入お願いします！",
+            myProfile.NICK_NAME, myUid, room.user.USER_ID);
       }
       //未読メッセージ数の更新
        await NotificationMethod.unreadCount(room.user.USER_ID);
@@ -1457,7 +1460,8 @@ class FirestoreMethod {
       } else {
         //トークンIDが登録されている場合
         await NotificationMethod.sendMessage(
-            tokenId!, "友人申請を受け入れました。\n友人一覧を確認してみよう！", myProfile.NICK_NAME);
+            tokenId!, "友人申請を受け入れました。\n友人一覧を確認してみよう！",
+            myProfile.NICK_NAME, myUid, room.user.USER_ID);
       }
       //未読メッセージ数の更新
       await NotificationMethod.unreadCount(room.user.USER_ID);

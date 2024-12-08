@@ -1,12 +1,9 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
-import 'package:googleapis_auth/auth_io.dart' as GoogleAuth;
 import 'package:http/http.dart' as http;
-import 'package:flutter_app_badge/flutter_app_badge.dart';
 
 import '../constant.dart';
 
@@ -17,6 +14,9 @@ class NotificationMethod {
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
   static final userTokenListRef =
       _firestoreInstance.collection('userTokenList');
+  static final blockListRef =
+  _firestoreInstance.collection('blockList');
+
 
   //通知テーブル
   static final MyNotificationRef =
@@ -115,29 +115,53 @@ class NotificationMethod {
     });
   }
 
+  //ここ
   static Future<void> sendMessage(
-      String recipientToken, String message, String name) async {
+      String recipientToken, String message, String name, String myUid, String yourUid) async {
     if (recipientToken == null) {
       print('Unable to send FCM message, no token exists.');
       return;
     }
+    bool blockFlg = await isBlock(myUid, yourUid);
 
     try {
-      final response = await http.post(
-        Uri.parse(functionUrl),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: constructFCMPayload(recipientToken, message, name),
-      );
-      if (response.statusCode == 200) {
-        print('Message sent successfully');
-      } else {
-        print('Failed to send message: ${response.body}');
+      if(blockFlg){
+        //対象をブロックしていない
+        print("Send OK！");
+        final response = await http.post(
+          Uri.parse(functionUrl),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: constructFCMPayload(recipientToken, message, name),
+        );
+        if (response.statusCode == 200) {
+          print('Message sent successfully');
+        } else {
+          print('Failed to send message: ${response.body}');
+        }
+      }
+      else{
+        print("Block！");
       }
     } catch (e) {
       print('Error sending message: $e');
     }
+  }
+
+  static Future<bool> isBlock(String myUid, String yourUid) async {
+    final blockUserListRef = blockListRef.doc(yourUid).collection('blockUserList');
+
+    // クエリを実行し、結果をリストに格納
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+    await blockUserListRef.where('BLOCK_USER', isEqualTo: myUid).get();
+
+    //スナップショットが空でないということは対象をブロックしている
+    if(querySnapshot.docs.isNotEmpty){
+      return false;
+    }
+    return true;
+
   }
 
   // static Future<void> sendMessage(String recipientToken, String message,
