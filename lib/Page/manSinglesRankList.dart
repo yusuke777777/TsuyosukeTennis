@@ -21,8 +21,11 @@ class manSinglesRankList extends StatefulWidget {
 class _manSinglesRankListState extends State<manSinglesRankList> {
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
+  static final FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
   List<RankModel> RankModelList = [];
   DocumentSnapshot? lastDocument; // 最後のドキュメントを保持する変数
+  static final blockListRef =
+  _firestoreInstance.collection('blockList');
   bool _isLoadingMore = false;
   late ScrollController _scrollController;
 
@@ -89,6 +92,20 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
   void dispose() {
     _scrollController.dispose(); // ScrollControllerの解放
     super.dispose();
+  }
+
+  static Future<bool> isBlock(String myUid, String yourUid) async {
+    final blockUserListRef = blockListRef.doc(myUid).collection('blockUserList');
+
+    // クエリを実行し、結果をリストに格納
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+    await blockUserListRef.where('BLOCK_USER', isEqualTo: yourUid).get();
+
+    //スナップショットが空でないということは対象をブロックしている
+    if(querySnapshot.docs.isNotEmpty){
+      return false;
+    }
+    return true;
   }
 
   Future<void> _loadMoreData() async {
@@ -293,8 +310,32 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                               color: Colors.green)),
                                     ),
                                   ),
-                                  onTap: () {
-                                    if (RankModelList[index].user.USER_ID !=
+                                  onTap: () async {
+                                    bool test = await isBlock(auth.currentUser!.uid, RankModelList[index].user.USER_ID);
+                                    if (!test){
+                                      return showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return AlertDialog(
+                                            title:Text('ブロック中のユーザーです',
+                                                style: TextStyle(fontSize: 18)),
+                                            actions: <Widget>[
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(
+                                                    foregroundColor:
+                                                    Colors.black,
+                                                    backgroundColor: Colors
+                                                        .lightGreenAccent),
+                                                child: const Text('OK'),
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                              ),
+                                              ]
+                                        );
+                                      });
+                                    }
+                                    else if (RankModelList[index].user.USER_ID !=
                                         auth.currentUser!.uid && RankModelList[index].searchEnableFlg) {
                                       showDialog(
                                           context: context,

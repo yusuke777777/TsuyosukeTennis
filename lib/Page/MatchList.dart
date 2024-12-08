@@ -22,10 +22,13 @@ class MatchList extends StatefulWidget {
 }
 
 class _MatchListState extends State<MatchList> {
+  static final FirebaseFirestore _firestoreInstance =
+      FirebaseFirestore.instance;
   List<MatchListModel> matchListAll = [];
   DocumentSnapshot? lastDocument; // 最後のドキュメントを保持する変数
   bool _isLoadingMore = false;
   late ScrollController _scrollController;
+  static final blockListRef = _firestoreInstance.collection('blockList');
 
   Future<void> createMatchList() async {
     try {
@@ -191,6 +194,21 @@ class _MatchListState extends State<MatchList> {
     }
   }
 
+  static Future<bool> isBlock(String myUid, String yourUid) async {
+    final blockUserListRef =
+        blockListRef.doc(myUid).collection('blockUserList');
+
+    // クエリを実行し、結果をリストに格納
+    QuerySnapshot<Map<String, dynamic>> querySnapshot =
+        await blockUserListRef.where('BLOCK_USER', isEqualTo: yourUid).get();
+
+    //スナップショットが空でないということは対象をブロックしている
+    if (querySnapshot.docs.isNotEmpty) {
+      return false;
+    }
+    return true;
+  }
+
   @override
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
@@ -225,7 +243,8 @@ class _MatchListState extends State<MatchList> {
                         // ページネーションアイテムの場合
                         if (_isLoadingMore) {
                           print(_isLoadingMore);
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         } else {
                           print("ss");
                           return const SizedBox();
@@ -295,244 +314,288 @@ class _MatchListState extends State<MatchList> {
                                 ),
                               ],
                             ),
-                            child:
-                            InkWell(
+                            child: InkWell(
                                 onTap: () async {
-                                  try {
-                                    // ドキュメントのロック状態を取得
-                                    final matchSnapshot =
-                                    await FirebaseFirestore
-                                        .instance
-                                        .collection('matchList')
-                                        .doc(matchListAll[index]
-                                        .MATCH_ID)
-                                        .get();
+                                  bool blockFlg = await isBlock(
+                                      matchListAll[index].MY_USER.USER_ID,
+                                      matchListAll[index].YOUR_USER.USER_ID);
+                                  if (!blockFlg) {
+                                    showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                              title: Text('ブロック中のユーザーです',
+                                                  style: TextStyle(fontSize: 18)),
+                                              actions: <Widget>[
+                                                ElevatedButton(
+                                                  style: ElevatedButton.styleFrom(
+                                                      foregroundColor:
+                                                          Colors.black,
+                                                      backgroundColor: Colors
+                                                          .lightGreenAccent),
+                                                  child: const Text('OK'),
+                                                  onPressed: () {
+                                                    Navigator.pop(context);
+                                                  },
+                                                ),
+                                              ]);
+                                        });
+                                  } else {
+                                    try {
+                                      // ドキュメントのロック状態を取得
+                                      final matchSnapshot =
+                                          await FirebaseFirestore.instance
+                                              .collection('matchList')
+                                              .doc(matchListAll[index].MATCH_ID)
+                                              .get();
 
-                                    String LOCK_FLG = matchSnapshot
-                                        .data()?['LOCK_FLG'] ??
-                                        "0";
-                                    String LOCK_USER = matchSnapshot
-                                        .data()?['LOCK_USER'] ??
-                                        '';
+                                      String LOCK_FLG =
+                                          matchSnapshot.data()?['LOCK_FLG'] ??
+                                              "0";
+                                      String LOCK_USER =
+                                          matchSnapshot.data()?['LOCK_USER'] ??
+                                              '';
 
-                                    if (matchSnapshot.exists) {
-                                      // 自分がロックしている、もしくはロックされていない場合
-                                      if (LOCK_FLG == '0' ||
-                                          LOCK_USER ==
-                                              FirestoreMethod
-                                                  .auth
-                                                  .currentUser!
-                                                  .uid ||
-                                          LOCK_USER == '') {
-                                        // 自分のUIDでロック設定
-                                        await FirebaseFirestore
-                                            .instance
-                                            .collection('matchList')
-                                            .doc(matchListAll[index]
-                                            .MATCH_ID)
-                                            .set({
-                                          'LOCK_FLG': '1',
-                                          'LOCK_USER':
-                                          FirestoreMethod.auth
-                                              .currentUser!.uid,
-                                        }, SetOptions(merge: true));
-                                        //対戦結果入力画面へ遷移
-                                        await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) => MatchResult(
-                                                    matchListAll[
-                                                    index]
-                                                        .MY_USER,
-                                                    matchListAll[
-                                                    index]
-                                                        .YOUR_USER,
-                                                    matchListAll[
-                                                    index]
-                                                        .MATCH_ID)));
-                                        // 画面から戻ってきたときに対象のドキュメントが存在するか確認
-                                        final matchDoc =
-                                        await FirebaseFirestore
-                                            .instance
-                                            .collection(
-                                            'matchList')
-                                            .doc(matchListAll[
-                                        index]
-                                            .MATCH_ID)
-                                            .get();
+                                      if (matchSnapshot.exists) {
+                                        // 自分がロックしている、もしくはロックされていない場合
+                                        if (LOCK_FLG == '0' ||
+                                            LOCK_USER ==
+                                                FirestoreMethod
+                                                    .auth.currentUser!.uid ||
+                                            LOCK_USER == '') {
+                                          // 自分のUIDでロック設定
+                                          await FirebaseFirestore.instance
+                                              .collection('matchList')
+                                              .doc(matchListAll[index].MATCH_ID)
+                                              .set({
+                                            'LOCK_FLG': '1',
+                                            'LOCK_USER': FirestoreMethod
+                                                .auth.currentUser!.uid,
+                                          }, SetOptions(merge: true));
+                                          //対戦結果入力画面へ遷移
+                                          await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      MatchResult(
+                                                          matchListAll[index]
+                                                              .MY_USER,
+                                                          matchListAll[index]
+                                                              .YOUR_USER,
+                                                          matchListAll[index]
+                                                              .MATCH_ID)));
+                                          // 画面から戻ってきたときに対象のドキュメントが存在するか確認
+                                          final matchDoc =
+                                              await FirebaseFirestore.instance
+                                                  .collection('matchList')
+                                                  .doc(matchListAll[index]
+                                                      .MATCH_ID)
+                                                  .get();
 
-                                        if (matchDoc.exists) {
-                                          // ドキュメントが存在する場合にのみロックを解除
-                                          await FirebaseFirestore
-                                              .instance
-                                              .collection(
-                                              'matchList')
-                                              .doc(matchListAll[
-                                          index]
-                                              .MATCH_ID)
-                                              .set(
-                                              {
-                                                'LOCK_FLG': '0',
-                                                'LOCK_USER': '',
-                                              },
-                                              SetOptions(
-                                                  merge: true));
+                                          if (matchDoc.exists) {
+                                            // ドキュメントが存在する場合にのみロックを解除
+                                            await FirebaseFirestore.instance
+                                                .collection('matchList')
+                                                .doc(matchListAll[index]
+                                                    .MATCH_ID)
+                                                .set({
+                                              'LOCK_FLG': '0',
+                                              'LOCK_USER': '',
+                                            }, SetOptions(merge: true));
+                                          }
+                                        } else {
+                                          showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  const ShowDialogToDismiss(
+                                                    content: '現在、他のユーザーが登録中です',
+                                                    buttonText: "はい",
+                                                  ));
                                         }
                                       } else {
                                         showDialog(
                                             context: context,
-                                            builder: (BuildContext
-                                            context) =>
-                                            const ShowDialogToDismiss(
-                                              content:
-                                              '現在、他のユーザーが登録中です',
-                                              buttonText: "はい",
-                                            ));
+                                            builder: (BuildContext context) =>
+                                                const ShowDialogToDismiss(
+                                                  content:
+                                                      'この対戦は既に他ユーザーが登録済。又は削除されています',
+                                                  buttonText: "はい",
+                                                ));
                                       }
-                                    } else {
+                                    } catch (e) {
                                       showDialog(
                                           context: context,
-                                          builder: (BuildContext
-                                          context) =>
-                                          const ShowDialogToDismiss(
-                                            content:
-                                            'この対戦は既に他ユーザーが登録済。又は削除されています',
-                                            buttonText: "はい",
-                                          ));
+                                          builder: (BuildContext context) =>
+                                              const ShowDialogToDismiss(
+                                                content: 'エラーが発生しました',
+                                                buttonText: "はい",
+                                              ));
                                     }
-                                  } catch (e) {
-                                    showDialog(
-                                        context: context,
-                                        builder: (BuildContext
-                                        context) =>
-                                        const ShowDialogToDismiss(
-                                          content: 'エラーが発生しました',
-                                          buttonText: "はい",
-                                        ));
                                   }
                                 },
-
-                              child:
-                            Card(
-                              color: Colors.white,
-                              child: Container(
-                                height: 70,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                      width: deviceWidth * 0.8,
-                                      child: Row(
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 8.0),
-                                            //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
-                                            child: InkWell(
-                                              child: matchListAll[index]
-                                                          .YOUR_USER
-                                                          .PROFILE_IMAGE ==
-                                                      ''
-                                                  ? const CircleAvatar(
-                                                      backgroundColor:
-                                                          Colors.white,
-                                                      backgroundImage: NetworkImage(
-                                                          "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
-                                                      radius: 30,
-                                                    )
-                                                  : CircleAvatar(
-                                                      backgroundColor: Colors
-                                                          .white,
-                                                      backgroundImage:
-                                                          NetworkImage(
-                                                              matchListAll[
-                                                                      index]
-                                                                  .YOUR_USER
-                                                                  .PROFILE_IMAGE),
-                                                      radius: 30),
-                                              onTap: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            ProfileReference(
-                                                                matchListAll[
-                                                                        index]
-                                                                    .YOUR_USER
-                                                                    .USER_ID)));
-                                              },
-                                            ),
+                                child: Card(
+                                  color: Colors.white,
+                                  child: Container(
+                                    height: 70,
+                                    child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          width: deviceWidth * 0.8,
+                                          child: Row(
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 8.0),
+                                                //プロフィール参照画面への遷移　※参照用のプロフィール画面作成する必要あり
+                                                child: InkWell(
+                                                  child: matchListAll[index]
+                                                              .YOUR_USER
+                                                              .PROFILE_IMAGE ==
+                                                          ''
+                                                      ? const CircleAvatar(
+                                                          backgroundColor:
+                                                              Colors.white,
+                                                          backgroundImage:
+                                                              NetworkImage(
+                                                                  "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                                          radius: 30,
+                                                        )
+                                                      : CircleAvatar(
+                                                          backgroundColor:
+                                                              Colors.white,
+                                                          backgroundImage:
+                                                              NetworkImage(
+                                                                  matchListAll[
+                                                                          index]
+                                                                      .YOUR_USER
+                                                                      .PROFILE_IMAGE),
+                                                          radius: 30),
+                                                  onTap: () {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                ProfileReference(
+                                                                    matchListAll[
+                                                                            index]
+                                                                        .YOUR_USER
+                                                                        .USER_ID)));
+                                                  },
+                                                ),
+                                              ),
+                                              InkWell(
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                      CrossAxisAlignment.start,
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.center,
+                                                  children: [
+                                                    Text(
+                                                        matchListAll[index]
+                                                            .YOUR_USER
+                                                            .NICK_NAME,
+                                                        style: const TextStyle(
+                                                            fontSize: 20,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold)),
+                                                    Text(
+                                                        matchListAll[index]
+                                                            .SAKUSEI_TIME,
+                                                        style: const TextStyle(
+                                                            color: Colors.grey),
+                                                        overflow: TextOverflow
+                                                            .ellipsis)
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                          InkWell(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                    matchListAll[index]
-                                                        .YOUR_USER
-                                                        .NICK_NAME,
-                                                    style: const TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight:
-                                                            FontWeight.bold)),
-                                                Text(
-                                                    matchListAll[index]
-                                                        .SAKUSEI_TIME,
-                                                    style: const TextStyle(
-                                                        color: Colors.grey),
-                                                    overflow:
-                                                        TextOverflow.ellipsis)
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    //トーク画面へ遷移
-                                    Container(
-                                      width: deviceWidth * 0.1,
-                                      alignment: Alignment.centerRight,
-                                      child: IconButton(
-                                          icon: const Icon(
-                                            Icons.message,
-                                            color: Colors.black,
-                                            size: 30.0,
-                                          ),
-                                          onPressed: () async {
-                                            TalkRoomModel room =
-                                                await FirestoreMethod.makeRoom(
+                                        ),
+                                        //トーク画面へ遷移
+                                        Container(
+                                          width: deviceWidth * 0.1,
+                                          alignment: Alignment.centerRight,
+                                          child: IconButton(
+                                              icon: const Icon(
+                                                Icons.message,
+                                                color: Colors.black,
+                                                size: 30.0,
+                                              ),
+                                              onPressed: () async {
+                                                bool BlockFlg = await isBlock(
                                                     matchListAll[index]
                                                         .MY_USER
                                                         .USER_ID,
                                                     matchListAll[index]
                                                         .YOUR_USER
                                                         .USER_ID);
+                                                if (!BlockFlg) {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: (context) {
+                                                        return AlertDialog(
+                                                            title: Text(
+                                                                'ブロック中のユーザーです',
+                                                                style: TextStyle(fontSize: 18)),
+                                                            actions: <Widget>[
+                                                              ElevatedButton(
+                                                                style: ElevatedButton.styleFrom(
+                                                                    foregroundColor:
+                                                                        Colors
+                                                                            .black,
+                                                                    backgroundColor:
+                                                                        Colors
+                                                                            .lightGreenAccent),
+                                                                child:
+                                                                    const Text(
+                                                                        'OK'),
+                                                                onPressed: () {
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                },
+                                                              ),
+                                                            ]);
+                                                      });
+                                                } else {
+                                                  TalkRoomModel room =
+                                                      await FirestoreMethod
+                                                          .makeRoom(
+                                                              matchListAll[
+                                                                      index]
+                                                                  .MY_USER
+                                                                  .USER_ID,
+                                                              matchListAll[
+                                                                      index]
+                                                                  .YOUR_USER
+                                                                  .USER_ID);
 
-                                            // TalkRoomModel room =
-                                            //     await FirestoreMethod.getRoom(
-                                            //         matchList[index]
-                                            //             .RECIPIENT_ID,
-                                            //         matchList[index].SENDER_ID,
-                                            //         matchList[index].YOUR_USER);
-                                            await Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        TalkRoom(room)));
-                                            await NotificationMethod
-                                                .unreadCountRest(
-                                                    matchListAll[index]
-                                                        .YOUR_USER
-                                                        .USER_ID);
-                                          }),
-                                    )
-                                  ],
-                                ),
-                              ),
-                            )));
+                                                  // TalkRoomModel room =
+                                                  //     await FirestoreMethod.getRoom(
+                                                  //         matchList[index]
+                                                  //             .RECIPIENT_ID,
+                                                  //         matchList[index].SENDER_ID,
+                                                  //         matchList[index].YOUR_USER);
+                                                  await Navigator.push(
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              TalkRoom(room)));
+                                                  await NotificationMethod
+                                                      .unreadCountRest(
+                                                          matchListAll[index]
+                                                              .YOUR_USER
+                                                              .USER_ID);
+                                                }
+                                              }),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                )));
                       }
                     }),
               ),
