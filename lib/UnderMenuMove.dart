@@ -120,8 +120,13 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
   Future<void> notificationMove(BuildContext context, String? senderId) async {
     TalkRoomModel room = await FirestoreMethod.getRoomBySearchResult(
         FirestoreMethod.auth.currentUser!.uid, senderId.toString());
-    await Navigator.push(
-        context, MaterialPageRoute(builder: (context) => TalkRoom(room)));
+    // 現在のウェジット取得
+    final widget = context.widget;
+
+    if(widget.toString() != 'TalkRoom'){
+      await Navigator.push(
+          context, MaterialPageRoute(builder: (context) => TalkRoom(room)));
+    }
 
     await NotificationMethod.unreadCountRest(
         senderId.toString());
