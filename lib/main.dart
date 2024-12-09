@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -75,11 +76,20 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
+  static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   @override
   _MyAppState createState() => _MyAppState();
 }
 
 class _MyAppState extends State<MyApp> {
+  Future<void> _sendAnalyticsEvent() async {
+    await MyApp.analytics.logEvent(
+      name: 'awesome_event',
+      parameters: <String, Object>{
+        //'id': 1, // not required?
+      },
+    );
+  }
   // String _appBadgeSupported = 'Unknown';
 
   // This widget is the root of your application.
@@ -91,7 +101,7 @@ class _MyAppState extends State<MyApp> {
     NotificationMethod().setting();
     /// Firebase ID取得(テスト用)
     FirebaseInAppMessagingService().getFID();
-
+    _sendAnalyticsEvent();
   }
 
   void initialization() async {
