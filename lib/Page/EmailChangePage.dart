@@ -78,7 +78,7 @@ class _EmailChangePageState extends State<EmailChangePage> {
               controller: _newPasswordController,
               obscureText: true,
               decoration: const InputDecoration(labelText
-                  : '現在のパスワード'),
+                  : 'パスワード'),
             ),
             TextField(
               controller: _newEmailController,
