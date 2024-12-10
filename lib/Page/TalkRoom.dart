@@ -166,7 +166,7 @@ class _TalkRoomState extends State<TalkRoom> {
                   height: 40,
                   child: const AdBanner(size: AdSize.banner)),
               Padding(
-                padding: EdgeInsets.only(top: 40, bottom: menuHeight),
+                padding: EdgeInsets.only(top: 40, bottom: menuHeight +5),
                 child: StreamBuilder<List<QueryDocumentSnapshot>>(
                     stream: _messagesStream,
                     builder: (context, snapshot) {
@@ -811,8 +811,8 @@ class _TalkRoomState extends State<TalkRoom> {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   color: Colors.black,
-                  height: menuHeight+10,
-                  padding: EdgeInsets.all(5),
+                  height: menuHeight +10,
+                  padding: const EdgeInsets.all(5),
                   child: Column(
                     children: [
                       _buildButton(), // 他のボタンやウィジェット
