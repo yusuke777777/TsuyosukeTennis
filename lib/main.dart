@@ -42,10 +42,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 
 void main() async {
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  FirebaseInAppMessaging.instance; // In-App Messagingを初期化
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   MobileAds.instance.initialize();
 
@@ -82,17 +83,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  Future<void> _sendAnalyticsEvent() async {
-    await MyApp.analytics.logEvent(
-      name: 'awesome_event',
-      parameters: <String, Object>{
-        //'id': 1, // not required?
-      },
-    );
-  }
-  // String _appBadgeSupported = 'Unknown';
-
-  // This widget is the root of your application.
   @override
   void initState() {
     super.initState();
@@ -101,7 +91,6 @@ class _MyAppState extends State<MyApp> {
     NotificationMethod().setting();
     /// Firebase ID取得(テスト用)
     FirebaseInAppMessagingService().getFID();
-    _sendAnalyticsEvent();
   }
 
   void initialization() async {
