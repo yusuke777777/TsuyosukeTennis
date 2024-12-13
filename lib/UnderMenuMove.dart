@@ -95,9 +95,9 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     );
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
-      alert: true,
+      alert: false,
       badge: true,
-      sound: true,
+      sound: false,
     );
 
       String? myTokenId = await NotificationMethod.getMyTokenId();
