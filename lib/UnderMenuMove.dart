@@ -187,8 +187,8 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     setState(() => _authStatus = '$status');
     // If the system can show an authorization request dialog
     if (status == TrackingStatus.notDetermined) {
-      // Show a custom explainer dialog before the system dialog
-      await showCustomTrackingDialog(context);
+      // // Show a custom explainer dialog before the system dialog
+      // await showCustomTrackingDialog(context);
       // Wait for dialog popping animation
       await Future.delayed(const Duration(milliseconds: 200));
       // Request system's tracking authorization dialog
