@@ -49,10 +49,10 @@ class _SignUpPageState extends State<SignUpPage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     final deviceHeight = MediaQuery.of(context).size.height;
+    final deviceWidth = MediaQuery.of(context).size.width;
     return WillPopScope(
       onWillPop: willPopCallback,
       child: ChangeNotifierProvider<SignUpModel>(
@@ -63,219 +63,221 @@ class _SignUpPageState extends State<SignUpPage> {
               preferredSize: const Size.fromHeight(40.0),
               child: AppBar(
                 backgroundColor: Colors.green,
+                iconTheme: const IconThemeData(
+                  color: Colors.white, // 戻るボタンの色を白に設定
+                ),
               ),
             ),
             body: Consumer<SignUpModel>(
               builder: (context, model, child) {
-                return Stack(
-                  children: [
-                    //背景画像をセット
-                    Container(
-                        decoration: const BoxDecoration(
-                            image: DecorationImage(
-                      colorFilter: ColorFilter.mode(
-                        Colors.white,
-                        BlendMode.dstATop,
-                      ),
-                      image: AssetImage('images/haikei_katakana.png'),
-                      fit: BoxFit.cover,
-                    ))),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        const Padding(padding: EdgeInsets.all(50)),
-                        Column(
-                          children: [
-                            Center(
-                              child: Padding(
-                                padding: const EdgeInsets.all(16.0),
-                                child: Column(
-                                  children: <Widget>[
-                                    TextFormField(
-                                      controller: mailController,
-                                      onChanged: (text) {
-                                        model.changeMail(text);
-                                      },
-                                      maxLines: 1,
-                                      style: const TextStyle(fontSize: 16),
-                                      decoration: InputDecoration(
-                                        fillColor: Colors.white,
-                                        filled: true,
-                                        errorText: model.errorMail == ''
-                                            ? null
-                                            : model.errorMail,
-                                        labelText: 'メールアドレス',
-                                        border: const OutlineInputBorder(),
+                return Stack(children: [
+                  //背景画像をセット
+                  Container(
+                      decoration: const BoxDecoration(
+                          image: DecorationImage(
+                    colorFilter: ColorFilter.mode(
+                      Colors.white,
+                      BlendMode.dstATop,
+                    ),
+                    image: AssetImage('images/haikei_katakana.png'),
+                    fit: BoxFit.cover,
+                  ))),
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const Padding(padding: EdgeInsets.all(50)),
+                      Column(
+                        children: [
+                          Center(
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(children: <Widget>[
+                                TextFormField(
+                                  controller: mailController,
+                                  onChanged: (text) {
+                                    model.changeMail(text);
+                                  },
+                                  maxLines: 1,
+                                  style: const TextStyle(fontSize: 16),
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    errorText: model.errorMail == ''
+                                        ? null
+                                        : model.errorMail,
+                                    labelText: 'メールアドレス',
+                                    border: const OutlineInputBorder(),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                TextFormField(
+                                  controller: passwordController,
+                                  onChanged: (text) {
+                                    model.changePassword(text);
+                                  },
+                                  obscureText: true,
+                                  maxLines: 1,
+                                  style: const TextStyle(fontSize: 16),
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    errorText: model.errorPassword == ''
+                                        ? null
+                                        : model.errorPassword,
+                                    labelText: 'パスワード',
+                                    border: const OutlineInputBorder(),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                TextFormField(
+                                  controller: confirmController,
+                                  onChanged: (text) {
+                                    model.changeConfirm(text);
+                                  },
+                                  obscureText: true,
+                                  maxLines: 1,
+                                  style: const TextStyle(fontSize: 16),
+                                  decoration: InputDecoration(
+                                    fillColor: Colors.white,
+                                    filled: true,
+                                    labelText: 'パスワード（確認用）',
+                                    errorText: model.errorConfirm == ''
+                                        ? null
+                                        : model.errorConfirm,
+                                    border: const OutlineInputBorder(),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Container(
+                                  width: deviceWidth * 0.5,
+                                  height: deviceHeight * 0.08,
+                                  padding: const EdgeInsets.only(top: 20),
+                                  child: ElevatedButton(
+                                      child: const Text(
+                                        '新規登録',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                    TextFormField(
-                                      controller: passwordController,
-                                      onChanged: (text) {
-                                        model.changePassword(text);
-                                      },
-                                      obscureText: true,
-                                      maxLines: 1,
-                                      style: const TextStyle(fontSize: 16),
-                                      decoration: InputDecoration(
-                                        fillColor: Colors.white,
-                                        filled: true,
-                                        errorText: model.errorPassword == ''
-                                            ? null
-                                            : model.errorPassword,
-                                        labelText: 'パスワード',
-                                        border: const OutlineInputBorder(),
+                                      style: ButtonStyle(
+                                        backgroundColor:
+                                            WidgetStateProperty.all<Color>(
+                                                const Color(0xFF4CAF50)),
                                       ),
-                                    ),
-                                    const SizedBox(
-                                      height: 8,
-                                    ),
-                                    TextFormField(
-                                      controller: confirmController,
-                                      onChanged: (text) {
-                                        model.changeConfirm(text);
-                                      },
-                                      obscureText: true,
-                                      maxLines: 1,
-                                      style: const TextStyle(fontSize: 16),
-                                      decoration: InputDecoration(
-                                        fillColor: Colors.white,
-                                        filled: true,
-                                        labelText: 'パスワード（確認用）',
-                                        errorText: model.errorConfirm == ''
-                                            ? null
-                                            : model.errorConfirm,
-                                        border: const OutlineInputBorder(),
-                                      ),
-                                    ),
-                                    Column(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        Row(
+                                      onPressed: () async {
+                                        try {
+                                          await model.signUp();
+                                          await FirestoreMethod
+                                              .sendUserAuthMail();
+                                          await Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  //TODO 引数消す
+                                                  ReLoginMessagePage(),
+                                            ),
+                                          );
+                                          model.endLoading();
+                                        } catch (e) {
+                                          showTextDialog(context, e);
+                                          model.endLoading();
+                                        }
+                                      }),
+                                ),
+                                // FloatingActionButton.extended(
+                                //   shape: RoundedRectangleBorder(
+                                //     borderRadius:
+                                //         BorderRadius.circular(5), //角の丸み
+                                //   ),
+                                //   label: const Text(
+                                //     '新規登録',
+                                //     style: TextStyle(
+                                //         fontSize: 16, color: Colors.white),
+                                //   ),
+                                //   backgroundColor: const Color(0xFF4CAF50),
+                                //   onPressed: model.agreeGuideline
+                                //       ? () async {
+                                //           try {
+                                //             await model.signUp();
+                                //             await FirestoreMethod
+                                //                 .sendUserAuthMail();
+                                //             await Navigator.pushReplacement(
+                                //               context,
+                                //               MaterialPageRoute(
+                                //                 builder: (context) =>
+                                //                     //TODO 引数消す
+                                //                     ReLoginMessagePage(),
+                                //               ),
+                                //             );
+                                //             model.endLoading();
+                                //           } catch (e) {
+                                //             showTextDialog(context, e);
+                                //             model.endLoading();
+                                //           }
+                                //         }
+                                //       : null,
+                                // ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Column(
+                                  children: [
+                                    Container(
+                                      height: deviceHeight * 0.08,
+                                      width: deviceWidth * 0.8,
+                                      color: const Color(0xC876E590),
+                                      child: Column(
                                           mainAxisAlignment:
-                                              MainAxisAlignment.start,
+                                              MainAxisAlignment.center,
                                           children: [
-                                            SizedBox(
-                                              width: 24,
-                                              child: Checkbox(
-                                                activeColor: Color(0xFF4CAF50),
-                                                checkColor: Colors.white,
-                                                onChanged: (val) {
-                                                  model.tapAgreeCheckBox(val);
-                                                },
-                                                value: model.agreeGuideline,
-                                              ),
-                                            ),
                                             const SizedBox(
-                                              width: 8,
+                                              child: Text("アカウントをお持ちの方",
+                                                  style: TextStyle(
+                                                      fontSize: 16,
+                                                      color: Colors.white)),
                                             ),
-                                            Flexible(
-                                              child: RichText(
-                                                text: TextSpan(
-                                                  style: const TextStyle(
-                                                    color: Colors.grey,
-                                                    fontSize: 12.0,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                  children: [
-                                                    TextSpan(
-                                                      text: '利用規約',
-                                                      style: const TextStyle(
-                                                        color:
-                                                            Color(0xFF4CAF50),
+                                            InkWell(
+                                              child: const SizedBox(
+                                                child: Text("ログインはこちら",
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        color: Colors.green,
+                                                        fontWeight:
+                                                            FontWeight.bold,
                                                         decoration:
                                                             TextDecoration
                                                                 .underline,
-                                                        decorationThickness:
-                                                            2.00,
-                                                      ),
-                                                      recognizer:
-                                                          TapGestureRecognizer()
-                                                            ..onTap = () {
-                                                              _SignUprulesURL();
-                                                            },
-                                                    ),
-                                                    const TextSpan(
-                                                        text: ' を読んで同意しました。',
-                                                        style: TextStyle(
-                                                            color:
-                                                                Colors.white)),
-                                                  ],
-                                                ),
+                                                        decorationColor:
+                                                            Colors.green)),
                                               ),
-                                            ),
-                                          ],
-                                        ),
-                                        Column(
-                                          children: [
-                                            FloatingActionButton.extended(
-                                              shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        5), //角の丸み
-                                              ),
-                                              label: const Text('新規登録'),
-                                              backgroundColor:
-                                                  const Color(0xFF4CAF50),
-                                              onPressed: model.agreeGuideline
-                                                  ? () async {
-                                                      try {
-                                                        await model.signUp();
-                                                        await FirestoreMethod.sendUserAuthMail();
-                                                        await Navigator
-                                                            .pushReplacement(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                            builder: (context) =>
-                                                            //TODO 引数消す
-                                                                ReLoginMessagePage(),
-                                                          ),
-                                                        );
-                                                        model.endLoading();
-                                                      } catch (e) {
-                                                        showTextDialog(
-                                                            context, e);
-                                                        model.endLoading();
-                                                      }
-                                                    }
-                                                  : null,
-                                            ),
-                                            TextButton(
-                                              child: const Text(
-                                                'ログイン画面に戻る',
-                                                style: TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                              onPressed: () {
-                                                Navigator.pushReplacement(
+                                              onTap: () {
+                                                Navigator.pushAndRemoveUntil(
                                                   context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        SignInPage(),
-                                                  ),
+                                                  MaterialPageRoute(builder: (context) => SignInPage()),
+                                                      (route) => false, // 全てのルートを削除
                                                 );
+
                                               },
                                             ),
-                                          ],
-                                        ),
-                                      ],
+                                          ]),
                                     ),
                                   ],
                                 ),
-                              ),
+                              ]),
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ],
-                );
+                          ),
+                        ],
+                      ),
+                    ],
+                  )
+                ]);
               },
             ),
           )),

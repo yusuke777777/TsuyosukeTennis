@@ -27,7 +27,7 @@ const String functionUrl = 'https://asia-northeast1-tsuyosuketeniss.cloudfunctio
 const googleInterstitialAdsAndroid = 'ca-app-pub-3940256099942544/1033173712'; //本番
 //IOS
 //const googleInterstitialAdsIos = 'ca-app-pub-3940256099942544/4411468910'; //開発
-const googleInterstitialAdsIos = 'ca-app-pub-3940256099942544/4411468910'; //本番
+const googleInterstitialAdsIos = 'ca-app-pub-2361922346375583/4315688562'; //本番
 
 //広告(googleAdsBanner)
 //Android
@@ -35,6 +35,6 @@ const googleInterstitialAdsIos = 'ca-app-pub-3940256099942544/4411468910'; //本
 const googleAdsBannerAndroid = 'ca-app-pub-3940256099942544/9214589741'; //本番
 //IOS
 //const googleAdsBannerIos = 'ca-app-pub-3940256099942544/2435281174'; //開発
-const googleAdsBannerIos = 'ca-app-pub-3940256099942544/2435281174'; //本番
+const googleAdsBannerIos = 'ca-app-pub-2361922346375583/4110034380'; //本番
 
 

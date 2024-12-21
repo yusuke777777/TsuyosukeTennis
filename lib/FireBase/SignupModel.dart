@@ -6,7 +6,7 @@ import 'ConvertErrorMessage.dart';
 
 class SignUpModel extends ChangeNotifier {
   SignUpModel() {
-    this.agreeGuideline = false;
+    // this.agreeGuideline = false;
     this.showingDialog = false;
     this.mail = '';
     this.password = '';
@@ -36,7 +36,7 @@ class SignUpModel extends ChangeNotifier {
     this.address = '';
   }
 
-  late bool agreeGuideline;
+  // late bool agreeGuideline;
   late bool showingDialog;
   late String mail;
   late String password;
@@ -206,10 +206,10 @@ class SignUpModel extends ChangeNotifier {
   }
 
 
-  void tapAgreeCheckBox(val) {
-    this.agreeGuideline = val;
-    notifyListeners();
-  }
+  // void tapAgreeCheckBox(val) {
+  //   this.agreeGuideline = val;
+  //   notifyListeners();
+  // }
 
   void showDialog() {
     this.showingDialog = true;

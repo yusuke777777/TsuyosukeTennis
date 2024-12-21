@@ -18,6 +18,7 @@ import 'FireBase/GoogleAds.dart';
 import 'FireBase/NotificationMethod.dart';
 import 'FireBase/NotificationProvider.dart';
 import 'FireBase/singletons_data.dart';
+import 'Page/LoginPage.dart';
 import 'Page/ProfileSetting.dart';
 import 'Page/ReLoginMessagePage.dart';
 import 'Page/SigninPage.dart';
@@ -140,7 +141,7 @@ class _MyAppState extends State<MyApp> {
       ),
       // home: TestHomePage(),
       home: FirebaseAuth.instance.currentUser == null
-          ? SignInPage()
+          ? LoginPage()
           :
           //メール承認を終えていない場合は承認待機画面へ
           !FirestoreMethod.isAuth
