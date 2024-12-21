@@ -20,6 +20,7 @@ import 'FireBase/FireBase.dart';
 import 'FireBase/NotificationMethod.dart';
 import 'FireBase/NotificationProvider.dart';
 import 'FireBase/singletons_data.dart';
+import 'Page/LoginPage.dart';
 import 'Page/MatchList.dart';
 import 'Page/RankList.dart';
 import 'Page/SigninPage.dart';
@@ -44,12 +45,14 @@ class UnderMenuMove extends StatefulWidget {
 }
 
 class _UnderMenuMoveState extends State<UnderMenuMove> {
+  //現在のユーザを取得
+  User? user = FirebaseAuth.instance.currentUser;
   static final _screens = [
-    HomePage(),
-    FindPage(),
-    MatchList(),
-    TalkList(),
-    RankList(),
+    const HomePage(),
+    const FindPage(),
+    const MatchList(),
+    const TalkList(),
+    RankList()
   ];
   late int _selectedIndex;
 
@@ -66,19 +69,85 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: _screens[_selectedIndex],
+        body:
+        (_selectedIndex == 0 || _selectedIndex == 2 || _selectedIndex == 3)
+        & (user == null) ? LoginPage()
+        : _screens[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: Colors.green,
           currentIndex: _selectedIndex,
           onTap: _onItemTapped,
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'ホーム'),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: '検索'),
+          items: <BottomNavigationBarItem>[
+            //ホーム
             BottomNavigationBarItem(
-                icon: Icon(Icons.leaderboard), label: 'マッチ'),
+              icon: user != null
+              ? const Icon(Icons.home)
+              : const Stack(
+                // アイコンに重ねて表示
+                alignment: Alignment.topRight, // 右上に配置
+                children: [
+                  Icon(Icons.home),
+                  Positioned(
+                    top: 0, // 上からの距離
+                    right: 0, // 右からの距離
+                    child: Icon(
+                      Icons.lock,
+                      size: 16, // 鍵アイコンを小さくする
+                      color: Colors.red, // 色を変更して目立たせる
+                    ),
+                  ),// 鍵アイコン
+                ],
+              ),
+              label: 'ホーム',
+            ),
+            //検索
+            const BottomNavigationBarItem(icon:Icon(Icons.search),label: '検索'),
+            //マッチ一覧
             BottomNavigationBarItem(
-                icon: Icon(Icons.chat_bubble), label: 'トーク'),
-            BottomNavigationBarItem(icon: Icon(Icons.star), label: 'ランク'),
+              icon: user != null
+                  ? const Icon(Icons.leaderboard)
+                  : const Stack(
+                // アイコンに重ねて表示
+                alignment: Alignment.topRight, // 右上に配置
+                children: [
+                  Icon(Icons.leaderboard),
+                  Positioned(
+                    top: 0, // 上からの距離
+                    right: 0, // 右からの距離
+                    child: Icon(
+                      Icons.lock,
+                      size: 16, // 鍵アイコンを小さくする
+                      color: Colors.red, // 色を変更して目立たせる
+                    ),
+                  ),// 鍵アイコン
+                ],
+              ),
+              label: 'マッチ',
+            ),
+            //トーク
+            BottomNavigationBarItem(
+              icon: user != null
+                  ? const Icon(Icons.chat_bubble)
+                  : const Stack(
+                // アイコンに重ねて表示
+                alignment: Alignment.topRight, // 右上に配置
+                children: [
+                  Icon(Icons.chat_bubble),
+                  Positioned(
+                    top: 0, // 上からの距離
+                    right: 0, // 右からの距離
+                    child: Icon(
+                      Icons.lock,
+                      size: 16, // 鍵アイコンを小さくする
+                      color: Colors.red, // 色を変更して目立たせる
+                    ),
+                  ),// 鍵アイコン
+                ],
+              ),
+              label: 'トーク',
+            ),
+            //ランキング画面
+            const BottomNavigationBarItem(icon: Icon(Icons.star),label: 'ランク'),
           ],
           type: BottomNavigationBarType.fixed,
         ));
