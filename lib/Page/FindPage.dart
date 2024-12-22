@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:tsuyosuke_tennis_ap/Page/LoginPage.dart';
+import 'package:tsuyosuke_tennis_ap/Page/SignUpPromptPage.dart';
 
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
@@ -46,7 +47,9 @@ class _FindPageState extends State<FindPage> {
   @override
   void initState() {
     super.initState();
-    _loadProfile();
+    if (auth.currentUser != null) {
+      _loadProfile();
+    }
   }
 
   Future<void> _loadProfile() async {
@@ -140,7 +143,7 @@ class _FindPageState extends State<FindPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => LoginPage()),
+                                      builder: (context) => SignUpPromptPage()),
                                 );
                                 return; // ここで処理を終了。これより下のコードは実行されない
                               }
@@ -393,7 +396,7 @@ class _FindPageState extends State<FindPage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => LoginPage()),
+                                      builder: (context) => SignUpPromptPage()),
                                 );
                                 return; // ここで処理を終了。これより下のコードは実行されない
                               }

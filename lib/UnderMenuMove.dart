@@ -23,6 +23,7 @@ import 'FireBase/singletons_data.dart';
 import 'Page/LoginPage.dart';
 import 'Page/MatchList.dart';
 import 'Page/RankList.dart';
+import 'Page/SignUpPromptPage.dart';
 import 'Page/SigninPage.dart';
 import 'Page/TalkList.dart';
 import 'Page/TalkRoom.dart';
@@ -71,7 +72,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     return Scaffold(
         body:
         (_selectedIndex == 0 || _selectedIndex == 2 || _selectedIndex == 3)
-        & (user == null) ? LoginPage()
+        & (user == null) ? SignUpPromptPage()
         : _screens[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: Colors.green,

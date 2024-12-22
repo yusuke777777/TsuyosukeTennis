@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../FireBase/urlMove.dart';
+import '../UnderMenuMove.dart';
 import 'SigninPage.dart';
 import 'SignupPage.dart';
 
@@ -30,13 +31,12 @@ class _LoginPageState extends State<LoginPage> {
         child: AppBar(
           backgroundColor: Colors.green,
         ),
-
       ),
       body: Scaffold(
           body: Column(
         children: [
           Container(
-            alignment: Alignment.center,
+              alignment: Alignment.center,
               height: deviceHeight * 0.3,
               width: deviceWidth * 0.7,
               decoration: const BoxDecoration(
@@ -53,11 +53,11 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 const Text(
                   "アカウントを登録して",
-                  style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 const Text(
                   "ランキング上位を目指そう！！",
-                  style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
               ],
             ),
@@ -72,35 +72,36 @@ class _LoginPageState extends State<LoginPage> {
                   width: deviceWidth * 0.8,
                   color: const Color(0xC876E590),
                   child: Column(
-                      mainAxisAlignment:MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                    const SizedBox(
-                      child: Text("アカウントをお持ちの方",
-                          style: TextStyle(fontSize: 16, color: Colors.white)),
-                    ),
-                    InkWell(
-                      child: const SizedBox(
-                        child: Text("ログインはこちら",
-                            style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.underline,
-                                decorationColor: Colors.green)),
-                      ),
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SignInPage(),
+                        const SizedBox(
+                          child: Text("アカウントをお持ちの方",
+                              style:
+                                  TextStyle(fontSize: 16, color: Colors.white)),
+                        ),
+                        InkWell(
+                          child: const SizedBox(
+                            child: Text("ログインはこちら",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    color: Colors.green,
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline,
+                                    decorationColor: Colors.green)),
                           ),
-                        );
-                      },
-                    ),
-                  ]),
+                          onTap: () {
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => SignInPage(),
+                              ),
+                            );
+                          },
+                        ),
+                      ]),
                 ),
                 Container(
-                  width: deviceWidth *0.8,
+                  width: deviceWidth * 0.8,
                   height: deviceHeight * 0.08,
                   padding: const EdgeInsets.only(top: 20),
                   child: ElevatedButton(
@@ -128,30 +129,53 @@ class _LoginPageState extends State<LoginPage> {
             ),
           ),
           Container(
-              height: deviceHeight *0.05,
+              height: deviceHeight * 0.05,
               child: Row(
-               mainAxisAlignment: MainAxisAlignment.center ,
-            children: [
-              TextButton(
-                  onPressed: () {
-                    //プライバシーポリシーを記入する
-                    UrlMove().UrlMoving(
-                        'https://spectacled-lan-4ae.notion.site/09dca252ef2e4ba7bd692f1e0228acc1?pvs=4');
-                  },
-                  child: Text("プライバシーポリシー",style: TextStyle(fontSize: 12),)),
-              Text("と",style: TextStyle(fontSize: 12),),
-              TextButton(
-                  onPressed: () {
-                    //利用規約を記入する
-                    UrlMove().UrlMoving(
-                        'https://spectacled-lan-4ae.notion.site/a20f927123de4185bf444025d095e525?pvs=4');
-                  },
-                  child: Text("利用規約",style: TextStyle(fontSize: 12),)),
-              Text("に同意する",style: TextStyle(fontSize: 12),)
-            ],
-          )),
-          Container(
-            child: Text("あとで登録する",style: TextStyle(fontSize: 12,color: Colors.grey),),
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextButton(
+                      onPressed: () {
+                        //プライバシーポリシーを記入する
+                        UrlMove().UrlMoving(
+                            'https://spectacled-lan-4ae.notion.site/09dca252ef2e4ba7bd692f1e0228acc1?pvs=4');
+                      },
+                      child: Text(
+                        "プライバシーポリシー",
+                        style: TextStyle(fontSize: 12),
+                      )),
+                  Text(
+                    "と",
+                    style: TextStyle(fontSize: 12),
+                  ),
+                  TextButton(
+                      onPressed: () {
+                        //利用規約を記入する
+                        UrlMove().UrlMoving(
+                            'https://spectacled-lan-4ae.notion.site/a20f927123de4185bf444025d095e525?pvs=4');
+                      },
+                      child: Text(
+                        "利用規約",
+                        style: TextStyle(fontSize: 12),
+                      )),
+                  Text(
+                    "に同意する",
+                    style: TextStyle(fontSize: 12),
+                  )
+                ],
+              )),
+          InkWell(
+            child: Container(
+              child: Text(
+                "あとで登録する",
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
+            ),
+            onTap: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => UnderMenuMove.make(4)),
+              );
+            },
           )
         ],
       )),
