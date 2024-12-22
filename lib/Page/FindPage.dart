@@ -2,6 +2,7 @@ import 'package:bordered_text/bordered_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:tsuyosuke_tennis_ap/Page/LoginPage.dart';
 
 import '../Common/CprofileSetting.dart';
 import '../FireBase/FireBase.dart';
@@ -21,6 +22,7 @@ class FindPage extends StatefulWidget {
 class _FindPageState extends State<FindPage> {
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
+
   //都道府県
   late String todofuken = '';
 
@@ -58,6 +60,7 @@ class _FindPageState extends State<FindPage> {
       });
     }
   }
+
   @override
   void dispose() {
     // コントローラを解放
@@ -65,6 +68,7 @@ class _FindPageState extends State<FindPage> {
     inputShichouson.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     //必要コンフィグの初期化
@@ -92,7 +96,10 @@ class _FindPageState extends State<FindPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(alignment:Alignment.center,height: 40, child: AdBanner(size: AdSize.banner)),
+                      Container(
+                          alignment: Alignment.center,
+                          height: 40,
+                          child: AdBanner(size: AdSize.banner)),
                       const SizedBox(
                         height: 20,
                       ),
@@ -128,21 +135,33 @@ class _FindPageState extends State<FindPage> {
                           IconButton(
                             icon: const Icon(Icons.search),
                             onPressed: () {
-                              inputId.text == ""
-                                  ? showDialog(
-                                      context: context,
-                                      builder: (_) => const AlertDialog(
-                                            title: Text("入力エラー!"),
-                                            content: Text("アカウントIDを入力してください"),
-                                          ))
-                                  : Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            FindResultPage(inputId.text),
-                                      ));
+                              if (auth.currentUser == null) {
+                                // ユーザーがログインしていない場合
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginPage()),
+                                );
+                                return; // ここで処理を終了。これより下のコードは実行されない
+                              }
+                              // ユーザーがログインしている場合のみ、以下の処理を実行
+                              if (inputId.text == "") {
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => const AlertDialog(
+                                          title: Text("入力エラー!"),
+                                          content: Text("アカウントIDを入力してください"),
+                                        ));
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          FindResultPage(inputId.text),
+                                    ));
+                              }
                             },
-                          ),
+                          )
                         ],
                       ),
 
@@ -216,8 +235,8 @@ class _FindPageState extends State<FindPage> {
                                   labelText: '市町村',
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(20)),
-                                  contentPadding:
-                                      const EdgeInsets.symmetric(horizontal: 16),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                      horizontal: 16),
                                   fillColor: Colors.white,
                                   filled: true),
                             ),
@@ -263,7 +282,8 @@ class _FindPageState extends State<FindPage> {
                                   ),
                           ),
                           IconButton(
-                            icon: const Icon(Icons.arrow_drop_down_circle_rounded),
+                            icon: const Icon(
+                                Icons.arrow_drop_down_circle_rounded),
                             onPressed: () {
                               _showModalGenderPicker(context);
                             },
@@ -304,7 +324,8 @@ class _FindPageState extends State<FindPage> {
                                       style: const TextStyle(
                                           fontSize: 20, color: Colors.black))),
                           IconButton(
-                            icon: const Icon(Icons.arrow_drop_down_circle_rounded),
+                            icon: const Icon(
+                                Icons.arrow_drop_down_circle_rounded),
                             onPressed: () {
                               _showModalRankPicker(context);
                             },
@@ -348,7 +369,8 @@ class _FindPageState extends State<FindPage> {
                                           fontSize: 20, color: Colors.black),
                                     )),
                           IconButton(
-                            icon: const Icon(Icons.arrow_drop_down_circle_rounded),
+                            icon: const Icon(
+                                Icons.arrow_drop_down_circle_rounded),
                             onPressed: () {
                               _showModalAgePicker(context);
                             },
@@ -365,32 +387,49 @@ class _FindPageState extends State<FindPage> {
                         children: [
                           IconButton(
                             icon: const Icon(Icons.search),
-                            onPressed: () async{
-                              List<String> blockList = await FirestoreMethod.getBlockUserList(auth.currentUser!.uid);
-                              todofuken == "" &&
-                                      gender == "" &&
-                                      torokuRank == "" &&
-                                      torokuAge == "" &&
-                                      inputShichouson.text == ""
-                                  ? showDialog(
-                                      context: context,
-                                      builder: (_) => const AlertDialog(
-                                            title: Text("入力エラー!"),
-                                            content: Text(
-                                                "都道府県、性別、登録ランク、年齢、市町村のいずれかは入力してください"),
-                                          ))
-                                  : Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => FindMultiResultPage(
-                                            todofuken,
-                                            inputShichouson.text,
-                                            gender,
-                                            torokuRank,
-                                            torokuAge,blockList),
-                                      ));
+                            onPressed: () async {
+                              if (auth.currentUser == null) {
+                                // ユーザーがログインしていない場合
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => LoginPage()),
+                                );
+                                return; // ここで処理を終了。これより下のコードは実行されない
+                              }
+
+                              // ユーザーがログインしている場合のみ、以下の処理を実行
+                              List<String> blockList =
+                                  await FirestoreMethod.getBlockUserList(
+                                      auth.currentUser!.uid);
+
+                              if (todofuken == "" &&
+                                  gender == "" &&
+                                  torokuRank == "" &&
+                                  torokuAge == "" &&
+                                  inputShichouson.text == "") {
+                                showDialog(
+                                    context: context,
+                                    builder: (_) => const AlertDialog(
+                                          title: Text("入力エラー!"),
+                                          content: Text(
+                                              "都道府県、性別、登録ランク、年齢、市町村のいずれかは入力してください"),
+                                        ));
+                              } else {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => FindMultiResultPage(
+                                          todofuken,
+                                          inputShichouson.text,
+                                          gender,
+                                          torokuRank,
+                                          torokuAge,
+                                          blockList),
+                                    ));
+                              }
                             },
-                          ),
+                          )
                         ],
                       ),
                     ],
