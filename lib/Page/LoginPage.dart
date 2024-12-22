@@ -48,9 +48,18 @@ class _LoginPageState extends State<LoginPage> {
             alignment: Alignment.center,
             height: deviceHeight * 0.1,
             width: deviceWidth * 0.8,
-            child: const Text(
-              "アカウントを登録して、TSPランキング上位を目指そう！！",
-              style: TextStyle(fontSize: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text(
+                  "アカウントを登録して",
+                  style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
+                ),
+                const Text(
+                  "ランキング上位を目指そう！！",
+                  style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
           ),
           Container(
