@@ -74,7 +74,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
   String torokuRank = "中級";
 
   //性別
-  String gender = "男性";
+  String gender = "";
 
   late String myUserId;
 
@@ -264,7 +264,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                           child: TextFormField(
                             controller: nickName,
                             decoration: InputDecoration(
-                                labelText: '名前',
+                                labelText: 'ニックネーム',
                                 border: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(20)),
                                 contentPadding:
@@ -840,6 +840,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
   ];
 
   final List<String> _Gender = [
+    "",
     "男性",
     "女性",
   ];
