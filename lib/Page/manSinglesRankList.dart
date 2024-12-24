@@ -6,6 +6,7 @@ import '../FireBase/FireBase.dart';
 import 'package:intl/intl.dart';
 import '../FireBase/NotificationMethod.dart';
 import 'ProfileReference.dart';
+import 'SignUpPromptPage.dart';
 import 'TalkRoom.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 
@@ -295,7 +296,18 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                               color: Colors.green)),
                                     ),
                                   ),
+                                  //トーク画面への遷移処理
                                   onTap: () async {
+                                    if (auth.currentUser == null) {
+                                      // ユーザーがログインしていない場合
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SignUpPromptPage()),
+                                      );
+                                      return; // ここで処理を終了。これより下のコードは実行されない
+                                    }
+                                    //ログインしている時のみ以下、実行
                                     bool test = await FirestoreMethod.isBlock(auth.currentUser!.uid, RankModelList[index].user.USER_ID);
                                     if (!test){
                                       return showDialog(
