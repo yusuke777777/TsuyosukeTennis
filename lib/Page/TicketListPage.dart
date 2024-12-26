@@ -104,7 +104,7 @@ class _TicketListState extends State<TicketList> {
                         padding: const EdgeInsets.only(left: 10),
                         alignment: Alignment.bottomLeft,
                         child: const Text(
-                          '・毎月1日に前月発行チケットは失効されます',
+                          '・毎月1日に前々月発行チケットは失効されます',
                           style: TextStyle(fontSize: 12),
                         ),
                       ),
