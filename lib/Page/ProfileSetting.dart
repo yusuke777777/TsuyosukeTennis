@@ -234,7 +234,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                 child: Container(
                                     child: profileImage == ""
                                         ? Image.asset(
-                                      'images/upper_body-2.png',
+                                      'images/tenipoikun.png',
                                       height: 100,
                                       width: 100,
                                     )

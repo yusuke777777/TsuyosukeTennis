@@ -133,7 +133,7 @@ class _ProfileImageState extends State<ProfileImage> {
         body: Center(
           child: myImagePath != ""
               ? Image.network(myImagePath)
-              : Image.asset('images/upper_body-2.png',
+              : Image.asset('images/tenipoikun.png',
                   fit: BoxFit.cover),
         ),
       ),

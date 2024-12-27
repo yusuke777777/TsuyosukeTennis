@@ -159,7 +159,7 @@ class _FindResultPageState extends State<FindResultPage> {
                                               ? const CircleAvatar(
                                             backgroundColor: Colors.white,
                                             backgroundImage: NetworkImage(
-                                                "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                                "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Ftenipoikun.png?alt=media&token=46474a8b-ca79-4232-92ee-431042c19d10"),
                                             radius: 30,
                                           )
                                               : CircleAvatar(

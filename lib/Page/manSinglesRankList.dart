@@ -31,7 +31,6 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
   late ScrollController _scrollController;
 
   Future<void> createRankList() async {
-    print("ccc");
     try {
       final querySnapshot = await FirebaseFirestore.instance
           .collection('manSinglesRank')
@@ -47,6 +46,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
         final userId = doc.data()['USER_ID'];
         final yourProfile = await FirestoreMethod.getYourProfile(userId);
         final yourProfileDetail = await FirestoreMethod.getYourDetailProfile(userId);
+        print("ccc");
 
         final rankListWork = RankModel(
           rankNo: doc.data()['RANK_NO'],
@@ -124,6 +124,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
     else{
       print("createRankList開始");
       createRankList();
+      print("完了");
     }
     _scrollController = ScrollController();
     // スクロール位置を監視してページネーションを実行
@@ -157,6 +158,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
     }
 
     try {
+      print("manSinglesRank1");
       final querySnapshot = await FirebaseFirestore.instance
           .collection('manSinglesRank')
           .doc(widget.rank)
@@ -165,6 +167,8 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
           .startAfterDocument(lastDocument!)
           .limit(8)
           .get();
+
+      print("manSinglesRank2");
 
       final rankList = <RankModel>[];
 
@@ -326,7 +330,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                         ? const CircleAvatar(
                                             backgroundColor: Colors.white,
                                             backgroundImage: NetworkImage(
-                                                "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Fupper_body-2.png?alt=media&token=5dc475b2-5b5e-4d3a-a6e2-3844a5ebeab7"),
+                                                "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Ftenipoikun.png?alt=media&token=46474a8b-ca79-4232-92ee-431042c19d10"),
                                             radius: 20,
                                           )
                                         : CircleAvatar(

@@ -349,7 +349,7 @@ class DrawerConfig {
 //                 ));
 //           },
 //           child: profile == ""
-//               ? Image.asset('images/upper_body-2.png', fit: BoxFit.cover)
+//               ? Image.asset('images/tenipoikun.png', fit: BoxFit.cover)
 //               : Image.network(
 //                   profile,
 //                   width: 70,
