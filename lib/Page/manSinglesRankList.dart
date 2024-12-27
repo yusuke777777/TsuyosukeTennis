@@ -75,9 +75,6 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
   Future<void> createDummyList() async {
     print("Create DummyList");
     try {
-      final querySnapshotx = await FirebaseFirestore.instance
-          .collection('dummyProfile').get();
-      print("XXX" + widget.rank.toString());
       final querySnapshot = await FirebaseFirestore.instance
           .collection('manSinglesRank')
           .doc(widget.rank)
