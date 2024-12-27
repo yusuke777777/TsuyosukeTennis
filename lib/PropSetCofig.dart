@@ -1,14 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:tsuyosuke_tennis_ap/Page/EmailChangePage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/TicketListPage.dart';
 
-import 'Common/CtalkRoom.dart';
-import 'FireBase/FireBase.dart';
+
 import 'FireBase/native_dialog.dart';
 import 'FireBase/singletons_data.dart';
 import 'Page/BlockList.dart';
@@ -17,9 +16,8 @@ import 'Page/Manual.dart';
 import 'Page/MatchResultList.dart';
 import 'Page/MySetting.dart';
 import 'Page/PasswordResetPage.dart';
-import 'Page/ProfileReference.dart';
+import 'Page/SignUpPromptPage.dart';
 import 'Page/SigninPage.dart';
-import 'Page/TalkRoom.dart';
 
 /**
  * ヘッダ部の共通クラスです
@@ -58,6 +56,9 @@ class HeaderConfig {
 class DrawerConfig {
   static late Drawer drawer;
 
+  static final Firebase_Auth.FirebaseAuth auth =
+      Firebase_Auth.FirebaseAuth.instance;
+
   void init(BuildContext context) {
     drawer = Drawer(
       child: ListView(
@@ -93,6 +94,15 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
+              if (auth.currentUser == null) {
+                // ユーザーがログインしていない場合
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SignUpPromptPage()),
+                );
+                return; // ここで処理を終了。これより下のコードは実行されない
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -110,6 +120,15 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
+              if (auth.currentUser == null) {
+                // ユーザーがログインしていない場合
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SignUpPromptPage()),
+                );
+                return; // ここで処理を終了。これより下のコードは実行されない
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -127,6 +146,15 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
+              if (auth.currentUser == null) {
+                // ユーザーがログインしていない場合
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SignUpPromptPage()),
+                );
+                return; // ここで処理を終了。これより下のコードは実行されない
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -144,6 +172,15 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
+              if (auth.currentUser == null) {
+                // ユーザーがログインしていない場合
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SignUpPromptPage()),
+                );
+                return; // ここで処理を終了。これより下のコードは実行されない
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -161,6 +198,15 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
+              if (auth.currentUser == null) {
+                // ユーザーがログインしていない場合
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SignUpPromptPage()),
+                );
+                return; // ここで処理を終了。これより下のコードは実行されない
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -178,6 +224,15 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
+              if (auth.currentUser == null) {
+                // ユーザーがログインしていない場合
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SignUpPromptPage()),
+                );
+                return; // ここで処理を終了。これより下のコードは実行されない
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -195,6 +250,15 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
+              if (auth.currentUser == null) {
+                // ユーザーがログインしていない場合
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => SignUpPromptPage()),
+                );
+                return; // ここで処理を終了。これより下のコードは実行されない
+              }
               Navigator.push(
                 context,
                 MaterialPageRoute(
@@ -210,46 +274,52 @@ class DrawerConfig {
           const SizedBox(
             height: 20,
           ),
-          GestureDetector(
-            onTap: () async {
-              await FirebaseAuth.instance.signOut();
-              //課金機能ログアウト
-              try {
-                await Purchases.logOut();
-                // appUserID を取得
-                String? newAppUserID = await Purchases.appUserID;
-                appData.appUserID = newAppUserID ?? "未設定"; // nullの処理
-                // ログアウト情報の確認
-                print("ログアウト: " + (appData.appUserID.isNotEmpty ? appData.appUserID : "未設定"));
 
-              } on PlatformException catch (e) {
-                await showDialog(
-                    context: context,
-                    builder: (BuildContext context) => ShowDialogToDismiss(
-                        title: "Error",
-                        content: e.message ?? "Unknown error",
-                        buttonText: 'OK'));
-              } catch (e) {
-                // その他のエラー処理
-                await showDialog(
-                  context: context,
-                  builder: (BuildContext context) => ShowDialogToDismiss(
-                    title: "エラー",
-                    content: e.toString(),
-                    buttonText: 'OK',
-                  ),
-                );
-              }
-              // ログアウト後の画面に遷移
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => SignInPage()),
-                (Route<dynamic> route) => false,
-              );
-            },
-            child: Container(
-              child: Text('ログアウト'),
-              alignment: Alignment.center,
+          Container(
+            child: Visibility(
+              visible: auth.currentUser != null,
+              child:          GestureDetector(
+                onTap: () async {
+                  await FirebaseAuth.instance.signOut();
+                  //課金機能ログアウト
+                  try {
+                    await Purchases.logOut();
+                    // appUserID を取得
+                    String? newAppUserID = await Purchases.appUserID;
+                    appData.appUserID = newAppUserID ?? "未設定"; // nullの処理
+                    // ログアウト情報の確認
+                    print("ログアウト: " + (appData.appUserID.isNotEmpty ? appData.appUserID : "未設定"));
+
+                  } on PlatformException catch (e) {
+                    await showDialog(
+                        context: context,
+                        builder: (BuildContext context) => ShowDialogToDismiss(
+                            title: "Error",
+                            content: e.message ?? "Unknown error",
+                            buttonText: 'OK'));
+                  } catch (e) {
+                    // その他のエラー処理
+                    await showDialog(
+                      context: context,
+                      builder: (BuildContext context) => ShowDialogToDismiss(
+                        title: "エラー",
+                        content: e.toString(),
+                        buttonText: 'OK',
+                      ),
+                    );
+                  }
+                  // ログアウト後の画面に遷移
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => SignInPage()),
+                        (Route<dynamic> route) => false,
+                  );
+                },
+                child: Container(
+                  child: Text('ログアウト'),
+                  alignment: Alignment.center,
+                ),
+              ),
             ),
           ),
         ],
