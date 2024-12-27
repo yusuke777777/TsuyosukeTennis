@@ -48,6 +48,7 @@ class FirestoreMethod {
   static final settingRef = _firestoreInstance.collection('MySetting');
   static final profileDetailRef =
       _firestoreInstance.collection('myProfileDetail');
+  static final dummyProfileRef = _firestoreInstance.collection('dummyProfile');
 
   //ランキングリスト
   static final manSinglesRankRef =
@@ -190,6 +191,19 @@ class FirestoreMethod {
     }
   }
 
+  //ログインしていないユーザが参照する情報設定
+  static Future<void> makeDummyProfile(CprofileSetting profile) async {
+    try {
+      await dummyProfileRef.doc(auth.currentUser!.uid).set({
+        'PROFILE_IMAGE': profile.PROFILE_IMAGE,
+        'NICK_NAME': profile.NICK_NAME,
+      });
+    } catch (e) {
+      print('ダミー登録に失敗しました --- $e');
+      throw ('ダミー登録に失敗しました --- $e');
+    }
+  }
+
   //プロフィール情報設定
   static Future<void> makeProfileDetail(
       CprofileSetting profile, String koushinFlg) async {
@@ -299,8 +313,9 @@ class FirestoreMethod {
         //KOUSHIN_TIME更新なし
 
         //末尾が「、」だった場合除去する
-        if(todofukenShichoson.endsWith("、")){
-          todofukenShichoson = todofukenShichoson.substring(0, todofukenShichoson.length - 1);
+        if (todofukenShichoson.endsWith("、")) {
+          todofukenShichoson =
+              todofukenShichoson.substring(0, todofukenShichoson.length - 1);
         }
 
         await profileDetailRef.doc(auth.currentUser!.uid).update({
@@ -372,7 +387,7 @@ class FirestoreMethod {
           //課金フラグ
           'BILLING_FLG': appData.entitlementIsActive == true ? "1" : "0"
         });
-        print("detail登録段階での称号は？"+profile.TITLE.toString());
+        print("detail登録段階での称号は？" + profile.TITLE.toString());
       }
     } catch (e) {
       print("===makeProfileDetail失敗===");
@@ -514,7 +529,7 @@ class FirestoreMethod {
         .collection('myProfile')
         .doc(userId)
         .get();
-    if(snapShot.data()?.length == null){
+    if (snapShot.data()?.length == null) {
       String USER_ID = userId;
       String PROFILE_IMAGE = '';
       String NICK_NAME = "退会済みユーザー";
@@ -531,8 +546,7 @@ class FirestoreMethod {
           MY_USER_ID: '');
 
       return cprofileSet;
-    }
-    else {
+    } else {
       String USER_ID = userId;
       String PROFILE_IMAGE = snapShot.data()!['PROFILE_IMAGE'];
       String NICK_NAME = snapShot.data()!['NICK_NAME'];
@@ -571,6 +585,49 @@ class FirestoreMethod {
           GENDER: GENDER,
           COMENT: COMENT,
           MY_USER_ID: MY_USER_ID);
+
+      return cprofileSet;
+    }
+  }
+
+  static Future<CprofileSetting> getYourDummyProfile(String userId) async {
+    List<CativityList> activityList = [];
+    print("取得ランキングユーザ " + userId.toString());
+    final snapShot = await FirebaseFirestore.instance
+        .collection('dummyProfile')
+        .doc(userId)
+        .get();
+    print("QWQW ");
+    if (snapShot.data()?.length == null) {
+      String PROFILE_IMAGE = '';
+      String NICK_NAME = "退会済みユーザー";
+
+      CprofileSetting cprofileSet = await CprofileSetting(
+          USER_ID: '',
+          PROFILE_IMAGE: PROFILE_IMAGE,
+          NICK_NAME: NICK_NAME,
+          TOROKU_RANK: '',
+          activityList: activityList,
+          AGE: '',
+          GENDER: '',
+          COMENT: '',
+          MY_USER_ID: '');
+
+      return cprofileSet;
+    } else {
+      String PROFILE_IMAGE = snapShot.data()!['PROFILE_IMAGE'];
+      String NICK_NAME = snapShot.data()!['NICK_NAME'];
+
+      CprofileSetting cprofileSet = await CprofileSetting(
+          USER_ID: '',
+          PROFILE_IMAGE: PROFILE_IMAGE,
+          NICK_NAME: NICK_NAME,
+          TOROKU_RANK: '',
+          activityList: activityList,
+          AGE: '',
+          GENDER: '',
+          COMENT: '',
+          MY_USER_ID: '');
 
       return cprofileSet;
     }
@@ -783,7 +840,7 @@ class FirestoreMethod {
     try {
       await roomRef.doc(delId).delete();
     } catch (e) {
-      throw(e);
+      throw (e);
     }
   }
 
@@ -1022,8 +1079,8 @@ class FirestoreMethod {
         //トークンIDが登録されていない場合
       } else {
         //トークンIDが登録されている場合
-        await NotificationMethod.sendMessage(
-            tokenId!, "対戦お願いします！", myProfile.NICK_NAME, myUid, room.user.USER_ID);
+        await NotificationMethod.sendMessage(tokenId!, "対戦お願いします！",
+            myProfile.NICK_NAME, myUid, room.user.USER_ID);
       }
       //未読メッセージ数の更新
       await NotificationMethod.unreadCount(room.user.USER_ID);
@@ -1059,11 +1116,11 @@ class FirestoreMethod {
       //トークンIDが登録されていない場合
     } else {
       //トークンIDが登録されている場合
-      await NotificationMethod.sendMessage(
-          tokenId!, "対戦結果が入力されました！", myProfile.NICK_NAME, myUid, room.user.USER_ID);
+      await NotificationMethod.sendMessage(tokenId!, "対戦結果が入力されました！",
+          myProfile.NICK_NAME, myUid, room.user.USER_ID);
     }
     //未読メッセージ数の更新
-     await NotificationMethod.unreadCount(room.user.USER_ID);
+    await NotificationMethod.unreadCount(room.user.USER_ID);
   }
 
   //対戦結果入力メッセージ(フィードバック入力希望の場合)
@@ -1094,9 +1151,12 @@ class FirestoreMethod {
         //トークンIDが登録されていない場合
       } else {
         //トークンIDが登録されている場合
-        await NotificationMethod.sendMessage(tokenId!,
+        await NotificationMethod.sendMessage(
+            tokenId!,
             "対戦結果が入力されました！\n評価の入力、感想・フィードバックの記入お願いします！",
-            myProfile.NICK_NAME, myUid, room.user.USER_ID);
+            myProfile.NICK_NAME,
+            myUid,
+            room.user.USER_ID);
       }
       //未読メッセージ数の更新
       await NotificationMethod.unreadCount(room.user.USER_ID);
@@ -1126,8 +1186,8 @@ class FirestoreMethod {
       //トークンIDが登録されていない場合
     } else {
       //トークンIDが登録されている場合
-      await NotificationMethod.sendMessage(
-          tokenId!, "友達登録お願いします！", myProfile.NICK_NAME, myUid, room.user.USER_ID);
+      await NotificationMethod.sendMessage(tokenId!, "友達登録お願いします！",
+          myProfile.NICK_NAME, myUid, room.user.USER_ID);
     }
     //未読メッセージ数の更新
     await NotificationMethod.unreadCount(room.user.USER_ID);
@@ -1162,11 +1222,11 @@ class FirestoreMethod {
         //トークンIDが登録されていない場合
       } else {
         //トークンIDが登録されている場合
-        await NotificationMethod.sendMessage(
-            tokenId!, "評価・フィードバックを入力しました！", myProfile.NICK_NAME, myUid, room.user.USER_ID);
+        await NotificationMethod.sendMessage(tokenId!, "評価・フィードバックを入力しました！",
+            myProfile.NICK_NAME, myUid, room.user.USER_ID);
       }
       //未読メッセージ数の更新
-       await NotificationMethod.unreadCount(room.user.USER_ID);
+      await NotificationMethod.unreadCount(room.user.USER_ID);
     } catch (e) {
       print("sendMatchResultFeedMessageReturnエラー");
     }
@@ -1369,10 +1429,14 @@ class FirestoreMethod {
       } else {
         //トークンIDが登録されている場合
         await NotificationMethod.sendMessage(
-            tokenId!, "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！", myProfile.NICK_NAME, myUid, room.user.USER_ID);
+            tokenId!,
+            "対戦を受け入れました。\n対戦相手の方と場所や日時を決めましょう！",
+            myProfile.NICK_NAME,
+            myUid,
+            room.user.USER_ID);
       }
       //未読メッセージ数の更新
-       await NotificationMethod.unreadCount(room.user.USER_ID);
+      await NotificationMethod.unreadCount(room.user.USER_ID);
     } catch (e) {
       print("matchAcceptエラー");
     }
@@ -1407,11 +1471,14 @@ class FirestoreMethod {
       } else {
         //トークンIDが登録されている場合
         await NotificationMethod.sendMessage(
-            tokenId!, "チケットが不足しています\nチケット購入お願いします！",
-            myProfile.NICK_NAME, myUid, room.user.USER_ID);
+            tokenId!,
+            "チケットが不足しています\nチケット購入お願いします！",
+            myProfile.NICK_NAME,
+            myUid,
+            room.user.USER_ID);
       }
       //未読メッセージ数の更新
-       await NotificationMethod.unreadCount(room.user.USER_ID);
+      await NotificationMethod.unreadCount(room.user.USER_ID);
     } catch (e) {
       print("matchAcceptエラー");
     }
@@ -1460,8 +1527,11 @@ class FirestoreMethod {
       } else {
         //トークンIDが登録されている場合
         await NotificationMethod.sendMessage(
-            tokenId!, "友人申請を受け入れました。\n友人一覧を確認してみよう！",
-            myProfile.NICK_NAME, myUid, room.user.USER_ID);
+            tokenId!,
+            "友人申請を受け入れました。\n友人一覧を確認してみよう！",
+            myProfile.NICK_NAME,
+            myUid,
+            room.user.USER_ID);
       }
       //未読メッセージ数の更新
       await NotificationMethod.unreadCount(room.user.USER_ID);
@@ -1683,22 +1753,22 @@ class FirestoreMethod {
             );
           }
           //マッチング処理を実施
-            // マッチング処理をトランザクション内で実行
-            // 新しいドキュメントを追加し、そのIDを取得
-            DocumentReference newDocMatchRef = matchRef.doc();
-            String newDocId = newDocMatchRef.id;
+          // マッチング処理をトランザクション内で実行
+          // 新しいドキュメントを追加し、そのIDを取得
+          DocumentReference newDocMatchRef = matchRef.doc();
+          String newDocId = newDocMatchRef.id;
 
-            transaction.set(
-              newDocMatchRef,
-              {
-                'RECIPIENT_ID': auth.currentUser!.uid,
-                'SENDER_ID': yourUserId,
-                'MATCH_USER_LIST': [auth.currentUser!.uid, yourUserId],
-                'SAKUSEI_TIME': today,
-                'MATCH_FLG': '1',
-                'MATCH_ID': newDocId
-              },
-            );
+          transaction.set(
+            newDocMatchRef,
+            {
+              'RECIPIENT_ID': auth.currentUser!.uid,
+              'SENDER_ID': yourUserId,
+              'MATCH_USER_LIST': [auth.currentUser!.uid, yourUserId],
+              'SAKUSEI_TIME': today,
+              'MATCH_FLG': '1',
+              'MATCH_ID': newDocId
+            },
+          );
           ticketFlg = "0";
         } else {
           if (myTicketSu < 1) {
@@ -1722,7 +1792,7 @@ class FirestoreMethod {
     try {
       await matchRef.doc(delId).delete();
     } catch (e) {
-      throw(e);
+      throw (e);
     }
   }
 
@@ -4310,11 +4380,11 @@ class FirestoreMethod {
    */
   static Future<bool> isBlock(String myUid, String yourUid) async {
     final blockUserListRef =
-    blockListRef.doc(myUid).collection('blockUserList');
+        blockListRef.doc(myUid).collection('blockUserList');
 
     // クエリを実行し、結果をリストに格納
     QuerySnapshot<Map<String, dynamic>> querySnapshot =
-    await blockUserListRef.where('BLOCK_USER', isEqualTo: yourUid).get();
+        await blockUserListRef.where('BLOCK_USER', isEqualTo: yourUid).get();
 
     //スナップショットが空でないということは対象をブロックしている
     if (querySnapshot.docs.isNotEmpty) {
@@ -4327,17 +4397,17 @@ class FirestoreMethod {
    * 相手のブロックリストを確認して自分がブロック対象か否か
    */
   static Future<bool> isBlock_yours(String myUid, String yourUid) async {
-    final blockUserListRef = blockListRef.doc(yourUid).collection('blockUserList');
+    final blockUserListRef =
+        blockListRef.doc(yourUid).collection('blockUserList');
 
     // クエリを実行し、結果をリストに格納
     QuerySnapshot<Map<String, dynamic>> querySnapshot =
-    await blockUserListRef.where('BLOCK_USER', isEqualTo: myUid).get();
+        await blockUserListRef.where('BLOCK_USER', isEqualTo: myUid).get();
 
     //スナップショットが空でないということは対象をブロックしている
-    if(querySnapshot.docs.isNotEmpty){
+    if (querySnapshot.docs.isNotEmpty) {
       return false;
     }
     return true;
-
   }
 }

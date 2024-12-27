@@ -72,10 +72,62 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
     }
   }
 
+  Future<void> createDummyList() async {
+    print("Create DummyList");
+    try {
+      final querySnapshotx = await FirebaseFirestore.instance
+          .collection('dummyProfile').get();
+      print("XXX" + widget.rank.toString());
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('manSinglesRank')
+          .doc(widget.rank)
+          .collection('RankList')
+          .orderBy('RANK_NO')
+          .limit(8)
+          .get();
+
+      final rankList = <RankModel>[];
+
+      for (final doc in querySnapshot.docs) {
+        final userId = doc.data()['USER_ID'];
+        final yourProfile = await FirestoreMethod.getYourDummyProfile(userId);
+
+        final rankListWork = RankModel(
+            rankNo: doc.data()['RANK_NO'],
+            user: yourProfile,
+            tpPoint: doc.data()['TS_POINT'],
+            searchEnableFlg: false
+        );
+
+        rankList.add(rankListWork);
+      }
+
+      if (querySnapshot.docs.isNotEmpty) {
+        lastDocument = querySnapshot.docs.last; // 最後のドキュメントを設定
+        print("eee");
+      }
+      if (mounted) {
+        setState(() {
+          RankModelList.addAll(rankList);
+        });
+      }
+    } catch (e) {
+      print("ここか！"+ e.toString());
+    }
+  }
+
   @override
   void initState() {
     super.initState();
-    createRankList();
+    if (auth.currentUser == null){
+      print("createDummyList開始");
+      createDummyList();
+      print("完了");
+    }
+    else{
+      print("createRankList開始");
+      createRankList();
+    }
     _scrollController = ScrollController();
     // スクロール位置を監視してページネーションを実行
     _scrollController.addListener(() {
@@ -96,6 +148,8 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
   }
 
   Future<void> _loadMoreData() async {
+    print("ここはとおるっすか？"+_isLoadingMore.toString());
+
     if (_isLoadingMore) return;
     if (mounted) {
       setState(() {
@@ -214,7 +268,6 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                     print(_isLoadingMore);
                     return const Center(child: CircularProgressIndicator());
                   } else {
-                    print("ss");
                     return const SizedBox();
                   }
                 } else {
@@ -250,7 +303,26 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                     width: deviceWidth * 0.15,
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 4.0),
-                                    child: RankModelList[index]
+                                    child: auth.currentUser == null?
+                                        RankModelList[index]
+                                        .user
+                                        .PROFILE_IMAGE ==
+                                        ''
+                                        ?
+                                    const CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: AssetImage('images/tenipoikun.png'),
+                                      radius: 20,
+                                    )
+                                        :CircleAvatar(
+                                          backgroundColor: Colors.white,
+                                          backgroundImage: NetworkImage(
+                                              RankModelList[index]
+                                                  .user
+                                                  .PROFILE_IMAGE),
+                                          radius: 20,
+                                        )
+                                    :RankModelList[index]
                                                 .user
                                                 .PROFILE_IMAGE ==
                                             ''
@@ -268,8 +340,17 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                                     .PROFILE_IMAGE),
                                             radius: 20,
                                           ),
-                                  ),
+                                    ),
                                   onTap: () {
+                                    if (auth.currentUser == null) {
+                                      // ユーザーがログインしていない場合
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => SignUpPromptPage()),
+                                      );
+                                      return; // ここで処理を終了。これより下のコードは実行されない
+                                    }
                                     if(RankModelList[index].searchEnableFlg){
                                       Navigator.push(
                                           context,
