@@ -274,7 +274,7 @@ class DrawerConfig {
           Container(
             child: Visibility(
               visible: auth.currentUser != null,
-              child:          GestureDetector(
+              child:GestureDetector(
                 onTap: () async {
                   await FirebaseAuth.instance.signOut();
                   //課金機能ログアウト

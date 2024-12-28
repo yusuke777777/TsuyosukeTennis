@@ -523,11 +523,14 @@ class _ProfileSettingState extends State<ProfileSetting> {
                       ? Container(
                           padding: const EdgeInsets.all(5.0),
                           width: deviceWidth * 0.8,
-                          child: const Text(
-                            '●性別',
-                            style: TextStyle(fontSize: 20, color: Colors.black),
-                          ),
-                        )
+                          child: Visibility(
+                            visible: widget.koushinFlg == "1" && widget.myProfile.GENDER == '',
+                            child: const Text(
+                              '●性別',
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.black),
+                            ),
+                          ))
                       : Container(
                           padding: const EdgeInsets.all(5.0),
                           width: deviceWidth * 0.8,
@@ -535,14 +538,16 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             children: [
                               const Text(
                                 '●性別',
-                                style: TextStyle(fontSize: 20, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.black),
                               ),
                               SizedBox(
                                 width: 5,
                               ),
                               const Text(
                                 '※登録後の性別の変更はできません。',
-                                style: TextStyle(fontSize: 12, color: Colors.black),
+                                style: TextStyle(
+                                    fontSize: 12, color: Colors.black),
                               ),
                             ],
                           ),
@@ -554,26 +559,36 @@ class _ProfileSettingState extends State<ProfileSetting> {
                         padding: const EdgeInsets.all(5.0),
                         width: deviceWidth * 0.65,
                         height: 40,
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey),
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(20)),
-                        child: Text(
-                          gender,
-                          style: const TextStyle(
-                              fontSize: 20, color: Colors.black),
+                        child: Visibility(
+                          visible: widget.koushinFlg == "0" || widget.myProfile.GENDER == '',
+                          child: Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(color: Colors.grey),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                            child: Text(
+                              gender,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
                       Container(
-                        width: deviceWidth * 0.1,
-                        child: IconButton(
-                          icon:
-                              const Icon(Icons.arrow_drop_down_circle_rounded),
-                          onPressed: () {
-                            _showModalGenderPicker(context);
-                          },
-                        ),
-                      ),
+                          width: deviceWidth * 0.1,
+                          child: Visibility(
+                            visible: widget.koushinFlg == "0" || widget.myProfile.GENDER == '',
+                            child: IconButton(
+                              icon: const Icon(
+                                  Icons.arrow_drop_down_circle_rounded),
+                              onPressed: () {
+                                _showModalGenderPicker(context);
+                              },
+                            ),
+                          )),
                     ],
                   ),
                   const SizedBox(
