@@ -730,9 +730,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
                                   );
                                 });
                           } else {
-                            print(widget.koushinFlg);
-                            print(widget.koushinMaeGender);
-                            print(gender);
                             try {
                               print(auth.currentUser!.uid);
                               await FirestoreMethod.makeProfile(myProfile);
@@ -748,7 +745,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             } catch (e) {
                               print("XXXXXXここでエラーに対する処理を入れるXXXXXX");
                             }
-                            Navigator.pushReplacement(
+                            await Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => UnderMenuMove.make(0),
