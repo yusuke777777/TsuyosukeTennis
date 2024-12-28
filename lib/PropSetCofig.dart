@@ -10,9 +10,9 @@ import 'package:tsuyosuke_tennis_ap/Page/TicketListPage.dart';
 
 import 'FireBase/native_dialog.dart';
 import 'FireBase/singletons_data.dart';
+import 'FireBase/urlMove.dart';
 import 'Page/BlockList.dart';
 import 'Page/FriendManagerPage.dart';
-import 'Page/Manual.dart';
 import 'Page/MatchResultList.dart';
 import 'Page/MySetting.dart';
 import 'Page/PasswordResetPage.dart';
@@ -77,12 +77,8 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const Manual(),
-                ),
-              );
+              UrlMove().UrlMoving(
+                  'https://spectacled-lan-4ae.notion.site/54a20356702e41cca956b9b72b9f9c4c?pvs=4');
             },
             child: Container(
               child: Text('アプリ利用手順'),
