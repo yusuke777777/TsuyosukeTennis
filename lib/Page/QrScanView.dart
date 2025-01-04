@@ -149,7 +149,7 @@ class _QrScanViewState extends State<QrScanView> {
     log('${DateTime.now().toIso8601String()}_onPermissionSet $p');
     if (!p) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('no Permission')),
+        const SnackBar(content: Text('権限がありません')),
       );
     }
   }

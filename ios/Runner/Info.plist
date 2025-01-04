@@ -29,7 +29,7 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>Camera permission is required for Genera scanning.</string>
+	<string>QRコード読み取りを行うために、カメラのアクセス許可が必要です</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string></string>
 	<key>NSPhotoLibraryUsageDescription</key>
@@ -37,7 +37,7 @@
 	<key>NSUserNotificationAlertStyle</key>
 	<string>banner</string>
 	<key>NSUserTrackingUsageDescription</key>
-	<string>This identifier will be used to deliver personalized ads to you.</string>
+	<string>これにより、テニポイはユーザーにより良い広告体験を提供することができます。</string>
 	<key>SKAdNetworkItems</key>
 	<array>
 		<dict>
@@ -73,5 +73,9 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CFBundleLocalizations</key>
+    <array>
+        <string>ja</string> <!-- 日本語 -->
+    </array>
 </dict>
 </plist>

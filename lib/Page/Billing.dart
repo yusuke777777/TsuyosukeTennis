@@ -41,215 +41,375 @@ class _BillingState extends State<Billing> {
             iconTheme: const IconThemeData(color: Colors.black),
             leading: HeaderConfig.backIcon),
         body: SingleChildScrollView(
-          child: SafeArea(
-            child: Wrap(
-              children: <Widget>[
-                Column(
-                  children: [
-                    Column(
+          child: Column(
+            children: [
+              Column(
+                children: [
+                  Container(
+                      alignment: Alignment.bottomLeft,
+                      width: deviceWidth * 0.95,
+                      child:
+                          const Text("現在のプラン", style: TextStyle(fontSize: 18))),
+                  appData.entitlementIsActive == true
+                      ? Card(
+                          child: Container(
+                              padding: const EdgeInsets.only(left: 10),
+                              decoration: BoxDecoration(
+                                  color: Colors.greenAccent,
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              width: deviceWidth * 0.9,
+                              height: 50,
+                              alignment: Alignment.centerLeft,
+                              child: Text(widget.tspPlan.storeProduct.title,
+                                  style: const TextStyle(
+                                      fontSize: 18, color: Colors.white))),
+                        )
+                      : Card(
+                          child: Container(
+                              decoration: BoxDecoration(
+                                  color: Colors.greenAccent,
+                                  borderRadius: BorderRadius.circular(10.0)),
+                              width: deviceWidth * 0.9,
+                              height: 50,
+                              alignment: Alignment.centerLeft,
+                              child: const Text("ベーシック(無料)",
+                                  style: TextStyle(
+                                      fontSize: 18, color: Colors.white))),
+                        )
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              appData.entitlementIsActive == true
+                  ? Column(
                       children: [
                         Container(
-                            alignment: Alignment.bottomLeft,
-                            width: deviceWidth * 0.95,
-                            child:
-                                const Text("現在のプラン", style: TextStyle(fontSize: 18))),
-                        appData.entitlementIsActive == true
-                            ? Card(
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.greenAccent,
-                                        borderRadius:
-                                            BorderRadius.circular(10.0)),
-                                    width: deviceWidth * 0.9,
-                                    height: 50,
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                        widget.tspPlan.storeProduct.title,
-                                        style: const TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.white))),
-                              )
-                            : Card(
-                                child: Container(
-                                    decoration: BoxDecoration(
-                                        color: Colors.greenAccent,
-                                        borderRadius:
-                                            BorderRadius.circular(10.0)),
-                                    width: deviceWidth * 0.9,
-                                    height: 50,
-                                    alignment: Alignment.centerLeft,
-                                    child: const Text("ベーシック(無料)",
-                                        style: TextStyle(
-                                            fontSize: 18,
-                                            color: Colors.white))),
-                              )
-                      ],
-                    ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    appData.entitlementIsActive == true
-                        ? Column(
+                          width: deviceWidth * 0.95,
+                          alignment: Alignment.centerLeft,
+                          child: Row(
                             children: [
-                              Container(
-                                width: deviceWidth * 0.95,
-                                alignment: Alignment.centerLeft,
-                                child: const Text("TSPプレミアム",
-                                    style: TextStyle(fontSize: 18)),
-                              ),
-                              Card(
-                                child: Container(
-                                  padding: const EdgeInsets.all(10),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                          width: deviceWidth * 0.9,
-                                          alignment: Alignment.bottomLeft,
-                                          child: Text(
-                                              widget.tspPlan.storeProduct.title,
-                                              style: const TextStyle(fontSize: 20))),
-                                      Container(
-                                        width: deviceWidth * 0.9,
-                                        alignment: Alignment.bottomLeft,
-                                        child: const Text("チケット増量に加え、友人対戦管理機能も利用可能に！",
-                                            style: TextStyle(fontSize: 18)),
-                                      ),
-                                      Card(
-                                        child: InkWell(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.greenAccent,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        10.0)),
-                                            width: deviceWidth * 0.5,
-                                            height: 50,
-                                            alignment: Alignment.center,
-                                            child: const Text(
-                                              "解約する",
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                          onTap: () async {
-                                            //退会処理
-                                            UrlMove().UrlMoving(
-                                                'https://support.apple.com/ja-jp/118428');
-                                          },
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          )
-                        : Column(
-                            children: [
-                              Container(
-                                width: deviceWidth * 0.95,
-                                alignment: Alignment.centerLeft,
-                                child: const Text("TSPプレミアム",
-                                    style: TextStyle(fontSize: 18)),
-                              ),
-                              Card(
-                                child: Container(
-                                  padding: EdgeInsets.all(10),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                          width: deviceWidth * 0.9,
-                                          alignment: Alignment.bottomLeft,
-                                          child: Text(
-                                              widget.tspPlan.storeProduct.title,
-                                              style: const TextStyle(fontSize: 20))),
-                                      Container(
-                                        width: deviceWidth * 0.9,
-                                        alignment: Alignment.bottomLeft,
-                                        child: const Text("チケット増量に加え、友人対戦管理機能も利用可能に！",
-                                            style: TextStyle(fontSize: 18)),
-                                      ),
-                                      Card(
-                                        child: InkWell(
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                                color: Colors.greenAccent,
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        10.0)),
-                                            width: deviceWidth * 0.5,
-                                            height: 50,
-                                            alignment: Alignment.center,
-                                            child: const Text(
-                                              "加入する",
-                                              style: TextStyle(
-                                                  fontSize: 18,
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                          onTap: () async {
-                                            try {
-                                              //処理
-                                              CustomerInfo customerInfo =
-                                                  await Purchases
-                                                      .purchasePackage(
-                                                          widget.tspPlan);
-                                              EntitlementInfo? entitlement =
-                                                  customerInfo.entitlements
-                                                      .all[entitlementID];
-                                              appData.entitlementIsActive =
-                                                  entitlement?.isActive ??
-                                                      false;
-                                              // //DBの課金フラグを更新する
-                                              // await FirestoreMethod
-                                              //     .updateBillingFlg();
-                                              setState(() {});
-                                            } catch (e) {
-                                              // エラーの種類を確認
-                                              String errorMessage = parsePurchaseError(e);
-                                              await showDialog(
-                                                  context: context,
-                                                  builder:
-                                                      (BuildContext context) =>
-                                                          ShowDialogToDismiss(
-                                                            content:
-                                                            errorMessage,
-                                                            buttonText: "はい",
-                                                          ));
-                                            }
-                                          },
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
+                              const Text("TSPプレミアム",
+                                  style: TextStyle(fontSize: 18)),
+                              TextButton(
+                                  onPressed: () {
+                                    //TSPプレミアムプランの説明へ
+                                  },
+                                  child: Text(
+                                    "（機能の詳細はこちら）",
+                                    style: TextStyle(fontSize: 18),
+                                  ))
                             ],
                           ),
+                        ),
+                        Card(
+                          child: Container(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                              children: [
+                                Container(
+                                    width: deviceWidth * 0.9,
+                                    alignment: Alignment.bottomLeft,
+                                    child: Text(
+                                        widget.tspPlan.storeProduct.title,
+                                        style: const TextStyle(fontSize: 20))),
+                                Container(
+                                  width: deviceWidth * 0.9,
+                                  alignment: Alignment.bottomLeft,
+                                  child: const Text("チケット増量に加え、友人対戦管理機能も利用可能に！",
+                                      style: TextStyle(fontSize: 18)),
+                                ),
+                                Card(
+                                  child: InkWell(
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                          color: Colors.greenAccent,
+                                          borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                      width: deviceWidth * 0.5,
+                                      height: 50,
+                                      alignment: Alignment.center,
+                                      child: const Text(
+                                        "解約する",
+                                        style: TextStyle(
+                                            fontSize: 18, color: Colors.white),
+                                      ),
+                                    ),
+                                    onTap: () async {
+                                      //退会処理
+                                      UrlMove().UrlMoving(
+                                          'https://support.apple.com/ja-jp/118428');
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : Column(
+                      children: [
+                        Container(
+                          width: deviceWidth * 0.95,
+                          alignment: Alignment.centerLeft,
+                          child: Row(
+                            children: [
+                              const Text("TSPプレミアム",
+                                  style: TextStyle(fontSize: 18)),
+                              TextButton(
+                                  onPressed: () {
+                                    //TSPプレミアムプランの説明へ
+                                  },
+                                  child: Text(
+                                    "（機能の詳細はこちら）",
+                                    style: TextStyle(fontSize: 18),
+                                  ))
+                            ],
+                          ),
+                        ),
+                        Card(
+                          child: Container(
+                            padding: EdgeInsets.all(10),
+                            child: Column(
+                              children: [
+                                Container(
+                                    width: deviceWidth * 0.9,
+                                    alignment: Alignment.bottomLeft,
+                                    child: Text(
+                                        widget.tspPlan.storeProduct.title,
+                                        style: const TextStyle(fontSize: 20))),
+                                Container(
+                                  width: deviceWidth * 0.9,
+                                  alignment: Alignment.bottomLeft,
+                                  child: const Text("チケット増量に加え、友人対戦管理機能も利用可能に！",
+                                      style: TextStyle(fontSize: 18)),
+                                ),
+                                Column(
+                                  children: [
+                                    Card(
+                                      child: InkWell(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.greenAccent,
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0)),
+                                          width: deviceWidth * 0.5,
+                                          height: 50,
+                                          alignment: Alignment.center,
+                                          child: const Text(
+                                            "加入する",
+                                            style: TextStyle(
+                                                fontSize: 18, color: Colors.white),
+                                          ),
+                                        ),
+                                        onTap: () async {
+                                          try {
+                                            //処理
+                                            CustomerInfo customerInfo =
+                                                await Purchases.purchasePackage(
+                                                    widget.tspPlan);
+                                            EntitlementInfo? entitlement =
+                                                customerInfo.entitlements
+                                                    .all[entitlementID];
+                                            appData.entitlementIsActive =
+                                                entitlement?.isActive ?? false;
+                                            // //DBの課金フラグを更新する
+                                            // await FirestoreMethod
+                                            //     .updateBillingFlg();
+                                            setState(() {});
+                                          } catch (e) {
+                                            // エラーの種類を確認
+                                            String errorMessage =
+                                                parsePurchaseError(e);
+                                            await showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) =>
+                                                    ShowDialogToDismiss(
+                                                      content: errorMessage,
+                                                      buttonText: "はい",
+                                                    ));
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                    Card(
+                                      child: InkWell(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.greenAccent,
+                                              borderRadius:
+                                              BorderRadius.circular(10.0)),
+                                          width: deviceWidth * 0.5,
+                                          height: 50,
+                                          alignment: Alignment.center,
+                                          child: const Text(
+                                            "復元する",
+                                            style: TextStyle(
+                                                fontSize: 18, color: Colors.white),
+                                          ),
+                                        ),
+                                        onTap: () async {
+                                          try {
+                                            //復元する
+                                            CustomerInfo customerInfo = await Purchases.restorePurchases();
+                                            EntitlementInfo? entitlement =
+                                            customerInfo.entitlements
+                                                .all[entitlementID];
+                                            appData.entitlementIsActive =
+                                                entitlement?.isActive ?? false;
+                                            setState(() {});
+                                          } catch (e) {
+                                            // エラーの種類を確認
+                                            String errorMessage =
+                                            parsePurchaseError(e);
+                                            await showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) =>
+                                                    ShowDialogToDismiss(
+                                                      content: errorMessage,
+                                                      buttonText: "はい",
+                                                    ));
+                                          }
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+              SizedBox(
+                height: 40,
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "●自動継続課金について",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    Text(
+                      "有料プランは毎月自動更新されます。",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    Text(
+                      "自動更新の課金は契約期間が終了する前の24時間以内に行われます。",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    Text(
+                      "期間終了の24時間前までに自動更新の解除をされない場合、契約期間が自動更新されます。",
+                      style: TextStyle(fontSize: 12),
+                    ),
                   ],
                 ),
-                const Padding(
-                  padding: EdgeInsets.only(
-                      top: 32, bottom: 16, left: 16.0, right: 16.0),
-                  child: SizedBox(
-                    child: Text(
-                      footerText,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.normal,
-                        fontSize: 16.0,
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "●確認と解約",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    Text(
+                      "1.設定アプリ＞「ユーザー名」＞「サブスクリプション」の順にタップします。",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    Text(
+                      "2.変更したいサブスクリプションをタップします。",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    Text(
+                      "3.この画面から次回の自動更新のタイミングの確認や自動更新の解除ができます。",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "●機種変更時の復元",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    Text(
+                      "機種変更時には、以前購入したプランを復元できます。購入時と同じApple IDで端末にログインの上、「復元する」ボタンを押してください。",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                padding: EdgeInsets.all(10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "●注意点",
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    Text(
+                      "当月分のキャンセルについては受け付けておりません。",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    Text(
+                      "Apple IDを経由して課金されます。",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                alignment: Alignment.center,
+                child: Column(
+                  children: [
+                    TextButton(
+                      onPressed: () {
+                        //利用規約へ
+                        UrlMove().UrlMoving(
+                            'https://spectacled-lan-4ae.notion.site/a20f927123de4185bf444025d095e525?pvs=4');
+                      },
+                      child: const Text(
+                        "利用規約",
+                        style: TextStyle(fontSize: 14),
                       ),
                     ),
-                    width: double.infinity,
-                  ),
+                    TextButton(
+                      onPressed: () {
+                        //プライバシーポリシーへ
+                        UrlMove().UrlMoving(
+                            'https://spectacled-lan-4ae.notion.site/09dca252ef2e4ba7bd692f1e0228acc1?pvs=4');
+                      },
+                      child: const Text(
+                        "プライバシーポリシー",
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              SizedBox(
+                height: 40,
+              ),
+            ],
           ),
-        )
-        );
+        ));
   }
+
   @override
   void dispose() {
     // 必要なリソースを解放する処理をここに追加
@@ -291,7 +451,4 @@ class _BillingState extends State<Billing> {
       return "予期しないエラーが発生しました。";
     }
   }
-
 }
-
-

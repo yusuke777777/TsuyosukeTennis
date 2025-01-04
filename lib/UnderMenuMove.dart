@@ -273,15 +273,16 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
 
   //課金機能
   Future<void> initPlatformState() async {
+    print("1/4確認箇所１");
     appData.appUserID = await Purchases.appUserID;
     print("appUserId" + appData.appUserID);
     Purchases.addCustomerInfoUpdateListener((customerInfo) async {
+      print("1/4確認箇所2");
       // if(!appData.isPurchasing) {
         if (FirebaseAuth.instance.currentUser != null) {
+          print("1/4確認箇所3");
           //課金ユーザーへログイン
           await Purchases.logIn(FirebaseAuth.instance.currentUser!.uid);
-          appData.appUserID = await Purchases.appUserID;
-          print("appData.appUserIDログイン" + appData.appUserID);
           //appUserIdをセットする
           appData.appUserID = await Purchases.appUserID;
           //現在の課金フラグを取得する
