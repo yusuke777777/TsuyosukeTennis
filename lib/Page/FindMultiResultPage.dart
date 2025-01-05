@@ -12,6 +12,7 @@ import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import '../FireBase/GoogleAds.dart';
 import '../FireBase/NotificationMethod.dart';
 import '../PropSetCofig.dart';
+import 'SignUpPromptPage.dart';
 import 'TalkRoom.dart';
 
 class FindMultiResultPage extends StatefulWidget {
@@ -51,7 +52,6 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
   //ログイン中のユーザーのIDを取得
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
-  String myUserID = auth.currentUser!.uid;
 
   Future<double> _calculateTextHeight(String text, TextStyle style) async {
     final TextPainter textPainter = TextPainter(
@@ -101,9 +101,8 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
       List<CFindMultiResultPage> searchResultList = [];
 
       await Future.forEach<dynamic>(querySnapshot.docs, (doc) async {
-        if (doc
-            .data()['USER_ID']
-            .contains(FirestoreMethod.auth.currentUser!.uid)) {
+        if (FirestoreMethod.auth.currentUser != null &&
+            doc.data()['USER_ID'].contains(FirestoreMethod.auth.currentUser!.uid)) {
           print("ユーザーが自分自身");
         } else {
           if (blockList.contains(doc.data()['USER_ID'])) {
@@ -275,6 +274,15 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                     } else {
                       return InkWell(
                         onTap: () async {
+                          if (auth.currentUser == null) {
+                            // ユーザーがログインしていない場合
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignUpPromptPage()),
+                            );
+                            return; // ここで処理を終了。これより下のコードは実行されない
+                          }
                           showDialog(
                               context: context,
                               builder: (context) {
@@ -341,6 +349,15 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                                                         .PROFILE_IMAGE),
                                                 radius: 30),
                                     onTap: () {
+                                      if (auth.currentUser == null) {
+                                        // ユーザーがログインしていない場合
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => SignUpPromptPage()),
+                                        );
+                                        return; // ここで処理を終了。これより下のコードは実行されない
+                                      }
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(

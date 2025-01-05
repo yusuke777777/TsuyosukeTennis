@@ -10,6 +10,7 @@ import '../FireBase/GoogleAds.dart';
 import '../FireBase/NotificationMethod.dart';
 import '../PropSetCofig.dart';
 import 'ProfileReference.dart';
+import 'SignUpPromptPage.dart';
 import 'TalkRoom.dart';
 
 class FindResultPage extends StatefulWidget {
@@ -31,7 +32,6 @@ class _FindResultPageState extends State<FindResultPage> {
   //ログイン中のユーザーのIDを取得
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
-  String myUserID = auth.currentUser!.uid;
 
   //アカウントID入力値から対象の名前を取得
   late Future<List<String>> futureList =
@@ -92,6 +92,15 @@ class _FindResultPageState extends State<FindResultPage> {
                     } else {
                       return InkWell(
                         onTap: () async {
+                          if (auth.currentUser == null) {
+                            // ユーザーがログインしていない場合
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SignUpPromptPage()),
+                            );
+                            return; // ここで処理を終了。これより下のコードは実行されない
+                          }
                           showDialog(
                               context: context,
                               builder: (context) {
@@ -169,6 +178,15 @@ class _FindResultPageState extends State<FindResultPage> {
                                                       ),
                                               radius: 30),
                                           onTap: () {
+                                            if (auth.currentUser == null) {
+                                              // ユーザーがログインしていない場合
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) => SignUpPromptPage()),
+                                              );
+                                              return; // ここで処理を終了。これより下のコードは実行されない
+                                            }
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
