@@ -39,6 +39,7 @@ class FirestoreMethod {
   String Uid = '';
   static FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
   static final profileRef = _firestoreInstance.collection('myProfile');
+  static final dummyRef = _firestoreInstance.collection('dummyProfile');
   static final matchRef = _firestoreInstance.collection('matchList');
   static final friendsListRef = _firestoreInstance.collection('friendsList');
   static final matchResultRef = _firestoreInstance.collection('matchResult');
@@ -197,6 +198,8 @@ class FirestoreMethod {
       await dummyProfileRef.doc(auth.currentUser!.uid).set({
         'PROFILE_IMAGE': profile.PROFILE_IMAGE,
         'NICK_NAME': profile.NICK_NAME,
+        'MY_USER_ID':profile.MY_USER_ID,
+        'COMENT':profile.COMENT
       });
     } catch (e) {
       print('ダミー登録に失敗しました --- $e');
@@ -1356,41 +1359,49 @@ class FirestoreMethod {
    */
   static Future<List<String>> getUserByMyUserId(String myUserID) async {
     List<String> resultList = [];
+    late final snapShot;
+    late String id;
     try {
-      final snapShot_self = await profileRef
-          .where('USER_ID', isEqualTo: auth.currentUser!.uid)
-          .get();
-      if (myUserID == snapShot_self.docs.first.get('MY_USER_ID')) {
-        return resultList;
+      if(auth.currentUser != null) {
+        final snapShot_self = await profileRef
+            .where('USER_ID', isEqualTo: auth.currentUser!.uid)
+            .get();
+        if (myUserID == snapShot_self.docs.first.get('MY_USER_ID')) {
+          return resultList;
+        }
+        //コレクション「myProfile」から該当データを絞る
+        snapShot =
+        await profileRef.where('MY_USER_ID', isEqualTo: myUserID).get();
+
+        if (snapShot.docs.first == null) {
+          return resultList;
+        }
+
+        id = snapShot.docs.first.id;
+        final snapShot_block = await blockRef
+            .doc(auth.currentUser!.uid)
+            .collection('blockUserList')
+            .where('BLOCK_USER', isEqualTo: id)
+            .get();
+
+        if (snapShot_block.size != 0) {
+          return resultList;
+        }
       }
-      //コレクション「myProfile」から該当データを絞る
-      final snapShot =
-          await profileRef.where('MY_USER_ID', isEqualTo: myUserID).get();
-
-      if (snapShot.docs.first == null) {
-        return resultList;
-      }
-
-      String id = snapShot.docs.first.id;
-      final snapShot_block = await blockRef
-          .doc(auth.currentUser!.uid)
-          .collection('blockUserList')
-          .where('BLOCK_USER', isEqualTo: id)
-          .get();
-
-      if (snapShot_block.size != 0) {
-        return resultList;
+      else{
+        snapShot =
+        await dummyRef.where('MY_USER_ID', isEqualTo: myUserID).get();
+        id = snapShot.docs.first.id;
       }
 
       String name = snapShot.docs.first!['NICK_NAME'];
-      String profile = snapShot.docs.first!['PROFILE_IMAGE'];
-      String coment = snapShot.docs.first!['COMENT'];
-      resultList.add(name);
-      resultList.add(profile);
-      resultList.add(id);
-      resultList.add(coment);
-
-      return resultList;
+        String profile = snapShot.docs.first!['PROFILE_IMAGE'];
+        String coment = snapShot.docs.first!['COMENT'];
+        resultList.add(name);
+        resultList.add(profile);
+        resultList.add(id);
+        resultList.add(coment);
+        return resultList;
     } catch (e) {
       print("getUserByMyUserIdエラー");
     }

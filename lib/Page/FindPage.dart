@@ -138,16 +138,6 @@ class _FindPageState extends State<FindPage> {
                           IconButton(
                             icon: const Icon(Icons.search),
                             onPressed: () {
-                              if (auth.currentUser == null) {
-                                // ユーザーがログインしていない場合
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SignUpPromptPage()),
-                                );
-                                return; // ここで処理を終了。これより下のコードは実行されない
-                              }
-                              // ユーザーがログインしている場合のみ、以下の処理を実行
                               if (inputId.text == "") {
                                 showDialog(
                                     context: context,
@@ -391,21 +381,12 @@ class _FindPageState extends State<FindPage> {
                           IconButton(
                             icon: const Icon(Icons.search),
                             onPressed: () async {
-                              if (auth.currentUser == null) {
-                                // ユーザーがログインしていない場合
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SignUpPromptPage()),
-                                );
-                                return; // ここで処理を終了。これより下のコードは実行されない
+                              List<String> blockList = [];
+                              if(auth.currentUser != null){
+                                blockList =
+                                await FirestoreMethod.getBlockUserList(
+                                    auth.currentUser!.uid);
                               }
-
-                              // ユーザーがログインしている場合のみ、以下の処理を実行
-                              List<String> blockList =
-                                  await FirestoreMethod.getBlockUserList(
-                                      auth.currentUser!.uid);
-
                               if (todofuken == "" &&
                                   gender == "" &&
                                   torokuRank == "" &&
