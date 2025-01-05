@@ -119,28 +119,57 @@ class _BillingState extends State<Billing> {
                                   child: const Text("チケット増量に加え、友人対戦管理機能も利用可能に！",
                                       style: TextStyle(fontSize: 18)),
                                 ),
-                                Card(
-                                  child: InkWell(
-                                    child: Container(
-                                      decoration: BoxDecoration(
-                                          color: Colors.greenAccent,
-                                          borderRadius:
+                                Column(
+                                  children: [
+                                    Card(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.greenAccent,
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0)),
+                                          width: deviceWidth * 0.5,
+                                          height: 50,
+                                          alignment: Alignment.center,
+                                          child: const Text(
+                                            "加入済み",
+                                            style: TextStyle(
+                                                fontSize: 18, color: Colors.white),
+                                          ),
+                                        ),
+                                    ),
+                                    Card(
+                                      child: InkWell(
+                                        child: Container(
+                                          decoration: BoxDecoration(
+                                              color: Colors.greenAccent,
+                                              borderRadius:
                                               BorderRadius.circular(10.0)),
-                                      width: deviceWidth * 0.5,
-                                      height: 50,
-                                      alignment: Alignment.center,
-                                      child: const Text(
-                                        "解約する",
-                                        style: TextStyle(
-                                            fontSize: 18, color: Colors.white),
+                                          width: deviceWidth * 0.5,
+                                          height: 50,
+                                          alignment: Alignment.center,
+                                          child: const Text(
+                                            "復元する",
+                                            style: TextStyle(
+                                                fontSize: 18, color: Colors.white),
+                                          ),
+                                        ),
+                                        onTap: () async {
+                                          try {
+                                            //復元する
+                                            CustomerInfo customerInfo = await Purchases.restorePurchases();
+                                            EntitlementInfo? entitlement =
+                                            customerInfo.entitlements
+                                                .all[entitlementID];
+                                            appData.entitlementIsActive =
+                                                entitlement?.isActive ?? false;
+                                            setState(() {});
+                                          } catch (e) {
+                                            print(e);
+                                          }
+                                        },
                                       ),
                                     ),
-                                    onTap: () async {
-                                      //退会処理
-                                      UrlMove().UrlMoving(
-                                          'https://support.apple.com/ja-jp/118428');
-                                    },
-                                  ),
+                                  ],
                                 )
                               ],
                             ),
