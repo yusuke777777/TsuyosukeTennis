@@ -72,7 +72,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     return Scaffold(
         body:
         (_selectedIndex == 0 || _selectedIndex == 2 || _selectedIndex == 3)
-        & (user == null) ? SignUpPromptPage()
+        & (user!.isAnonymous) ? SignUpPromptPage()
         : _screens[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: Colors.green,
@@ -81,7 +81,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
           items: <BottomNavigationBarItem>[
             //ホーム
             BottomNavigationBarItem(
-              icon: user != null
+              icon: !user!.isAnonymous
               ? const Icon(Icons.home)
               : const Stack(
                 // アイコンに重ねて表示
@@ -105,7 +105,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
             const BottomNavigationBarItem(icon:Icon(Icons.search),label: '検索'),
             //マッチ一覧
             BottomNavigationBarItem(
-              icon: user != null
+              icon: !user!.isAnonymous
                   ? const Icon(Icons.leaderboard)
                   : const Stack(
                 // アイコンに重ねて表示
@@ -127,7 +127,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
             ),
             //トーク
             BottomNavigationBarItem(
-              icon: user != null
+              icon: !user!.isAnonymous
                   ? const Icon(Icons.chat_bubble)
                   : const Stack(
                 // アイコンに重ねて表示

@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tsuyosuke_tennis_ap/Page/LoginPage.dart';
@@ -72,6 +73,16 @@ class _SignUpPromptPageState extends State<SignUpPromptPage> {
                             const Color(0xFF4CAF50)),
                       ),
                       onPressed: () async {
+                        try {
+                          User? user = FirebaseAuth.instance.currentUser;
+                          if (user != null) {
+                            await user.delete();
+                            print('User deleted successfully.');
+                          }
+                        } catch (e) {
+                          // ユーザー削除失敗時の処理
+                          print('Error deleting user: $e');
+                        }
                         //ログインページへの遷移
                         Navigator.pushAndRemoveUntil(
                           context,

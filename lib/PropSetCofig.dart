@@ -90,7 +90,7 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
-              if (auth.currentUser == null) {
+              if (auth.currentUser!.isAnonymous) {
                 // ユーザーがログインしていない場合
                 Navigator.push(
                   context,
@@ -116,7 +116,7 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
-              if (auth.currentUser == null) {
+              if (auth.currentUser!.isAnonymous) {
                 // ユーザーがログインしていない場合
                 Navigator.push(
                   context,
@@ -142,7 +142,7 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
-              if (auth.currentUser == null) {
+              if (auth.currentUser!.isAnonymous) {
                 // ユーザーがログインしていない場合
                 Navigator.push(
                   context,
@@ -168,7 +168,7 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
-              if (auth.currentUser == null) {
+              if (auth.currentUser!.isAnonymous) {
                 // ユーザーがログインしていない場合
                 Navigator.push(
                   context,
@@ -194,7 +194,7 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
-              if (auth.currentUser == null) {
+              if (auth.currentUser!.isAnonymous) {
                 // ユーザーがログインしていない場合
                 Navigator.push(
                   context,
@@ -220,7 +220,7 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
-              if (auth.currentUser == null) {
+              if (auth.currentUser!.isAnonymous) {
                 // ユーザーがログインしていない場合
                 Navigator.push(
                   context,
@@ -246,7 +246,7 @@ class DrawerConfig {
           ),
           GestureDetector(
             onTap: () {
-              if (auth.currentUser == null) {
+              if (auth.currentUser!.isAnonymous) {
                 // ユーザーがログインしていない場合
                 Navigator.push(
                   context,
@@ -273,7 +273,7 @@ class DrawerConfig {
 
           Container(
             child: Visibility(
-              visible: auth.currentUser != null,
+              visible: !auth.currentUser!.isAnonymous,
               child:GestureDetector(
                 onTap: () async {
                   await FirebaseAuth.instance.signOut();

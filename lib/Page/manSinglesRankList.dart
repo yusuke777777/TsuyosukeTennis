@@ -116,7 +116,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
   @override
   void initState() {
     super.initState();
-    if (auth.currentUser == null){
+    if (auth.currentUser!.isAnonymous){
       print("createDummyList開始");
       createDummyList();
       print("完了");
@@ -304,7 +304,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                     width: deviceWidth * 0.15,
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 4.0),
-                                    child: auth.currentUser == null?
+                                    child: auth.currentUser!.isAnonymous?
                                         RankModelList[index]
                                         .user
                                         .PROFILE_IMAGE ==
@@ -343,7 +343,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                           ),
                                     ),
                                   onTap: () {
-                                    if (auth.currentUser == null) {
+                                    if (auth.currentUser!.isAnonymous) {
                                       // ユーザーがログインしていない場合
                                       Navigator.push(
                                         context,
@@ -380,7 +380,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                   ),
                                   //トーク画面への遷移処理
                                   onTap: () async {
-                                    if (auth.currentUser == null) {
+                                    if (auth.currentUser!.isAnonymous) {
                                       // ユーザーがログインしていない場合
                                       Navigator.push(
                                         context,
