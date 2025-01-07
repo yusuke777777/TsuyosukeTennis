@@ -101,7 +101,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
       List<CFindMultiResultPage> searchResultList = [];
 
       await Future.forEach<dynamic>(querySnapshot.docs, (doc) async {
-        if (FirestoreMethod.auth.currentUser != null &&
+        if (!FirestoreMethod.auth.currentUser!.isAnonymous &&
             doc.data()['USER_ID'].contains(FirestoreMethod.auth.currentUser!.uid)) {
           print("ユーザーが自分自身");
         } else {
@@ -274,7 +274,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                     } else {
                       return InkWell(
                         onTap: () async {
-                          if (auth.currentUser == null) {
+                          if (auth.currentUser!.isAnonymous) {
                             // ユーザーがログインしていない場合
                             Navigator.push(
                               context,
@@ -349,7 +349,7 @@ class _FindMultiResultPageState extends State<FindMultiResultPage> {
                                                         .PROFILE_IMAGE),
                                                 radius: 30),
                                     onTap: () {
-                                      if (auth.currentUser == null) {
+                                      if (auth.currentUser!.isAnonymous) {
                                         // ユーザーがログインしていない場合
                                         Navigator.push(
                                           context,

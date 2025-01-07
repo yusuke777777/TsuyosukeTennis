@@ -748,7 +748,6 @@ class _ProfileSettingState extends State<ProfileSetting> {
                             try {
                               print(auth.currentUser!.uid);
                               await FirestoreMethod.makeProfile(myProfile);
-                              await FirestoreMethod.makeDummyProfile(myProfile);
                               await FirestoreMethod.makeProfileDetail(
                                   myProfile, widget.koushinFlg);
                               await FirestoreMethod.putReviewFeatureEnabled(

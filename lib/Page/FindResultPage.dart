@@ -92,7 +92,7 @@ class _FindResultPageState extends State<FindResultPage> {
                     } else {
                       return InkWell(
                         onTap: () async {
-                          if (auth.currentUser == null) {
+                          if (auth.currentUser!.isAnonymous) {
                             // ユーザーがログインしていない場合
                             Navigator.push(
                               context,
@@ -178,7 +178,7 @@ class _FindResultPageState extends State<FindResultPage> {
                                                       ),
                                               radius: 30),
                                           onTap: () {
-                                            if (auth.currentUser == null) {
+                                            if (auth.currentUser!.isAnonymous) {
                                               // ユーザーがログインしていない場合
                                               Navigator.push(
                                                 context,

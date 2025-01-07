@@ -72,60 +72,12 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
     }
   }
 
-  Future<void> createDummyList() async {
-    print("Create DummyList");
-    try {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('manSinglesRank')
-          .doc(widget.rank)
-          .collection('RankList')
-          .orderBy('RANK_NO')
-          .limit(8)
-          .get();
-
-      final rankList = <RankModel>[];
-
-      for (final doc in querySnapshot.docs) {
-        final userId = doc.data()['USER_ID'];
-        final yourProfile = await FirestoreMethod.getYourDummyProfile(userId);
-
-        final rankListWork = RankModel(
-            rankNo: doc.data()['RANK_NO'],
-            user: yourProfile,
-            tpPoint: doc.data()['TS_POINT'],
-            searchEnableFlg: false
-        );
-
-        rankList.add(rankListWork);
-      }
-
-      if (querySnapshot.docs.isNotEmpty) {
-        lastDocument = querySnapshot.docs.last; // 最後のドキュメントを設定
-        print("eee");
-      }
-      if (mounted) {
-        setState(() {
-          RankModelList.addAll(rankList);
-        });
-      }
-    } catch (e) {
-      print("ここか！"+ e.toString());
-    }
-  }
-
   @override
   void initState() {
     super.initState();
-    if (auth.currentUser!.isAnonymous){
-      print("createDummyList開始");
-      createDummyList();
-      print("完了");
-    }
-    else{
       print("createRankList開始");
       createRankList();
       print("完了");
-    }
     _scrollController = ScrollController();
     // スクロール位置を監視してページネーションを実行
     _scrollController.addListener(() {
