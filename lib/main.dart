@@ -12,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:purchases_flutter/models/purchases_configuration.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:tsuyosuke_tennis_ap/Page/RankList.dart';
 import 'Common/CPushNotification.dart';
 import 'FireBase/FireBase.dart';
 import 'FireBase/GoogleAds.dart';
@@ -79,6 +80,7 @@ void main() async {
 
 class MyApp extends StatefulWidget {
   static FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+
   @override
   _MyAppState createState() => _MyAppState();
 }
@@ -90,6 +92,7 @@ class _MyAppState extends State<MyApp> {
     // initPlatformState();
     initialization();
     NotificationMethod().setting();
+
     /// Firebase ID取得(テスト用)
     FirebaseInAppMessagingService().getFID();
   }
@@ -142,16 +145,19 @@ class _MyAppState extends State<MyApp> {
       // home: TestHomePage(),
       home: FirebaseAuth.instance.currentUser == null
           ? LoginPage()
-          :
-          //メール承認を終えていない場合は承認待機画面へ
-          !FirestoreMethod.isAuth
-              ? ReLoginMessagePage()
-              : FirestoreMethod.isprofile == true
-                  ? UnderMenuMove.make(0)
-                  : ProfileSetting.Make(),
+          : FirebaseAuth.instance.currentUser!.isAnonymous
+              ? UnderMenuMove.make(4)
+              :
+              //メール承認を終えていない場合は承認待機画面へ
+              !FirestoreMethod.isAuth
+                  ? ReLoginMessagePage()
+                  : FirestoreMethod.isprofile == true
+                      ? UnderMenuMove.make(0)
+                      : ProfileSetting.Make(),
     );
   }
 }
+
 class FirebaseInAppMessagingService {
   void getFID() async {
     String id = await FirebaseInstallations.instance.getId();

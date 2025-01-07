@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../FireBase/urlMove.dart';
@@ -170,7 +171,20 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
             ),
-            onTap: () {
+            onTap: () async {
+              try {
+                 final userCredential =
+                    await FirebaseAuth.instance.signInAnonymously();
+                print("Signed in with temporary account.");
+              } on FirebaseAuthException catch (e) {
+                switch (e.code) {
+                  case "operation-not-allowed":
+                    print("Anonymous auth hasn't been enabled for this project.");
+                    break;
+                  default:
+                    print("Unknown error.");
+                }
+              }
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => UnderMenuMove.make(4)),
