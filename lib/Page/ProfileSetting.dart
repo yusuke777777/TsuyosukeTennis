@@ -415,7 +415,7 @@ class _ProfileSettingState extends State<ProfileSetting> {
                               width: deviceWidth * 0.75,
                               padding: const EdgeInsets.all(5.0),
                               child: const Text(
-                                '市区町村',
+                                'コート名',
                                 style: TextStyle(
                                     fontSize: 20, color: Colors.black),
                               ),

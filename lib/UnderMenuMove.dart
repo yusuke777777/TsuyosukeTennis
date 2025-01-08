@@ -70,10 +70,12 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body:
-        (_selectedIndex == 0 || _selectedIndex == 2 || _selectedIndex == 3)
-        & (user!.isAnonymous) ? SignUpPromptPage()
-        : _screens[_selectedIndex],
+        body: (_selectedIndex == 0 ||
+                    _selectedIndex == 2 ||
+                    _selectedIndex == 3) &
+                (user!.isAnonymous)
+            ? SignUpPromptPage()
+            : _screens[_selectedIndex],
         bottomNavigationBar: BottomNavigationBar(
           selectedItemColor: Colors.green,
           currentIndex: _selectedIndex,
@@ -82,47 +84,48 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
             //ホーム
             BottomNavigationBarItem(
               icon: !user!.isAnonymous
-              ? const Icon(Icons.home)
-              : const Stack(
-                // アイコンに重ねて表示
-                alignment: Alignment.topRight, // 右上に配置
-                children: [
-                  Icon(Icons.home),
-                  Positioned(
-                    top: 0, // 上からの距離
-                    right: 0, // 右からの距離
-                    child: Icon(
-                      Icons.lock,
-                      size: 16, // 鍵アイコンを小さくする
-                      color: Colors.red, // 色を変更して目立たせる
+                  ? const Icon(Icons.home)
+                  : const Stack(
+                      // アイコンに重ねて表示
+                      alignment: Alignment.topRight, // 右上に配置
+                      children: [
+                        Icon(Icons.home),
+                        Positioned(
+                          top: 0, // 上からの距離
+                          right: 0, // 右からの距離
+                          child: Icon(
+                            Icons.lock,
+                            size: 16, // 鍵アイコンを小さくする
+                            color: Colors.red, // 色を変更して目立たせる
+                          ),
+                        ), // 鍵アイコン
+                      ],
                     ),
-                  ),// 鍵アイコン
-                ],
-              ),
               label: 'ホーム',
             ),
             //検索
-            const BottomNavigationBarItem(icon:Icon(Icons.search),label: '検索'),
+            const BottomNavigationBarItem(
+                icon: Icon(Icons.search), label: '検索'),
             //マッチ一覧
             BottomNavigationBarItem(
               icon: !user!.isAnonymous
                   ? const Icon(Icons.leaderboard)
                   : const Stack(
-                // アイコンに重ねて表示
-                alignment: Alignment.topRight, // 右上に配置
-                children: [
-                  Icon(Icons.leaderboard),
-                  Positioned(
-                    top: 0, // 上からの距離
-                    right: 0, // 右からの距離
-                    child: Icon(
-                      Icons.lock,
-                      size: 16, // 鍵アイコンを小さくする
-                      color: Colors.red, // 色を変更して目立たせる
+                      // アイコンに重ねて表示
+                      alignment: Alignment.topRight, // 右上に配置
+                      children: [
+                        Icon(Icons.leaderboard),
+                        Positioned(
+                          top: 0, // 上からの距離
+                          right: 0, // 右からの距離
+                          child: Icon(
+                            Icons.lock,
+                            size: 16, // 鍵アイコンを小さくする
+                            color: Colors.red, // 色を変更して目立たせる
+                          ),
+                        ), // 鍵アイコン
+                      ],
                     ),
-                  ),// 鍵アイコン
-                ],
-              ),
               label: 'マッチ',
             ),
             //トーク
@@ -130,25 +133,25 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
               icon: !user!.isAnonymous
                   ? const Icon(Icons.chat_bubble)
                   : const Stack(
-                // アイコンに重ねて表示
-                alignment: Alignment.topRight, // 右上に配置
-                children: [
-                  Icon(Icons.chat_bubble),
-                  Positioned(
-                    top: 0, // 上からの距離
-                    right: 0, // 右からの距離
-                    child: Icon(
-                      Icons.lock,
-                      size: 16, // 鍵アイコンを小さくする
-                      color: Colors.red, // 色を変更して目立たせる
+                      // アイコンに重ねて表示
+                      alignment: Alignment.topRight, // 右上に配置
+                      children: [
+                        Icon(Icons.chat_bubble),
+                        Positioned(
+                          top: 0, // 上からの距離
+                          right: 0, // 右からの距離
+                          child: Icon(
+                            Icons.lock,
+                            size: 16, // 鍵アイコンを小さくする
+                            color: Colors.red, // 色を変更して目立たせる
+                          ),
+                        ), // 鍵アイコン
+                      ],
                     ),
-                  ),// 鍵アイコン
-                ],
-              ),
               label: 'トーク',
             ),
             //ランキング画面
-            const BottomNavigationBarItem(icon: Icon(Icons.star),label: 'ランク'),
+            const BottomNavigationBarItem(icon: Icon(Icons.star), label: 'ランク'),
           ],
           type: BottomNavigationBarType.fixed,
         ));
@@ -170,20 +173,20 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
       sound: false,
     );
 
-      String? myTokenId = await NotificationMethod.getMyTokenId();
-      await NotificationMethod.registerTokenID(myTokenId!);
+    String? myTokenId = await NotificationMethod.getMyTokenId();
+    await NotificationMethod.registerTokenID(myTokenId!);
 
-      print("The token is " + myTokenId!);
+    print("The token is " + myTokenId!);
 
-      FirebaseMessaging.onMessage.listen((RemoteMessage message) async{
-        CPushNotification notification = CPushNotification(
-          title: message.notification?.title,
-          body: message.notification?.body,
-        );
-        setState(() {
-          _notificationInfo = notification;
-        });
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      CPushNotification notification = CPushNotification(
+        title: message.notification?.title,
+        body: message.notification?.body,
+      );
+      setState(() {
+        _notificationInfo = notification;
       });
+    });
   }
 
   // 通知メッセージに応じて画面遷移
@@ -192,19 +195,20 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
         FirestoreMethod.auth.currentUser!.uid, senderId.toString());
 
     await Navigator.push(
-          context, MaterialPageRoute(builder: (context) => TalkRoom(room)));
+        context, MaterialPageRoute(builder: (context) => TalkRoom(room)));
 
-    await NotificationMethod.unreadCountRest(
-        senderId.toString());
+    await NotificationMethod.unreadCountRest(senderId.toString());
   }
 
   void checkForInitialMessage() async {
     // アプリが通知から起動された場合、そのメッセージを取得
-    RemoteMessage? initialMessage = await FirebaseMessaging.instance.getInitialMessage();
+    RemoteMessage? initialMessage =
+        await FirebaseMessaging.instance.getInitialMessage();
 
     if (initialMessage != null) {
       // 通知からアプリが起動された際の処理を実装
-      print('Notification clicked while app was terminated: ${initialMessage.messageId}');
+      print(
+          'Notification clicked while app was terminated: ${initialMessage.messageId}');
       // 例: 通知内容に応じて特定の画面を表示
       CPushNotification notification = CPushNotification(
         title: initialMessage.notification?.title,
@@ -217,9 +221,6 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
       });
     }
   }
-
-
-
 
   @override
   void initState() {
@@ -250,7 +251,6 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
         .addPostFrameCallback((_) => initPlugin());
   }
 
-
   Future<void> initPlugin() async {
     final TrackingStatus status =
         await AppTrackingTransparency.trackingAuthorizationStatus;
@@ -277,25 +277,29 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
     print("appUserId" + appData.appUserID);
     Purchases.addCustomerInfoUpdateListener((customerInfo) async {
       // if(!appData.isPurchasing) {
-        if (FirebaseAuth.instance.currentUser != null) {
-          //課金ユーザーへログイン
-          await Purchases.logIn(FirebaseAuth.instance.currentUser!.uid);
-          //appUserIdをセットする
-          appData.appUserID = await Purchases.appUserID;
-          //現在の課金フラグを取得する
-          String BILLING_FLG = await FirestoreMethod.getBillingFlg();
-          //現在の課金状態をチェックする
-          CustomerInfo customerInfo = await Purchases.getCustomerInfo();
-          EntitlementInfo? entitlement =
-          customerInfo.entitlements.all[entitlementID];
-          appData.entitlementIsActive = entitlement?.isActive ?? false;
-          print(appData.entitlementIsActive.toString());
-          if (BILLING_FLG == "0" && appData.entitlementIsActive == true) {
-            //プレミアム会員へ更新する
+      if (FirebaseAuth.instance.currentUser != null) {
+        //課金ユーザーへログイン
+        await Purchases.logIn(FirebaseAuth.instance.currentUser!.uid);
+        //appUserIdをセットする
+        appData.appUserID = await Purchases.appUserID;
+        //現在の課金フラグを取得する
+        String BILLING_FLG = await FirestoreMethod.getBillingFlg();
+        //初回特典フラグを取得する
+        String FIRST_TIME_BENEFIT_FLG =
+            await FirestoreMethod.getFirstTimeBenefitFlg();
+        //現在の課金状態をチェックする
+        CustomerInfo customerInfo = await Purchases.getCustomerInfo();
+        EntitlementInfo? entitlement =
+            customerInfo.entitlements.all[entitlementID];
+        appData.entitlementIsActive = entitlement?.isActive ?? false;
+        print(appData.entitlementIsActive.toString());
+        if (BILLING_FLG == "0" && appData.entitlementIsActive == true) {
+          //プレミアム会員の初回入会特典を付与する
+          if (FIRST_TIME_BENEFIT_FLG == "0") {
             try {
               //トーク上限数のリセット
-              await FirebaseFirestore.instance
-                  .runTransaction((transaction) async {
+              await FirebaseFirestore.instance.runTransaction(
+                  (transaction) async {
                 //プレミアム会員登録時に、トークメッセージの上限数でリセット
                 // 現在のタイムスタンプを取得
                 Timestamp currentTimestamp = Timestamp.now();
@@ -330,7 +334,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
                 String today = outputFormat.format(now);
                 int zengetsuTicketSu = 0;
                 DocumentSnapshot userTicketMgmDoc =
-                await userTicketMgmDocRef.get();
+                    await userTicketMgmDocRef.get();
 
                 if (userTicketMgmDoc.exists) {
                   zengetsuTicketSu = userTicketMgmDoc['zengetsuTicketSu'];
@@ -351,27 +355,33 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
                 } catch (e) {
                   throw ("TSPプレミアム会員のチケット発行に失敗しました $e");
                 }
-              }).then((value) =>
-                  print("DocumentSnapshot successfully updated!"),
+              }).then(
+                  (value) => print("DocumentSnapshot successfully updated!"),
                   onError: (e) => throw ("課金処理の更新に失敗しました $e"));
-              try {
-                await FirestoreMethod.updateBillingFlg();
-              } catch (e) {
-                throw ("課金処理のDB更新に失敗しました");
-              }
             } catch (e) {
               print("有料会員への更新に失敗しました");
             }
-          } else
-          if (BILLING_FLG == "1" && appData.entitlementIsActive == false) {
-            //プレミアム会員から退会する
-            try {
-              await FirestoreMethod.updateBillingFlg();
-            } catch (e) {
-              print("退会処理のDB更新に失敗しました");
-            }
+          }
+
+          try {
+            await FirestoreMethod.updateBillingFlg();
+          } catch (e) {
+            throw ("課金処理のDB更新に失敗しました");
+          }
+          try {
+            await FirestoreMethod.updateFirstTimeBenefitFlg();
+          } catch (e) {
+            throw ("初回特典フラグの更新に失敗しました");
+          }
+        } else if (BILLING_FLG == "1" && appData.entitlementIsActive == false) {
+          //プレミアム会員から退会する
+          try {
+            await FirestoreMethod.updateBillingFlg();
+          } catch (e) {
+            print("退会処理のDB更新に失敗しました");
           }
         }
+      }
       // }
     });
   }

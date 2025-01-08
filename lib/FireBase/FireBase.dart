@@ -129,6 +129,41 @@ class FirestoreMethod {
     return BILLING_FLG;
   }
 
+  static Future<void> updateFirstTimeBenefitFlg() async {
+    DateTime now = DateTime.now();
+    DateFormat outputFormat = DateFormat('yyyy-MM-dd');
+    String today = outputFormat.format(now);
+
+    try {
+      final profileSnapshot = await profileRef.doc(auth.currentUser!.uid).get();
+      if (profileSnapshot.exists) {
+        await profileSnapshot.reference.set({
+          "FIRST_TIME_BENEFIT_FLG": "1",
+          "koushinYmd": today
+        }, SetOptions(merge: true));
+      }
+    } catch (e) {
+      throw ("課金フラグの更新に失敗しました");
+    }
+  }
+
+  //初回課金フラグ取得
+  static Future<String> getFirstTimeBenefitFlg() async {
+    String FIRST_TIME_BENEFIT_FLG = "0";
+    try {
+      final profileSnapshot = await profileRef.doc(auth.currentUser!.uid).get();
+      if (profileSnapshot.exists) {
+        FIRST_TIME_BENEFIT_FLG = profileSnapshot.data()!['FIRST_TIME_BENEFIT_FLG'] ?? "0";
+      } else {
+        FIRST_TIME_BENEFIT_FLG = "0";
+      }
+    } catch (e) {
+      throw ("初回特典フラグの取得失敗しました");
+    }
+    return FIRST_TIME_BENEFIT_FLG;
+  }
+
+
   //プロフィール情報設定
   static Future<void> makeProfile(CprofileSetting profile) async {
     print("ggg");
