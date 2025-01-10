@@ -225,7 +225,7 @@ class _FindPageState extends State<FindPage> {
                             child: TextFormField(
                               controller: inputShichouson,
                               decoration: InputDecoration(
-                                  labelText: '市町村',
+                                  labelText: 'コート名',
                                   border: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(20)),
                                   contentPadding: const EdgeInsets.symmetric(
@@ -397,7 +397,7 @@ class _FindPageState extends State<FindPage> {
                                     builder: (_) => const AlertDialog(
                                           title: Text("入力エラー!"),
                                           content: Text(
-                                              "都道府県、性別、登録ランク、年齢、市町村のいずれかは入力してください"),
+                                              "都道府県、性別、登録ランク、年齢、コート名のいずれかは入力してください"),
                                         ));
                               } else {
                                 Navigator.push(
