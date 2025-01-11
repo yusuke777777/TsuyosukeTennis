@@ -26,7 +26,6 @@ class _SignUpPromptPageState extends State<SignUpPromptPage> {
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
     final deviceHeight = MediaQuery.of(context).size.height;
-    FirebaseFirestore storeInst = FirebaseFirestore.instance;
 
     return Scaffold(
         resizeToAvoidBottomInset: false,
@@ -79,13 +78,6 @@ class _SignUpPromptPageState extends State<SignUpPromptPage> {
                         try {
                           User? user = FirebaseAuth.instance.currentUser;
                           if (user != null) {
-                            String userId = user.uid;
-                            final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_userTokenList =
-                            await storeInst.collection('userTokenList').doc(userId).get();
-                            if(documentSnapshot_userTokenList.exists){
-                              storeInst.collection('userTokenList').doc(userId).delete();
-                            }
-
                             await user.delete();
                             print('User deleted successfully.');
                           }

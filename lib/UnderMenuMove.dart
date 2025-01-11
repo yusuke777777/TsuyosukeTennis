@@ -225,7 +225,9 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
   @override
   void initState() {
     _selectedIndex = widget.selectedIndex;
-    requestAndRegisterNotification();
+    if(!FirestoreMethod.auth.currentUser!.isAnonymous){
+      requestAndRegisterNotification();
+    }
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       CPushNotification notification = CPushNotification(
         title: message.notification?.title,
