@@ -116,7 +116,7 @@ class _BillingState extends State<Billing> {
                                 Container(
                                   width: deviceWidth * 0.9,
                                   alignment: Alignment.bottomLeft,
-                                  child: const Text("チケット増量に加え、友人対戦管理機能も利用可能に！",
+                                  child: const Text("初月無料キャンペーン実施中！！\nチケット増量に加え、友人対戦管理機能も利用可能に！",
                                       style: TextStyle(fontSize: 18)),
                                 ),
                                 Column(
@@ -213,7 +213,7 @@ class _BillingState extends State<Billing> {
                                 Container(
                                   width: deviceWidth * 0.9,
                                   alignment: Alignment.bottomLeft,
-                                  child: const Text("チケット増量に加え、友人対戦管理機能も利用可能に！",
+                                  child: const Text("初月無料キャンペーン実施中！！\nチケット増量に加え、友人対戦管理機能も利用可能に！",
                                       style: TextStyle(fontSize: 18)),
                                 ),
                                 Column(
@@ -399,6 +399,10 @@ class _BillingState extends State<Billing> {
                     ),
                     Text(
                       "Apple IDを経由して課金されます。",
+                      style: TextStyle(fontSize: 12),
+                    ),
+                    Text(
+                      "無料トライアル期間が終了するまでに解約しない場合、自動的に有料プランが開始されます。",
                       style: TextStyle(fontSize: 12),
                     ),
                   ],
