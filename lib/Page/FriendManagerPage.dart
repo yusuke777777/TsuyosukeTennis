@@ -239,6 +239,9 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                     ),
                     child: InkWell(
                       onTap: () async {
+                        await FirestoreMethod.makeRoom(
+                            FirestoreMethod.auth.currentUser!.uid,
+                            friendsListAll[index].YOUR_USER.USER_ID);
                         //トーク画面へ
                         TalkRoomModel room = await FirestoreMethod.getRoom(
                             friendsListAll[index].RECIPIENT_ID,

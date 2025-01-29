@@ -7,7 +7,6 @@ class ThankYouPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "退会完了");
-    DrawerConfig().init(context);
     return Scaffold(
       appBar: AppBar(
           backgroundColor: HeaderConfig.backGroundColor,

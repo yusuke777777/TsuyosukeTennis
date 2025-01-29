@@ -47,3 +47,6 @@ app.*.map.json
 ios/Runner/tsuyosuketest-a7f339ffc481.json
 ios/Runner/GoogleService-Info.plist
 ios/Runner/GoogleService-Info_dev.plist
+# Xcode build cache files
+ios/build/
+
