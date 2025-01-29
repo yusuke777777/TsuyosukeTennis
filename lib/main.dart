@@ -63,7 +63,7 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   MobileAds.instance.initialize();
 
-  if (FirebaseAuth.instance.currentUser != null) {
+  if (FirebaseAuth.instance.currentUser != null && !FirebaseAuth.instance.currentUser!.isAnonymous) {
     await FirestoreMethod.isProfile();
     await FirestoreMethod.checkUserAuth();
   }
@@ -71,7 +71,7 @@ void main() async {
     statusBarColor: Colors.transparent,
     statusBarBrightness: Brightness.light,
   ));
-  if (FirebaseAuth.instance.currentUser != null) {
+  if (FirebaseAuth.instance.currentUser != null && !FirebaseAuth.instance.currentUser!.isAnonymous) {
     final configuration = PurchasesConfiguration(
         Platform.isAndroid ? 'androidRevenueCatKey' : appleApiKey)
       ..appUserID = FirebaseAuth.instance.currentUser!.uid;
