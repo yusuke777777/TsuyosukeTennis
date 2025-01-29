@@ -7,10 +7,12 @@ import 'package:tsuyosuke_tennis_ap/UnderMenuMove.dart';
 import '../Common/CFeedBackCommentSetting.dart';
 import '../Common/CmatchResult.dart';
 import '../Common/CprofileSetting.dart';
+import '../Common/CtalkRoom.dart';
 import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/GoogleAds.dart';
 import '../PropSetCofig.dart';
+import 'TalkRoom.dart';
 
 class MatchResult extends StatefulWidget {
   late CprofileSetting myProfile;
@@ -685,6 +687,11 @@ class _MatchResultState extends State<MatchResult> {
                                         dayKey);
                                   }
                                 }
+
+                                await FirestoreMethod.makeRoom(
+                                    widget.myProfile.USER_ID,
+                                    widget.yourProfile.USER_ID);
+
 
                                 //対戦結果のメッセージを送信する
                                 if (_feedbackFlg &&

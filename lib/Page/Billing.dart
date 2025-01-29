@@ -94,6 +94,8 @@ class _BillingState extends State<Billing> {
                               TextButton(
                                   onPressed: () {
                                     //TSPプレミアムプランの説明へ
+                                    UrlMove().UrlMoving(
+                                        'https://spectacled-lan-4ae.notion.site/TSP-17204101f8a580479b20d62abb95f15a?pvs=4');
                                   },
                                   child: Text(
                                     "（機能の詳細はこちら）",
