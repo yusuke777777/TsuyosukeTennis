@@ -89,6 +89,7 @@ class _MatchResultState extends State<MatchResult> {
       });
     });
   }
+
   @override
   void dispose() {
     _interstitialAd?.dispose();
@@ -130,7 +131,8 @@ class _MatchResultState extends State<MatchResult> {
                               labelStyle:
                                   TextStyle(color: Colors.black, fontSize: 20),
                               hintText: "(例)◯◯市民大会の1回戦"),
-                          style: const TextStyle(fontSize: 20, color: Colors.black),
+                          style: const TextStyle(
+                              fontSize: 20, color: Colors.black),
                           controller: inputTitle,
                           maxLength: 20,
                         ),
@@ -151,8 +153,8 @@ class _MatchResultState extends State<MatchResult> {
                                 child: widget.myProfile.PROFILE_IMAGE == ''
                                     ? const CircleAvatar(
                                         backgroundColor: Colors.white,
-                                        backgroundImage: NetworkImage(
-                                            "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Ftenipoikun.png?alt=media&token=46474a8b-ca79-4232-92ee-431042c19d10"),
+                                        backgroundImage:
+                                            AssetImage("images/tenipoikun.png"),
                                         radius: 30,
                                       )
                                     : CircleAvatar(
@@ -260,8 +262,8 @@ class _MatchResultState extends State<MatchResult> {
                                 child: widget.yourProfile.PROFILE_IMAGE == ''
                                     ? const CircleAvatar(
                                         backgroundColor: Colors.white,
-                                        backgroundImage: NetworkImage(
-                                            "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Ftenipoikun.png?alt=media&token=46474a8b-ca79-4232-92ee-431042c19d10"),
+                                        backgroundImage:
+                                            AssetImage("images/tenipoikun.png"),
                                         radius: 30,
                                       )
                                     : CircleAvatar(
@@ -560,7 +562,9 @@ class _MatchResultState extends State<MatchResult> {
                                       actions: <Widget>[
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                              foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
+                                              foregroundColor: Colors.black,
+                                              backgroundColor:
+                                                  Colors.lightGreenAccent),
                                           child: const Text('OK'),
                                           onPressed: () {
                                             Navigator.pop(context);
@@ -586,7 +590,9 @@ class _MatchResultState extends State<MatchResult> {
                                       actions: <Widget>[
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                              foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
+                                              foregroundColor: Colors.black,
+                                              backgroundColor:
+                                                  Colors.lightGreenAccent),
                                           child: Text('OK'),
                                           onPressed: () {
                                             Navigator.pop(context);
@@ -607,7 +613,9 @@ class _MatchResultState extends State<MatchResult> {
                                       actions: <Widget>[
                                         ElevatedButton(
                                           style: ElevatedButton.styleFrom(
-                                              foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
+                                              foregroundColor: Colors.black,
+                                              backgroundColor:
+                                                  Colors.lightGreenAccent),
                                           child: const Text('OK'),
                                           onPressed: () {
                                             Navigator.pop(context);
@@ -626,7 +634,9 @@ class _MatchResultState extends State<MatchResult> {
                                         actions: <Widget>[
                                           ElevatedButton(
                                             style: ElevatedButton.styleFrom(
-                                                foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
+                                                foregroundColor: Colors.black,
+                                                backgroundColor:
+                                                    Colors.lightGreenAccent),
                                             child: const Text('OK'),
                                             onPressed: () {
                                               Navigator.pop(context);
@@ -691,7 +701,6 @@ class _MatchResultState extends State<MatchResult> {
                                 await FirestoreMethod.makeRoom(
                                     widget.myProfile.USER_ID,
                                     widget.yourProfile.USER_ID);
-
 
                                 //対戦結果のメッセージを送信する
                                 if (_feedbackFlg &&
@@ -812,8 +821,9 @@ class _MatchResultState extends State<MatchResult> {
                 content: "一度に5セット以上の対戦結果の入力はできません",
                 buttonText: "はい",
               ));
-    }else{
-      matchResultList.add(CmatchResult(No: No, myGamePoint: 0, yourGamePoint: 0));
+    } else {
+      matchResultList
+          .add(CmatchResult(No: No, myGamePoint: 0, yourGamePoint: 0));
       myGamePoint = 0;
       yourGamePoint = 0;
     }

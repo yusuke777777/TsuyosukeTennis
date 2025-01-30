@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:tsuyosuke_tennis_ap/Page/Explain.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/SigninModel.dart';
 import '../FireBase/TextDaialog.dart';
@@ -146,7 +147,7 @@ class SignInPage extends StatelessWidget {
                                               builder: (context) =>
                                                   FirestoreMethod.isprofile
                                                       ? UnderMenuMove.make(0)
-                                                      : ProfileSetting.Make(),
+                                                      : Explain(),
                                             ),
                                           );
                                         } catch (e) {

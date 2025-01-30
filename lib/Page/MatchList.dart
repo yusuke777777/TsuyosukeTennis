@@ -310,7 +310,8 @@ class _MatchListState extends State<MatchList> {
                                         builder: (context) {
                                           return AlertDialog(
                                               title: Text('ブロック中のユーザーです',
-                                                  style: TextStyle(fontSize: 18)),
+                                                  style:
+                                                      TextStyle(fontSize: 18)),
                                               actions: <Widget>[
                                                 ElevatedButton(
                                                   style: ElevatedButton.styleFrom(
@@ -444,8 +445,8 @@ class _MatchListState extends State<MatchList> {
                                                           backgroundColor:
                                                               Colors.white,
                                                           backgroundImage:
-                                                              NetworkImage(
-                                                                  "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Ftenipoikun.png?alt=media&token=46474a8b-ca79-4232-92ee-431042c19d10"),
+                                                              AssetImage(
+                                                                  "images/tenipoikun.png"),
                                                           radius: 30,
                                                         )
                                                       : CircleAvatar(
@@ -511,13 +512,15 @@ class _MatchListState extends State<MatchList> {
                                                 size: 30.0,
                                               ),
                                               onPressed: () async {
-                                                bool BlockFlg = await FirestoreMethod.isBlock(
-                                                    matchListAll[index]
-                                                        .MY_USER
-                                                        .USER_ID,
-                                                    matchListAll[index]
-                                                        .YOUR_USER
-                                                        .USER_ID);
+                                                bool BlockFlg =
+                                                    await FirestoreMethod
+                                                        .isBlock(
+                                                            matchListAll[index]
+                                                                .MY_USER
+                                                                .USER_ID,
+                                                            matchListAll[index]
+                                                                .YOUR_USER
+                                                                .USER_ID);
                                                 if (!BlockFlg) {
                                                   showDialog(
                                                       context: context,
@@ -525,7 +528,9 @@ class _MatchListState extends State<MatchList> {
                                                         return AlertDialog(
                                                             title: Text(
                                                                 'ブロック中のユーザーです',
-                                                                style: TextStyle(fontSize: 18)),
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        18)),
                                                             actions: <Widget>[
                                                               ElevatedButton(
                                                                 style: ElevatedButton.styleFrom(

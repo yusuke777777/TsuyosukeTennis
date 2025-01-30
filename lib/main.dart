@@ -13,6 +13,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:overlay_support/overlay_support.dart';
 import 'package:purchases_flutter/models/purchases_configuration.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:tsuyosuke_tennis_ap/Page/Explain.dart';
 import 'package:tsuyosuke_tennis_ap/Page/RankList.dart';
 import 'Common/CPushNotification.dart';
 import 'FireBase/FireBase.dart';
@@ -164,7 +165,7 @@ class _MyAppState extends State<MyApp> {
                   ? ReLoginMessagePage()
                   : FirestoreMethod.isprofile == true
                       ? UnderMenuMove.make(0)
-                      : ProfileSetting.Make(),
+                      : Explain(),
     );
   }
 }
