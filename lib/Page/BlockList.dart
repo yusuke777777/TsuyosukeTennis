@@ -91,8 +91,8 @@ class _BlockListState extends State<BlockList> {
                                             ''
                                         ? const CircleAvatar(
                                             backgroundColor: Colors.white,
-                                            backgroundImage: NetworkImage(
-                                                "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Ftenipoikun.png?alt=media&token=46474a8b-ca79-4232-92ee-431042c19d10"),
+                                            backgroundImage: AssetImage(
+                                                "images/tenipoikun.png"),
                                             radius: 30,
                                           )
                                         : ClipOval(
@@ -116,9 +116,18 @@ class _BlockListState extends State<BlockList> {
                                             ),
                                           ),
                                     onTap: () async {
-                                      print(blockList[index].YOUR_USER.USER_ID.toString());
-                                      print(await isUserExist(blockList[index].YOUR_USER.USER_ID.toString()));
-                                      if(await isUserExist(blockList[index].YOUR_USER.USER_ID.toString())) {
+                                      print(blockList[index]
+                                          .YOUR_USER
+                                          .USER_ID
+                                          .toString());
+                                      print(await isUserExist(blockList[index]
+                                          .YOUR_USER
+                                          .USER_ID
+                                          .toString()));
+                                      if (await isUserExist(blockList[index]
+                                          .YOUR_USER
+                                          .USER_ID
+                                          .toString())) {
                                         Navigator.push(
                                             context,
                                             MaterialPageRoute(
@@ -127,14 +136,13 @@ class _BlockListState extends State<BlockList> {
                                                         blockList[index]
                                                             .YOUR_USER
                                                             .USER_ID)));
-                                      }
-                                      else {
+                                      } else {
                                         showDialog(
                                             context: context,
                                             builder: (_) => const AlertDialog(
-                                              title: Text("エラー"),
-                                              content: Text("退会済みユーザーです"),
-                                            ));
+                                                  title: Text("エラー"),
+                                                  content: Text("退会済みユーザーです"),
+                                                ));
                                       }
                                     },
                                   ),

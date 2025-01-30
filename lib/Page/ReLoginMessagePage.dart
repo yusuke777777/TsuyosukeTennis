@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
+import 'package:tsuyosuke_tennis_ap/Page/Explain.dart';
 
 import '../FireBase/FireBase.dart';
 import '../FireBase/singletons_data.dart';
@@ -83,7 +84,7 @@ class _ReLoginMessagePageState extends State<ReLoginMessagePage> {
                   if(currentUser_reload!.emailVerified == true){
                     Navigator.pushAndRemoveUntil(
                       context,
-                      MaterialPageRoute(builder: (context) =>  ProfileSetting.Make()),
+                      MaterialPageRoute(builder: (context) =>  Explain()),
                           (Route<dynamic> route) => false,
                     );
                   }

@@ -73,8 +73,12 @@ dependencies:
   firebase_app_installations: ^0.3.1+7
   firebase_analytics: ^11.3.6
   firebase_crashlytics: ^4.2.0
+<<<<<<< HEAD
   image_gallery_saver: ^2.0.3
   share_plus: ^10.1.4
+=======
+  smooth_page_indicator: ^1.2.0
+>>>>>>> 8726e06bb577d9f6c200f103cbfd470ef1e1c6f5
 
 
 flutter_native_splash:

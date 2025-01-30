@@ -22,11 +22,11 @@ class manSinglesRankList extends StatefulWidget {
 class _manSinglesRankListState extends State<manSinglesRankList> {
   static final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
-  static final FirebaseFirestore _firestoreInstance = FirebaseFirestore.instance;
+  static final FirebaseFirestore _firestoreInstance =
+      FirebaseFirestore.instance;
   List<RankModel> RankModelList = [];
   DocumentSnapshot? lastDocument; // 最後のドキュメントを保持する変数
-  static final blockListRef =
-  _firestoreInstance.collection('blockList');
+  static final blockListRef = _firestoreInstance.collection('blockList');
   bool _isLoadingMore = false;
   late ScrollController _scrollController;
 
@@ -45,15 +45,15 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
       for (final doc in querySnapshot.docs) {
         final userId = doc.data()['USER_ID'];
         final yourProfile = await FirestoreMethod.getYourProfile(userId);
-        final yourProfileDetail = await FirestoreMethod.getYourDetailProfile(userId);
+        final yourProfileDetail =
+            await FirestoreMethod.getYourDetailProfile(userId);
         print("ccc");
 
         final rankListWork = RankModel(
-          rankNo: doc.data()['RANK_NO'],
-          user: yourProfile,
-          tpPoint: doc.data()['TS_POINT'],
-          searchEnableFlg: yourProfileDetail.SEARCH_ENABLE ?? true
-        );
+            rankNo: doc.data()['RANK_NO'],
+            user: yourProfile,
+            tpPoint: doc.data()['TS_POINT'],
+            searchEnableFlg: yourProfileDetail.SEARCH_ENABLE ?? true);
 
         rankList.add(rankListWork);
       }
@@ -75,9 +75,9 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
   @override
   void initState() {
     super.initState();
-      print("createRankList開始");
-      createRankList();
-      print("完了");
+    print("createRankList開始");
+    createRankList();
+    print("完了");
     _scrollController = ScrollController();
     // スクロール位置を監視してページネーションを実行
     _scrollController.addListener(() {
@@ -98,7 +98,7 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
   }
 
   Future<void> _loadMoreData() async {
-    print("ここはとおるっすか？"+_isLoadingMore.toString());
+    print("ここはとおるっすか？" + _isLoadingMore.toString());
 
     if (_isLoadingMore) return;
     if (mounted) {
@@ -127,7 +127,8 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
       for (final doc in querySnapshot.docs) {
         final userId = doc.data()['USER_ID'];
         final yourProfile = await FirestoreMethod.getYourProfile(userId);
-        final yourProfileDetail = await FirestoreMethod.getYourDetailProfile(userId);
+        final yourProfileDetail =
+            await FirestoreMethod.getYourDetailProfile(userId);
 
         final rankListWork = RankModel(
           rankNo: doc.data()['RANK_NO'],
@@ -174,8 +175,8 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
               height: 40,
               decoration: const BoxDecoration(
                   color: Colors.white,
-                  border: Border(
-                      bottom: BorderSide(color: Colors.grey, width: 1))),
+                  border:
+                      Border(bottom: BorderSide(color: Colors.grey, width: 1))),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
@@ -256,55 +257,56 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                     width: deviceWidth * 0.15,
                                     padding: const EdgeInsets.symmetric(
                                         horizontal: 4.0),
-                                    child: auth.currentUser!.isAnonymous?
-                                        RankModelList[index]
-                                        .user
-                                        .PROFILE_IMAGE ==
-                                        ''
-                                        ?
-                                    const CircleAvatar(
-                                      backgroundColor: Colors.white,
-                                      backgroundImage: AssetImage('images/tenipoikun.png'),
-                                      radius: 20,
-                                    )
-                                        :CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          backgroundImage: NetworkImage(
-                                              RankModelList[index]
-                                                  .user
-                                                  .PROFILE_IMAGE),
-                                          radius: 20,
-                                        )
-                                    :RankModelList[index]
-                                                .user
-                                                .PROFILE_IMAGE ==
-                                            ''
-                                        ? const CircleAvatar(
-                                            backgroundColor: Colors.white,
-                                            backgroundImage: NetworkImage(
-                                                "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Ftenipoikun.png?alt=media&token=46474a8b-ca79-4232-92ee-431042c19d10"),
-                                            radius: 20,
-                                          )
-                                        : CircleAvatar(
-                                            backgroundColor: Colors.white,
-                                            backgroundImage: NetworkImage(
-                                                RankModelList[index]
+                                    child: auth.currentUser!.isAnonymous
+                                        ? RankModelList[index]
                                                     .user
-                                                    .PROFILE_IMAGE),
-                                            radius: 20,
-                                          ),
-                                    ),
+                                                    .PROFILE_IMAGE ==
+                                                ''
+                                            ? const CircleAvatar(
+                                                backgroundColor: Colors.white,
+                                                backgroundImage: AssetImage(
+                                                    'images/tenipoikun.png'),
+                                                radius: 20,
+                                              )
+                                            : CircleAvatar(
+                                                backgroundColor: Colors.white,
+                                                backgroundImage: NetworkImage(
+                                                    RankModelList[index]
+                                                        .user
+                                                        .PROFILE_IMAGE),
+                                                radius: 20,
+                                              )
+                                        : RankModelList[index]
+                                                    .user
+                                                    .PROFILE_IMAGE ==
+                                                ''
+                                            ? const CircleAvatar(
+                                                backgroundColor: Colors.white,
+                                                backgroundImage: AssetImage(
+                                                    "images/tenipoikun.png"),
+                                                radius: 20,
+                                              )
+                                            : CircleAvatar(
+                                                backgroundColor: Colors.white,
+                                                backgroundImage: NetworkImage(
+                                                    RankModelList[index]
+                                                        .user
+                                                        .PROFILE_IMAGE),
+                                                radius: 20,
+                                              ),
+                                  ),
                                   onTap: () {
                                     if (auth.currentUser!.isAnonymous) {
                                       // ユーザーがログインしていない場合
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => SignUpPromptPage()),
+                                            builder: (context) =>
+                                                SignUpPromptPage()),
                                       );
                                       return; // ここで処理を終了。これより下のコードは実行されない
                                     }
-                                    if(RankModelList[index].searchEnableFlg){
+                                    if (RankModelList[index].searchEnableFlg) {
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
@@ -337,37 +339,42 @@ class _manSinglesRankListState extends State<manSinglesRankList> {
                                       Navigator.push(
                                         context,
                                         MaterialPageRoute(
-                                            builder: (context) => SignUpPromptPage()),
+                                            builder: (context) =>
+                                                SignUpPromptPage()),
                                       );
                                       return; // ここで処理を終了。これより下のコードは実行されない
                                     }
                                     //ログインしている時のみ以下、実行
-                                    bool test = await FirestoreMethod.isBlock(auth.currentUser!.uid, RankModelList[index].user.USER_ID);
-                                    if (!test){
+                                    bool test = await FirestoreMethod.isBlock(
+                                        auth.currentUser!.uid,
+                                        RankModelList[index].user.USER_ID);
+                                    if (!test) {
                                       return showDialog(
-                                      context: context,
-                                      builder: (context) {
-                                        return AlertDialog(
-                                            title:Text('ブロック中のユーザーです',
-                                                style: TextStyle(fontSize: 18)),
-                                            actions: <Widget>[
-                                              ElevatedButton(
-                                                style: ElevatedButton.styleFrom(
-                                                    foregroundColor:
-                                                    Colors.black,
-                                                    backgroundColor: Colors
-                                                        .lightGreenAccent),
-                                                child: const Text('OK'),
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                              ),
-                                              ]
-                                        );
-                                      });
-                                    }
-                                    else if (RankModelList[index].user.USER_ID !=
-                                        auth.currentUser!.uid && RankModelList[index].searchEnableFlg) {
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                                title: Text('ブロック中のユーザーです',
+                                                    style: TextStyle(
+                                                        fontSize: 18)),
+                                                actions: <Widget>[
+                                                  ElevatedButton(
+                                                    style: ElevatedButton.styleFrom(
+                                                        foregroundColor:
+                                                            Colors.black,
+                                                        backgroundColor: Colors
+                                                            .lightGreenAccent),
+                                                    child: const Text('OK'),
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                  ),
+                                                ]);
+                                          });
+                                    } else if (RankModelList[index]
+                                                .user
+                                                .USER_ID !=
+                                            auth.currentUser!.uid &&
+                                        RankModelList[index].searchEnableFlg) {
                                       showDialog(
                                           context: context,
                                           builder: (context) {

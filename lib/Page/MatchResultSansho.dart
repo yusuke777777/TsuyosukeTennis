@@ -82,6 +82,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                 fontSize: 20, color: Colors.black),
                           ),
                         ),
+<<<<<<< HEAD
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -90,6 +91,159 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                             padding: const EdgeInsets.only(right: 10),
                             width: deviceWidth * 0.3,
                             child: Column(
+=======
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.only(right: 10),
+                              width: deviceWidth * 0.3,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: deviceWidth * 0.3,
+                                    child: widget.myProfile.PROFILE_IMAGE == ''
+                                        ? const CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: AssetImage(
+                                          "images/tenipoikun.png"),
+                                      radius: 30,
+                                    )
+                                        : CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: NetworkImage(
+                                          widget.myProfile.PROFILE_IMAGE),
+                                      radius: 30,
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: deviceWidth * 0.3,
+                                    child: FittedBox(
+                                      alignment: Alignment.bottomCenter,
+                                      fit:BoxFit.scaleDown,
+                                      child: Text(
+                                        widget.myProfile.NICK_NAME,
+                                        style: const TextStyle(
+                                            fontSize: 20, color: Colors.black),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ) ,
+                            Column(
+                              children: widget.matchResultList
+                                  .map((matchResult) => Column(
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: [
+                                      Container(
+                                        alignment: Alignment.center,
+                                        width: deviceWidth * 0.12,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          border:
+                                          Border.all(color: Colors.grey),
+                                        ),
+                                          child: Text(
+                                            '${matchResult.myGamePoint}',
+                                            style: const TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black),
+                                          ),
+                                      ),
+                                      Container(
+                                        width: deviceWidth * 0.1,
+                                        child: const Center(
+                                          child: Text(
+                                            "-",
+                                            style: TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        alignment: Alignment.center,
+                                        width: deviceWidth * 0.12,
+                                        height: 50,
+                                        decoration: BoxDecoration(
+                                          border:
+                                          Border.all(color: Colors.grey),
+                                        ),
+                                          child: Text(
+                                            '${matchResult.yourGamePoint}',
+                                            style: const TextStyle(
+                                                fontSize: 20,
+                                                color: Colors.black),
+                                          ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              )).toList(),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.only(left: 10),
+                              width: deviceWidth * 0.3,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: deviceWidth * 0.3,
+                                    child: widget.yourProfile.PROFILE_IMAGE == ''
+                                        ? const CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: AssetImage(
+                                          "images/tenipoikun.png"),
+                                      radius: 30,
+                                    )
+                                        : CircleAvatar(
+                                      backgroundColor: Colors.white,
+                                      backgroundImage: NetworkImage(
+                                          widget.yourProfile.PROFILE_IMAGE),
+                                      radius: 30,
+                                    ),
+                                  ),
+                                  Container(
+                                    alignment: Alignment.center,
+                                    width: deviceWidth * 0.3,
+                                    child: FittedBox(
+                                      alignment: Alignment.bottomCenter,
+                                      fit:BoxFit.scaleDown,
+                                      child: Text(
+                                        widget.yourProfile.NICK_NAME,
+                                        style: const TextStyle(
+                                            fontSize: 20, color: Colors.black),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                        //レビュー集計機能
+                        Column(
+                          children: [
+                            const Text('------------------------',
+                                style: TextStyle(fontSize: 20)),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text('ストローク', style: TextStyle(fontSize: 20)),
+                              ],
+                            ),
+                            Row(
+>>>>>>> 8726e06bb577d9f6c200f103cbfd470ef1e1c6f5
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Container(

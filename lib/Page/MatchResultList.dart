@@ -115,7 +115,8 @@ class _MatchResultListState extends State<MatchResultList> {
                     itemBuilder: (context, index) {
                       if (index == _matchResultDocList.length) {
                         if (_isLoadingMore) {
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         } else {
                           return const SizedBox();
                         }
@@ -142,8 +143,8 @@ class _MatchResultListState extends State<MatchResultList> {
                                             ''
                                         ? const CircleAvatar(
                                             backgroundColor: Colors.white,
-                                            backgroundImage: NetworkImage(
-                                                "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Ftenipoikun.png?alt=media&token=46474a8b-ca79-4232-92ee-431042c19d10"),
+                                            backgroundImage: AssetImage(
+                                                "images/tenipoikun.png"),
                                             radius: 30,
                                           )
                                         : ClipOval(
@@ -209,47 +210,47 @@ class _MatchResultListState extends State<MatchResultList> {
                               Container(
                                 width: deviceWidth * 0.7,
                                 child: InkWell(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        width: deviceWidth * 0.7,
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                            (_matchResultDocList[index].data()
-                                                    as Map<String, dynamic>)[
-                                                'matchTitle'] as String,
-                                            overflow: TextOverflow.ellipsis,
-                                            // テキストが指定領域を超えた場合の挙動を設定CO
-                                            style: const TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.bold)),
-                                      ),
-                                      Container(
-                                        width: deviceWidth * 0.7,
-                                        alignment: Alignment.centerLeft,
-                                        child: Text(
-                                            "対戦相手：" +
-                                                (_matchResultDocList[index]
-                                                            .data()
-                                                        as Map<String, dynamic>)[
-                                                    'opponentName'] +
-                                                "\n対戦日時：" +
-                                                ((_matchResultDocList[index]
-                                                                .data()
-                                                            as Map<String,
-                                                                dynamic>)[
-                                                        'dailyId'] as String)
-                                                    .substring(0, 16),
-                                            style: const TextStyle(
-                                                fontSize: 12,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.grey)),
-                                      ),
-                                    ],
-                                  ),
-                                  onTap: () async {
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Container(
+                                          width: deviceWidth * 0.7,
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                              (_matchResultDocList[index].data()
+                                                      as Map<String, dynamic>)[
+                                                  'matchTitle'] as String,
+                                              overflow: TextOverflow.ellipsis,
+                                              // テキストが指定領域を超えた場合の挙動を設定CO
+                                              style: const TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.bold)),
+                                        ),
+                                        Container(
+                                          width: deviceWidth * 0.7,
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                              "対戦相手：" +
+                                                  (_matchResultDocList[index]
+                                                              .data()
+                                                          as Map<String, dynamic>)[
+                                                      'opponentName'] +
+                                                  "\n対戦日時：" +
+                                                  ((_matchResultDocList[index]
+                                                                  .data()
+                                                              as Map<String,
+                                                                  dynamic>)[
+                                                          'dailyId'] as String)
+                                                      .substring(0, 16),
+                                              style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: Colors.grey)),
+                                        ),
+                                      ],
+                                    ),
+                                    onTap: () async {
                                       //対戦結果入力画面へ遷移
                                       //フィードバック結果を取得する
                                       String feedBackComment =
@@ -306,8 +307,7 @@ class _MatchResultListState extends State<MatchResultList> {
                                                       feedBackComment,
                                                       skillLevel,
                                                       matchTitle)));
-                                    }
-                                ),
+                                    }),
                               )
                             ],
                           ),
