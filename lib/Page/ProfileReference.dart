@@ -225,7 +225,7 @@ class _ProfileReferenceState extends State<ProfileReference> {
                                     backgroundColor: Colors.white,
                                     backgroundImage:
                                         AssetImage("images/tenipoikun.png"),
-                                    radius: 30,
+                                    radius: 80,
                                   )
                                 : CircleAvatar(
                                     backgroundColor: Colors.white,
