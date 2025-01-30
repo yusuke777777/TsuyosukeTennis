@@ -98,10 +98,9 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                   child: widget.myProfile.PROFILE_IMAGE == ''
                                       ? const CircleAvatar(
                                           backgroundColor: Colors.white,
-                                          backgroundImage: NetworkImage(
-                                              "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Ftenipoikun.png?alt=media&token=46474a8b-ca79-4232-92ee-431042c19d10"),
-                                          radius: 30,
-                                        )
+                                          backgroundImage:
+                                          AssetImage("images/tenipoikun.png"), radius: 30,
+                                  )
                                       : CircleAvatar(
                                           backgroundColor: Colors.white,
                                           backgroundImage: NetworkImage(
@@ -192,10 +191,9 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                                   child: widget.yourProfile.PROFILE_IMAGE == ''
                                       ? const CircleAvatar(
                                           backgroundColor: Colors.white,
-                                          backgroundImage: NetworkImage(
-                                              "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Ftenipoikun.png?alt=media&token=46474a8b-ca79-4232-92ee-431042c19d10"),
-                                          radius: 30,
-                                        )
+                                          backgroundImage: AssetImage(
+                                              "images/tenipoikun.png"), radius: 30,
+                                  )
                                       : CircleAvatar(
                                           backgroundColor: Colors.white,
                                           backgroundImage: NetworkImage(
