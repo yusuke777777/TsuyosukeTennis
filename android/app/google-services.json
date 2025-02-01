@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "765408552100",
+    "firebase_url": "https://tsuyosuketeniss-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "tsuyosuketeniss",
+    "storage_bucket": "tsuyosuketeniss.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:765408552100:android:01c191c73dacc075e8b231",
+        "android_client_info": {
+          "package_name": "com.example.tsuyosuke_tennis_ap"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "765408552100-mumabv1s7efu7tgo5pov9nh9j5mft7q3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDCf7Ux-CFqX8OBhO70Sh0GF4fPBVzUIFY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "765408552100-ihbtjblkf3hqk15r80a6hran62825ofu.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "765408552100-5ncjmal2di8417vhtprbt4edsp8fpvre.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tsuyosukeTennisAp"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
