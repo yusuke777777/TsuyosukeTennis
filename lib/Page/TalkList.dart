@@ -90,8 +90,7 @@ class _TalkListState extends State<TalkList> {
                                       onPressed: (value) {
                                         FirestoreMethod.addBlockList(
                                             talkList[index].user.USER_ID);
-                                        setState(() {
-                                        });
+                                        setState(() {});
                                       },
                                       backgroundColor: Colors.grey,
                                       icon: Icons.block_flipped,
@@ -105,7 +104,8 @@ class _TalkListState extends State<TalkList> {
                                             context: context,
                                             builder: (context) {
                                               return AlertDialog(
-                                                title: const Text('本当に削除して宜しいですか'),
+                                                title:
+                                                    const Text('本当に削除して宜しいですか'),
                                                 actions: <Widget>[
                                                   ElevatedButton(
                                                     style: ElevatedButton.styleFrom(
@@ -118,22 +118,29 @@ class _TalkListState extends State<TalkList> {
                                                       try {
                                                         await FirestoreMethod
                                                             .delTalkRoom(
-                                                            talkList[index]
-                                                                .roomId);
+                                                                talkList[index]
+                                                                    .roomId);
                                                         Navigator.pop(context);
                                                         // 戻ってきたら未読数をリセット
-                                                        await NotificationMethod.unreadCountRest(
-                                                            talkList[index].user.USER_ID);
+                                                        await NotificationMethod
+                                                            .unreadCountRest(
+                                                                talkList[index]
+                                                                    .user
+                                                                    .USER_ID);
                                                         // トークリストを更新
                                                         await createRooms();
                                                         setState(() {});
-                                                      }catch(e){
+                                                      } catch (e) {
                                                         showDialog(
                                                             context: context,
-                                                            builder: (BuildContext context) => const ShowDialogToDismiss(
-                                                              content: "トークルームの削除に失敗しました",
-                                                              buttonText: "はい",
-                                                            ));
+                                                            builder: (BuildContext
+                                                                    context) =>
+                                                                const ShowDialogToDismiss(
+                                                                  content:
+                                                                      "トークルームの削除に失敗しました",
+                                                                  buttonText:
+                                                                      "はい",
+                                                                ));
                                                       }
                                                     },
                                                   ),
@@ -192,8 +199,8 @@ class _TalkListState extends State<TalkList> {
                                                   ? const CircleAvatar(
                                                       backgroundColor:
                                                           Colors.white,
-                                                      backgroundImage: NetworkImage(
-                                                          "https://firebasestorage.googleapis.com/v0/b/tsuyosuketeniss.appspot.com/o/myProfileImage%2Fdefault%2Ftenipoikun.png?alt=media&token=46474a8b-ca79-4232-92ee-431042c19d10"),
+                                                      backgroundImage: AssetImage(
+                                                          "images/tenipoikun.png"),
                                                       radius: 30,
                                                     )
                                                   : CircleAvatar(
@@ -252,7 +259,8 @@ class _TalkListState extends State<TalkList> {
                                                   alignment: Alignment.center,
                                                   width: 25.0,
                                                   height: 25.0,
-                                                  decoration: const BoxDecoration(
+                                                  decoration:
+                                                      const BoxDecoration(
                                                     color: Colors.green,
                                                     shape: BoxShape.circle,
                                                   ),

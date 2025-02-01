@@ -1203,7 +1203,7 @@ class FirestoreMethod {
       String? myUid = auth.currentUser!.uid;
       await newMessageRef.set({
         'messageId': newMessageRef.id,
-        'message': "評価・フィードバックを入力しました！",
+        'message': "評価・フィードバックが入力されました！",
         'sender_id': myUid,
         'send_time': Timestamp.now(),
         'matchStatusFlg': "3",
@@ -1211,7 +1211,7 @@ class FirestoreMethod {
         'dayKey': dayKey
       });
       roomRef.doc(room.roomId).update({
-        'last_message': "評価・フィードバックを入力しました！",
+        'last_message': "評価・フィードバックが入力されました！",
         'updated_time': Timestamp.now()
       });
       CprofileSetting myProfile = await FirestoreMethod.getProfile();
@@ -1220,7 +1220,7 @@ class FirestoreMethod {
         //トークンIDが登録されていない場合
       } else {
         //トークンIDが登録されている場合
-        await NotificationMethod.sendMessage(tokenId!, "評価・フィードバックを入力しました！",
+        await NotificationMethod.sendMessage(tokenId!, "評価・フィードバックが入力されました！",
             myProfile.NICK_NAME, myUid, room.user.USER_ID);
       }
       //未読メッセージ数の更新

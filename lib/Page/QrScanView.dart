@@ -3,11 +3,13 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:tsuyosuke_tennis_ap/Page/MatchList.dart';
 
 import '../Component/native_dialog.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/singletons_data.dart';
 import '../PropSetCofig.dart';
+import '../UnderMenuMove.dart';
 
 class QrScanView extends StatefulWidget {
   const QrScanView({Key? key}) : super(key: key);
@@ -93,13 +95,18 @@ class _QrScanViewState extends State<QrScanView> {
           String ticketFlg = await FirestoreMethod.makeMatchByQrScan(yourId);
           if (ticketFlg == "0") {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('マッチング完了！')),
+              const SnackBar(content: Text('マッチング完了。\n試合終了後に対戦結果を入力しよう！'),duration: const Duration(seconds: 10),) // 表示時間を10秒に設定),
             );
             matchdList.add(yourId);
 
             // マッチングが完了したらカメラ画面を閉じる
             if (mounted) {
               Navigator.of(context).pop();
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UnderMenuMove.make(2)
+                  ));
             }
           } else if (ticketFlg == "1") {
             if (appData.entitlementIsActive == true) {
