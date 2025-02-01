@@ -13,6 +13,7 @@ import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
 import '../Common/CmatchResult.dart';
 import '../Common/CprofileSetting.dart';
 import '../PropSetCofig.dart';
+import '../constant.dart';
 
 class MatchResultSansho extends StatefulWidget {
   late CprofileSetting myProfile;
@@ -496,7 +497,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
     File? imageFile = await _capturePng(globalKey);
     if (imageFile != null) {
       await Share.shareXFiles([XFile(imageFile.path)],
-          text: "試合結果をシェアしました！ 🎾");
+          text: "試合結果をシェアしました！ 🎾\n\nアプリはこちらからダウンロード↓↓\n$appStoreUrl");
     }
   }
 

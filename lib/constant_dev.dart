@@ -37,4 +37,5 @@ const googleAdsBannerAndroid = 'ca-app-pub-3940256099942544/9214589741'; //開�
 const googleAdsBannerIos = 'ca-app-pub-3940256099942544/2435281174'; //開発
 //const googleAdsBannerIos = 'ca-app-pub-2361922346375583/4110034380'; //本番
 
-
+//AppStoreのURL
+const appStoreUrl = 'https://apps.apple.com/jp/app/id6473671662';
