@@ -4,6 +4,7 @@ import 'dart:ui' as ui; // dart:ui を alias で指定
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:path_provider/path_provider.dart';
@@ -20,9 +21,10 @@ class MatchResultSansho extends StatefulWidget {
   String? feedBackMessage;
   late CSkilLevelSetting SkillLevel;
   late String matchTitle;
+  String? shereScreenFlg ="0";
 
   MatchResultSansho(this.myProfile, this.yourProfile, this.matchResultList,
-      this.feedBackMessage, this.SkillLevel, this.matchTitle);
+      this.feedBackMessage, this.SkillLevel, this.matchTitle,{this.shereScreenFlg = "0"});
 
   @override
   _MatchResultSanshoState createState() => _MatchResultSanshoState();
@@ -34,8 +36,24 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
     super.dispose(); // 親クラスのdisposeを呼び出す
   }
 
+  @override
+  void initState() {
+    super.initState();
+
+    // 画面が描画された後にダイアログを表示
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if(widget.shereScreenFlg=="1"){
+        _showShareDialog();
+      }
+    });
+  }
+
   //スクリーンショットを撮るウィジェットを選択するためのグローバル変数
-  final GlobalKey _globalKey = GlobalKey();
+  //得点・スキル・フィードバック全て
+  final GlobalKey _allScreen_globalKey = GlobalKey();
+
+  //得点のみ
+  final GlobalKey _scoreScreen_globalKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
@@ -56,168 +74,193 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                     color: Colors.black,
                     size: 40.0,
                   ),
-                  onPressed: () async {
-                    await _shareOnX();
-                  },
+                  onPressed: _showShareDialog,
                 )
               ]),
           body: RepaintBoundary(
-            key: _globalKey, //X投稿用のスクリーンショット保存
+            key: _allScreen_globalKey, //X投稿用のスクリーンショット(All)保存
             child: Scrollbar(
               child: SingleChildScrollView(
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const SizedBox(
-                        width: 80,
-                      ),
-                      Center(
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: deviceWidth * 0.8,
-                          height: 100,
-                          child: Text(
-                            widget.matchTitle,
-                            style: const TextStyle(
-                                fontSize: 20, color: Colors.black),
-                          ),
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.only(right: 10),
-                            width: deviceWidth * 0.3,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
+                      RepaintBoundary(
+                        key: _scoreScreen_globalKey, //X投稿用のスクリーンショット(Score)保存
+                        child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              const SizedBox(
+                                width: 80,
+                              ),
+                              Center(
+                                child: Container(
                                   alignment: Alignment.center,
-                                  width: deviceWidth * 0.3,
-                                  child: widget.myProfile.PROFILE_IMAGE == ''
-                                      ? const CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          backgroundImage:
-                                          AssetImage("images/tenipoikun.png"), radius: 30,
-                                  )
-                                      : CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          backgroundImage: NetworkImage(
-                                              widget.myProfile.PROFILE_IMAGE),
-                                          radius: 30,
-                                        ),
-                                ),
-                                Container(
-                                  alignment: Alignment.center,
-                                  width: deviceWidth * 0.3,
-                                  child: FittedBox(
-                                    alignment: Alignment.bottomCenter,
-                                    fit: BoxFit.scaleDown,
-                                    child: Text(
-                                      widget.myProfile.NICK_NAME,
-                                      style: const TextStyle(
-                                          fontSize: 20, color: Colors.black),
-                                    ),
+                                  width: deviceWidth * 0.8,
+                                  height: 100,
+                                  child: Text(
+                                    widget.matchTitle,
+                                    style: const TextStyle(
+                                        fontSize: 20, color: Colors.black),
                                   ),
                                 ),
-                              ],
-                            ),
-                          ),
-                          Column(
-                            children: widget.matchResultList
-                                .map((matchResult) => Column(
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.only(right: 10),
+                                    width: deviceWidth * 0.3,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
                                       children: [
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.start,
-                                          children: [
-                                            Container(
-                                              alignment: Alignment.center,
-                                              width: deviceWidth * 0.12,
-                                              height: 50,
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.grey),
-                                              ),
-                                              child: Text(
-                                                '${matchResult.myGamePoint}',
-                                                style: const TextStyle(
-                                                    fontSize: 20,
-                                                    color: Colors.black),
-                                              ),
-                                            ),
-                                            Container(
-                                              width: deviceWidth * 0.1,
-                                              child: const Center(
-                                                child: Text(
-                                                  "-",
-                                                  style: TextStyle(
-                                                      fontSize: 20,
-                                                      color: Colors.black),
+                                        Container(
+                                          alignment: Alignment.center,
+                                          width: deviceWidth * 0.3,
+                                          child: widget.myProfile
+                                                      .PROFILE_IMAGE ==
+                                                  ''
+                                              ? const CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: AssetImage(
+                                                      "images/tenipoikun.png"),
+                                                  radius: 30,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: NetworkImage(
+                                                      widget.myProfile
+                                                          .PROFILE_IMAGE),
+                                                  radius: 30,
                                                 ),
-                                              ),
+                                        ),
+                                        Container(
+                                          alignment: Alignment.center,
+                                          width: deviceWidth * 0.3,
+                                          child: FittedBox(
+                                            alignment: Alignment.bottomCenter,
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                              widget.myProfile.NICK_NAME,
+                                              style: const TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.black),
                                             ),
-                                            Container(
-                                              alignment: Alignment.center,
-                                              width: deviceWidth * 0.12,
-                                              height: 50,
-                                              decoration: BoxDecoration(
-                                                border: Border.all(
-                                                    color: Colors.grey),
-                                              ),
-                                              child: Text(
-                                                '${matchResult.yourGamePoint}',
-                                                style: const TextStyle(
-                                                    fontSize: 20,
-                                                    color: Colors.black),
-                                              ),
-                                            ),
-                                          ],
+                                          ),
                                         ),
                                       ],
-                                    ))
-                                .toList(),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(left: 10),
-                            width: deviceWidth * 0.3,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  alignment: Alignment.center,
-                                  width: deviceWidth * 0.3,
-                                  child: widget.yourProfile.PROFILE_IMAGE == ''
-                                      ? const CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          backgroundImage: AssetImage(
-                                              "images/tenipoikun.png"), radius: 30,
-                                  )
-                                      : CircleAvatar(
-                                          backgroundColor: Colors.white,
-                                          backgroundImage: NetworkImage(
-                                              widget.yourProfile.PROFILE_IMAGE),
-                                          radius: 30,
-                                        ),
-                                ),
-                                Container(
-                                  alignment: Alignment.center,
-                                  width: deviceWidth * 0.3,
-                                  child: FittedBox(
-                                    alignment: Alignment.bottomCenter,
-                                    fit: BoxFit.scaleDown,
-                                    child: Text(
-                                      widget.yourProfile.NICK_NAME,
-                                      style: const TextStyle(
-                                          fontSize: 20, color: Colors.black),
                                     ),
                                   ),
-                                ),
-                              ],
-                            ),
-                          )
-                        ],
+                                  Column(
+                                    children: widget.matchResultList
+                                        .map((matchResult) => Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment:
+                                                      MainAxisAlignment.start,
+                                                  children: [
+                                                    Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      width: deviceWidth * 0.12,
+                                                      height: 50,
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: Colors.grey),
+                                                      ),
+                                                      child: Text(
+                                                        '${matchResult.myGamePoint}',
+                                                        style: const TextStyle(
+                                                            fontSize: 20,
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      width: deviceWidth * 0.1,
+                                                      child: const Center(
+                                                        child: Text(
+                                                          "-",
+                                                          style: TextStyle(
+                                                              fontSize: 20,
+                                                              color:
+                                                                  Colors.black),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      width: deviceWidth * 0.12,
+                                                      height: 50,
+                                                      decoration: BoxDecoration(
+                                                        border: Border.all(
+                                                            color: Colors.grey),
+                                                      ),
+                                                      child: Text(
+                                                        '${matchResult.yourGamePoint}',
+                                                        style: const TextStyle(
+                                                            fontSize: 20,
+                                                            color:
+                                                                Colors.black),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ))
+                                        .toList(),
+                                  ),
+                                  Container(
+                                    padding: const EdgeInsets.only(left: 10),
+                                    width: deviceWidth * 0.3,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Container(
+                                          alignment: Alignment.center,
+                                          width: deviceWidth * 0.3,
+                                          child: widget.yourProfile
+                                                      .PROFILE_IMAGE ==
+                                                  ''
+                                              ? const CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: AssetImage(
+                                                      "images/tenipoikun.png"),
+                                                  radius: 30,
+                                                )
+                                              : CircleAvatar(
+                                                  backgroundColor: Colors.white,
+                                                  backgroundImage: NetworkImage(
+                                                      widget.yourProfile
+                                                          .PROFILE_IMAGE),
+                                                  radius: 30,
+                                                ),
+                                        ),
+                                        Container(
+                                          alignment: Alignment.center,
+                                          width: deviceWidth * 0.3,
+                                          child: FittedBox(
+                                            alignment: Alignment.bottomCenter,
+                                            fit: BoxFit.scaleDown,
+                                            child: Text(
+                                              widget.yourProfile.NICK_NAME,
+                                              style: const TextStyle(
+                                                  fontSize: 20,
+                                                  color: Colors.black),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                            ]),
                       ),
                       //レビュー集計機能
                       Column(
@@ -418,10 +461,10 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
   }
 
   // スクリーンショットを撮る関数
-  Future<File?> _capturePng() async {
+  Future<File?> _capturePng(GlobalKey globalKey) async {
     try {
-      RenderRepaintBoundary boundary = _globalKey.currentContext!
-          .findRenderObject() as RenderRepaintBoundary;
+      RenderRepaintBoundary boundary =
+          globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
       ui.Image image = await boundary.toImage(pixelRatio: 3.0);
 
       // `ui.ByteData` を使用する
@@ -449,11 +492,62 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
   }
 
   // 画像をXに共有
-  Future<void> _shareOnX() async {
-    File? imageFile = await _capturePng();
+  Future<void> _shareOnX(GlobalKey globalKey) async {
+    File? imageFile = await _capturePng(globalKey);
     if (imageFile != null) {
       await Share.shareXFiles([XFile(imageFile.path)],
           text: "試合結果をシェアしました！ 🎾");
     }
+  }
+
+
+  void _showShareDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("SNSで試合結果を共有しよう！"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("どの情報を共有しますか？"),
+              SizedBox(height: 16),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent,
+                ),
+                onPressed: () async {
+                  Navigator.pop(context);
+                  await _shareOnX(_scoreScreen_globalKey);
+                },
+                icon: Icon(Icons.sports_tennis),
+                label: Text("スコアのみ共有"),
+              ),
+              SizedBox(height: 8),
+              ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(
+                  foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent,
+                ),
+                onPressed: () async {
+                  Navigator.pop(context);
+                  await _shareOnX(_allScreen_globalKey);
+                },
+                icon: Icon(Icons.share),
+                label: Text("表示画面すべて共有"),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text("後で"),
+            ),
+          ],
+        );
+      },
+    );
+
   }
 }

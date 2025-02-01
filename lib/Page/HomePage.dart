@@ -178,8 +178,9 @@ class _HomePageState extends State<HomePage> {
                                                                   profileDetailList
                                                                       .RANK_NO)
                                                               .toString(),
-                                                          style: const TextStyle(
-                                                              fontSize: 40),
+                                                          style:
+                                                              const TextStyle(
+                                                                  fontSize: 40),
                                                         ),
                                                       ),
                                                     ),
@@ -270,8 +271,7 @@ class _HomePageState extends State<HomePage> {
                                   ? const CircleAvatar(
                                       backgroundColor: Colors.white,
                                       backgroundImage:
-                                      AssetImage(
-                                          "images/tenipoikun.png"),
+                                          AssetImage("images/tenipoikun.png"),
                                       radius: 80,
                                     )
                                   : CircleAvatar(
@@ -943,7 +943,7 @@ class _HomePageState extends State<HomePage> {
                         )
                       : Container(),
                   Container(
-                    height: 180,
+                    height: 220,
                     width: deviceWidth * 0.8,
                     child: Column(
                       children: [
@@ -965,8 +965,12 @@ class _HomePageState extends State<HomePage> {
                           embeddedImage: Image.network(
                                   'https://illustimage.com/photo/463.png')
                               .image,
+                          embeddedImageStyle: QrEmbeddedImageStyle(
+                            size: Size(20, 20),
+                          ),
+                          errorCorrectionLevel: QrErrorCorrectLevel.H, // 誤り訂正レベルを最大に
                           //QRコードの真ん中に表示する画像
-                          size: 90.0,
+                          size: 120.0,
                         ),
                         IconButton(
                           icon: const Icon(Icons.camera_alt),

@@ -51,7 +51,6 @@ class _TalkRoomState extends State<TalkRoom> {
   final int maxLines = 5; // 最大行数
 
 
-
   @override
   void initState() {
     super.initState();
@@ -78,31 +77,32 @@ class _TalkRoomState extends State<TalkRoom> {
   }
 
   Future<void> _adjustHeight() async {
-      final text = _controller.text;
-      final lineCount = '\n'
-          .allMatches(text)
-          .length + 1;
+    final text = _controller.text;
+    final lineCount = '\n'
+        .allMatches(text)
+        .length + 1;
 
-      if (lineCount != _currentLineCount) {
-        setState(() {
-          _currentLineCount = lineCount;
-          if (_currentLineCount <= maxLines) {
-            // 高さを調整
-            if(addFlg == "1") {
-              menuHeight = addHeight + baseHeight + (_currentLineCount - 1) * lineHeight;
-            }else{
-              menuHeight = baseHeight + (_currentLineCount - 1) * lineHeight;
-            }
+    if (lineCount != _currentLineCount) {
+      setState(() {
+        _currentLineCount = lineCount;
+        if (_currentLineCount <= maxLines) {
+          // 高さを調整
+          if (addFlg == "1") {
+            menuHeight =
+                addHeight + baseHeight + (_currentLineCount - 1) * lineHeight;
           } else {
-            // 最大行数を超えた場合は高さを固定
-            if(addFlg == "1") {
-              menuHeight =  addHeight + baseHeight + (maxLines - 1) * lineHeight;
-            }else{
-              menuHeight = baseHeight + (maxLines - 1) * lineHeight;
-            }
+            menuHeight = baseHeight + (_currentLineCount - 1) * lineHeight;
           }
-        });
-      }
+        } else {
+          // 最大行数を超えた場合は高さを固定
+          if (addFlg == "1") {
+            menuHeight = addHeight + baseHeight + (maxLines - 1) * lineHeight;
+          } else {
+            menuHeight = baseHeight + (maxLines - 1) * lineHeight;
+          }
+        }
+      });
+    }
   }
 
 
@@ -166,7 +166,7 @@ class _TalkRoomState extends State<TalkRoom> {
                   height: 40,
                   child: const AdBanner(size: AdSize.banner)),
               Padding(
-                padding: EdgeInsets.only(top: 40, bottom: menuHeight +5),
+                padding: EdgeInsets.only(top: 40, bottom: menuHeight + 5),
                 child: StreamBuilder<List<QueryDocumentSnapshot>>(
                     stream: _messagesStream,
                     builder: (context, snapshot) {
@@ -342,28 +342,28 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                   context: context,
                                                                   builder: (
                                                                       BuildContext context) =>
-                                                                      const ShowDialogToDismiss(
-                                                                        content: "チケットが不足しています。",
-                                                                        buttonText: "はい",
-                                                                      ));
+                                                                  const ShowDialogToDismiss(
+                                                                    content: "チケットが不足しています。",
+                                                                    buttonText: "はい",
+                                                                  ));
                                                             } else {
                                                               await showDialog(
                                                                   context: context,
                                                                   builder: (
                                                                       BuildContext context) =>
-                                                                      const BillingShowDialogToDismiss(
-                                                                          content: "チケットが不足しています。有料プランを確認しますか"
-                                                                      ));
+                                                                  const BillingShowDialogToDismiss(
+                                                                      content: "チケットが不足しています。有料プランを確認しますか"
+                                                                  ));
                                                             }
                                                           } else {
                                                             await showDialog(
                                                                 context: context,
                                                                 builder: (
                                                                     BuildContext context) =>
-                                                                    const ShowDialogToDismiss(
-                                                                      content: "対戦相手のチケットが不足しています。",
-                                                                      buttonText: "はい",
-                                                                    ));
+                                                                const ShowDialogToDismiss(
+                                                                  content: "対戦相手のチケットが不足しています。",
+                                                                  buttonText: "はい",
+                                                                ));
                                                             FirestoreMethod
                                                                 .matchAcceptTicketError(
                                                                 widget
@@ -385,9 +385,10 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                       .toString(),
                                                                   buttonText: "はい",
                                                                 ));
-                                                      }finally {
+                                                      } finally {
                                                         setState(() {
-                                                          _isProcessing = false; // 処理終了
+                                                          _isProcessing =
+                                                          false; // 処理終了
                                                         });
                                                       }
                                                     },
@@ -429,10 +430,10 @@ class _TalkRoomState extends State<TalkRoom> {
                                                             showDialog(
                                                                 context: context,
                                                                 builder: (_) =>
-                                                                    const AlertDialog(
-                                                                      content: Text(
-                                                                          "すでに友人登録済みです"),
-                                                                    ));
+                                                                const AlertDialog(
+                                                                  content: Text(
+                                                                      "すでに友人登録済みです"),
+                                                                ));
                                                           } else {
                                                             //受け入れ処理を入れる
                                                             FirestoreMethod
@@ -459,9 +460,10 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                       .toString(),
                                                                   buttonText: "はい",
                                                                 ));
-                                                      }finally {
+                                                      } finally {
                                                         setState(() {
-                                                          _isProcessing = false; // 処理終了
+                                                          _isProcessing =
+                                                          false; // 処理終了
                                                         });
                                                       }
                                                     },
@@ -572,12 +574,13 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                   builder: (
                                                                       context) =>
                                                                       MatchResultSansho(
-                                                                          myProfile,
-                                                                          yourProfile,
-                                                                          matchResultList,
-                                                                          feedBackComment,
-                                                                          skillLevel,
-                                                                          matchTitle)));
+                                                                        myProfile,
+                                                                        yourProfile,
+                                                                        matchResultList,
+                                                                        feedBackComment,
+                                                                        skillLevel,
+                                                                        matchTitle,
+                                                                        shereScreenFlg: "1",)));
 
                                                           // FirestoreMethod.makeMatch(widget.room);
                                                         }
@@ -591,9 +594,10 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                       .toString(),
                                                                   buttonText: "はい",
                                                                 ));
-                                                      }finally {
+                                                      } finally {
                                                         setState(() {
-                                                          _isProcessing = false; // 処理終了
+                                                          _isProcessing =
+                                                          false; // 処理終了
                                                         });
                                                       }
                                                     },
@@ -676,9 +680,10 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                       .toString(),
                                                                   buttonText: "はい",
                                                                 ));
-                                                      }finally {
+                                                      } finally {
                                                         setState(() {
-                                                          _isProcessing = false; // 処理終了
+                                                          _isProcessing =
+                                                          false; // 処理終了
                                                         });
                                                       }
                                                     },
@@ -764,9 +769,9 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                           matchResultList,
                                                                           feedBackComment,
                                                                           skillLevel,
-                                                                          matchTitle)));
+                                                                          matchTitle,shereScreenFlg: "1",)));
                                                         }
-                                                      }catch (e) {
+                                                      } catch (e) {
                                                         await showDialog(
                                                             context: context,
                                                             builder: (
@@ -776,9 +781,10 @@ class _TalkRoomState extends State<TalkRoom> {
                                                                       .toString(),
                                                                   buttonText: "はい",
                                                                 ));
-                                                      }finally {
+                                                      } finally {
                                                         setState(() {
-                                                          _isProcessing = false; // 処理終了
+                                                          _isProcessing =
+                                                          false; // 処理終了
                                                         });
                                                       }
                                                     },
@@ -811,13 +817,14 @@ class _TalkRoomState extends State<TalkRoom> {
                 alignment: Alignment.bottomCenter,
                 child: Container(
                   color: Colors.black,
-                  height: menuHeight +10,
+                  height: menuHeight + 10,
                   padding: const EdgeInsets.all(5),
                   child: Column(
                     children: [
                       _buildButton(), // 他のボタンやウィジェット
                       Row(
-                        crossAxisAlignment: CrossAxisAlignment.center, // ボタンとテキストフィールドの高さを揃える
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        // ボタンとテキストフィールドの高さを揃える
                         children: [
                           Container(
                             // height: baseHeight,
@@ -836,21 +843,21 @@ class _TalkRoomState extends State<TalkRoom> {
                               constraints: BoxConstraints(
                                 maxHeight: lineHeight * maxLines, // 最大高さ
                               ),
-                                child: SingleChildScrollView(
-                                  controller: _scrollMessageController,
-                                  child: TextField(
-                                    style: TextStyle(color: Colors.white),
-                                    controller: _controller,
-                                    decoration: InputDecoration(
-                                      hintText: "メッセージを入力",
-                                      hintStyle: TextStyle(color: Colors.white),
-                                      border: OutlineInputBorder(),
-                                      contentPadding: EdgeInsets.all(8.0),
-                                    ),
-                                    keyboardType: TextInputType.multiline,
-                                    maxLines: null, // 自由に改行を許可
+                              child: SingleChildScrollView(
+                                controller: _scrollMessageController,
+                                child: TextField(
+                                  style: TextStyle(color: Colors.white),
+                                  controller: _controller,
+                                  decoration: InputDecoration(
+                                    hintText: "メッセージを入力",
+                                    hintStyle: TextStyle(color: Colors.white),
+                                    border: OutlineInputBorder(),
+                                    contentPadding: EdgeInsets.all(8.0),
                                   ),
+                                  keyboardType: TextInputType.multiline,
+                                  maxLines: null, // 自由に改行を許可
                                 ),
+                              ),
                             ),
                           ),
                           Container(
@@ -896,16 +903,16 @@ class _TalkRoomState extends State<TalkRoom> {
           await showDialog(
               context: context,
               builder: (BuildContext context) =>
-                  const ShowDialogToDismiss(
-                    content: "1日の上限メッセージ数を超えました。", buttonText: 'はい',
-                  ));
+              const ShowDialogToDismiss(
+                content: "1日の上限メッセージ数を超えました。", buttonText: 'はい',
+              ));
         } else {
           await showDialog(
               context: context,
               builder: (BuildContext context) =>
-                  const BillingShowDialogToDismiss(
-                    content: "1日の上限メッセージ数を超えました。上限数を上げたい場合、有料プランへの加入が必要です。有料プランを確認しますか ",
-                  ));
+              const BillingShowDialogToDismiss(
+                content: "1日の上限メッセージ数を超えました。上限数を上げたい場合、有料プランへの加入が必要です。有料プランを確認しますか ",
+              ));
         }
       }
     }
@@ -963,17 +970,17 @@ class _TalkRoomState extends State<TalkRoom> {
                       await showDialog(
                           context: context,
                           builder: (BuildContext context) =>
-                              const ShowDialogToDismiss(
-                                content: "チケットが不足してるため、対戦申し込みができません",
-                                buttonText: "はい",
-                              ));
+                          const ShowDialogToDismiss(
+                            content: "チケットが不足してるため、対戦申し込みができません",
+                            buttonText: "はい",
+                          ));
                     } else {
                       await showDialog(
                           context: context,
                           builder: (BuildContext context) =>
-                              const BillingShowDialogToDismiss(
-                                  content: "チケットが不足してるため、対戦申し込みができません。有料プランを確認しますか"
-                              ));
+                          const BillingShowDialogToDismiss(
+                              content: "チケットが不足してるため、対戦申し込みができません。有料プランを確認しますか"
+                          ));
                     }
                   }
                 }),
@@ -1008,10 +1015,10 @@ class _TalkRoomState extends State<TalkRoom> {
                     showDialog(
                         context: context,
                         builder: (_) =>
-                            const AlertDialog(
-                              content: Text(
-                                  "すでに友人登録済みです"),
-                            ));
+                        const AlertDialog(
+                          content: Text(
+                              "すでに友人登録済みです"),
+                        ));
                   } else {
                     print("友達登録メッセージ送信");
                     await FirestoreMethod.sendFriendMessage(widget.room);
