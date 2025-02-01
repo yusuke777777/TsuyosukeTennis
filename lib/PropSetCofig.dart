@@ -287,22 +287,24 @@ class DrawerConfig {
                     print("ログアウト: " + (appData.appUserID.isNotEmpty ? appData.appUserID : "未設定"));
 
                   } on PlatformException catch (e) {
-                    await showDialog(
-                        context: context,
-                        builder: (BuildContext context) => ShowDialogToDismiss(
-                            title: "Error",
-                            content: e.message ?? "Unknown error",
-                            buttonText: 'OK'));
+                    print(e);
+                    // await showDialog(
+                    //     context: context,
+                    //     builder: (BuildContext context) => ShowDialogToDismiss(
+                    //         title: "Error",
+                    //         content: e.message ?? "Unknown error",
+                    //         buttonText: 'OK'));
                   } catch (e) {
+                    print(e);
                     // その他のエラー処理
-                    await showDialog(
-                      context: context,
-                      builder: (BuildContext context) => ShowDialogToDismiss(
-                        title: "エラー",
-                        content: e.toString(),
-                        buttonText: 'OK',
-                      ),
-                    );
+                    // await showDialog(
+                    //   context: context,
+                    //   builder: (BuildContext context) => ShowDialogToDismiss(
+                    //     title: "エラー",
+                    //     content: e.toString(),
+                    //     buttonText: 'OK',
+                    //   ),
+                    // );
                   }
                   // ログアウト後の画面に遷移
                   Navigator.pushAndRemoveUntil(
