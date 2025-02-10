@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CScoreRef.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CScoreRefHistory.dart';
@@ -32,6 +33,7 @@ import '../Common/CprofileDetail.dart';
 import '../Common/CprofileSetting.dart';
 import '../Common/CactivityList.dart';
 import '../Common/CtalkRoom.dart';
+import '../Common/TodoListModel.dart';
 import 'NotificationMethod.dart';
 import 'TsMethod.dart';
 
@@ -48,6 +50,7 @@ class FirestoreMethod {
   static final settingRef = _firestoreInstance.collection('MySetting');
   static final profileDetailRef =
       _firestoreInstance.collection('myProfileDetail');
+  //static final todosRef = _firestoreInstance.collection('todos');
 
   //ランキングリスト
   static final manSinglesRankRef =
@@ -4409,5 +4412,45 @@ class FirestoreMethod {
       return false;
     }
     return true;
+  }
+
+  static Future<void> addTodo(String title, String detail, String uid) async {
+    if (uid != null) {
+      final todosRef = _firestoreInstance.collection('todos');
+      final docRef = todosRef.doc(uid);
+    final DocumentSnapshot<dynamic> snapshot = await docRef.get();
+
+      if (!snapshot.exists) {
+        // ドキュメントが存在しない場合、新規作成
+        await docRef.set({
+          'todoList': [
+            {
+              'title': title,
+              'detail': detail
+            },
+          ],
+        });
+      } else {
+        List<dynamic> todoList = snapshot.data()?['todoList'] ?? [];
+        print("tttt " + todoList.toString());
+        // 重複チェック
+        bool isDuplicate = todoList.any((todo) => todo['title'] == title);
+        print("重複　" + isDuplicate.toString());
+
+        if(isDuplicate){
+          throw Exception("エラー");
+        }
+
+        await docRef.update({
+          'todoList': FieldValue.arrayUnion([
+            {
+              'title': title,
+              'detail': detail
+              // その他のフィールドを追加
+            },
+          ]),
+        });
+      }
+    }
   }
 }
