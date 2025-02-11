@@ -95,7 +95,6 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
         TextButton(
           onPressed: () {
             if (_formKey.currentState!.validate()) {
-              print(context.toString());
               widget.onAdd(_titleController.text, _detailController.text);
             }
           },

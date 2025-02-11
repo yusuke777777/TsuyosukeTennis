@@ -4432,11 +4432,8 @@ class FirestoreMethod {
         });
       } else {
         List<dynamic> todoList = snapshot.data()?['todoList'] ?? [];
-        print("tttt " + todoList.toString());
         // 重複チェック
         bool isDuplicate = todoList.any((todo) => todo['title'] == title);
-        print("重複　" + isDuplicate.toString());
-
         if(isDuplicate){
           throw Exception("エラー");
         }

@@ -30,7 +30,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
   @override
   Widget build(BuildContext context) {
     var uid = auth.currentUser!.uid;
-    HeaderConfig().init(context, "ToDoリスト");
+    HeaderConfig().init(context, "テニスメモ");
     DrawerConfig().init(context);
     late List<Map<String, dynamic>> todos;
     return Scaffold(
@@ -59,7 +59,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                           setState(() {});
                           // 削除完了のSnackBarを表示
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Todoを削除しました')),
+                            const SnackBar(content: Text('テニスメモを削除しました')),
                           );
                         },
                         backgroundColor: Colors.red,
@@ -76,7 +76,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                           context: context,
                           builder: (context) {
                             return AddTodoDialog(
-                              dialogTitle: 'Todoを更新',
+                              dialogTitle: 'テニスメモを更新',
                               initialTitle: todos[index]['title'],
                               initialDetail: todos[index]['detail'],
                               onAdd: (title, detail) async {
@@ -84,7 +84,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                                   await FirestoreMethod.updateTodo(uid, title, detail, index);
                                   // 更新完了のSnackBarを表示
                                   ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text('Todoを更新しました')),
+                                    const SnackBar(content: Text('テニスメモを更新しました')),
                                   );
                                   Navigator.of(context).pop();
                                 } catch (e) {
@@ -119,13 +119,13 @@ class _TodoListScreenState extends State<TodoListScreen> {
             context: context,
             builder: (context) {
               return AddTodoDialog(
-                dialogTitle: '新しいTODOを追加',
+                dialogTitle: '新しいテニスメモを追加',
                 onAdd: (title, detail) async {
                   try {
                     await FirestoreMethod.addTodo(title, detail, uid);
                     // 削除完了のSnackBarを表示
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Todoを作成しました')),
+                      const SnackBar(content: Text('テニスメモを作成しました')),
                     );
                     Navigator.of(context).pop();
                   } catch (e) {

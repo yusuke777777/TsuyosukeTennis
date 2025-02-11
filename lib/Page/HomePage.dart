@@ -381,7 +381,7 @@ class _HomePageState extends State<HomePage> {
                               Container(
                                 //fit: BoxFit.scaleDown,
                                   alignment: Alignment.bottomLeft,
-                                  child: Text('TODOリスト',
+                                  child: Text('テニスメモ',
                                     style: const TextStyle(fontSize: 20),
                                   )),
                               Container(
