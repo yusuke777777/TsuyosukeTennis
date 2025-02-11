@@ -7,9 +7,11 @@ class AddTodoDialog extends StatefulWidget {
   final Function(String, String) onAdd;
   final String? initialTitle;
   final String? initialDetail;
+  final String? dialogTitle;
 
   const AddTodoDialog({Key? key,
     required this.onAdd,
+    required this.dialogTitle,
     this.initialTitle,
     this.initialDetail,}) : super(key: key);
 
@@ -21,19 +23,21 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _detailController = TextEditingController();
+  String dialogTitle ='';
 
   @override
   void initState() {
     super.initState();
     _titleController.text = widget.initialTitle ?? '';
     _detailController.text = widget.initialDetail ?? '';
+    dialogTitle = widget.dialogTitle as String;
   }
 
   @override
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
     return AlertDialog(
-      title: Text('新しいTodoを追加'),
+      title: Text(dialogTitle),
       content: Form(
         key: _formKey,
         child: Column(

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 
 import '../Common/TodoListModel.dart';
@@ -19,71 +20,11 @@ class TodoListScreen extends StatefulWidget {
 class _TodoListScreenState extends State<TodoListScreen> {
   late final Firebase_Auth.FirebaseAuth auth =
       Firebase_Auth.FirebaseAuth.instance;
-
-  bool _isAnyCheckboxSelected = false;
   Map<int, bool> checkMap = {};
 
   @override
   void initState() {
     super.initState();
-  }
-
-  Future<void> _deleteTodo(String uid, List<dynamic> selectedTodoIds) async {
-    // Firestoreのドキュメント参照を取得
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    final todosRef = _firestore.collection('todos');
-    final docRef = todosRef.doc(uid);
-    DocumentSnapshot<dynamic> snapshot = await docRef.get();
-    List<dynamic> nowTodoList = snapshot.data()?['todoList'];
-
-    // 削除したい要素を除外した新しい配列を作成
-    for (var id in selectedTodoIds) {
-      print("削除対象ListIndex " + snapshot.data()!['todoList'][id].toString());
-      nowTodoList = nowTodoList
-          .where((todo) =>
-              todo['title'] != snapshot.data()?['todoList'][id]['title'])
-          .toList();
-    }
-    await docRef.update({'todoList': nowTodoList});
-  }
-
-  Future<void> _updateTodo(String uid, String title, String detail, int id) async {
-// Firestoreのドキュメント参照を取得
-    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-    final todosRef = _firestore.collection('todos');
-    final docRef = todosRef.doc(uid);
-    final DocumentSnapshot<dynamic> snapshot = await docRef.get();
-
-      await FirebaseFirestore.instance.runTransaction((
-          Transaction transaction) async {
-        List<dynamic> todoList = snapshot.data()?['todoList'] ?? [];
-        // 重複チェック
-        bool isDuplicate = todoList.any((todo) => todo['title'] == title);
-
-         if(isDuplicate){
-           throw Exception("エラー");
-         }
-
-        Map<String, dynamic> oldMap = snapshot.data()?['todoList'][id] ?? [];
-
-        Map<String, dynamic> newMap = {
-          'title': title,
-          'detail': detail
-        };
-        List updateList = [newMap];
-
-        // 削除したい要素を除外した新しい配列を作成
-        List newTodoList = todoList.where((todo) => todo['title'] != oldMap['title'])
-            .toList();
-
-        updateList.addAll(newTodoList);
-        // ドキュメントを更新
-        await transaction.update(docRef, {'todoList': updateList});
-        // 削除完了のSnackBarを表示
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Todoを更新しました')),
-        );
-      });
   }
 
   @override
@@ -107,21 +48,63 @@ class _TodoListScreenState extends State<TodoListScreen> {
               itemBuilder: (context, index) {
                 final todo = todos[index];
                 todo['index'] = index;
-                return Card(
-                    child: CheckboxListTile(
+                return Slidable(
+                  endActionPane: ActionPane(
+                    motion: const DrawerMotion(),
+                    children: [
+                      SlidableAction(
+                        onPressed: (value) async {
+                          await FirestoreMethod.deleteTodo(uid, todo['index']);
+                          // ローカルのリストから削除
+                          setState(() {});
+                          // 削除完了のSnackBarを表示
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Todoを削除しました')),
+                          );
+                        },
+                        backgroundColor: Colors.red,
+                        icon: Icons.delete,
+                        label: '削除',
+                      ),
+                    ],
+                  ),
+                  child: Card(
+                    child: ListTile(
                       title: Text(todo["title"]),
-                      value: checkMap[index] ?? false,
-                      onChanged: (bool? value) {
-                        setState(() {
-                          checkMap[index] = value!;
-                          _isAnyCheckboxSelected =
-                              checkMap.values.any((value) => value);
-                        });
+                      onTap: (){
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AddTodoDialog(
+                              dialogTitle: 'Todoを更新',
+                              initialTitle: todos[index]['title'],
+                              initialDetail: todos[index]['detail'],
+                              onAdd: (title, detail) async {
+                                try {
+                                  await FirestoreMethod.updateTodo(uid, title, detail, index);
+                                  // 更新完了のSnackBarを表示
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text('Todoを更新しました')),
+                                  );
+                                  Navigator.of(context).pop();
+                                } catch (e) {
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) => const AlertDialog(
+                                        title: Text("入力エラー!"),
+                                        content: Text("タイトルが重複しています。"),
+                                      ));
+                                }
+                                // ここでsetStateを呼び出す
+                                setState(() {});
+                              },
+                            );
+                          },
+                        );
+
                       },
-                      activeColor: Colors.greenAccent,
-                      checkColor: Colors.yellow,
-                      controlAffinity: ListTileControlAffinity.leading,
                     ),
+                  ),
                 );
               },
             );
@@ -136,20 +119,22 @@ class _TodoListScreenState extends State<TodoListScreen> {
             context: context,
             builder: (context) {
               return AddTodoDialog(
+                dialogTitle: '新しいTODOを追加',
                 onAdd: (title, detail) async {
-                  try{
+                  try {
                     await FirestoreMethod.addTodo(title, detail, uid);
+                    // 削除完了のSnackBarを表示
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text('Todoを作成しました')),
+                    );
                     Navigator.of(context).pop();
-                  }
-                  catch(e){
+                  } catch (e) {
                     showDialog(
                         context: context,
                         builder: (_) => const AlertDialog(
-                          title: Text("入力エラー!"),
-                          content: Text(
-                              "タイトルが重複しています。"),
-                        )
-                    );
+                              title: Text("入力エラー!"),
+                              content: Text("タイトルが重複しています。"),
+                            ));
                   }
                   // ここでsetStateを呼び出す
                   setState(() {});
@@ -158,79 +143,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
             },
           );
         },
+        backgroundColor: Colors.lightGreen,
         child: Icon(Icons.add),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      persistentFooterButtons: [
-        if (_isAnyCheckboxSelected)
-          ElevatedButton(
-            onPressed: () async {
-              // 選択されたTodoのIDを取得
-              List<dynamic> selectedTodoIds = todos
-                  .where((todo) => checkMap[todo['index']] == true)
-                  .map((todo) => todo['index'])
-                  .toList();
-
-              await _deleteTodo(uid, selectedTodoIds);
-
-              // ローカルのリストから削除
-              setState(() {
-                todos.removeWhere(
-                    (todo) => selectedTodoIds.contains(todo['index']));
-                _isAnyCheckboxSelected = false;
-                checkMap.clear();
-              });
-
-              // 削除完了のSnackBarを表示
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Todoを削除しました')),
-              );
-            },
-            child: Text('削除'),
-          ),
-        if (_isAnyCheckboxSelected &&
-            checkMap.values.where((value) => value).length == 1)
-          ElevatedButton(
-            onPressed: () async {
-              // 選択されたTodoのIDを取得
-              int selectedTodoIds = checkMap.entries
-                  .where((entry) => entry.value)
-                  .map((entry) => entry.key as int)
-                  .first;
-
-              showDialog(
-                context: context,
-                builder: (context) {
-                  return AddTodoDialog(
-                    initialTitle: todos[selectedTodoIds]['title'],
-                    initialDetail: todos[selectedTodoIds]['detail'],
-                    onAdd: (title, detail) async {
-                      try{
-                        await _updateTodo(uid, title, detail,selectedTodoIds);
-                        Navigator.of(context).pop();
-                      }
-                      catch (e){
-                        showDialog(
-                            context: context,
-                            builder: (_) => const AlertDialog(
-                              title: Text("入力エラー!"),
-                              content: Text(
-                                  "タイトルが重複しています。"),
-                            )
-                        );
-                      }
-                      // ここでsetStateを呼び出す
-                      setState(() {});
-                    },
-                  );
-                },
-              );
-              _isAnyCheckboxSelected = false;
-              checkMap.clear();
-            },
-            child: Text('更新'),
-          ),
-      ],
     );
   }
 }

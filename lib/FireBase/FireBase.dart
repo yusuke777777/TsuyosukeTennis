@@ -4453,4 +4453,65 @@ class FirestoreMethod {
       }
     }
   }
+
+  /**
+   * todo削除処理
+   */
+  static Future<void> deleteTodo(String uid, int selectedTodoIds) async {
+    final todosRef = _firestoreInstance.collection('todos');
+    final docRef = todosRef.doc(uid);
+    DocumentSnapshot<dynamic> snapshot = await docRef.get();
+    List<dynamic> nowTodoList = snapshot.data()?['todoList'];
+
+    // 削除したい要素を除外した新しい配列を作成
+    print("削除対象ListIndex " +
+        snapshot.data()!['todoList'][selectedTodoIds].toString());
+    nowTodoList = nowTodoList
+        .where((todo) =>
+    todo['title'] !=
+        snapshot.data()?['todoList'][selectedTodoIds]['title'])
+        .toList();
+    await docRef.update({'todoList': nowTodoList});
+  }
+
+  /**
+   * TODO更新処理
+   */
+  static Future<void> updateTodo(
+      String uid, String title, String detail, int id) async {
+// Firestoreのドキュメント参照を取得
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    final todosRef = _firestore.collection('todos');
+    final docRef = todosRef.doc(uid);
+    final DocumentSnapshot<dynamic> snapshot = await docRef.get();
+
+    await FirebaseFirestore.instance
+        .runTransaction((Transaction transaction) async {
+          //現在登録されているtodo一覧
+      List<dynamic> todoList = snapshot.data()?['todoList'] ?? [];
+
+      //重複したタイトルがないか確認
+      for (int i = 0; i < todoList.length; i++) {
+        int todonumber = i;
+        Map<String, dynamic> todo = todoList[i];
+        if(todonumber != id && todo['title'] == title){
+          throw Exception("重複エラー");
+        }
+      }
+
+      Map<String, dynamic> oldMap = snapshot.data()?['todoList'][id] ?? [];
+
+      Map<String, dynamic> newMap = {'title': title, 'detail': detail};
+      List updateList = [newMap];
+
+      // 削除したい要素を除外した新しい配列を作成
+      List newTodoList =
+      todoList.where((todo) => todo['title'] != oldMap['title']).toList();
+
+      updateList.addAll(newTodoList);
+      // ドキュメントを更新
+      await transaction.update(docRef, {'todoList': updateList});
+    });
+  }
+
 }
