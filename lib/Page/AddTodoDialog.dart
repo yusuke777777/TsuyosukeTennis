@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../Common/TodoListModel.dart';
 
 class AddTodoDialog extends StatefulWidget {
-  final Function(String, String) onAdd;
+  final Function(String, String,String) onAdd;
   final String? initialTitle;
   final String? initialDetail;
   final String? dialogTitle;
+  final String? categori;
 
-  const AddTodoDialog({Key? key,
+  const AddTodoDialog({
+    Key? key,
     required this.onAdd,
     required this.dialogTitle,
     this.initialTitle,
-    this.initialDetail,}) : super(key: key);
+    this.initialDetail,
+    this.categori,
+  }) : super(key: key);
 
   @override
   _AddTodoDialogState createState() => _AddTodoDialogState();
@@ -23,7 +24,8 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
   final _formKey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _detailController = TextEditingController();
-  String dialogTitle ='';
+  String dialogTitle = '';
+  String dropdownValue = '';
 
   @override
   void initState() {
@@ -31,6 +33,7 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
     _titleController.text = widget.initialTitle ?? '';
     _detailController.text = widget.initialDetail ?? '';
     dialogTitle = widget.dialogTitle as String;
+    dropdownValue = widget.categori ?? '';
   }
 
   @override
@@ -45,10 +48,12 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
           children: <Widget>[
             TextFormField(
               controller: _titleController,
-              decoration: InputDecoration(labelText: 'タイトル',
+              decoration: InputDecoration(
+                labelText: 'タイトル',
                 focusedBorder: UnderlineInputBorder(
                   borderSide: BorderSide(color: Colors.green),
-                ),),
+                ),
+              ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'タイトルを入力してください';
@@ -62,8 +67,7 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
             Container(
               //width: deviceWidth * 0.8,
               alignment: Alignment.centerLeft,
-              child: const Text('詳細',
-                  style: TextStyle(fontSize: 15)),
+              child: const Text('詳細', style: TextStyle(fontSize: 15)),
             ),
             Container(
               width: deviceWidth * 0.8,
@@ -82,6 +86,55 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
                 ),
               ),
             ),
+            Row(
+              children: [
+                Container(
+                  //width: deviceWidth * 0.8,
+                  alignment: Alignment.centerLeft,
+                  child: const Text('カテゴリ', style: TextStyle(fontSize: 15)),
+                ),
+                const SizedBox(
+                  width: 30,
+                ),
+                Container(
+                  child: DropdownButton<String>(
+                    value: dropdownValue,
+                    icon: const Icon(Icons.arrow_downward),
+                    iconSize: 24,
+                    elevation: 16,
+                    style: const TextStyle(color: Colors.deepPurple),
+                    underline: Container(
+                      height: 2,
+                      color: Colors.green,
+                    ),
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        dropdownValue = newValue!;
+                      });
+                    },
+                    items: <String>[
+                      '',
+                      'フォアハンド',
+                      'バックハンド',
+                      'フォアボレー',
+                      'バックボレー',
+                      '1stサーブ',
+                      '2ndサーブ',
+                      'その他'
+                    ].map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value,
+                          style: TextStyle(
+                            color: Colors.black,
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ],
+            )
           ],
         ),
       ),
@@ -90,15 +143,24 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('キャンセル'),
+          child: Text(
+            'キャンセル',
+            style: TextStyle(
+              color: Colors.green,
+            ),
+          ),
         ),
         TextButton(
           onPressed: () {
             if (_formKey.currentState!.validate()) {
-              widget.onAdd(_titleController.text, _detailController.text);
+              widget.onAdd(_titleController.text, _detailController.text, dropdownValue);
             }
           },
-          child: Text('追加'),
+          child: Text('追加',
+            style: TextStyle(
+              color: Colors.green,
+            ),
+          ),
         ),
       ],
     );

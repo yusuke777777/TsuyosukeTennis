@@ -30,9 +30,9 @@ class TodoListModel extends ChangeNotifier {
     }
   }
 
-  Future<void> addTodo(String title, String detail, String uid) async {
-    await FirestoreMethod.addTodo(title, detail, uid);
-    // 状態変更を通知
-    notifyListeners();
-  }
+  // Future<void> addTodo(String title, String detail, String uid) async {
+  //   await FirestoreMethod.addTodo(title, detail, uid,);
+  //   // 状態変更を通知
+  //   notifyListeners();
+  // }
 }

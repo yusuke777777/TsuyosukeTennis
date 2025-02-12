@@ -4414,7 +4414,7 @@ class FirestoreMethod {
     return true;
   }
 
-  static Future<void> addTodo(String title, String detail, String uid) async {
+  static Future<void> addTodo(String title, String detail, String uid, String categori) async {
     if (uid != null) {
       final todosRef = _firestoreInstance.collection('todos');
       final docRef = todosRef.doc(uid);
@@ -4426,7 +4426,9 @@ class FirestoreMethod {
           'todoList': [
             {
               'title': title,
-              'detail': detail
+              'detail': detail,
+              'categori': categori,
+              'updateTime' :FirestoreMethod.maekDateFormat(DateTime.now())
             },
           ],
         });
@@ -4442,7 +4444,9 @@ class FirestoreMethod {
           'todoList': FieldValue.arrayUnion([
             {
               'title': title,
-              'detail': detail
+              'detail': detail,
+              'categori':categori,
+              'updateTime' :FirestoreMethod.maekDateFormat(DateTime.now())
               // その他のフィールドを追加
             },
           ]),
@@ -4475,7 +4479,7 @@ class FirestoreMethod {
    * TODO更新処理
    */
   static Future<void> updateTodo(
-      String uid, String title, String detail, int id) async {
+      String uid, String title, String detail, int id, String categori) async {
 // Firestoreのドキュメント参照を取得
     final FirebaseFirestore _firestore = FirebaseFirestore.instance;
     final todosRef = _firestore.collection('todos');
@@ -4498,7 +4502,12 @@ class FirestoreMethod {
 
       Map<String, dynamic> oldMap = snapshot.data()?['todoList'][id] ?? [];
 
-      Map<String, dynamic> newMap = {'title': title, 'detail': detail};
+      Map<String, dynamic> newMap = {
+        'title': title,
+        'detail': detail,
+        'categori':categori,
+        'updateTime' :FirestoreMethod.maekDateFormat(DateTime.now())
+      };
       List updateList = [newMap];
 
       // 削除したい要素を除外した新しい配列を作成
@@ -4509,6 +4518,12 @@ class FirestoreMethod {
       // ドキュメントを更新
       await transaction.update(docRef, {'todoList': updateList});
     });
+  }
+
+  static String maekDateFormat(DateTime date){
+    DateFormat outputFormat = DateFormat('yyyy-MM-dd HH:mm');
+    String formattedDate = outputFormat.format(date);
+    return formattedDate;
   }
 
 }

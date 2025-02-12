@@ -29,6 +29,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   @override
   Widget build(BuildContext context) {
+    String _filterText = '';
     var uid = auth.currentUser!.uid;
     HeaderConfig().init(context, "テニスメモ");
     DrawerConfig().init(context);
@@ -71,6 +72,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                   child: Card(
                     child: ListTile(
                       title: Text(todo["title"]),
+                      subtitle:Text('更新日: '+ todo['updateTime']),
                       onTap: (){
                         showDialog(
                           context: context,
@@ -79,9 +81,10 @@ class _TodoListScreenState extends State<TodoListScreen> {
                               dialogTitle: 'テニスメモを更新',
                               initialTitle: todos[index]['title'],
                               initialDetail: todos[index]['detail'],
-                              onAdd: (title, detail) async {
+                              categori: todos[index]['categori'],
+                              onAdd: (title, detail, categori) async {
                                 try {
-                                  await FirestoreMethod.updateTodo(uid, title, detail, index);
+                                  await FirestoreMethod.updateTodo(uid, title, detail, index,categori);
                                   // 更新完了のSnackBarを表示
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text('テニスメモを更新しました')),
@@ -106,6 +109,7 @@ class _TodoListScreenState extends State<TodoListScreen> {
                     ),
                   ),
                 );
+
               },
             );
           } else {
@@ -120,9 +124,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
             builder: (context) {
               return AddTodoDialog(
                 dialogTitle: '新しいテニスメモを追加',
-                onAdd: (title, detail) async {
+                onAdd: (title, detail,categori) async {
                   try {
-                    await FirestoreMethod.addTodo(title, detail, uid);
+                    await FirestoreMethod.addTodo(title, detail, uid, categori);
                     // 削除完了のSnackBarを表示
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text('テニスメモを作成しました')),
