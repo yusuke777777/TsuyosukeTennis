@@ -29,7 +29,6 @@ class _TodoListScreenState extends State<TodoListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String _filterText = '';
     var uid = auth.currentUser!.uid;
     HeaderConfig().init(context, "テニスメモ");
     DrawerConfig().init(context);
@@ -38,7 +37,9 @@ class _TodoListScreenState extends State<TodoListScreen> {
       appBar: AppBar(
         backgroundColor: HeaderConfig.backGroundColor,
         title: HeaderConfig.appBarText,
-      ),
+          iconTheme: const IconThemeData(color: Colors.black),
+          leading: HeaderConfig.backIcon
+    ),
       body: FutureBuilder(
         future: context.read<TodoListModel>().fetchTodos(uid),
         builder: (context, snapshot) {

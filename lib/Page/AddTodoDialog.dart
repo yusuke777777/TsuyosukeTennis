@@ -39,6 +39,7 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
   @override
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
+    final deviceHeight = MediaQuery.of(context).size.height;
     return AlertDialog(
       title: Text(dialogTitle),
       content: Form(
@@ -71,7 +72,7 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
             ),
             Container(
               width: deviceWidth * 0.8,
-              height: 200,
+              height: deviceHeight * 0.3,
               alignment: Alignment.center,
               child: TextFormField(
                 cursorColor: Colors.green,
@@ -89,7 +90,6 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
             Row(
               children: [
                 Container(
-                  //width: deviceWidth * 0.8,
                   alignment: Alignment.centerLeft,
                   child: const Text('カテゴリ', style: TextStyle(fontSize: 15)),
                 ),
