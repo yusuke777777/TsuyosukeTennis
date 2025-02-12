@@ -276,7 +276,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                               ],
                             ),
                             const SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
                             //ボレー
                             const Row(
@@ -318,7 +318,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                               ],
                             ),
                             const SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
                             //サーブ
                             const Row(
@@ -362,7 +362,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                           ],
                         ),
                         const SizedBox(
-                          height: 20,
+                          height: 10,
                         ),
                         Container(
                           width: deviceWidth * 0.8,
@@ -372,7 +372,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                         ),
                             Container(
                               width: deviceWidth * 0.8,
-                              height: 100,
+                              height: 160,
                               alignment: Alignment.center,
                               child: TextFormField(
                                 cursorColor: Colors.green,

@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
@@ -126,15 +127,42 @@ class _HomePageState extends State<HomePage> {
                                   Container(
                                     width: deviceWidth * 0.5,
                                     alignment: Alignment.bottomLeft,
-                                    child: FittedBox(
-                                      fit: BoxFit.scaleDown,
-                                      child: Text(
-                                        "   ID: " +
-                                            profileDetailList.MY_USER_ID
-                                                .toString(),
-                                        style: const TextStyle(fontSize: 15),
-                                      ),
-                                    ),
+                                    child:
+                                        FittedBox(
+                                          fit: BoxFit.scaleDown,
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                "   ID: " +
+                                                    profileDetailList.MY_USER_ID
+                                                        .toString(),
+                                                style:
+                                                    const TextStyle(fontSize: 15),
+                                              ),
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Icons.copy,
+                                                  color: Colors.black,
+                                                  size: 20.0,
+                                                ),
+                                                onPressed: () {
+                                                  String uid = profileDetailList
+                                                      .USER_ID.toString();
+                                                  final String profileUrl = 'https://tsuyosuketeniss.web.app/profile?uid=$uid';
+
+                                                  Clipboard.setData(ClipboardData(
+                                                      text: profileUrl));
+                                                  ScaffoldMessenger.of(context)
+                                                      .showSnackBar(
+                                                    SnackBar(
+                                                        content: Text(
+                                                            'プロフィールURLがコピーされました！')),
+                                                  );
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ),
                                   ),
                                   profileDetailList.RANK_NO == 0 ||
                                           (profileDetailList.RANK_TOROKU_RANK !=
@@ -968,7 +996,8 @@ class _HomePageState extends State<HomePage> {
                           embeddedImageStyle: QrEmbeddedImageStyle(
                             size: Size(20, 20),
                           ),
-                          errorCorrectionLevel: QrErrorCorrectLevel.H, // 誤り訂正レベルを最大に
+                          errorCorrectionLevel: QrErrorCorrectLevel.H,
+                          // 誤り訂正レベルを最大に
                           //QRコードの真ん中に表示する画像
                           size: 120.0,
                         ),

@@ -269,7 +269,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                           const Text('------------------------',
                               style: TextStyle(fontSize: 20)),
                           const SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
                           const Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -322,7 +322,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                             ],
                           ),
                           const SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
                           //ボレー
                           const Row(
@@ -377,7 +377,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                           ),
 
                           const SizedBox(
-                            height: 20,
+                            height: 10,
                           ),
                           //サーブ
                           const Row(
@@ -431,7 +431,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                         ],
                       ),
                       const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
                       Container(
                         alignment: Alignment.center,
@@ -442,7 +442,7 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
                         alignment: Alignment.topLeft,
                         color: Colors.white,
                         width: deviceWidth * 0.8,
-                        height: 100,
+                        height: 160,
                         child: SingleChildScrollView(
                           child: Text(
                             widget.feedBackMessage ?? "",

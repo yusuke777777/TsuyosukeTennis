@@ -4349,10 +4349,15 @@ class FirestoreMethod {
    * 承認が終わっていないメアドの承認を行う
    */
   static Future<void> sendUserAuthMail() async {
-    User? currentUser = auth.currentUser;
+    await Future.delayed(Duration(seconds: 1)); // 1秒待機
+    User? currentUser = await FirebaseAuth.instance.authStateChanges().first;
     print(currentUser);
-    print("承認メール送信");
-    currentUser?.sendEmailVerification();
+    if (currentUser != null) {
+      print("承認メール送信");
+      await currentUser.sendEmailVerification();
+    } else {
+      print("ユーザーが取得できませんでした");
+    }
   }
 
   //main.dartの判定で使用
