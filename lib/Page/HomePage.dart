@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:provider/provider.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
 import 'package:tsuyosuke_tennis_ap/Page/CheckFeedBack.dart';
 import 'package:tsuyosuke_tennis_ap/Page/MyTitlePage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/QrScanView.dart';
+import 'package:tsuyosuke_tennis_ap/Page/TodoListScreen.dart';
 import '../Common/CprofileDetail.dart';
 import '../Common/CprofileSetting.dart';
+import '../Common/TodoListModel.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/GoogleAds.dart';
 import '../PropSetCofig.dart';
@@ -400,6 +403,41 @@ class _HomePageState extends State<HomePage> {
                               // テキストが指定領域を超えた場合の挙動を設定
                               maxLines: 2, // 表示する行数を指定
                             ),
+                          ),
+                          Row(
+                            children: [
+                              Container(
+                                //fit: BoxFit.scaleDown,
+                                  alignment: Alignment.bottomLeft,
+                                  child: Text('テニスメモ',
+                                    style: const TextStyle(fontSize: 20),
+                                  )),
+                              Container(
+                                //fit: BoxFit.scaleDown,
+                                alignment: Alignment.bottomLeft,
+                                //width: deviceWidth * 0.8,
+                                child: IconButton(
+                                  alignment: Alignment.bottomRight,
+                                  icon: const Icon(
+                                    Icons.menu_book_outlined,
+                                    color: Colors.black,
+                                    size: 30.0,
+                                  ),
+                                  onPressed: () async {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ChangeNotifierProvider(
+                                                create: (context) => TodoListModel(),
+                                                // TodoListModel を生成
+                                                child: TodoListScreen(),
+                                              ),
+                                        ));
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
                         ],
                       )),
