@@ -59,7 +59,7 @@ class _MatchResultState extends State<MatchResult> {
 
   //フィードバックを入力しないかどうかフラグ(true=入力しない)
   bool _flag = false;
-  bool _feedbackFlg = false;
+  bool _feedbackFlg = true;
 
   void _handleCheckbox(bool? e) {
     setState(() {
