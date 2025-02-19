@@ -109,8 +109,6 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    //外部リンク
-    _initUniLinks();
 
     // initPlatformState();
     initialization();
@@ -118,38 +116,6 @@ class _MyAppState extends State<MyApp> {
 
     /// Firebase ID取得(テスト用)
     FirebaseInAppMessagingService().getFID();
-  }
-
-  void _initUniLinks() async {
-    try {
-      final initialLink = await getInitialLink();
-      if (initialLink != null) {
-        _handleIncomingLink(initialLink);
-      }
-    } catch (e) {
-      // エラーハンドリング
-    }
-
-    linkStream.listen((String? link) {
-      if (link != null) {
-        _handleIncomingLink(link);
-      }
-    }, onError: (err) {
-      // エラーハンドリング
-    });
-  }
-
-  void _handleIncomingLink(String link) {
-    final uri = Uri.parse(link);
-    if (uri.path == '/profile' && uri.queryParameters.containsKey('uid')) {
-      final user_id = uri.queryParameters['uid'];
-      // UIDを使用してプロフィール画面に遷移
-      Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ProfileReference(user_id!),
-          ));
-    }
   }
 
   void initialization() async {

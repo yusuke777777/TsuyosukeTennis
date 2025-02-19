@@ -26,6 +26,7 @@ class TodoListModel extends ChangeNotifier {
           print('Error: todo is not a Map');
         }
       }
+      _todos.sort((a, b) => DateTime.parse(b["updateTime"]).compareTo(DateTime.parse(a["updateTime"])));
       notifyListeners();
     }
   }

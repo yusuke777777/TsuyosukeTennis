@@ -4,9 +4,10 @@
     <uses-feature android:name="android.hardware.camera" android:required="true" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="com.google.android.gms.permission.AD_ID" />
 
     <application
-        android:label="テニポイ"
+        android:label="DEV テニポイ"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

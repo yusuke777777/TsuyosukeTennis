@@ -130,42 +130,15 @@ class _HomePageState extends State<HomePage> {
                                   Container(
                                     width: deviceWidth * 0.5,
                                     alignment: Alignment.bottomLeft,
-                                    child:
-                                        FittedBox(
-                                          fit: BoxFit.scaleDown,
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                "   ID: " +
-                                                    profileDetailList.MY_USER_ID
-                                                        .toString(),
-                                                style:
-                                                    const TextStyle(fontSize: 15),
-                                              ),
-                                              IconButton(
-                                                icon: const Icon(
-                                                  Icons.copy,
-                                                  color: Colors.black,
-                                                  size: 20.0,
-                                                ),
-                                                onPressed: () {
-                                                  String uid = profileDetailList
-                                                      .USER_ID.toString();
-                                                  final String profileUrl = 'https://tsuyosuketeniss.web.app/profile?uid=$uid';
-
-                                                  Clipboard.setData(ClipboardData(
-                                                      text: profileUrl));
-                                                  ScaffoldMessenger.of(context)
-                                                      .showSnackBar(
-                                                    SnackBar(
-                                                        content: Text(
-                                                            'プロフィールURLがコピーされました！')),
-                                                  );
-                                                },
-                                              ),
-                                            ],
-                                          ),
-                                        ),
+                                    child: FittedBox(
+                                      fit: BoxFit.scaleDown,
+                                      child: Text(
+                                        "   ID: " +
+                                            profileDetailList.MY_USER_ID
+                                                .toString(),
+                                        style: const TextStyle(fontSize: 15),
+                                      ),
+                                    ),
                                   ),
                                   profileDetailList.RANK_NO == 0 ||
                                           (profileDetailList.RANK_TOROKU_RANK !=
@@ -407,9 +380,10 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             children: [
                               Container(
-                                //fit: BoxFit.scaleDown,
+                                  //fit: BoxFit.scaleDown,
                                   alignment: Alignment.bottomLeft,
-                                  child: Text('テニスメモ',
+                                  child: Text(
+                                    'テニスメモ',
                                     style: const TextStyle(fontSize: 20),
                                   )),
                               Container(
@@ -429,10 +403,11 @@ class _HomePageState extends State<HomePage> {
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               ChangeNotifierProvider(
-                                                create: (context) => TodoListModel(),
-                                                // TodoListModel を生成
-                                                child: TodoListScreen(),
-                                              ),
+                                            create: (context) =>
+                                                TodoListModel(),
+                                            // TodoListModel を生成
+                                            child: TodoListScreen(),
+                                          ),
                                         ));
                                   },
                                 ),
