@@ -303,7 +303,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                 Text(_messageDetail
                                                     .message),
                                                 TextButton(
-                                                    onPressed: _isProcessing
+                                                    onPressed: (_isProcessing || _messageDetail.isMe)
                                                         ? null // フラグが true の場合無効化
                                                         :
                                                         () async {
@@ -486,10 +486,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                 Text(_messageDetail
                                                     .message),
                                                 TextButton(
-                                                    onPressed:
-                                                        () {
-                                                      //受け入れ済なこと伝えるダイアログ出す？
-                                                    },
+                                                    onPressed:null,
                                                     child:
                                                     const Text(
                                                       "受け入れ済",
@@ -507,7 +504,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                 Text(_messageDetail
                                                     .message),
                                                 TextButton(
-                                                    onPressed: _isProcessing
+                                                    onPressed: (_isProcessing || _messageDetail.isMe)
                                                         ? null // フラグが true の場合無効化
                                                         : () async {
                                                       setState(() {
@@ -608,7 +605,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                           color: Colors.purple),
                                                     )),
                                                 TextButton(
-                                                    onPressed: _isProcessing
+                                                    onPressed: (_isProcessing || _messageDetail.isMe)
                                                         ? null // フラグが true の場合無効化
                                                         : () async {
                                                       setState(() {
@@ -702,7 +699,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                               children: [
                                                 Text(_messageDetail.message),
                                                 TextButton(
-                                                    onPressed: _isProcessing
+                                                    onPressed: (_isProcessing || _messageDetail.isMe)
                                                         ? null // フラグが true の場合無効化
                                                         : () async {
                                                       setState(() {

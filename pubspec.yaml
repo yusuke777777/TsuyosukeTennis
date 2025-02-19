@@ -56,7 +56,7 @@ dependencies:
   flutter_native_splash: ^2.4.1
   flutter_rating_bar: ^4.0.1
   flutter_app_badge: ^2.0.2
-  flutter_local_notifications: ^17.2.3
+  flutter_local_notifications: ^18.0.1
   google_mobile_ads: ^5.1.0
   app_tracking_transparency: ^2.0.4
   circular_chart_flutter: ^0.0.2
@@ -76,6 +76,7 @@ dependencies:
   image_gallery_saver: ^2.0.3
   share_plus: ^10.1.4
   smooth_page_indicator: ^1.2.0
+  uni_links: ^0.5.1
 
 
 flutter_native_splash:

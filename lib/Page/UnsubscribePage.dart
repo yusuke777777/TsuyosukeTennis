@@ -22,18 +22,16 @@ class _UnsubscribeState extends State<UnsubscribePage> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
     HeaderConfig().init(context, "退会");
-    DrawerConfig().init(context);
     final deviceWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: HeaderConfig.backGroundColor,
-        title: HeaderConfig.appBarText,
-        iconTheme: const IconThemeData(color: Colors.black),
-      ),
+          backgroundColor: HeaderConfig.backGroundColor,
+          title: HeaderConfig.appBarText,
+          iconTheme: const IconThemeData(color: Colors.black),
+          leading: HeaderConfig.backIcon),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -55,7 +53,6 @@ class _UnsubscribeState extends State<UnsubscribePage> {
           ],
         ),
       ),
-
     );
   }
 
@@ -84,7 +81,8 @@ class _UnsubscribeState extends State<UnsubscribePage> {
                   labelText: 'パスワード',
                   labelStyle: TextStyle(
                     color: Colors.green, // labelTextのテキスト色を設定
-                  ),),
+                  ),
+                ),
               ),
             ],
           ),
@@ -93,10 +91,12 @@ class _UnsubscribeState extends State<UnsubscribePage> {
               onPressed: () {
                 Navigator.of(context).pop(); // ダイアログを閉じる
               },
-              child: const Text('キャンセル',
-                  style: TextStyle(
-                    color: Colors.green, // 文字色を設定
-                  ),),
+              child: const Text(
+                'キャンセル',
+                style: TextStyle(
+                  color: Colors.green, // 文字色を設定
+                ),
+              ),
             ),
             TextButton(
               onPressed: () async {
@@ -106,8 +106,8 @@ class _UnsubscribeState extends State<UnsubscribePage> {
                   // ログアウト後の画面に遷移
                   Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) =>  ThankYouPage()),
-                        (Route<dynamic> route) => false,
+                    MaterialPageRoute(builder: (context) => ThankYouPage()),
+                    (Route<dynamic> route) => false,
                   );
                 } else {
                   // 認証失敗時の処理
@@ -118,10 +118,12 @@ class _UnsubscribeState extends State<UnsubscribePage> {
                   );
                 }
               },
-              child: const Text('削除',
+              child: const Text(
+                '削除',
                 style: TextStyle(
-        color: Colors.green, // 文字色を設定
-        ),),
+                  color: Colors.green, // 文字色を設定
+                ),
+              ),
             ),
           ],
         );
@@ -140,101 +142,117 @@ class _UnsubscribeState extends State<UnsubscribePage> {
       String userId = user!.uid;
 
       // パスワードで再認証
-      var credential = EmailAuthProvider.credential(email: email, password: password);
+      var credential =
+          EmailAuthProvider.credential(email: email, password: password);
       await user?.reauthenticateWithCredential(credential);
 
       //コレクションの該当データを削除
       //MySetting
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_MySetting =
-      await storeInst.collection('MySetting').doc(userId).get();
-      if(documentSnapshot_MySetting.exists){
+          await storeInst.collection('MySetting').doc(userId).get();
+      if (documentSnapshot_MySetting.exists) {
         storeInst.collection('MySetting').doc(userId).delete();
       }
       //blockList
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_blockList =
-      await storeInst.collection('blockList').doc(userId).get();
-      if(documentSnapshot_blockList.exists){
+          await storeInst.collection('blockList').doc(userId).get();
+      if (documentSnapshot_blockList.exists) {
         storeInst.collection('blockList').doc(userId).delete();
       }
       //friendList
       final collection_friendList = storeInst.collection('friendsList');
       try {
-        final snapshot_friendList = await collection_friendList.where('FRIEND_USER_LIST', arrayContains: userId).get();
+        final snapshot_friendList = await collection_friendList
+            .where('FRIEND_USER_LIST', arrayContains: userId)
+            .get();
         for (var doc in snapshot_friendList.docs) {
           await doc.reference.delete();
         }
-      }
-      catch(e) {
+      } catch (e) {
         print("友人リスト削除に失敗" + userId + "を含むデータ");
         print(e);
       }
       //manSinglesRank
       //初級
       try {
-        final subcollection_ShokyuRank_doc = storeInst.collection('manSinglesRank')
-            .doc("ShokyuRank").collection("RankList").doc(userId);
+        final subcollection_ShokyuRank_doc = storeInst
+            .collection('manSinglesRank')
+            .doc("ShokyuRank")
+            .collection("RankList")
+            .doc(userId);
         await subcollection_ShokyuRank_doc.delete();
-      }
-      catch(e) {
+      } catch (e) {
         print("初級データ削除に失敗" + userId + "を含むデータ");
         print(e);
       }
       //中級
       try {
-        final subcollection_ChukyuRank_doc = storeInst.collection('manSinglesRank')
-            .doc("ChukyuRank").collection("RankList").doc(userId);
+        final subcollection_ChukyuRank_doc = storeInst
+            .collection('manSinglesRank')
+            .doc("ChukyuRank")
+            .collection("RankList")
+            .doc(userId);
         await subcollection_ChukyuRank_doc.delete();
-      }
-      catch(e) {
+      } catch (e) {
         print("中級データ削除に失敗" + userId + "を含むデータ");
         print(e);
       }
       //上級
       try {
-        final subcollection_JyokyuRank_doc = storeInst.collection('manSinglesRank')
-            .doc("JyokyuRank").collection("RankList").doc(userId);
+        final subcollection_JyokyuRank_doc = storeInst
+            .collection('manSinglesRank')
+            .doc("JyokyuRank")
+            .collection("RankList")
+            .doc(userId);
         await subcollection_JyokyuRank_doc.delete();
-      }
-      catch(e) {
+      } catch (e) {
         print("上級データ削除に失敗" + userId + "を含むデータ");
         print(e);
       }
       //matchList
       final collection_matchList = storeInst.collection('matchList');
       try {
-        final snapshot_matchList = await collection_matchList.where('MATCH_USER_LIST', arrayContains: userId).get();
+        final snapshot_matchList = await collection_matchList
+            .where('MATCH_USER_LIST', arrayContains: userId)
+            .get();
         for (var doc in snapshot_matchList.docs) {
           await doc.reference.delete();
         }
-      }
-      catch(e) {
+      } catch (e) {
         print("マッチリスト削除に失敗" + userId + "を含むデータ");
         print(e);
       }
       //matchResult
       try {
         //matchResult
-        final subcollection_matchResult_doc = storeInst.collection('matchResult').doc(userId);
+        final subcollection_matchResult_doc =
+            storeInst.collection('matchResult').doc(userId);
         //opponentList
-        final CollectionReference<Map<String, dynamic>> documentSnapshot_opponentList =
-        await storeInst.collection('matchResult').doc(userId).collection("opponentList");
+        final CollectionReference<Map<String, dynamic>>
+            documentSnapshot_opponentList = await storeInst
+                .collection('matchResult')
+                .doc(userId)
+                .collection("opponentList");
         final opponentListDocument = documentSnapshot_opponentList.get();
-        QuerySnapshot<Map<String, dynamic>> opponentList = await opponentListDocument;
+        QuerySnapshot<Map<String, dynamic>> opponentList =
+            await opponentListDocument;
 
         //サブコレ対応
         opponentList.docs.forEach((doc) async {
           //daily取得
-          final CollectionReference<Map<String, dynamic>> documentSnapshot_daily =
-          doc.reference.collection('daily');
+          final CollectionReference<Map<String, dynamic>>
+              documentSnapshot_daily = doc.reference.collection('daily');
           final dailyDocument = documentSnapshot_daily.get();
           QuerySnapshot<Map<String, dynamic>> daily = await dailyDocument;
           //dailyを回しmatchDetailを取得
           daily.docs.forEach((doc_daily) async {
             //matchDetail取得
-            final CollectionReference<Map<String, dynamic>> documentSnapshot_matchDetail =
-            doc_daily.reference.collection('matchDetail');
+            final CollectionReference<Map<String, dynamic>>
+                documentSnapshot_matchDetail =
+                doc_daily.reference.collection('matchDetail');
             final matchDetailDocument = documentSnapshot_matchDetail.get();
-            QuerySnapshot<Map<String, dynamic>> matchDetail = await matchDetailDocument;
+            QuerySnapshot<Map<String, dynamic>> matchDetail =
+                await matchDetailDocument;
             matchDetail.docs.forEach((doc_matchDetail) async {
               doc_matchDetail.reference.delete();
             });
@@ -243,19 +261,23 @@ class _UnsubscribeState extends State<UnsubscribePage> {
           doc.reference.delete();
         });
         await subcollection_matchResult_doc.delete();
-      }
-      catch(e) {
+      } catch (e) {
         print("matchResultデータ削除に失敗" + userId + "を含むデータ");
         print(e);
       }
       //myNotification
-      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_myNotification =
-      await storeInst.collection('myNotification').doc(userId).get();
-      final CollectionReference<Map<String, dynamic>> documentSnapshot_myNotificationSub =
-      await storeInst.collection('myNotification').doc(userId).collection("talkNotification");
+      final DocumentSnapshot<Map<String, dynamic>>
+          documentSnapshot_myNotification =
+          await storeInst.collection('myNotification').doc(userId).get();
+      final CollectionReference<Map<String, dynamic>>
+          documentSnapshot_myNotificationSub = await storeInst
+              .collection('myNotification')
+              .doc(userId)
+              .collection("talkNotification");
       final talkNotificationDocument = documentSnapshot_myNotificationSub.get();
-      QuerySnapshot<Map<String, dynamic>> talkNotification = await talkNotificationDocument;
-      if(documentSnapshot_myNotification.exists){
+      QuerySnapshot<Map<String, dynamic>> talkNotification =
+          await talkNotificationDocument;
+      if (documentSnapshot_myNotification.exists) {
         //サブコレ削除
         talkNotification.docs.forEach((doc) {
           doc.reference.delete();
@@ -264,11 +286,14 @@ class _UnsubscribeState extends State<UnsubscribePage> {
       }
       //myProfile
       final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_myProfile =
-      await storeInst.collection('myProfile').doc(userId).get();
-      final CollectionReference<Map<String, dynamic>> documentSnapshot_myProfileSub =
-      await storeInst.collection('myProfile').doc(userId).collection("activityList");
+          await storeInst.collection('myProfile').doc(userId).get();
+      final CollectionReference<Map<String, dynamic>>
+          documentSnapshot_myProfileSub = await storeInst
+              .collection('myProfile')
+              .doc(userId)
+              .collection("activityList");
       final activListDocument = documentSnapshot_myProfileSub.get();
-      if(documentSnapshot_myProfile.exists){
+      if (documentSnapshot_myProfile.exists) {
         //activityList削除
         QuerySnapshot<Map<String, dynamic>> activList = await activListDocument;
         activList.docs.forEach((doc) {
@@ -278,51 +303,56 @@ class _UnsubscribeState extends State<UnsubscribePage> {
         storeInst.collection('myProfile').doc(userId).delete();
       }
       //myProfileDetail
-      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_myProfileDetail =
-      await storeInst.collection('myProfileDetail').doc(userId).get();
-      if(documentSnapshot_myProfileDetail.exists){
+      final DocumentSnapshot<Map<String, dynamic>>
+          documentSnapshot_myProfileDetail =
+          await storeInst.collection('myProfileDetail').doc(userId).get();
+      if (documentSnapshot_myProfileDetail.exists) {
         storeInst.collection('myProfileDetail').doc(userId).delete();
       }
       //talkRoom
       final collection_talkRoom = storeInst.collection('talkRoom');
       try {
-        final snapshot_talkRoom = await collection_talkRoom.where('joined_user_ids', arrayContains: userId).get();
+        final snapshot_talkRoom = await collection_talkRoom
+            .where('joined_user_ids', arrayContains: userId)
+            .get();
         for (var doc in snapshot_talkRoom.docs) {
           await doc.reference.delete();
         }
-      }
-      catch(e) {
+      } catch (e) {
         print("トークリスト削除に失敗" + userId + "を含むデータ");
         print(e);
       }
       //userLimitMgmt
-      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_userLimitMgmt =
-      await storeInst.collection('userLimitMgmt').doc(userId).get();
-      if(documentSnapshot_userLimitMgmt.exists){
+      final DocumentSnapshot<Map<String, dynamic>>
+          documentSnapshot_userLimitMgmt =
+          await storeInst.collection('userLimitMgmt').doc(userId).get();
+      if (documentSnapshot_userLimitMgmt.exists) {
         storeInst.collection('userLimitMgmt').doc(userId).delete();
       }
       //userTicketMgmt
-      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_userTicketMgmt =
-      await storeInst.collection('userTicketMgmt').doc(userId).get();
-      if(documentSnapshot_userTicketMgmt.exists){
+      final DocumentSnapshot<Map<String, dynamic>>
+          documentSnapshot_userTicketMgmt =
+          await storeInst.collection('userTicketMgmt').doc(userId).get();
+      if (documentSnapshot_userTicketMgmt.exists) {
         storeInst.collection('userTicketMgmt').doc(userId).delete();
       }
       //userTokenList
-      final DocumentSnapshot<Map<String, dynamic>> documentSnapshot_userTokenList =
-      await storeInst.collection('userTokenList').doc(userId).get();
-      if(documentSnapshot_userTokenList.exists){
+      final DocumentSnapshot<Map<String, dynamic>>
+          documentSnapshot_userTokenList =
+          await storeInst.collection('userTokenList').doc(userId).get();
+      if (documentSnapshot_userTokenList.exists) {
         storeInst.collection('userTokenList').doc(userId).delete();
       }
       //ストレージ配下のプロフィール画像削除
       final storageRef = FirebaseStorage.instance.ref();
-      final deleteRef = storageRef.child("/myProfileImage/" + userId.toString() +"/photos/");
+      final deleteRef =
+          storageRef.child("/myProfileImage/" + userId.toString() + "/photos/");
       final listResult = await deleteRef.listAll();
       // 各画像ファイルを削除
       for (final item in listResult.items) {
         await item.delete();
       }
       print('File deleted successfully.');
-
 
       // ユーザーアカウントを削除
       await user?.delete();

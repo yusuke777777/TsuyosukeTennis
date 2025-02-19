@@ -11,6 +11,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CHomePageVal.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CScoreRef.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CScoreRefHistory.dart';
@@ -32,6 +33,7 @@ import '../Common/CprofileDetail.dart';
 import '../Common/CprofileSetting.dart';
 import '../Common/CactivityList.dart';
 import '../Common/CtalkRoom.dart';
+import '../Common/TodoListModel.dart';
 import 'NotificationMethod.dart';
 import 'TsMethod.dart';
 
@@ -48,6 +50,7 @@ class FirestoreMethod {
   static final settingRef = _firestoreInstance.collection('MySetting');
   static final profileDetailRef =
       _firestoreInstance.collection('myProfileDetail');
+  //static final todosRef = _firestoreInstance.collection('todos');
 
   //ランキングリスト
   static final manSinglesRankRef =
@@ -4349,10 +4352,15 @@ class FirestoreMethod {
    * 承認が終わっていないメアドの承認を行う
    */
   static Future<void> sendUserAuthMail() async {
-    User? currentUser = auth.currentUser;
+    await Future.delayed(Duration(seconds: 1)); // 1秒待機
+    User? currentUser = await FirebaseAuth.instance.authStateChanges().first;
     print(currentUser);
-    print("承認メール送信");
-    currentUser?.sendEmailVerification();
+    if (currentUser != null) {
+      print("承認メール送信");
+      await currentUser.sendEmailVerification();
+    } else {
+      print("ユーザーが取得できませんでした");
+    }
   }
 
   //main.dartの判定で使用
@@ -4410,4 +4418,117 @@ class FirestoreMethod {
     }
     return true;
   }
+
+  static Future<void> addTodo(String title, String detail, String uid, String categori) async {
+    if (uid != null) {
+      final todosRef = _firestoreInstance.collection('todos');
+      final docRef = todosRef.doc(uid);
+    final DocumentSnapshot<dynamic> snapshot = await docRef.get();
+
+      if (!snapshot.exists) {
+        // ドキュメントが存在しない場合、新規作成
+        await docRef.set({
+          'todoList': [
+            {
+              'title': title,
+              'detail': detail,
+              'categori': categori,
+              'updateTime' :FirestoreMethod.maekDateFormat(DateTime.now())
+            },
+          ],
+        });
+      } else {
+        List<dynamic> todoList = snapshot.data()?['todoList'] ?? [];
+        // 重複チェック
+        bool isDuplicate = todoList.any((todo) => todo['title'] == title);
+        if(isDuplicate){
+          throw Exception("エラー");
+        }
+
+        await docRef.update({
+          'todoList': FieldValue.arrayUnion([
+            {
+              'title': title,
+              'detail': detail,
+              'categori':categori,
+              'updateTime' :FirestoreMethod.maekDateFormat(DateTime.now())
+              // その他のフィールドを追加
+            },
+          ]),
+        });
+      }
+    }
+  }
+
+  /**
+   * todo削除処理
+   */
+  static Future<void> deleteTodo(String uid, int selectedTodoIds) async {
+    final todosRef = _firestoreInstance.collection('todos');
+    final docRef = todosRef.doc(uid);
+    DocumentSnapshot<dynamic> snapshot = await docRef.get();
+    List<dynamic> nowTodoList = snapshot.data()?['todoList'];
+
+    // 削除したい要素を除外した新しい配列を作成
+    print("削除対象ListIndex " +
+        snapshot.data()!['todoList'][selectedTodoIds].toString());
+    nowTodoList = nowTodoList
+        .where((todo) =>
+    todo['title'] !=
+        snapshot.data()?['todoList'][selectedTodoIds]['title'])
+        .toList();
+    await docRef.update({'todoList': nowTodoList});
+  }
+
+  /**
+   * TODO更新処理
+   */
+  static Future<void> updateTodo(
+      String uid, String title, String detail, int id, String categori) async {
+// Firestoreのドキュメント参照を取得
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+    final todosRef = _firestore.collection('todos');
+    final docRef = todosRef.doc(uid);
+    final DocumentSnapshot<dynamic> snapshot = await docRef.get();
+
+    await FirebaseFirestore.instance
+        .runTransaction((Transaction transaction) async {
+          //現在登録されているtodo一覧
+      List<dynamic> todoList = snapshot.data()?['todoList'] ?? [];
+
+      //重複したタイトルがないか確認
+      for (int i = 0; i < todoList.length; i++) {
+        int todonumber = i;
+        Map<String, dynamic> todo = todoList[i];
+        if(todonumber != id && todo['title'] == title){
+          throw Exception("重複エラー");
+        }
+      }
+
+      Map<String, dynamic> oldMap = snapshot.data()?['todoList'][id] ?? [];
+
+      Map<String, dynamic> newMap = {
+        'title': title,
+        'detail': detail,
+        'categori':categori,
+        'updateTime' :FirestoreMethod.maekDateFormat(DateTime.now())
+      };
+      List updateList = [newMap];
+
+      // 削除したい要素を除外した新しい配列を作成
+      List newTodoList =
+      todoList.where((todo) => todo['title'] != oldMap['title']).toList();
+
+      updateList.addAll(newTodoList);
+      // ドキュメントを更新
+      await transaction.update(docRef, {'todoList': updateList});
+    });
+  }
+
+  static String maekDateFormat(DateTime date){
+    DateFormat outputFormat = DateFormat('yyyy-MM-dd HH:mm');
+    String formattedDate = outputFormat.format(date);
+    return formattedDate;
+  }
+
 }

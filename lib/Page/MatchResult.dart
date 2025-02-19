@@ -59,7 +59,7 @@ class _MatchResultState extends State<MatchResult> {
 
   //フィードバックを入力しないかどうかフラグ(true=入力しない)
   bool _flag = false;
-  bool _feedbackFlg = false;
+  bool _feedbackFlg = true;
 
   void _handleCheckbox(bool? e) {
     setState(() {
@@ -381,7 +381,7 @@ class _MatchResultState extends State<MatchResult> {
                                   ],
                                 ),
                                 const SizedBox(
-                                  height: 20,
+                                  height: 10,
                                 ),
                                 //ボレー
                                 const Row(
@@ -428,7 +428,7 @@ class _MatchResultState extends State<MatchResult> {
                                 ),
 
                                 const SizedBox(
-                                  height: 20,
+                                  height: 10,
                                 ),
                                 //サーブ
                                 const Row(
@@ -476,7 +476,7 @@ class _MatchResultState extends State<MatchResult> {
                               ],
                             ),
                             const SizedBox(
-                              height: 20,
+                              height: 10,
                             ),
                             Container(
                               width: deviceWidth * 0.8,
@@ -486,7 +486,7 @@ class _MatchResultState extends State<MatchResult> {
                             ),
                             Container(
                               width: deviceWidth * 0.8,
-                              height: 100,
+                              height: 160,
                               alignment: Alignment.center,
                               child: TextFormField(
                                 cursorColor: Colors.green,

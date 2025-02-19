@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:firebase_analytics/firebase_analytics.dart';
@@ -14,7 +15,9 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:purchases_flutter/models/purchases_configuration.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:tsuyosuke_tennis_ap/Page/Explain.dart';
+import 'package:tsuyosuke_tennis_ap/Page/HomePage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/RankList.dart';
+import 'package:uni_links/uni_links.dart';
 import 'Common/CPushNotification.dart';
 import 'FireBase/FireBase.dart';
 import 'FireBase/GoogleAds.dart';
@@ -22,6 +25,7 @@ import 'FireBase/NotificationMethod.dart';
 import 'FireBase/NotificationProvider.dart';
 import 'FireBase/singletons_data.dart';
 import 'Page/LoginPage.dart';
+import 'Page/ProfileReference.dart';
 import 'Page/ProfileSetting.dart';
 import 'Page/ReLoginMessagePage.dart';
 import 'Page/SigninPage.dart';
@@ -64,7 +68,8 @@ void main() async {
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   MobileAds.instance.initialize();
 
-  if (FirebaseAuth.instance.currentUser != null && !FirebaseAuth.instance.currentUser!.isAnonymous) {
+  if (FirebaseAuth.instance.currentUser != null &&
+      !FirebaseAuth.instance.currentUser!.isAnonymous) {
     await FirestoreMethod.isProfile();
     await FirestoreMethod.checkUserAuth();
   }
@@ -72,7 +77,8 @@ void main() async {
     statusBarColor: Colors.transparent,
     statusBarBrightness: Brightness.light,
   ));
-  if (FirebaseAuth.instance.currentUser != null && !FirebaseAuth.instance.currentUser!.isAnonymous) {
+  if (FirebaseAuth.instance.currentUser != null &&
+      !FirebaseAuth.instance.currentUser!.isAnonymous) {
     final configuration = PurchasesConfiguration(
         Platform.isAndroid ? 'androidRevenueCatKey' : appleApiKey)
       ..appUserID = FirebaseAuth.instance.currentUser!.uid;
@@ -98,9 +104,12 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  late StreamSubscription _sub;
+
   @override
   void initState() {
     super.initState();
+
     // initPlatformState();
     initialization();
     NotificationMethod().setting();
@@ -139,6 +148,13 @@ class _MyAppState extends State<MyApp> {
   // void _removeBadge() {
   //   FlutterAppBadger.removeBadge();
   // }
+
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -154,7 +170,21 @@ class _MyAppState extends State<MyApp> {
         // is not restarted.
         primarySwatch: Colors.red,
       ),
-      // home: TestHomePage(),
+      initialRoute: '/',
+      onGenerateRoute: (settings) {
+        if (settings.name == '/') {
+          return MaterialPageRoute(builder: (context) => HomePage());
+        }
+
+        // 動的なプロフィールページへのルート処理
+        if (settings.name?.startsWith('/profile/') == true) {
+          final userId = settings.name?.split('/')[2]; // URL から userId を取得
+          return MaterialPageRoute(
+            builder: (context) => ProfileReference(userId!),
+          );
+        }
+        return null;
+      },
       home: FirebaseAuth.instance.currentUser == null
           ? LoginPage()
           : FirebaseAuth.instance.currentUser!.isAnonymous
