@@ -26,6 +26,7 @@ const String functionUrl = 'https://asia-northeast1-tsuyosuketest.cloudfunctions
 //Android
 const googleInterstitialAdsAndroid = 'ca-app-pub-3940256099942544/1033173712'; //開発
 //const googleInterstitialAdsAndroid = 'ca-app-pub-2361922346375583/9549503210'; //本番
+
 //IOS
 const googleInterstitialAdsIos = 'ca-app-pub-3940256099942544/4411468910'; //開発
 //const googleInterstitialAdsIos = 'ca-app-pub-2361922346375583/4315688562'; //本番
