@@ -13,7 +13,8 @@ const entitlementID = 'TSPプレミアムプラン';
 const appleApiKey = 'appl_FqFukGrTjwGVYwYkalAgeTGGkog'; // 本番
 //const appleApiKey = 'appl_zpRHoKSWQoxVqMeERkTqKTnykfP'; //開発
 //TO DO: add the Google API key for your app from the RevenueCat dashboard: https://app.revenuecat.com
-const googleApiKey = 'googl_api_key'; //使用なし
+const googleApiKey = ''; //本番
+// const googleApiKey = 'goog_bFhISBEircnsqRSgJCdLjPPlelO'; //開発
 //TO DO: add the Amazon API key for your app from the RevenueCat dashboard: https://app.revenuecat.com
 const amazonApiKey = 'amazon_api_key';//使用なし
 
