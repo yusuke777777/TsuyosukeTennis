@@ -49,4 +49,4 @@ ios/Runner/GoogleService-Info.plist
 ios/Runner/GoogleService-Info_dev.plist
 # Xcode build cache files
 ios/build/
-android/app/google-services.json
+android/app/src/google-services.json

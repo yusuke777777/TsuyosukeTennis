@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "923210326457",
+    "project_id": "tsuyosuketest",
+    "storage_bucket": "tsuyosuketest.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:923210326457:android:e0507a0158d88912f51668",
+        "android_client_info": {
+          "package_name": "com.tsuyosukeTennisAp.dev"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDFg7yPh92kefxJ2249IaFLxR6WS0nyDoY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

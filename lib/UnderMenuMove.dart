@@ -165,6 +165,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
       badge: true,
       provisional: false,
       sound: true,
+      announcement: true,
     );
     await FirebaseMessaging.instance
         .setForegroundNotificationPresentationOptions(
