@@ -80,14 +80,14 @@ void main() async {
   if (FirebaseAuth.instance.currentUser != null &&
       !FirebaseAuth.instance.currentUser!.isAnonymous) {
     final configuration = PurchasesConfiguration(
-        Platform.isAndroid ? 'androidRevenueCatKey' : appleApiKey)
+        Platform.isAndroid ? googleApiKey : appleApiKey)
       ..appUserID = FirebaseAuth.instance.currentUser!.uid;
     await Purchases.configure(configuration);
     appData.appUserID = await Purchases.appUserID;
     print("main Login" + appData.appUserID.toString());
   } else {
     final configuration = PurchasesConfiguration(
-      Platform.isAndroid ? 'androidRevenueCatKey' : appleApiKey,
+      Platform.isAndroid ? googleApiKey : appleApiKey,
     );
     await Purchases.configure(configuration);
     appData.appUserID = await Purchases.appUserID;

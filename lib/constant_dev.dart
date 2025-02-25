@@ -13,7 +13,8 @@ const entitlementID = 'TSPプレミアムプラン';
 //const appleApiKey = 'appl_FqFukGrTjwGVYwYkalAgeTGGkog'; // 本番
 const appleApiKey = 'appl_zpRHoKSWQoxVqMeERkTqKTnykfP'; //開発
 //TO DO: add the Google API key for your app from the RevenueCat dashboard: https://app.revenuecat.com
-const googleApiKey = 'googl_api_key'; //使用なし
+// const googleApiKey = ''; //本番
+const googleApiKey = 'goog_bFhISBEircnsqRSgJCdLjPPlelO'; //開発
 //TO DO: add the Amazon API key for your app from the RevenueCat dashboard: https://app.revenuecat.com
 const amazonApiKey = 'amazon_api_key';//使用なし
 
@@ -24,7 +25,8 @@ const String functionUrl = 'https://asia-northeast1-tsuyosuketest.cloudfunctions
 //広告(googleAdsInterstitial)
 //Android
 const googleInterstitialAdsAndroid = 'ca-app-pub-3940256099942544/1033173712'; //開発
-//const googleInterstitialAdsAndroid = 'ca-app-pub-3940256099942544/1033173712'; //本番
+//const googleInterstitialAdsAndroid = 'ca-app-pub-2361922346375583/9549503210'; //本番
+
 //IOS
 const googleInterstitialAdsIos = 'ca-app-pub-3940256099942544/4411468910'; //開発
 //const googleInterstitialAdsIos = 'ca-app-pub-2361922346375583/4315688562'; //本番
@@ -32,7 +34,7 @@ const googleInterstitialAdsIos = 'ca-app-pub-3940256099942544/4411468910'; //開
 //広告(googleAdsBanner)
 //Android
 const googleAdsBannerAndroid = 'ca-app-pub-3940256099942544/9214589741'; //開発
-//const googleAdsBannerAndroid = 'ca-app-pub-3940256099942544/9214589741'; //本番
+//const googleAdsBannerAndroid = 'ca-app-pub-2361922346375583/3970142972'; //本番
 //IOS
 const googleAdsBannerIos = 'ca-app-pub-3940256099942544/2435281174'; //開発
 //const googleAdsBannerIos = 'ca-app-pub-2361922346375583/4110034380'; //本番
