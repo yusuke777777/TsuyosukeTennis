@@ -77,21 +77,23 @@ void main() async {
     statusBarColor: Colors.transparent,
     statusBarBrightness: Brightness.light,
   ));
-  if (FirebaseAuth.instance.currentUser != null &&
-      !FirebaseAuth.instance.currentUser!.isAnonymous) {
-    final configuration = PurchasesConfiguration(
-        Platform.isAndroid ? googleApiKey : appleApiKey)
-      ..appUserID = FirebaseAuth.instance.currentUser!.uid;
-    await Purchases.configure(configuration);
-    appData.appUserID = await Purchases.appUserID;
-    print("main Login" + appData.appUserID.toString());
-  } else {
-    final configuration = PurchasesConfiguration(
-      Platform.isAndroid ? googleApiKey : appleApiKey,
-    );
-    await Purchases.configure(configuration);
-    appData.appUserID = await Purchases.appUserID;
-    print("main Login" + appData.appUserID.toString());
+  if(Platform.isIOS) {
+    if (FirebaseAuth.instance.currentUser != null &&
+        !FirebaseAuth.instance.currentUser!.isAnonymous) {
+      final configuration = PurchasesConfiguration(
+          Platform.isAndroid ? googleApiKey : appleApiKey)
+        ..appUserID = FirebaseAuth.instance.currentUser!.uid;
+      await Purchases.configure(configuration);
+      appData.appUserID = await Purchases.appUserID;
+      print("main Login" + appData.appUserID.toString());
+    } else {
+      final configuration = PurchasesConfiguration(
+        Platform.isAndroid ? googleApiKey : appleApiKey,
+      );
+      await Purchases.configure(configuration);
+      appData.appUserID = await Purchases.appUserID;
+      print("main Login" + appData.appUserID.toString());
+    }
   }
   runApp(MyApp());
 }
@@ -170,21 +172,6 @@ class _MyAppState extends State<MyApp> {
         // is not restarted.
         primarySwatch: Colors.red,
       ),
-      initialRoute: '/',
-      onGenerateRoute: (settings) {
-        if (settings.name == '/') {
-          return MaterialPageRoute(builder: (context) => HomePage());
-        }
-
-        // 動的なプロフィールページへのルート処理
-        if (settings.name?.startsWith('/profile/') == true) {
-          final userId = settings.name?.split('/')[2]; // URL から userId を取得
-          return MaterialPageRoute(
-            builder: (context) => ProfileReference(userId!),
-          );
-        }
-        return null;
-      },
       home: FirebaseAuth.instance.currentUser == null
           ? LoginPage()
           : FirebaseAuth.instance.currentUser!.isAnonymous

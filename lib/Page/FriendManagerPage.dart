@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -316,7 +318,7 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                       )
                                     ],
                                   )),
-                              Container(
+                              Platform.isIOS ? Container(
                                 width: deviceWidth * 0.1,
                                 alignment: Alignment.centerRight,
                                 child: IconButton(
@@ -346,7 +348,7 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                     }
                                   },
                                 ),
-                              ),
+                              ): Container(),
                             ],
                           ),
                         ),

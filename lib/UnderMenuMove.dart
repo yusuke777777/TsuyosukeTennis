@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -243,7 +245,9 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
       });
     });
     //課金処理
-    initPlatformState();
+    if(Platform.isIOS) {
+      initPlatformState();
+    }
     // _totalNotifications = 0;
     //トラッキングチェック処理
     super.initState();
