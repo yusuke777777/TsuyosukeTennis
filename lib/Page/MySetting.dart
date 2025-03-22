@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
@@ -96,7 +98,7 @@ class _MySettingState extends State<MySetting> {
                   );
                 },
               ),
-              ListTile(
+              Platform.isIOS ? ListTile(
                 title: const Text('有料プランへの加入',
                     style: TextStyle(fontSize: 20, color: Colors.black)),
                 onTap: () async {
@@ -117,7 +119,7 @@ class _MySettingState extends State<MySetting> {
                     );
                   }
                 },
-              ),
+              ): Container(),
               ListTile(
                 title: const Text("レビュー機能（OFF/ON）",
                     style: TextStyle(fontSize: 20, color: Colors.black)),

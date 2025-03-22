@@ -109,7 +109,7 @@ class _QrScanViewState extends State<QrScanView> {
                   ));
             }
           } else if (ticketFlg == "1") {
-            if (appData.entitlementIsActive == true) {
+            if (appData.entitlementIsActive == true || Platform.isAndroid) {
               await showDialog(
                 context: context,
                 builder: (BuildContext context) => const ShowDialogToDismiss(

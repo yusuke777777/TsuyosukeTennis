@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -337,7 +339,7 @@ class _TalkRoomState extends State<TalkRoom> {
                                                               "1") {
                                                             if (appData
                                                                 .entitlementIsActive ==
-                                                                true) {
+                                                                true || Platform.isAndroid) {
                                                               await showDialog(
                                                                   context: context,
                                                                   builder: (
@@ -896,7 +898,7 @@ class _TalkRoomState extends State<TalkRoom> {
           print("TalkRoom :" + e.toString());
         }
       } else {
-        if (appData.entitlementIsActive == true) {
+        if (appData.entitlementIsActive == true || Platform.isAndroid) {
           await showDialog(
               context: context,
               builder: (BuildContext context) =>
@@ -963,7 +965,7 @@ class _TalkRoomState extends State<TalkRoom> {
                   } else {
                     if (appData
                         .entitlementIsActive ==
-                        true) {
+                        true || Platform.isAndroid) {
                       await showDialog(
                           context: context,
                           builder: (BuildContext context) =>

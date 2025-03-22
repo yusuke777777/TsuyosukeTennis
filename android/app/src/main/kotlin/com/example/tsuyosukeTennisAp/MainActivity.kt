@@ -1,4 +1,4 @@
-package com.tsuyosukeTennisAp.dev
+package com.tsuyosukeTennisAp
 
 import io.flutter.embedding.android.FlutterActivity
 
