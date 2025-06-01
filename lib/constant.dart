@@ -10,34 +10,34 @@ const entitlementID = 'TSPプレミアムプラン';
 //TO DO: add the Apple API key for your app from the RevenueCat dashboard: https://app.revenuecat.com
 
 //課金機能(Revenucat)
-const appleApiKey = 'appl_FqFukGrTjwGVYwYkalAgeTGGkog'; // 本番
-//const appleApiKey = 'appl_zpRHoKSWQoxVqMeERkTqKTnykfP'; //開発
+//const appleApiKey = 'appl_FqFukGrTjwGVYwYkalAgeTGGkog'; // 本番
+const appleApiKey = 'appl_zpRHoKSWQoxVqMeERkTqKTnykfP'; //開発
 //TO DO: add the Google API key for your app from the RevenueCat dashboard: https://app.revenuecat.com
-const googleApiKey = ''; //本番
-// const googleApiKey = 'goog_bFhISBEircnsqRSgJCdLjPPlelO'; //開発
+// const googleApiKey = ''; //本番
+const googleApiKey = 'goog_bFhISBEircnsqRSgJCdLjPPlelO'; //開発
 //TO DO: add the Amazon API key for your app from the RevenueCat dashboard: https://app.revenuecat.com
 const amazonApiKey = 'amazon_api_key';//使用なし
 
 //メッセージ送信(cloudMessage)
-//const String functionUrl = 'https://asia-northeast1-tsuyosuketest.cloudfunctions.net/sendMessage'; //開発
-const String functionUrl = 'https://asia-northeast1-tsuyosuketeniss.cloudfunctions.net/sendMessage'; //本番
+const String functionUrl = 'https://asia-northeast1-tsuyosuketest.cloudfunctions.net/sendMessage'; //開発
+//const String functionUrl = 'https://asia-northeast1-tsuyosuketeniss.cloudfunctions.net/sendMessage'; //本番
 
 //広告(googleAdsInterstitial)
 //Android
-//const googleInterstitialAdsAndroid = 'ca-app-pub-3940256099942544/1033173712'; //開発
-const googleInterstitialAdsAndroid = 'ca-app-pub-2361922346375583/9549503210'; //本番
+const googleInterstitialAdsAndroid = 'ca-app-pub-3940256099942544/1033173712'; //開発
+//const googleInterstitialAdsAndroid = 'ca-app-pub-2361922346375583/9549503210'; //本番
+
 //IOS
-//const googleInterstitialAdsIos = 'ca-app-pub-3940256099942544/4411468910'; //開発
-const googleInterstitialAdsIos = 'ca-app-pub-2361922346375583/4315688562'; //本番
+const googleInterstitialAdsIos = 'ca-app-pub-3940256099942544/4411468910'; //開発
+//const googleInterstitialAdsIos = 'ca-app-pub-2361922346375583/4315688562'; //本番
 
 //広告(googleAdsBanner)
 //Android
-//const googleAdsBannerAndroid = 'ca-app-pub-3940256099942544/9214589741'; //開発
-const googleAdsBannerAndroid = 'ca-app-pub-2361922346375583/3970142972'; //本番
+const googleAdsBannerAndroid = 'ca-app-pub-3940256099942544/9214589741'; //開発
+//const googleAdsBannerAndroid = 'ca-app-pub-2361922346375583/3970142972'; //本番
 //IOS
-//const googleAdsBannerIos = 'ca-app-pub-3940256099942544/2435281174'; //開発
-const googleAdsBannerIos = 'ca-app-pub-2361922346375583/4110034380'; //本番
+const googleAdsBannerIos = 'ca-app-pub-3940256099942544/2435281174'; //開発
+//const googleAdsBannerIos = 'ca-app-pub-2361922346375583/4110034380'; //本番
 
 //AppStoreのURL
 const appStoreUrl = 'https://apps.apple.com/jp/app/id6473671662';
-
