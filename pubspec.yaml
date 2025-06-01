@@ -63,7 +63,8 @@ dependencies:
   circular_chart_flutter: ^0.0.2
   yaml: ^3.1.0
   google_fonts: ^5.1.0
-  purchases_flutter: ^6.5.0
+#  purchases_flutter: ^6.5.0
+  purchases_flutter: ^8.9.0
   logger: ^1.0.0
   fading_edge_scrollview: ^4.1.1
   googleapis_auth: ^1.6.0
