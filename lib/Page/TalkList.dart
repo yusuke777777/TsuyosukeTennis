@@ -23,6 +23,7 @@ class TalkList extends StatefulWidget {
 class _TalkListState extends State<TalkList> {
   List<TalkRoomModel> talkList = [];
   late StreamSubscription<QuerySnapshot> _subscription;
+  late Future<void> _roomFuture;
 
   @override
   void initState() {
@@ -34,17 +35,18 @@ class _TalkListState extends State<TalkList> {
         .snapshots()
         .listen((snapshot) {
       if (mounted) {
-        setState(() {});
+        setState(() {
+          _roomFuture = createRooms(); // ここで再代入すれば、再取得可能
+        });
       }
     });
+    _roomFuture = createRooms(); // 最初の読み込み
   }
 
   Future<void> createRooms() async {
-    print("aaa");
     talkList =
         await FirestoreMethod.getRooms(FirestoreMethod.auth.currentUser!.uid);
     print(talkList.length);
-    print("bbb");
   }
 
   @override
@@ -76,7 +78,7 @@ class _TalkListState extends State<TalkList> {
               Padding(
                 padding: EdgeInsets.only(top: 40),
                 child: FutureBuilder(
-                  future: createRooms(),
+                  future: _roomFuture,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       return ListView.builder(
@@ -87,9 +89,10 @@ class _TalkListState extends State<TalkList> {
                                   motion: const DrawerMotion(),
                                   children: [
                                     SlidableAction(
-                                      onPressed: (value) {
-                                        FirestoreMethod.addBlockList(
+                                      onPressed: (value) async{
+                                        await FirestoreMethod.addBlockList(
                                             talkList[index].user.USER_ID);
+                                        await createRooms(); //トークリストを再取得
                                         setState(() {});
                                       },
                                       backgroundColor: Colors.grey,

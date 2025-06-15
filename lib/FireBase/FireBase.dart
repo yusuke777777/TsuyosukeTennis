@@ -896,47 +896,99 @@ class FirestoreMethod {
     });
     return room;
   }
-
   static Future<List<TalkRoomModel>> getRooms(String myUserId) async {
     final snapshot =
-        await roomRef.where('joined_user_ids', arrayContains: myUserId).get();
-    List<TalkRoomModel> roomList = [];
-    late int count;
-    await Future.forEach<dynamic>(snapshot.docs, (doc) async {
-      late String yourUserId;
-      doc.data()['joined_user_ids'].forEach((id) {
-        if (id != myUserId) {
-          yourUserId = id;
-          return;
-        }
-      });
-      try {
-        count = await NotificationMethod.unreadCountGet(yourUserId);
-      } catch (e) {
-        print("未読メッセージ数を正しく取得できませんでした");
-        throw (e);
-      }
-      //ブロックリストに存在しない場合に表示する
-      String blockUserChk = await getBlockListChk(yourUserId);
-      if (blockUserChk == "0") {
-        try {
-          CprofileSetting yourProfile = await getYourProfile(yourUserId);
-          TalkRoomModel room = await TalkRoomModel(
-              roomId: doc.id,
-              user: yourProfile,
-              lastMessage: doc.data()['last_message'] ?? '',
-              unReadCnt: count,
-              updated_time: doc.data()['updated_time'] ?? '');
-          roomList.add(room);
-        } catch (e) {
-          print("トークルームの取得に失敗しました");
-          throw (e);
-        }
-      }
-    });
+    await roomRef.where('joined_user_ids', arrayContains: myUserId).get();
+
+    List<Future<TalkRoomModel?>> futures = [];
+
+    for (var doc in snapshot.docs) {
+      futures.add(_buildTalkRoomModel(doc, myUserId));
+    }
+
+    // null を除外して結果を返す
+    List<TalkRoomModel> roomList = (await Future.wait(futures))
+        .whereType<TalkRoomModel>()
+        .toList();
+
     roomList.sort((a, b) => b.updated_time.compareTo(a.updated_time));
     return roomList;
   }
+
+  static Future<TalkRoomModel?> _buildTalkRoomModel(
+      DocumentSnapshot doc, String myUserId) async {
+    late String yourUserId;
+
+    for (var id in doc['joined_user_ids']) {
+      if (id != myUserId) {
+        yourUserId = id;
+        break;
+      }
+    }
+
+    try {
+      String blockUserChk = await getBlockListChk(yourUserId);
+      if (blockUserChk != "0") return null;
+
+      final countFuture = NotificationMethod.unreadCountGet(yourUserId);
+      final profileFuture = getYourProfile(yourUserId);
+
+      final results = await Future.wait([countFuture, profileFuture]);
+
+      return TalkRoomModel(
+        roomId: doc.id,
+        user: results[1] as CprofileSetting,
+        lastMessage: doc['last_message'] ?? '',
+        unReadCnt: results[0] as int,
+        updated_time: doc['updated_time'] ?? '',
+      );
+    } catch (e) {
+      print("トークルームの取得に失敗: $e");
+      return null;
+    }
+  }
+
+  //性能改善前
+  // static Future<List<TalkRoomModel>> getRooms(String myUserId) async {
+  //   final snapshot =
+  //       await roomRef.where('joined_user_ids', arrayContains: myUserId).get();
+  //   List<TalkRoomModel> roomList = [];
+  //   late int count;
+  //   await Future.forEach<dynamic>(snapshot.docs, (doc) async {
+  //     late String yourUserId;
+  //     doc.data()['joined_user_ids'].forEach((id) {
+  //       if (id != myUserId) {
+  //         yourUserId = id;
+  //         return;
+  //       }
+  //     });
+  //     try {
+  //       count = await NotificationMethod.unreadCountGet(yourUserId);
+  //     } catch (e) {
+  //       print("未読メッセージ数を正しく取得できませんでした");
+  //       throw (e);
+  //     }
+  //     //ブロックリストに存在しない場合に表示する
+  //     String blockUserChk = await getBlockListChk(yourUserId);
+  //     if (blockUserChk == "0") {
+  //       try {
+  //         CprofileSetting yourProfile = await getYourProfile(yourUserId);
+  //         TalkRoomModel room = await TalkRoomModel(
+  //             roomId: doc.id,
+  //             user: yourProfile,
+  //             lastMessage: doc.data()['last_message'] ?? '',
+  //             unReadCnt: count,
+  //             updated_time: doc.data()['updated_time'] ?? '');
+  //         roomList.add(room);
+  //       } catch (e) {
+  //         print("トークルームの取得に失敗しました");
+  //         throw (e);
+  //       }
+  //     }
+  //   });
+  //   roomList.sort((a, b) => b.updated_time.compareTo(a.updated_time));
+  //   return roomList;
+  // }
 
   static Future<TalkRoomModel> getRoom(String RECIPIENT_ID, String SENDER_ID,
       CprofileSetting yourProfile) async {

@@ -124,6 +124,7 @@ class _AdBannerState extends State<AdBanner> {
         onAdLoaded: (Ad ad) {
           debugPrint('Ad loaded.');
           _numOfAttempts = 0; // 成功したらリセット
+          setState(() {}); // 🔧 表示更新を通知
         },
         onAdFailedToLoad: (Ad ad, LoadAdError error) {
           debugPrint('Ad failed to load: $error');
@@ -132,7 +133,7 @@ class _AdBannerState extends State<AdBanner> {
 
           // 失敗回数が3を超えないように制限
           if (_numOfAttempts <= 3) {
-            _loadAd(); // 再ロードを試みる
+            Future.delayed(const Duration(seconds: 1), _loadAd); // 🔧 遅延を入れる // 再ロードを試みる
           } else {
             debugPrint('Max attempts reached. No more retries.');
           }

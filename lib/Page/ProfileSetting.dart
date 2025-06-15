@@ -225,30 +225,62 @@ class _ProfileSettingState extends State<ProfileSetting> {
                       const SizedBox(
                         height: 30,
                       ),
-                      InkWell(
-                          child: ClipOval(
-                              child: Container(
-                                  child: profileImage == ""
-                                      ? Image.asset(
-                                          'images/tenipoikun.png',
-                                          height: 100,
-                                          width: 100,
-                                        )
-                                      : Image.network(
-                                          profileImage,
-                                          height: 100,
-                                          width: 100,
-                                          fit: BoxFit.cover,
-                                        ))),
-                          onTap: () async {
-                            Future result = Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) =>
-                                        ProfileImage.image(profileImage, "1")));
-                            profileImage = await result;
-                            setState(() {});
-                          }),
+                      Column(
+                        children: [
+                          Stack(
+                            children: [
+                              InkWell(
+                                onTap: () async {
+                                  final result = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ProfileImage.image(profileImage, "1"),
+                                    ),
+                                  );
+                                  profileImage = result;
+                                  setState(() {});
+                                },
+                                child: ClipOval(
+                                  child: Container(
+                                    width: 100,
+                                    height: 100,
+                                    child: profileImage == ""
+                                        ? Image.asset(
+                                      'images/tenipoikun.png',
+                                      fit: BoxFit.cover,
+                                    )
+                                        : Image.network(
+                                      profileImage,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              Positioned(
+                                bottom: 0,
+                                right: 0,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white70,
+                                    shape: BoxShape.circle,
+                                  ),
+                                  padding: const EdgeInsets.all(4),
+                                  child: const Icon(
+                                    Icons.camera_alt,
+                                    size: 20,
+                                    color: Colors.black54,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 8),
+                          const Text(
+                            'タップしてプロフィール画像を変更',
+                            style: TextStyle(fontSize: 12, color: Colors.grey),
+                          ),
+                        ],
+                      ),
                       const SizedBox(
                         height: 10,
                       ),
