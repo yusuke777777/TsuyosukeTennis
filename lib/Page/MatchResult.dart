@@ -130,7 +130,7 @@ class _MatchResultState extends State<MatchResult> {
                               labelText: "タイトル",
                               labelStyle:
                                   TextStyle(color: Colors.black, fontSize: 20),
-                              hintText: "(例)◯◯市民大会の1回戦"),
+                              hintText: "（例）◯◯市民大会の1回戦"),
                           style: const TextStyle(
                               fontSize: 20, color: Colors.black),
                           controller: inputTitle,
@@ -498,6 +498,7 @@ class _MatchResultState extends State<MatchResult> {
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.green),
                                   ),
+                                    hintText: "（例）1stサーブの種類が豊富で返すのにかなり苦戦しました。なので、2ndサーブで攻めるようにしてました！2ndサーブも精度が更に高まると1stサーブの強みをもっと活かせると思いました！お互い頑張りましょう💪"
                                 ),
                               ),
                             ),

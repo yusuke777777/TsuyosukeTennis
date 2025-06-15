@@ -384,6 +384,7 @@ class _MatchResultFeedBackState extends State<MatchResultFeedBack> {
                                   focusedBorder: UnderlineInputBorder(
                                     borderSide: BorderSide(color: Colors.green),
                                   ),
+                                    hintText: "（例）1stサーブの種類が豊富で返すのにかなり苦戦しました。なので、2ndサーブで攻めるようにしてました！2ndサーブも精度が更に高まると1stサーブの強みをもっと活かせると思いました！お互い頑張りましょう💪"
                                 ),
                               ),
                             ),
