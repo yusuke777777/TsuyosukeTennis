@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -49,9 +50,9 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Handling a background message ${message.messageId}');
 }
 
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
 void main() async {
-  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
 
@@ -67,6 +68,8 @@ void main() async {
   FirebaseInAppMessaging.instance; // In-App Messagingを初期化
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   MobileAds.instance.initialize();
+
+  await checkAndShowLoginStats();
 
   if (FirebaseAuth.instance.currentUser != null &&
       !FirebaseAuth.instance.currentUser!.isAnonymous) {
@@ -96,6 +99,65 @@ void main() async {
     }
   }
   runApp(MyApp());
+}
+
+Future<void> checkAndShowLoginStats() async {
+  if (FirebaseAuth.instance.currentUser != null) {
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final firestore = FirebaseFirestore.instance;
+    final docRef = firestore.collection('login').doc(uid).collection('loginStats').doc('stats');
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = today.subtract(Duration(days: 1));
+    DocumentSnapshot doc = await docRef.get();
+    int totalDays = 1;
+    int consecutiveDays = 1;
+    String lastLoginDate = '';
+    bool isFirstLoginToday = true;
+    if (doc.exists) {
+      final data = doc.data() as Map<String, dynamic>;
+      lastLoginDate = data['lastLoginDate'] ?? '';
+      totalDays = data['totalDays'] ?? 1;
+      consecutiveDays = data['consecutiveDays'] ?? 1;
+      DateTime? lastLogin = lastLoginDate.isNotEmpty ? DateTime.tryParse(lastLoginDate) : null;
+      if (lastLogin != null && lastLogin.isAtSameMomentAs(today)) {
+        isFirstLoginToday = false;
+      } else {
+        if (lastLogin != null && lastLogin.isAtSameMomentAs(yesterday)) {
+          consecutiveDays++;
+        } else {
+          consecutiveDays = 1;
+        }
+        totalDays++;
+      }
+    }
+    // 初回ログイン判定
+    if (isFirstLoginToday) {
+      await docRef.set({
+        'lastLoginDate': today.toIso8601String().substring(0, 10),
+        'totalDays': totalDays,
+        'consecutiveDays': consecutiveDays,
+      });
+      // ポップアップ表示
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+          context: navigatorKey.currentContext!,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('ログインありがとう！'),
+              content: Text('ログイン日数合計: $totalDays 日\n連続ログイン日数: $consecutiveDays 日'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      });
+    }
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -160,16 +222,9 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      navigatorKey: navigatorKey,
       theme: ThemeData(
         textTheme: GoogleFonts.latoTextTheme(),
-        // This is the theme of your application.
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.red,
       ),
       home: FirebaseAuth.instance.currentUser == null

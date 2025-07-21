@@ -15,6 +15,7 @@ import '../Common/TodoListModel.dart';
 import '../FireBase/FireBase.dart';
 import '../FireBase/GoogleAds.dart';
 import '../PropSetCofig.dart';
+import '../main.dart';
 import 'FriendManagerPage.dart';
 import 'ProfileSetting.dart';
 
@@ -39,6 +40,9 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
     myProfileDetail = FirestoreMethod.getMyDetailProfile(auth.currentUser!.uid);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      checkAndShowLoginStats();
+    });
   }
 
   @override

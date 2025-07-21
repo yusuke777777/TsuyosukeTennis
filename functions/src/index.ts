@@ -1040,7 +1040,7 @@ async function checkTitleState(): Promise<void> {
         myObjectData.set("22", "0");
       }
     } else {
-      myObjectData.set("22", mapVal21);
+      myObjectData.set("22", mapVal22);
     }
     // No22確認終了＝＝＝＝＝＝＝＝＝＝
 
