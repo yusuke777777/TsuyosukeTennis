@@ -36,7 +36,7 @@ import 'package:provider/provider.dart';
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
 import 'package:ffi/ffi.dart';
 import 'package:win32/win32.dart';
-import 'constant_prod.dart';
+import 'constant.dart';
 import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:firebase_app_installations/firebase_app_installations.dart';
 
