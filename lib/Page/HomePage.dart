@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -93,9 +94,10 @@ class _HomePageState extends State<HomePage> {
                 CprofileDetail profileDetailList = snapshot.data;
                 return Scrollbar(
                     child: SingleChildScrollView(
+                        primary: true,
                         //プロフィール画像
                         child: Column(children: [
-                  Container(
+                  if (!kIsWeb) Container(
                       alignment: Alignment.center,
                       height: 40,
                       child: AdBanner(size: AdSize.banner)),

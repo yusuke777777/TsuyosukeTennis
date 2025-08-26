@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -72,7 +73,9 @@ class AdInterstitial {
 
   // 広告IDをプラットフォームに合わせて取得
   static String get interstitialAdUnitId {
-    if (Platform.isAndroid) {
+    if (kIsWeb) {
+      return '';
+    } else if (Platform.isAndroid) {
       return googleInterstitialAdsAndroid;
     } else if (Platform.isIOS) {
       return googleInterstitialAdsIos;
@@ -96,7 +99,9 @@ class AdBanner extends StatefulWidget {
   _AdBannerState createState() => _AdBannerState();
 
   static String get bannerAdUnitId {
-    if (Platform.isAndroid) {
+    if (kIsWeb) {
+      return '';
+    } else if (Platform.isAndroid) {
       return googleAdsBannerAndroid;
     } else if (Platform.isIOS) {
       return googleAdsBannerIos;
@@ -113,10 +118,13 @@ class _AdBannerState extends State<AdBanner> {
   @override
   void initState() {
     super.initState();
-    _loadAd();
+    if (!kIsWeb) {
+      _loadAd();
+    }
   }
 
   void _loadAd() {
+    if (AdBanner.bannerAdUnitId.isEmpty) return;
     _bannerAd = BannerAd(
       size: widget.size,
       adUnitId: AdBanner.bannerAdUnitId,

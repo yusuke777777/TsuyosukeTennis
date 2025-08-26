@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'dart:io';
 
 import 'package:app_tracking_transparency/app_tracking_transparency.dart';
@@ -160,36 +161,38 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
   }
 
   void requestAndRegisterNotification() async {
-    await Firebase.initializeApp();
-    _messaging = FirebaseMessaging.instance;
-    NotificationSettings settings = await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      provisional: false,
-      sound: true,
-      announcement: true,
-    );
-    await FirebaseMessaging.instance
-        .setForegroundNotificationPresentationOptions(
-      alert: false,
-      badge: true,
-      sound: false,
-    );
-
-    String? myTokenId = await NotificationMethod.getMyTokenId();
-    await NotificationMethod.registerTokenID(myTokenId!);
-
-    print("The token is " + myTokenId!);
-
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      CPushNotification notification = CPushNotification(
-        title: message.notification?.title,
-        body: message.notification?.body,
+    if (!kIsWeb) {
+      await Firebase.initializeApp();
+      _messaging = FirebaseMessaging.instance;
+      NotificationSettings settings = await _messaging.requestPermission(
+        alert: true,
+        badge: true,
+        provisional: false,
+        sound: true,
+        announcement: true,
       );
-      setState(() {
-        _notificationInfo = notification;
+      await FirebaseMessaging.instance
+          .setForegroundNotificationPresentationOptions(
+        alert: false,
+        badge: true,
+        sound: false,
+      );
+
+      String? myTokenId = await NotificationMethod.getMyTokenId();
+      await NotificationMethod.registerTokenID(myTokenId!);
+
+      print("The token is " + myTokenId!);
+
+      FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+        CPushNotification notification = CPushNotification(
+          title: message.notification?.title,
+          body: message.notification?.body,
+        );
+        setState(() {
+          _notificationInfo = notification;
+        });
       });
-    });
+    }
   }
 
   // 通知メッセージに応じて画面遷移
@@ -204,24 +207,26 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
   }
 
   void checkForInitialMessage() async {
-    // アプリが通知から起動された場合、そのメッセージを取得
-    RemoteMessage? initialMessage =
-        await FirebaseMessaging.instance.getInitialMessage();
+    if (!kIsWeb) {
+      // アプリが通知から起動された場合、そのメッセージを取得
+      RemoteMessage? initialMessage =
+          await FirebaseMessaging.instance.getInitialMessage();
 
-    if (initialMessage != null) {
-      // 通知からアプリが起動された際の処理を実装
-      print(
-          'Notification clicked while app was terminated: ${initialMessage.messageId}');
-      // 例: 通知内容に応じて特定の画面を表示
-      CPushNotification notification = CPushNotification(
-        title: initialMessage.notification?.title,
-        body: initialMessage.notification?.body,
-      );
-      setState(() {
-        _notificationInfo = notification;
-        String? senderId = initialMessage.data['senderUid'];
-        notificationMove(context, senderId);
-      });
+      if (initialMessage != null) {
+        // 通知からアプリが起動された際の処理を実装
+        print(
+            'Notification clicked while app was terminated: ${initialMessage.messageId}');
+        // 例: 通知内容に応じて特定の画面を表示
+        CPushNotification notification = CPushNotification(
+          title: initialMessage.notification?.title,
+          body: initialMessage.notification?.body,
+        );
+        setState(() {
+          _notificationInfo = notification;
+          String? senderId = initialMessage.data['senderUid'];
+          notificationMove(context, senderId);
+        });
+      }
     }
   }
 
@@ -245,7 +250,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
       });
     });
     //課金処理
-    if(Platform.isIOS) {
+    if(!kIsWeb && Platform.isIOS) {
       initPlatformState();
     }
     // _totalNotifications = 0;
@@ -259,23 +264,25 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
   }
 
   Future<void> initPlugin() async {
-    final TrackingStatus status =
-        await AppTrackingTransparency.trackingAuthorizationStatus;
-    setState(() => _authStatus = '$status');
-    // If the system can show an authorization request dialog
-    if (status == TrackingStatus.notDetermined) {
-      // // Show a custom explainer dialog before the system dialog
-      // await showCustomTrackingDialog(context);
-      // Wait for dialog popping animation
-      await Future.delayed(const Duration(milliseconds: 200));
-      // Request system's tracking authorization dialog
+    if (!kIsWeb) {
       final TrackingStatus status =
-          await AppTrackingTransparency.requestTrackingAuthorization();
+          await AppTrackingTransparency.trackingAuthorizationStatus;
       setState(() => _authStatus = '$status');
-    }
+      // If the system can show an authorization request dialog
+      if (status == TrackingStatus.notDetermined) {
+        // // Show a custom explainer dialog before the system dialog
+        // await showCustomTrackingDialog(context);
+        // Wait for dialog popping animation
+        await Future.delayed(const Duration(milliseconds: 200));
+        // Request system's tracking authorization dialog
+        final TrackingStatus status =
+            await AppTrackingTransparency.requestTrackingAuthorization();
+        setState(() => _authStatus = '$status');
+      }
 
-    final uuid = await AppTrackingTransparency.getAdvertisingIdentifier();
-    print("UUID: $uuid");
+      final uuid = await AppTrackingTransparency.getAdvertisingIdentifier();
+      print("UUID: $uuid");
+    }
   }
 
   //課金機能
