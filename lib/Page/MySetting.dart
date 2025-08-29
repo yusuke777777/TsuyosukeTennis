@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import '../FireBase/FireBase.dart';
@@ -98,7 +99,7 @@ class _MySettingState extends State<MySetting> {
                   );
                 },
               ),
-              Platform.isIOS ? ListTile(
+              !kIsWeb && Platform.isIOS ? ListTile(
                 title: const Text('有料プランへの加入',
                     style: TextStyle(fontSize: 20, color: Colors.black)),
                 onTap: () async {

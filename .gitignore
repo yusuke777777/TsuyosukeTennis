@@ -30,9 +30,9 @@
 .pub-cache/
 .pub/
 /build/
+node_modules/
 
 # Web related
-lib/generated_plugin_registrant.dart
 
 # Symbolication related
 app.*.symbols
@@ -45,7 +45,7 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 ios/Runner/tsuyosuketest-a7f339ffc481.json
-ios/Runner/GoogleService-Info.plist
+ios/Runner/Service-Info.plist
 ios/Runner/GoogleService-Info_dev.plist
 ios/Runner/GoogleService-Info_prod.plist
 # Xcode build cache files

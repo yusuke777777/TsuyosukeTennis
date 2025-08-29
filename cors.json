@@ -1,0 +1,12 @@
+[
+  {
+    "origin": [
+      "https://tsuyosuketeniss.web.app",
+      "https://tsuyosuketeniss.firebaseapp.com",
+      "http://localhost:3000",
+      "http://localhost"
+    ],
+    "method": ["GET"],
+    "maxAgeSeconds": 3600
+  }
+]

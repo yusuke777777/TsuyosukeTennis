@@ -2,6 +2,9 @@ import * as functions from "firebase-functions";
 import {format} from "date-fns";
 import {utcToZonedTime} from "date-fns-tz";
 import * as admin from "firebase-admin";
+import * as cors from "cors";
+
+const corsHandler = cors({origin: true});
 
 admin.initializeApp();
 const manSinglesRankRef = admin.firestore().collection("manSinglesRank");
@@ -558,6 +561,9 @@ async function checkTitleState(): Promise<void> {
     const volleyBackAve = Number(docs.data()["VOLLEY_BACKHAND_AVE"]);
     const serve1stAve = Number(docs.data()["SERVE_1ST_AVE"]);
     console.log(typeof titleData);
+    // テニポイ開始特典称号
+    myObjectData.set("0", "1");
+
     // 更新確認(No1の確認)!!!!!!!!!!!!!!!!!!!!!
     let mapVal1 = "0";
     if (titleData.get("1") !== undefined) {
@@ -1125,24 +1131,26 @@ async function addTicket(): Promise<void> {
 }
 
 export const sendMessage = functions.region("asia-northeast1")
-    .https.onRequest(async (req, res) => {
-      try {
-        const token = req.body.token;
-        const message = {
-          token: token,
-          data: {
-            senderUid: req.body.data.senderUid,
-          },
-          notification: {
-            title: req.body.notification.title,
-            body: req.body.notification.body,
-          },
-        };
-        const response = await admin.messaging().send(message);
-        console.log("Successfully sent message:", response);
-        res.status(200).send("Message sent successfully");
-      } catch (error) {
-        console.error("Error sending message:", error);
-        res.status(500).send("Error sending message");
-      }
+    .https.onRequest((req, res) => {
+      corsHandler(req, res, async () => {
+        try {
+          const token = req.body.token;
+          const message = {
+            token: token,
+            data: {
+              senderUid: req.body.data.senderUid,
+            },
+            notification: {
+              title: req.body.notification.title,
+              body: req.body.notification.body,
+            },
+          };
+          const response = await admin.messaging().send(message);
+          console.log("Successfully sent message:", response);
+          res.status(200).send("Message sent successfully");
+        } catch (error) {
+          console.error("Error sending message:", error);
+          res.status(500).send("Error sending message");
+        }
+      });
     });

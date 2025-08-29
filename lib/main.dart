@@ -1,3 +1,4 @@
+import 'package:tsuyosuke_tennis_ap/firebase_options.dart';
 import 'dart:async';
 import 'dart:io';
 
@@ -33,10 +34,6 @@ import 'Page/SigninPage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'UnderMenuMove.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:provider/provider.dart';
-import 'package:app_tracking_transparency/app_tracking_transparency.dart';
-import 'package:ffi/ffi.dart';
-import 'package:win32/win32.dart';
 import 'constant.dart';
 import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:firebase_app_installations/firebase_app_installations.dart';
@@ -44,7 +41,11 @@ import 'package:firebase_app_installations/firebase_app_installations.dart';
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print("ここ");
-  await Firebase.initializeApp();
+  if (Firebase.apps.isEmpty) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  }
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
   print('Handling a background message ${message.messageId}');
@@ -54,20 +55,32 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } on FirebaseException catch (e) {
+    if (e.code != 'duplicate-app') {
+      rethrow;
+    }
+  }
 
-  //クラッシュレポート
-  FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
+  if (!kIsWeb) {
+    //クラッシュレポート
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-  //Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
-  PlatformDispatcher.instance.onError = (error, stack) {
-    FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
-    return true;
-  };
+    //Pass all uncaught asynchronous errors that aren't handled by the Flutter framework to Crashlytics
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+  }
 
-  FirebaseInAppMessaging.instance; // In-App Messagingを初期化
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
-  MobileAds.instance.initialize();
+  if (!kIsWeb) {
+    MobileAds.instance.initialize();
+    FirebaseInAppMessaging.instance; // In-App Messagingを初期化
+  }
 
   await checkAndShowLoginStats();
 
@@ -80,7 +93,7 @@ void main() async {
     statusBarColor: Colors.transparent,
     statusBarBrightness: Brightness.light,
   ));
-  if(Platform.isIOS) {
+  if(!kIsWeb && Platform.isIOS) {
     if (FirebaseAuth.instance.currentUser != null &&
         !FirebaseAuth.instance.currentUser!.isAnonymous) {
       final configuration = PurchasesConfiguration(
