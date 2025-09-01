@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -122,12 +123,14 @@ class _ReLoginMessagePageState extends State<ReLoginMessagePage> {
               onPressed: () async {
                 await FirebaseAuth.instance.signOut();
                 //課金機能ログアウト
-                try {
-                  await Purchases.logOut();
-                  appData.appUserID = await Purchases.appUserID;
-                  print("ログアウト　"+appData.appUserID );
-                } on PlatformException catch (e) {
-                  print(e);
+                if (!kIsWeb) {
+                  try {
+                    await Purchases.logOut();
+                    appData.appUserID = await Purchases.appUserID;
+                    print("ログアウト　"+appData.appUserID );
+                  } on PlatformException catch (e) {
+                    print(e);
+                  }
                 }
                 // ログアウト後の画面に遷移
                 Navigator.pushAndRemoveUntil(

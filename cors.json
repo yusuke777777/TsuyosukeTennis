@@ -1,12 +1,8 @@
 [
   {
-    "origin": [
-      "https://tsuyosuketeniss.web.app",
-      "https://tsuyosuketeniss.firebaseapp.com",
-      "http://localhost:3000",
-      "http://localhost"
-    ],
+    "origin": ["*"],
     "method": ["GET"],
+    "responseHeader": ["Content-Type"],
     "maxAgeSeconds": 3600
   }
 ]

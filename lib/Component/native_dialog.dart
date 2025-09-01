@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
@@ -56,19 +57,21 @@ class BillingShowDialogToDismiss extends StatelessWidget {
               foregroundColor: Colors.black, backgroundColor: Colors.lightGreenAccent),
           child: Text('はい'),
           onPressed: () async {
-            final offerings = await Purchases.getOfferings();
-            if (offerings == null || offerings.current == null) {
-              // offerings are empty, show a message to your user
-            } else {
-              Package? tspPlan = offerings!.current?.monthly;
-              print(tspPlan);
+            if (!kIsWeb) {
+              final offerings = await Purchases.getOfferings();
+              if (offerings == null || offerings.current == null) {
+                // offerings are empty, show a message to your user
+              } else {
+                Package? tspPlan = offerings!.current?.monthly;
+                print(tspPlan);
 
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        Billing(tspPlan: tspPlan!)),
-              );
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Billing(tspPlan: tspPlan!)),
+                );
+              }
             }
           },
         ),
