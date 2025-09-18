@@ -50,7 +50,7 @@ dependencies:
 #  marquee: ^2.2.3
   bordered_text: ^2.0.0
   qr_flutter: ^4.1.0
-  qr_code_scanner: ^1.0.1
+  mobile_scanner: ^5.1.1
   firebase_messaging: ^16.0.1
   flutter_secure_storage: ^8.0.0
   flutter_launcher_icons: ^0.14.1
