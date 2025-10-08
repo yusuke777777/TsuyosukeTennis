@@ -1,6 +1,6 @@
 {
   "projects": {
-    "default": "tsuyosuketeniss",
+    "default": "tsuyosuketest",
     "tsuyosuketenissProd": "tsuyosuketeniss",
     "dev": "tsuyosuketest",
     "prod": "tsuyosuketeniss"

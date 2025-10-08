@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
@@ -318,7 +318,7 @@ class _FriendManagerPageState extends State<FriendManagerPage> {
                                       )
                                     ],
                                   )),
-                              Platform.isIOS ? Container(
+                              !kIsWeb ? Container(
                                 width: deviceWidth * 0.1,
                                 alignment: Alignment.centerRight,
                                 child: IconButton(

@@ -37,6 +37,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'constant.dart';
 import 'package:firebase_in_app_messaging/firebase_in_app_messaging.dart';
 import 'package:firebase_app_installations/firebase_app_installations.dart';
+import 'package:flutter_web_plugins/url_strategy.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -54,6 +55,10 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
+  if (kIsWeb) {
+    // kIsWeb は、コードがWeb上で実行されている場合に true になります。
+    usePathUrlStrategy();
+  }
   WidgetsFlutterBinding.ensureInitialized();
   try {
     await Firebase.initializeApp(

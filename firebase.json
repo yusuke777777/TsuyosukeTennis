@@ -1,1 +1,64 @@
-{"database":{"rules":"database.rules.json"},"functions":[{"source":"functions","codebase":"default","ignore":["node_modules",".git","firebase-debug.log","firebase-debug.*.log"],"predeploy":["npm --prefix \"$RESOURCE_DIR\" run lint","npm --prefix \"$RESOURCE_DIR\" run build"]}],"flutter":{"platforms":{"android":{"default":{"projectId":"tsuyosuketeniss","appId":"1:765408552100:android:01c191c73dacc075e8b231","fileOutput":"android/app/google-services.json"}},"ios":{"default":{"projectId":"tsuyosuketeniss","appId":"1:765408552100:ios:86f246f29fbfb9a5e8b231","uploadDebugSymbols":true,"fileOutput":"ios/Runner/GoogleService-Info.plist"}},"dart":{"lib/firebase_options.dart":{"projectId":"tsuyosuketeniss","configurations":{"android":"1:765408552100:android:01c191c73dacc075e8b231","ios":"1:765408552100:ios:86f246f29fbfb9a5e8b231","web":"1:765408552100:web:794fdd8a9d9e6181e8b231"}}}}}}
+{
+  "database": {
+    "rules": "database.rules.json"
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ],
+      "predeploy": [
+        "npm --prefix \"$RESOURCE_DIR\" run lint",
+        "npm --prefix \"$RESOURCE_DIR\" run build"
+      ]
+    }
+  ],
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "tsuyosuketeniss",
+          "appId": "1:765408552100:android:01c191c73dacc075e8b231",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "tsuyosuketeniss",
+          "appId": "1:765408552100:ios:86f246f29fbfb9a5e8b231",
+          "uploadDebugSymbols": true,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "tsuyosuketeniss",
+          "configurations": {
+            "android": "1:765408552100:android:01c191c73dacc075e8b231",
+            "ios": "1:765408552100:ios:86f246f29fbfb9a5e8b231",
+            "web": "1:765408552100:web:794fdd8a9d9e6181e8b231"
+          }
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}
