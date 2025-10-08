@@ -1,13 +1,12 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui; // dart:ui を alias で指定
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:tsuyosuke_tennis_ap/Common/CSkilLevelSetting.dart';
 import '../Common/CmatchResult.dart';
@@ -462,30 +461,14 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
   }
 
   // スクリーンショットを撮る関数
-  Future<File?> _capturePng(GlobalKey globalKey) async {
+  Future<Uint8List?> _capturePng(GlobalKey globalKey) async {
     try {
       RenderRepaintBoundary boundary =
           globalKey.currentContext!.findRenderObject() as RenderRepaintBoundary;
       ui.Image image = await boundary.toImage(pixelRatio: 3.0);
-
-      // `ui.ByteData` を使用する
       ByteData? byteData =
           await image.toByteData(format: ui.ImageByteFormat.png);
-
-      if (byteData == null) {
-        print("Error: Failed to convert image to ByteData.");
-        return null;
-      }
-
-      Uint8List pngBytes = byteData?.buffer.asUint8List() ?? Uint8List(0);
-
-      // 画像を保存
-      final directory = await getTemporaryDirectory();
-      final filePath = '${directory.path}/match_result.png';
-      final file = File(filePath);
-      await file.writeAsBytes(pngBytes);
-
-      return file;
+      return byteData?.buffer.asUint8List();
     } catch (e) {
       print("Error capturing screenshot: $e");
       return null;
@@ -494,10 +477,20 @@ class _MatchResultSanshoState extends State<MatchResultSansho> {
 
   // 画像をXに共有
   Future<void> _shareOnX(GlobalKey globalKey) async {
-    File? imageFile = await _capturePng(globalKey);
-    if (imageFile != null) {
-      await Share.shareXFiles([XFile(imageFile.path)],
-          text: "試合結果をシェアしました！ 🎾\n\nアプリはこちらからダウンロード↓↓\n$appStoreUrl");
+    final Uint8List? imageBytes = await _capturePng(globalKey);
+    if (imageBytes != null) {
+      final xFile = XFile.fromData(
+        imageBytes,
+        name: 'match_result.png',
+        mimeType: 'image/png',
+      );
+      String shareText = "試合結果をシェアしました！ 🎾\n\n";
+      if (kIsWeb) {
+        shareText += "アプリはこちらからどうぞ！ https://tsuyosuke.tennis.jp/";
+      } else {
+        shareText += "アプリはこちらからダウンロード↓↓\n$appStoreUrl";
+      }
+      await Share.shareXFiles([xFile], text: shareText);
     }
   }
 

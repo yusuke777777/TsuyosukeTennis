@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter/foundation.dart'; // for kIsWeb
 
 import 'FireBase.dart';
 import 'ImagePicker.dart';
@@ -25,6 +26,7 @@ class _ProfileImageState extends State<ProfileImage> {
   late String myImagePath;
   late String stateFlg;
   late String _base64ImageString = '';
+  Uint8List? imageBytes;
 
   String get base64ImageString => _base64ImageString;
 
@@ -75,7 +77,20 @@ class _ProfileImageState extends State<ProfileImage> {
                             onPressed: () async {
                               Navigator.pop(childContext);
                               await _pickImage();
-                              await _cropImage();
+
+                              if (kIsWeb) {
+                                if (imageBytes != null) {
+                                  String imageURL =
+                                      await FirestoreMethod.upload(imageBytes);
+                                  setState(() {
+                                    this.myImagePath = imageURL;
+                                  });
+                                }
+                              } else {
+                                if (imageFile != null) {
+                                  await _cropImage();
+                                }
+                              }
                             },
                             child: Center(
                               child: Text(
@@ -144,24 +159,14 @@ class _ProfileImageState extends State<ProfileImage> {
     final pickedImage =
         await ImagePicker().pickImage(source: ImageSource.gallery);
 
-    imageFile = pickedImage != null ? File(pickedImage.path) : null;
-
-    setState(() {
-      // state = AppState.picked;
-    });
-
-    // final time = DateTime.now().millisecondsSinceEpoch;
-    // final directory = await getApplicationDocumentsDirectory();
-    // final path = directory.path;
-    // final copiedImageFile = await imageFile!.copy('$path/$time.png');
-    // notifyListeners();
-
-    // DBへ保存する為、base64文字列へ変換
-    // _base64ImageString =
-    //     Base64Helper.base64String(copiedImageFile.readAsBytesSync());
-
-    // 端末の一時ファイルを削除
-    // _deleteFile(imageFile!);
+    if (pickedImage != null) {
+      if (kIsWeb) {
+        imageBytes = await pickedImage.readAsBytes();
+      } else {
+        imageFile = File(pickedImage.path);
+      }
+    }
+    setState(() {});
   }
 
   /// 該当パスのファイルが存在しているときに、返却します

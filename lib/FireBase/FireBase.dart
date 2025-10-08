@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:io';
@@ -782,16 +783,21 @@ class FirestoreMethod {
     return cprofileDetail;
   }
 
-  static Future<String> upload(File? profileImage) async {
+  static Future<String> upload(dynamic image) async {
     FirebaseStorage storage = FirebaseStorage.instance;
     String imageURL = '';
     try {
-      if (profileImage != null) {
-        await storage
+      if (image != null) {
+        final ref = storage
             .ref()
             .child('myProfileImage/${auth.currentUser!.uid}/photos')
-            .child("myProfile.jpg")
-            .putFile(profileImage);
+            .child("myProfile.jpg");
+
+        if (kIsWeb) {
+          await ref.putData(image as Uint8List);
+        } else {
+          await ref.putFile(image as File);
+        }
       }
       imageURL = await storage
           .ref()
@@ -800,7 +806,6 @@ class FirestoreMethod {
           .getDownloadURL();
     } catch (e) {
       throw (e);
-      print(e);
     }
     return imageURL;
   }

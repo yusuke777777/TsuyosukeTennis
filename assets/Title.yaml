@@ -1,3 +1,6 @@
+- no: 0
+  name: テニスLOVE！
+  description: テニポイ開始記念
 - no: 1
   name: 見習いフォアプレーヤー
   description: レビューを10回以上もらうかつ、フォアの平均1.0以上取得
@@ -85,4 +88,24 @@
 - no: 22
   name: もはや凶器なビッグサーバー
   description: レビューを50回以上もらうかつ、1stサーブの平均4.1以上取得
+
+- no: 23
+  name: ルーキー
+  description: ログイン合計7日以上達成
+
+- no: 24
+  name: 神出鬼没
+  description: ログイン合計30日以上達成
+
+- no: 25
+  name: いつもいる人
+  description: ログイン合計60日以上達成
+
+- no: 26
+  name: 三日坊主
+  description: 連続ログイン3日達成
+
+- no: 27
+  name: 継続は力なり
+  description: 連続ログイン10日達成
 # 他の称号も同様に追加

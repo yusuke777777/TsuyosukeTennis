@@ -47,14 +47,13 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyAPzNSPvX0MZj_cwDu-oKxqrCgZoDSIgrs',
-    appId: '1:765408552100:web:794fdd8a9d9e6181e8b231',
-    messagingSenderId: '765408552100',
-    projectId: 'tsuyosuketeniss',
-    authDomain: 'tsuyosuketeniss.firebaseapp.com',
-    databaseURL: 'https://tsuyosuketeniss-default-rtdb.asia-southeast1.firebasedatabase.app',
-    storageBucket: 'tsuyosuketeniss.appspot.com',
-    measurementId: 'G-F4Y9V7MNR4',
+      apiKey: "AIzaSyCzszmSA7nOID-OZgDi7tKcAGQJxXVVz_c",
+      authDomain: "tsuyosuketest.firebaseapp.com",
+      projectId: "tsuyosuketest",
+      storageBucket: "tsuyosuketest.appspot.com",
+      messagingSenderId: "923210326457",
+      appId: "1:923210326457:web:a366a0de3867629ff51668",
+      measurementId: "G-ZGPP5KWBXD"
   );
 
   static const FirebaseOptions android = FirebaseOptions(
