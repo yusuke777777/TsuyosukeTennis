@@ -164,11 +164,8 @@ class _TalkRoomState extends State<TalkRoom> {
                   })),
           body: Stack(
             children: [
-              Container(alignment: Alignment.center,
-                  height: 40,
-                  child: const AdBanner(size: AdSize.banner)),
               Padding(
-                padding: EdgeInsets.only(top: 40, bottom: menuHeight + 5),
+                padding: EdgeInsets.only(top: 0, bottom: menuHeight + 5),
                 child: StreamBuilder<List<QueryDocumentSnapshot>>(
                     stream: _messagesStream,
                     builder: (context, snapshot) {

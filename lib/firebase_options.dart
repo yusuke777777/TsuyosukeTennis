@@ -45,16 +45,30 @@ class DefaultFirebaseOptions {
         );
     }
   }
+//開発WEB
+ // static const FirebaseOptions web = FirebaseOptions(
+ //      apiKey: "AIzaSyCzszmSA7nOID-OZgDi7tKcAGQJxXVVz_c",
+ //      authDomain: "tsuyosuketest.firebaseapp.com",
+ //      projectId: "tsuyosuketest",
+ //      storageBucket: "tsuyosuketest.appspot.com",
+ //      messagingSenderId: "923210326457",
+ //      appId: "1:923210326457:web:a366a0de3867629ff51668",
+ //      measurementId: "G-ZGPP5KWBXD"
+ //  );
+
 
   static const FirebaseOptions web = FirebaseOptions(
-      apiKey: "AIzaSyCzszmSA7nOID-OZgDi7tKcAGQJxXVVz_c",
-      authDomain: "tsuyosuketest.firebaseapp.com",
-      projectId: "tsuyosuketest",
-      storageBucket: "tsuyosuketest.appspot.com",
-      messagingSenderId: "923210326457",
-      appId: "1:923210326457:web:a366a0de3867629ff51668",
-      measurementId: "G-ZGPP5KWBXD"
+      apiKey: "AIzaSyAPzNSPvX0MZj_cwDu-oKxqrCgZoDSIgrs",
+      authDomain: "tsuyosuketeniss.firebaseapp.com",
+      databaseURL: "https://tsuyosuketeniss-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "tsuyosuketeniss",
+      storageBucket: "tsuyosuketeniss.appspot.com",
+      messagingSenderId: "765408552100",
+      appId: "1:765408552100:web:4f081172fbb22a60e8b231",
+      measurementId: "G-L3CNBJ0ECK"
   );
+
+
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDCf7Ux-CFqX8OBhO70Sh0GF4fPBVzUIFY',
