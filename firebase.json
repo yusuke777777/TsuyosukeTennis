@@ -49,6 +49,7 @@
   },
   "hosting": {
     "public": "build/web",
+    "target": "main_app",
     "ignore": [
       "firebase.json",
       "**/.*",

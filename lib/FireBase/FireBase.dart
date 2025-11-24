@@ -4408,15 +4408,41 @@ class FirestoreMethod {
   /**
    * 承認が終わっていないメアドの承認を行う
    */
+  // 実行中かどうかを示すフラグを静的変数として定義
+  static bool _isSending = false; // (※プライベート変数に修正することを推奨)
+
   static Future<void> sendUserAuthMail() async {
-    await Future.delayed(Duration(seconds: 1)); // 1秒待機
-    User? currentUser = await FirebaseAuth.instance.authStateChanges().first;
-    print(currentUser);
-    if (currentUser != null) {
-      print("承認メール送信");
-      await currentUser.sendEmailVerification();
-    } else {
-      print("ユーザーが取得できませんでした");
+    // 実行中であれば、ここで処理を終了し二重実行を防ぐ
+    if (_isSending) {
+      print("承認メール送信処理は実行中です。二重実行をスキップします。");
+      return;
+    }
+
+    // 処理開始時にフラグを立てる
+    _isSending = true;
+
+    try {
+      await Future.delayed(Duration(seconds: 1)); // 1秒待機
+      User? currentUser = await FirebaseAuth.instance.authStateChanges().first;
+      print(currentUser);
+
+      if (currentUser != null) {
+        print("承認メール送信");
+        // ここでエラーが発生する可能性があるので、tryブロック内に置く
+        await currentUser.sendEmailVerification();
+      } else {
+        print("ユーザーが取得できませんでした");
+      }
+
+    } catch (e) {
+      // エラー処理（必要に応じて）
+      print("承認メール送信中にエラーが発生しました: $e");
+      // throw e; // 呼び出し元にエラーを伝える場合は再スロー
+
+    } finally {
+      // 処理終了時（エラーが発生しても）に必ずフラグを解除
+      _isSending = false;
+      print("承認メール送信処理が完了しました。");
     }
   }
 
