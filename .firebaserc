@@ -5,7 +5,15 @@
     "dev": "tsuyosuketest",
     "prod": "tsuyosuketeniss"
   },
-  "targets": {},
+  "targets": {
+    "tsuyosuketeniss": {
+      "hosting": {
+        "main_app": [
+          "tennipoi"
+        ]
+      }
+    }
+  },
   "etags": {},
   "dataconnectEmulatorConfig": {}
 }
