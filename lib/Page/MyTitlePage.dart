@@ -68,52 +68,79 @@ class MyTitlePage extends StatelessWidget {
                       subtitle: Text(title.description),
                       tileColor:
                           title.status == "1" || title.status == "2"? Colors.white : Colors.grey,
-                      trailing: title.status == "1" || title.status == "2"
+                      trailing: title.status == "2"
                           ? ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
+                                backgroundColor: Colors.redAccent,
                               ),
-                              onPressed: () {
-                                // ボタンが押されたときの処理
-                                FirestoreMethod.changeTitle(title.no);
+                              onPressed: () async {
+                                await FirestoreMethod.resetTitleSelection();
                                 showDialog(
                                     context: context,
                                     builder: (_) => AlertDialog(
-                                      content: const Text(
-                                          "称号を設定しました"),
-                                      actions: <Widget>[
-                                        // OKボタン
-                                        TextButton(
-                                          child: Text('OK'),
-                                          onPressed: () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => UnderMenuMove.make(0),
-                                                ));// ダイアログを閉じる
-                                          },
-                                        ),
-                                      ],
-                                    )
-                                );
+                                          content: const Text("称号を解除しました"),
+                                          actions: <Widget>[
+                                            TextButton(
+                                              child: const Text('OK'),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => UnderMenuMove.make(0),
+                                                    ));
+                                              },
+                                            ),
+                                          ],
+                                        ));
                               },
-                              child: const Text('設定'),
+                              child: const Text('解除'),
                             )
-                          : ElevatedButton(
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.grey,
-                              ),
-                              onPressed: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (_) => const AlertDialog(
-                                      title: Text("エラー"),
-                                      content: Text(
-                                          "取得していない称号は設定できません"),
-                                    ));
-                              },
-                              child: const Text('設定'),
-                            ));
+                          : title.status == "1"
+                              ? ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.green,
+                                  ),
+                                  onPressed: () {
+                                    // ボタンが押されたときの処理
+                                    FirestoreMethod.changeTitle(title.no);
+                                    showDialog(
+                                        context: context,
+                                        builder: (_) => AlertDialog(
+                                          content: const Text(
+                                              "称号を設定しました"),
+                                          actions: <Widget>[
+                                            // OKボタン
+                                            TextButton(
+                                              child: const Text('OK'),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => UnderMenuMove.make(0),
+                                                    ));// ダイアログを閉じる
+                                              },
+                                            ),
+                                          ],
+                                        )
+                                    );
+                                  },
+                                  child: const Text('設定'),
+                                )
+                              : ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Colors.grey,
+                                  ),
+                                  onPressed: () {
+                                    showDialog(
+                                        context: context,
+                                        builder: (_) => const AlertDialog(
+                                          title: Text("エラー"),
+                                          content: Text(
+                                              "取得していない称号は設定できません"),
+                                        ));
+                                  },
+                                  child: const Text('設定'),
+                                ));
                 },
               );
             } else {
