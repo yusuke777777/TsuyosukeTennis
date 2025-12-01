@@ -3,6 +3,7 @@ import {format} from "date-fns";
 import {utcToZonedTime} from "date-fns-tz";
 import * as admin from "firebase-admin";
 import * as cors from "cors";
+import {objectToMap, isTitleChanged} from "./titleUtils";
 
 const corsHandler = cors({origin: true});
 
@@ -13,6 +14,7 @@ const profileDetailRef = admin.firestore().collection("myProfileDetail");
 const profileRef = admin.firestore().collection("myProfile");
 const userTicketMgmtRef = admin.firestore().collection("userTicketMgmt");
 const talkRoomRef = admin.firestore().collection("talkRoom");
+const loginRef = admin.firestore().collection("login");
 
 
 /** 定期的にメタ情報を更新する関数。 */
@@ -553,13 +555,23 @@ async function checkTitleState(): Promise<void> {
   const profileDetailSnapshot = await profileDetailRef.get();
   for (const docs of profileDetailSnapshot.docs) {
     console.log("通過点１");
-    const titleData: Map<string, string> = objectToMap(docs.data()?.TITLE);
+    const titleData: Map<string, string> =
+      objectToMap(docs.data()?.TITLE ?? {});
     const feedbackCount = Number(docs.data()["FEEDBACK_COUNT"]);
     const strokeForeAve = Number(docs.data()["STROKE_FOREHAND_AVE"]);
     const strokeBackAve = Number(docs.data()["STROKE_BACKHAND_AVE"]);
     const volleyForeAve = Number(docs.data()["VOLLEY_FOREHAND_AVE"]);
     const volleyBackAve = Number(docs.data()["VOLLEY_BACKHAND_AVE"]);
     const serve1stAve = Number(docs.data()["SERVE_1ST_AVE"]);
+    const loginStatsDoc = await loginRef
+        .doc(docs.id)
+        .collection("loginStats")
+        .doc("stats")
+        .get();
+    const totalLoginDays =
+      Number(loginStatsDoc.data()?.["totalDays"] ?? 0);
+    const consecutiveLoginDays =
+      Number(loginStatsDoc.data()?.["consecutiveDays"] ?? 0);
     console.log(typeof titleData);
     // テニポイ開始特典称号
     myObjectData.set("0", "1");
@@ -1049,6 +1061,116 @@ async function checkTitleState(): Promise<void> {
       myObjectData.set("22", mapVal22);
     }
     // No22確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No23の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal23 = "0";
+    if (titleData.get("23") !== undefined) {
+      console.log("No23存在します");
+      mapVal23 = titleData.get("23") as string;
+      console.log(mapVal23);
+    } else {
+      console.log("No23存在しません");
+    }
+    // myObjectDataの23キーを更新
+    if (mapVal23 == "0") {
+      console.log("No23が0");
+      if (totalLoginDays >= 7) {
+        console.log("No23条件達成！");
+        myObjectData.set("23", "1");
+      } else {
+        myObjectData.set("23", "0");
+      }
+    } else {
+      myObjectData.set("23", mapVal23);
+    }
+    // No23確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No24の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal24 = "0";
+    if (titleData.get("24") !== undefined) {
+      console.log("No24存在します");
+      mapVal24 = titleData.get("24") as string;
+      console.log(mapVal24);
+    } else {
+      console.log("No24存在しません");
+    }
+    // myObjectDataの24キーを更新
+    if (mapVal24 == "0") {
+      console.log("No24が0");
+      if (totalLoginDays >= 30) {
+        console.log("No24条件達成！");
+        myObjectData.set("24", "1");
+      } else {
+        myObjectData.set("24", "0");
+      }
+    } else {
+      myObjectData.set("24", mapVal24);
+    }
+    // No24確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No25の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal25 = "0";
+    if (titleData.get("25") !== undefined) {
+      console.log("No25存在します");
+      mapVal25 = titleData.get("25") as string;
+      console.log(mapVal25);
+    } else {
+      console.log("No25存在しません");
+    }
+    // myObjectDataの25キーを更新
+    if (mapVal25 == "0") {
+      console.log("No25が0");
+      if (totalLoginDays >= 60) {
+        console.log("No25条件達成！");
+        myObjectData.set("25", "1");
+      } else {
+        myObjectData.set("25", "0");
+      }
+    } else {
+      myObjectData.set("25", mapVal25);
+    }
+    // No25確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No26の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal26 = "0";
+    if (titleData.get("26") !== undefined) {
+      console.log("No26存在します");
+      mapVal26 = titleData.get("26") as string;
+      console.log(mapVal26);
+    } else {
+      console.log("No26存在しません");
+    }
+    // myObjectDataの26キーを更新
+    if (mapVal26 == "0") {
+      console.log("No26が0");
+      if (consecutiveLoginDays >= 3) {
+        console.log("No26条件達成！");
+        myObjectData.set("26", "1");
+      } else {
+        myObjectData.set("26", "0");
+      }
+    } else {
+      myObjectData.set("26", mapVal26);
+    }
+    // No26確認終了＝＝＝＝＝＝＝＝＝＝
+    // 更新確認(No27の確認)!!!!!!!!!!!!!!!!!!!!!
+    let mapVal27 = "0";
+    if (titleData.get("27") !== undefined) {
+      console.log("No27存在します");
+      mapVal27 = titleData.get("27") as string;
+      console.log(mapVal27);
+    } else {
+      console.log("No27存在しません");
+    }
+    // myObjectDataの27キーを更新
+    if (mapVal27 == "0") {
+      console.log("No27が0");
+      if (consecutiveLoginDays >= 10) {
+        console.log("No27条件達成！");
+        myObjectData.set("27", "1");
+      } else {
+        myObjectData.set("27", "0");
+      }
+    } else {
+      myObjectData.set("27", mapVal27);
+    }
+    // No27確認終了＝＝＝＝＝＝＝＝＝＝
 
     // 結果をマップに詰める
     const updateMap = {
@@ -1074,20 +1196,21 @@ async function checkTitleState(): Promise<void> {
       "20": myObjectData.get("20"),
       "21": myObjectData.get("21"),
       "22": myObjectData.get("22"),
+      "23": myObjectData.get("23"),
+      "24": myObjectData.get("24"),
+      "25": myObjectData.get("25"),
+      "26": myObjectData.get("26"),
+      "27": myObjectData.get("27"),
     };
+    if (!isTitleChanged(titleData, updateMap)) {
+      console.log("称号更新なし");
+      continue;
+    }
     await profileDetailRef.doc(docs.id).update({"TITLE": updateMap});
     console.log("称号更新を行う");
   }
 }
 /**
- * Object
- * @param {object} obj - The first number.
- * @return {Map<string, string>} The Map.
- */
-function objectToMap(obj: { [key: string]: string }): Map<string, string> {
-  return new Map(Object.entries(obj));
-}
-
 /** 月次でチケットを付与する */
 async function addTicket(): Promise<void> {
   const userTicketMgmtSnapshot = await userTicketMgmtRef.get();
