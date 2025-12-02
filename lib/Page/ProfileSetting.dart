@@ -52,10 +52,12 @@ class ProfileSetting extends StatefulWidget {
 Future<void> getMyInitTitle(Map<String, dynamic> myTitleMap) async {
   final String yamlString = await rootBundle.loadString('assets/Title.yaml');
   final List<dynamic> yamlList = loadYaml(yamlString);
+  print("称号の初期取得処理を実行します"+ yamlList.toString());
+  print(myTitleMap);
 
   for (var item in yamlList) {
     String no = item['no'].toString();
-    myTitleMap?[no] = '0';
+    myTitleMap?[no] = no == '0' ? '1' : '0';
   }
 }
 

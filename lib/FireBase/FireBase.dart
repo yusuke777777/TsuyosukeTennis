@@ -650,15 +650,17 @@ class FirestoreMethod {
           await rootBundle.loadString('assets/Title.yaml');
       final List<dynamic> yamlList = loadYaml(yamlString);
       String returnTitle = '';
-      String homeViewTitle = '0';
+      String homeViewTitle = '';
       titleMap.forEach((key, value) {
         if (value == '2') {
           homeViewTitle = key;
         }
       });
-      for (var item in yamlList) {
-        if (item['no'].toString() == homeViewTitle) {
-          returnTitle = item['name'];
+      if (homeViewTitle != '') {
+        for (var item in yamlList) {
+          if (item['no'].toString() == homeViewTitle) {
+            returnTitle = item['name'];
+          }
         }
       }
 
@@ -727,15 +729,17 @@ class FirestoreMethod {
       final List<dynamic> yamlList = loadYaml(yamlString);
       String returnTitle = '';
 
-      String homeViewTitleKeyNo = '0';
+      String homeViewTitleKeyNo = '';
       titleMap.forEach((key, value) {
         if (value == '2') {
           homeViewTitleKeyNo = key;
         }
       });
-      for (var item in yamlList) {
-        if (item['no'].toString() == homeViewTitleKeyNo) {
-          returnTitle = item['name'];
+      if (homeViewTitleKeyNo != '') {
+        for (var item in yamlList) {
+          if (item['no'].toString() == homeViewTitleKeyNo) {
+            returnTitle = item['name'];
+          }
         }
       }
 
@@ -4369,14 +4373,24 @@ class FirestoreMethod {
    * 称号管理Mapの取得
    */
   static Future<Map<String, dynamic>> getMyTitle() async {
-    late Map<String, dynamic> title;
+    Map<String, dynamic> title = {};
     try {
       final snapShot = await FirebaseFirestore.instance
           .collection('myProfileDetail')
           .doc(auth.currentUser!.uid)
           .get();
 
-      title = snapShot.data()!['TITLE'];
+      final data = snapShot.data();
+      if (data != null && data['TITLE'] != null) {
+        title = Map<String, dynamic>.from(data['TITLE']);
+      }
+      final defaultTitleStatus = title['0']?.toString();
+      if (defaultTitleStatus != '1' && defaultTitleStatus != '2') {
+        title['0'] = '1'; // 初期称号を所持中に設定
+        await profileDetailRef
+            .doc(auth.currentUser!.uid)
+            .set({'TITLE': title}, SetOptions(merge: true));
+      }
     } catch (e) {
       print("getMyTitleエラー");
     }
@@ -4402,6 +4416,29 @@ class FirestoreMethod {
       await profileDetailRef.doc(auth.currentUser!.uid).update({'TITLE': map});
     } catch (e) {
       print("changeTitleエラー");
+    }
+  }
+
+  /**
+   * 装着中の称号を解除する
+   */
+  static Future<void> resetTitleSelection() async {
+    try {
+      Map<String, dynamic> map = await getMyTitle();
+      bool updated = false;
+      for (dynamic entry in map.entries) {
+        if (entry.value.toString() == "2") {
+          map[entry.key] = '1';
+          updated = true;
+        }
+      }
+      if (updated) {
+        await profileDetailRef
+            .doc(auth.currentUser!.uid)
+            .update({'TITLE': map});
+      }
+    } catch (e) {
+      print("resetTitleSelectionエラー");
     }
   }
 
