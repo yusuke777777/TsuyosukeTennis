@@ -511,7 +511,7 @@ class _MatchResultState extends State<MatchResult> {
                         ? Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text('フィードバックを希望しますか？',
+                              const Text('フィードバックを希望する',
                                   style: TextStyle(fontSize: 16)),
                               Checkbox(
                                 activeColor: Colors.blue, // Onになった時の色を指定

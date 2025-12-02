@@ -34,6 +34,7 @@ import '../Common/CprofileDetail.dart';
 import '../Common/CprofileSetting.dart';
 import '../Common/CactivityList.dart';
 import '../Common/CtalkRoom.dart';
+import '../Common/TournamentQrPayload.dart';
 import '../Common/TodoListModel.dart';
 import 'NotificationMethod.dart';
 import 'TsMethod.dart';
@@ -51,6 +52,7 @@ class FirestoreMethod {
   static final settingRef = _firestoreInstance.collection('MySetting');
   static final profileDetailRef =
       _firestoreInstance.collection('myProfileDetail');
+  static final tournamentsRef = _firestoreInstance.collection('tournaments');
   //static final todosRef = _firestoreInstance.collection('todos');
 
   //ランキングリスト
@@ -83,6 +85,71 @@ class FirestoreMethod {
   //ユーザー向けメッセージ取得
   static final toUserMessageRef =
       _firestoreInstance.collection('toUserMessage');
+
+  //大会参加者管理
+  static CollectionReference<Map<String, dynamic>> tournamentParticipantsRef(
+          String tournamentId) =>
+      tournamentsRef.doc(tournamentId).collection('participants');
+
+  static Stream<QuerySnapshot<Map<String, dynamic>>>
+      tournamentParticipantsSnapshot(String tournamentId) {
+    return tournamentParticipantsRef(tournamentId)
+        .orderBy('joinedAt', descending: false)
+        .snapshots();
+  }
+
+  static Future<void> addTournamentParticipant({
+    required String tournamentId,
+    required String hostUserId,
+    required CprofileSetting profile,
+  }) async {
+    final userId = profile.USER_ID;
+    final now = FieldValue.serverTimestamp();
+
+    // 大会ドキュメントがなくても作成しておく（最低限のメタ情報だけ）
+    await tournamentsRef.doc(tournamentId).set({
+      'hostUserId': hostUserId,
+      'updatedAt': now,
+    }, SetOptions(merge: true));
+
+    await tournamentParticipantsRef(tournamentId).doc(userId).set({
+      'userId': userId,
+      'displayName': profile.NICK_NAME,
+      'profileImage': profile.PROFILE_IMAGE,
+      'joinedAt': now,
+      'hostUserId': hostUserId,
+    }, SetOptions(merge: true));
+  }
+
+  static Future<String> createTournament({
+    required String title,
+    required int participantLimit,
+    required String format,
+    required String description,
+  }) async {
+    final currentUser = auth.currentUser;
+    if (currentUser == null) {
+      throw ('ログインが必要です');
+    }
+    final docRef = tournamentsRef.doc();
+    final now = FieldValue.serverTimestamp();
+    final qrPayload = TournamentQrPayload(
+            tournamentId: docRef.id, hostUserId: currentUser.uid)
+        .encode();
+    await docRef.set({
+      'title': title,
+      'participantLimit': participantLimit,
+      'participantCount': 0,
+      'format': format,
+      'description': description,
+      'hostUserId': currentUser.uid,
+      'status': 'planned',
+      'qrPayload': qrPayload,
+      'createdAt': now,
+      'updatedAt': now,
+    });
+    return docRef.id;
+  }
 
   //課金フラグの更新
   static Future<void> updateBillingFlg() async {

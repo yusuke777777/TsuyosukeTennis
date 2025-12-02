@@ -15,11 +15,8 @@ import '../PropSetCofig.dart';
 import '../main.dart';
 import 'CheckFeedBack.dart';
 import 'ProfileSetting.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart' as Firebase_Auth;
 import 'package:intl/intl.dart';
-
-import 'QrScanView.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -865,48 +862,6 @@ class _HomePageState extends State<HomePage> {
                       ),
                     )
                   : Container(),
-              Container(
-                height: 220,
-                width: deviceWidth * 0.8,
-                child: Column(
-                  children: [
-                    Container(
-                      alignment: Alignment.bottomCenter,
-                      child: const FittedBox(
-                        alignment: Alignment.bottomLeft,
-                        fit: BoxFit.scaleDown,
-                        child: Text(
-                          '↓↓今すぐ試合をするならこちら！↓↓',
-                          style: TextStyle(fontSize: 17),
-                        ),
-                      ),
-                    ),
-                    QrImageView(
-                      data: auth.currentUser!.uid,
-                      version: QrVersions.auto,
-                      foregroundColor: Colors.green,
-                      embeddedImage: Image.network('https://illustimage.com/photo/463.png').image,
-                      embeddedImageStyle: QrEmbeddedImageStyle(
-                        size: Size(20, 20),
-                      ),
-                      errorCorrectionLevel: QrErrorCorrectLevel.H,
-                      // 誤り訂正レベルを最大に
-                      //QRコードの真ん中に表示する画像
-                      size: 120.0,
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.camera_alt),
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const QrScanView(),
-                            ));
-                      },
-                    ),
-                  ],
-                ),
-              ),
             ])));
           } else {
             return const Text("データが存在しません");

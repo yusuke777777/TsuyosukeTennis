@@ -12,8 +12,8 @@ import 'package:overlay_support/overlay_support.dart';
 import 'package:provider/provider.dart';
 import 'package:purchases_flutter/purchases_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:tsuyosuke_tennis_ap/Page/FindPage.dart';
 import 'package:tsuyosuke_tennis_ap/Page/HomePage.dart';
+import 'package:tsuyosuke_tennis_ap/Page/MatchManagementPage.dart';
 
 import 'BillingThreshold.dart';
 import 'Common/CPushNotification.dart';
@@ -53,7 +53,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
   User? user = FirebaseAuth.instance.currentUser;
   static final _screens = [
     const HomePage(),
-    const FindPage(),
+    const MatchManagementPage(),
     const MatchList(),
     const TalkList(),
     RankList()
@@ -106,18 +106,18 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
                     ),
               label: 'ホーム',
             ),
-            //検索
+            //対戦管理
             const BottomNavigationBarItem(
-                icon: Icon(Icons.search), label: '検索'),
-            //マッチ一覧
+                icon: Icon(Icons.sports_tennis), label: '対戦管理'),
+            //予定一覧
             BottomNavigationBarItem(
               icon: !user!.isAnonymous
-                  ? const Icon(Icons.leaderboard)
+                  ? const Icon(Icons.calendar_month)
                   : const Stack(
                       // アイコンに重ねて表示
                       alignment: Alignment.topRight, // 右上に配置
                       children: [
-                        Icon(Icons.leaderboard),
+                        Icon(Icons.calendar_month),
                         Positioned(
                           top: 0, // 上からの距離
                           right: 0, // 右からの距離
@@ -129,7 +129,7 @@ class _UnderMenuMoveState extends State<UnderMenuMove> {
                         ), // 鍵アイコン
                       ],
                     ),
-              label: 'マッチ',
+              label: '予定一覧',
             ),
             //トーク
             BottomNavigationBarItem(
