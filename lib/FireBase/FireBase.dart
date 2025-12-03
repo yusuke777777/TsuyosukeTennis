@@ -126,6 +126,7 @@ class FirestoreMethod {
     required int participantLimit,
     required String format,
     required String description,
+    bool includeHost = false,
   }) async {
     final currentUser = auth.currentUser;
     if (currentUser == null) {
@@ -139,7 +140,7 @@ class FirestoreMethod {
     await docRef.set({
       'title': title,
       'participantLimit': participantLimit,
-      'participantCount': 0,
+      'participantCount': includeHost ? 1 : 0,
       'format': format,
       'description': description,
       'hostUserId': currentUser.uid,
@@ -147,7 +148,15 @@ class FirestoreMethod {
       'qrPayload': qrPayload,
       'createdAt': now,
       'updatedAt': now,
+      'includeHost': includeHost,
     });
+    if (includeHost) {
+      final hostProfile = await getProfile();
+      await addTournamentParticipant(
+          tournamentId: docRef.id,
+          hostUserId: currentUser.uid,
+          profile: hostProfile);
+    }
     return docRef.id;
   }
 

@@ -21,6 +21,7 @@ class _TournamentCreatePageState extends State<TournamentCreatePage> {
   ];
   String? _selectedFormat;
   bool _isSaving = false;
+  bool _includeHost = false;
 
   @override
   void dispose() {
@@ -91,6 +92,18 @@ class _TournamentCreatePageState extends State<TournamentCreatePage> {
                     onChanged: (val) {
                       setState(() {
                         _selectedFormat = val;
+                      });
+                    },
+                  ),
+                  CheckboxListTile(
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('参加上限に主催者を含める'),
+                    subtitle:
+                        const Text('含める場合、作成と同時に主催者を参加者に追加します'),
+                    value: _includeHost,
+                    onChanged: (val) {
+                      setState(() {
+                        _includeHost = val ?? false;
                       });
                     },
                   ),
@@ -184,6 +197,7 @@ class _TournamentCreatePageState extends State<TournamentCreatePage> {
         participantLimit: limit,
         format: format,
         description: description,
+        includeHost: _includeHost,
       );
       if (!mounted) return;
       Navigator.of(context).pop(tournamentId);
