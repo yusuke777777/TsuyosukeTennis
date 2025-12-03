@@ -3,7 +3,9 @@
  * @param {object} obj - TITLE object.
  * @return {Map<string, string>} The Map.
  */
-export function objectToMap(obj?: { [key: string]: string }): Map<string, string> {
+export function objectToMap(
+    obj?: {[key: string]: string}
+): Map<string, string> {
   if (!obj) {
     return new Map();
   }
