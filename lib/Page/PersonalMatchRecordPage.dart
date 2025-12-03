@@ -25,6 +25,7 @@ class _PersonalMatchRecordPageState extends State<PersonalMatchRecordPage> {
 
   final inputTitle = TextEditingController();
   final opponentNameController = TextEditingController(text: "対戦相手");
+  final memoController = TextEditingController();
 
   CprofileSetting? myProfile;
   bool _isLoadingProfile = true;
@@ -39,6 +40,7 @@ class _PersonalMatchRecordPageState extends State<PersonalMatchRecordPage> {
   void dispose() {
     inputTitle.dispose();
     opponentNameController.dispose();
+    memoController.dispose();
     super.dispose();
   }
 
@@ -99,6 +101,32 @@ class _PersonalMatchRecordPageState extends State<PersonalMatchRecordPage> {
                               controller: inputTitle,
                               maxLength: 20,
                             ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 8),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'テニスメモ',
+                                style: TextStyle(
+                                    fontSize: 14, fontWeight: FontWeight.bold),
+                              ),
+                              const SizedBox(height: 4),
+                              TextField(
+                                controller: memoController,
+                                maxLines: 4,
+                                maxLength: 400,
+                                decoration: const InputDecoration(
+                                  hintText: '気づきや次回に活かすポイントをメモしましょう',
+                                  focusedBorder: UnderlineInputBorder(
+                                    borderSide: BorderSide(color: Colors.green),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                         Row(
@@ -208,7 +236,7 @@ class _PersonalMatchRecordPageState extends State<PersonalMatchRecordPage> {
                           child: Container(
                             padding: const EdgeInsets.only(bottom: 20),
                             width: deviceWidth * 0.8,
-                            child: TextButton(
+                              child: TextButton(
                               style: TextButton.styleFrom(
                                 backgroundColor: Colors.lightGreenAccent,
                                 shape: const RoundedRectangleBorder(
@@ -223,7 +251,7 @@ class _PersonalMatchRecordPageState extends State<PersonalMatchRecordPage> {
                                       fontSize: 20, color: Colors.black),
                                 ),
                               ),
-                              onPressed: () {
+                              onPressed: () async {
                                 String errorFlg = "0";
                                 for (final matchList in matchResultList) {
                                   if (matchResultList.length != 1 &&
@@ -281,10 +309,50 @@ class _PersonalMatchRecordPageState extends State<PersonalMatchRecordPage> {
                                       });
                                   return;
                                 }
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content: Text('個人で記録 は準備中です')),
-                                );
+                                if (myProfile == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text('プロフィール取得に失敗しました')),
+                                  );
+                                  return;
+                                }
+                                final opponentName =
+                                    opponentNameController.text.isEmpty
+                                        ? '対戦相手'
+                                        : opponentNameController.text.trim();
+                                final dayKey = DateTime.now().toString();
+                                try {
+                                  await FirestoreMethod
+                                      .makePersonalMatchResult(
+                                          myProfile!,
+                                          opponentName,
+                                          matchResultList,
+                                          dayKey,
+                                          inputTitle.text);
+                                  if (memoController.text.trim().isNotEmpty) {
+                                    final memoTitle = inputTitle.text;
+                                    await FirestoreMethod.addTodo(
+                                        memoTitle,
+                                        memoController.text.trim(),
+                                        myProfile!.USER_ID,
+                                        '試合メモ');
+                                  }
+                                  if (mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                          content: Text('登録しました')),
+                                    );
+                                    Navigator.of(context).pop();
+                                  }
+                                } catch (e) {
+                                  if (!mounted) return;
+                                  showDialog(
+                                      context: context,
+                                      builder: (_) => const AlertDialog(
+                                            title: Text("エラー"),
+                                            content: Text("登録に失敗しました"),
+                                          ));
+                                }
                               },
                             ),
                           ),

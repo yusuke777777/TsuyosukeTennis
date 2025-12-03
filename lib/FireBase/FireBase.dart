@@ -4056,6 +4056,55 @@ class FirestoreMethod {
     return matchResultList;
   }
 
+  /// 個人用の対戦結果登録（相手は任意の名前のみ）
+  static Future<void> makePersonalMatchResult(
+      CprofileSetting myProfile,
+      String opponentName,
+      List<CmatchResult> matchResultList,
+      String dayKey,
+      String matchTitle) async {
+    DateFormat outputFormat = DateFormat('yyyy/MM/dd HH:mm');
+    String today = outputFormat.format(DateTime.now());
+    final opponentId = 'personal-$dayKey';
+    final scorePoints =
+        matchResultList.map((mr) => "${mr.myGamePoint}-${mr.yourGamePoint}").toList();
+
+    await matchResultRef
+        .doc(myProfile.USER_ID)
+        .collection('opponentList')
+        .doc(opponentId)
+        .collection('daily')
+        .doc(dayKey)
+        .set({
+      'matchTitle': matchTitle,
+      'dailyId': dayKey,
+      'userId': myProfile.USER_ID,
+      'opponentId': opponentId,
+      'opponentProfileImage': '',
+      'opponentName': opponentName,
+      'scorePoint': scorePoints,
+      'koushinTime': today,
+      'FEEDBACK_FLG': false,
+      'personalFlg': true,
+    });
+
+    await Future.forEach<CmatchResult>(matchResultList, (matchResult) async {
+      await matchResultRef
+          .doc(myProfile.USER_ID)
+          .collection('opponentList')
+          .doc(opponentId)
+          .collection('daily')
+          .doc(dayKey)
+          .collection('matchDetail')
+          .doc(matchResult.No)
+          .set({
+        'No': matchResult.No,
+        'MY_POINT': matchResult.myGamePoint,
+        'YOUR_POINT': matchResult.yourGamePoint,
+      });
+    });
+  }
+
   // static Future<List<CmatchResultList>> getMatchResults() async {
   //   List<CmatchResultList> matchResultList = [];
   //   try {

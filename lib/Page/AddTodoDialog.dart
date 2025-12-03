@@ -26,6 +26,17 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
   final _detailController = TextEditingController();
   String dialogTitle = '';
   String dropdownValue = '';
+  final List<String> categories = const [
+    '',
+    'フォアハンド',
+    'バックハンド',
+    'フォアボレー',
+    'バックボレー',
+    '1stサーブ',
+    '2ndサーブ',
+    'その他',
+    '試合メモ',
+  ];
 
   @override
   void initState() {
@@ -33,7 +44,8 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
     _titleController.text = widget.initialTitle ?? '';
     _detailController.text = widget.initialDetail ?? '';
     dialogTitle = widget.dialogTitle as String;
-    dropdownValue = widget.categori ?? '';
+    final initValue = widget.categori ?? '';
+    dropdownValue = categories.contains(initValue) ? initValue : '';
   }
 
   @override
@@ -110,19 +122,11 @@ class _AddTodoDialogState extends State<AddTodoDialog> {
                       ),
                       onChanged: (String? newValue) {
                         setState(() {
-                          dropdownValue = newValue!;
+                          dropdownValue = newValue ?? '';
                         });
                       },
-                      items: <String>[
-                        '',
-                        'フォアハンド',
-                        'バックハンド',
-                        'フォアボレー',
-                        'バックボレー',
-                        '1stサーブ',
-                        '2ndサーブ',
-                        'その他'
-                      ].map<DropdownMenuItem<String>>((String value) {
+                      items: categories
+                          .map<DropdownMenuItem<String>>((String value) {
                         return DropdownMenuItem<String>(
                           value: value,
                           child: Text(value,

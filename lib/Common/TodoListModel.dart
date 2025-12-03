@@ -10,25 +10,38 @@ class TodoListModel extends ChangeNotifier {
   List<Map<String,dynamic>> get todos => _todos;
 
   Future<void> fetchTodos(String uid) async {
-    final DocumentSnapshot<dynamic> snapshot = await _firestore
-        .collection('todos')
-        .doc(uid)
-        .get();
+    final docRef = _firestore.collection('todos').doc(uid);
+    final DocumentSnapshot<dynamic> snapshot = await docRef.get();
 
-    if (snapshot.exists) {
-      _todos.clear();
-      final List<dynamic> todoList = snapshot.data()?['todoList'] ?? [];
-      for (var todo in todoList){
-        if (todo is Map<String, dynamic>) {
-          _todos.add(todo);
-        } else {
-          // todoがMap型でない場合の処理（エラーログ出力など）
-          print('Error: todo is not a Map');
+    if (!snapshot.exists) return;
+
+    _todos.clear();
+    final List<dynamic> todoList = snapshot.data()?['todoList'] ?? [];
+    bool updated = false;
+    for (var todo in todoList) {
+      if (todo is Map<String, dynamic>) {
+        final originalTitle = todo['title']?.toString() ?? '';
+        final normalizedTitle =
+            originalTitle.replaceFirst(RegExp(r'_メモ_\\d+\$'), '');
+        if (normalizedTitle != originalTitle) {
+          updated = true;
         }
+        _todos.add({
+          ...todo,
+          'title': normalizedTitle,
+        });
+      } else {
+        print('Error: todo is not a Map');
       }
-      _todos.sort((a, b) => DateTime.parse(b["updateTime"]).compareTo(DateTime.parse(a["updateTime"])));
-      notifyListeners();
     }
+
+    if (updated) {
+      await docRef.set({'todoList': _todos}, SetOptions(merge: true));
+    }
+
+    _todos.sort((a, b) =>
+        DateTime.parse(b["updateTime"]).compareTo(DateTime.parse(a["updateTime"])));
+    notifyListeners();
   }
 
   // Future<void> addTodo(String title, String detail, String uid) async {
