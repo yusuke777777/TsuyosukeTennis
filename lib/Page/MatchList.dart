@@ -191,6 +191,7 @@ class _MatchListState extends State<MatchList> {
       final tDoc = await parent.get();
       final data = tDoc.data() ?? {};
       final hostUserId = data['hostUserId'] ?? doc.data()['hostUserId'] ?? '';
+      if (hostUserId == uid) return null;
       final participantNames = await _loadParticipantNames(parent.id);
       final count = await _fetchParticipantCount(parent.id,
           cachedCount: data['participantCount']);

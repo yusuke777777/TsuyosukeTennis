@@ -335,6 +335,35 @@ class _TournamentConfirmPageState extends State<TournamentConfirmPage> {
                 style: const TextStyle(color: Color(0xFF1b5e20)),
               ),
             ],
+            const SizedBox(height: 10),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.person_add_alt_1),
+              label: const Text('主催者も参加者に追加'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green.shade100,
+                foregroundColor: Colors.green.shade900,
+              ),
+              onPressed: () async {
+                try {
+                  final profile = await FirestoreMethod.getProfile();
+                  await FirestoreMethod.addTournamentParticipant(
+                    tournamentId: widget.tournamentId,
+                    hostUserId: widget.hostUserId,
+                    profile: profile,
+                  );
+                  if (!mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('主催者を参加者に追加しました')),
+                  );
+                } catch (e) {
+                  if (!mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                        content: Text('追加に失敗しました。通信状況をご確認ください')),
+                  );
+                }
+              },
+            ),
           ],
         ),
       ),
